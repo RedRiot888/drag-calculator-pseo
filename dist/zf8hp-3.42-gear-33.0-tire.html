@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Drag Calculator: ZF 8HP (8-Speed) with 3.42 Gear & 33.0" Tires</title>
+    <meta name="description" id="pageMetaDesc" content="Calculate drag racing top speeds, gear ratios, and shift rpm drops instantly.">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: #1e1e1e; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h1 { color: #ff4747; text-align: center; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #ccc; }
+        input, select { width: 100%; padding: 10px; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 4px; box-sizing: border-box; }
+        button { background: #ff4747; color: white; border: none; padding: 12px 20px; font-size: 16px; font-weight: bold; width: 100%; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #e03b3b; }
+        .results { margin-top: 30px; background: #252525; padding: 20px; border-radius: 6px; border-left: 5px solid #ff4747; }
+        .seo-footer { margin-top: 40px; font-size: 14px; color: #888; border-top: 1px solid #333; padding-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="mainHeading">Drag Racing Drivetrain Calculator</h1>
+        <div class="grid">
+            <div>
+                <label for="transmission">Transmission Profile:</label>
+                <select id="transmission">
+                    <option value="powerglide" data-gear1="1.76">Powerglide (2-Speed - 1.76 1st)</option>
+                    <option value="th400" data-gear1="2.48">TH400 (3-Speed - 2.48 1st)</option>
+                    <option value="t56" data-gear1="2.66">T56 Manual (6-Speed - 2.66 1st)</option>
+                    <option value="zf8hp" data-gear1="4.71">ZF 8HP (8-Speed - 4.71 1st)</option>
+                </select>
+            </div>
+            <div>
+                <label for="rearGear">Rear Gear Ratio:</label>
+                <input type="number" id="rearGear" value="3.73" step="0.01">
+            </div>
+            <div>
+                <label for="tireDiameter">Rear Tire Diameter (inches):</label>
+                <input type="number" id="tireDiameter" value="28.0" step="0.1">
+            </div>
+            <div>
+                <label for="redline">Shift RPM:</label>
+                <input type="number" id="redline" value="7500" step="100">
+            </div>
+        </div>
+        <button onclick="calculateDrivetrain()">Calculate Performance</button>
+        
+        <div class="results" id="resultsBox">
+            <h3>Results</h3>
+            <p>Enter your configuration above and click calculate to view trap speed, final drive ratios, and shift recovery drops.</p>
+        </div>
+
+        <div class="seo-footer">
+            <p><strong>Target Keyword:</strong> <span id="targetKeywordDisplay">Standard Drivetrain Configuration</span></p>
+            <p>Optimized for high-horsepower drag setups, turbo LS builds, and precision track tuning.</p>
+        </div>
+    </div>
+
+    <script>
+        // Check URL parameters for pSEO dynamic injection (e.g. ?gear=4.10&tire=28)
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const gearParam = urlParams.get('gear');
+            const tireParam = urlParams.get('tire');
+            const transParam = urlParams.get('trans');
+
+            if (gearParam) document.getElementById('rearGear').value = gearParam;
+            if (tireParam) document.getElementById('tireDiameter').value = tireParam;
+            if (transParam) document.getElementById('transmission').value = transParam;
+
+            if (gearParam || tireParam || transParam) {
+                document.getElementById('pageTitle.value') = `Drag Racing Calculator | ${gearParam || '3.73'} Gear & ${tireParam || '28'}" Tire`;
+                document.getElementById('mainHeading').innerText = `${transParam ? transParam.toUpperCase() : 'Custom'} Setup: ${gearParam || '3.73'} Gear, ${tireParam || '28"'} Tire`;
+                document.getElementById('targetKeywordDisplay').innerText = `drag racing calculator ${gearParam || '3.73'} gear ${tireParam || '28'} inch tire`;
+                calculateDrivetrain();
+            }
+        });
+
+        function calculateDrivetrain() {
+            const transSelect = document.getElementById('transmission');
+            const transName = transSelect.options[transSelect.selectedIndex].text;
+            const gear1Ratio = parseFloat(transSelect.options[transSelect.selectedIndex].getAttribute('data-gear1'));
+            
+            const rearGear = parseFloat(document.getElementById('rearGear').value);
+            const tireDia = parseFloat(document.getElementById('tireDiameter').value);
+            const redline = parseFloat(document.getElementById('redline').value);
+
+            let topSpeed1st = (redline * tireDia) / (gear1Ratio * rearGear * 336);
+            let finalOverall1st = gear1Ratio * rearGear;
+            
+            let outputHTML = `<h3>Calculated Specs for ${transName}</h3>`;
+            outputHTML += `<p><strong>Overall 1st Gear Ratio:</strong> ${finalOverall1st.toFixed(2)}:1</p>`;
+            outputHTML += `<p><strong>Estimated Max Speed in 1st Gear (@ ${redline} RPM):</strong> ${topSpeed1st.toFixed(1)} MPH</p>`;
+            outputHTML += `<p><strong>Configuration Check:</strong> Rear Gear ${rearGear}:1 paired with ${tireDia}" rear tires.</p>`;
+            
+            document.getElementById('resultsBox').innerHTML = outputHTML;
+        }
+    </script>
+</body>
+</html>
