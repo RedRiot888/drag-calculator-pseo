@@ -67,4 +67,20 @@ def generate_all_pages():
 
 if __name__ == "__main__":
     generate_all_pages()
+    # 4. Turbo Sizing Calculators
+    turbo_hp_targets = [500, 600, 750, 900, 1000, 1250, 1500, 2000]
+    turbo_setups = ["single", "twin"]
     
+    for hp in turbo_hp_targets:
+        for setup in turbo_setups:
+            slug = f"turbo-sizing-{setup}-{hp}hp-calculator"
+            keyword = f"{setup} turbocharger sizing calculator for {hp} hp engine"
+            rows.append({
+                "slug": slug,
+                "target_keyword": keyword,
+                "transmission": f"Turbo Sizing ({setup.upper()} - {hp}HP)",
+                "rear_gear": "0.0",
+                "tire_diameter": "0.0",
+                "page_url": f"https://dragcalculators.co/{slug}"
+            })
+            
