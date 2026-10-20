@@ -1,104 +1,30 @@
 import csv
 
-def generate_all_pages():
-    rows = []
-
-    # 1. Standard Drag Calculators (Transmission, Gear, Tire)
-    transmissions = [
-        {"code": "powerglide", "name": "Powerglide (2-Speed)", "gear1": 1.76},
-        {"code": "th400", "name": "TH400 (3-Speed)", "gear1": 2.48},
-        {"code": "t56", "name": "T56 Manual (6-Speed)", "gear1": 2.66},
-        {"code": "zf8hp", "name": "ZF 8HP (8-Speed)", "gear1": 4.71}
-    ]
-    gear_ratios = [3.08, 3.23, 3.42, 3.55, 3.73, 3.90, 4.10, 4.30, 4.56, 4.88, 5.13]
-    tire_diameters = [26.0, 28.0, 29.5, 31.0, 33.0]
-
-    for trans in transmissions:
-        for gear in gear_ratios:
-            for tire in tire_diameters:
-                slug = f"{trans['code']}-{gear}-gear-{tire}-tire"
-                keyword = f"{trans['name']} {gear} gear {tire} inch tire drag calculator"
-                rows.append({
-                    "slug": slug,
-                    "target_keyword": keyword,
-                    "transmission": trans['name'],
-                    "rear_gear": str(gear),
-                    "tire_diameter": str(tire),
-                    "page_url": f"https://dragcalculators.com/{slug}"
-                })
-
-    # 2. Fuel System Calculators
-    hp_targets = range(400, 1601, 100)
-    fuel_types = ["gasoline", "e85"]
-    for hp in hp_targets:
-        for fuel in fuel_types:
-            slug = f"fuel-calculator-{hp}hp-{fuel}"
-            keyword = f"{hp} hp {fuel} fuel injector size and pump calculator"
-            rows.append({
-                "slug": slug,
-                "target_keyword": keyword,
-                "transmission": f"Fuel System ({hp}HP {fuel.upper()})",
-                "rear_gear": "0.0",
-                "tire_diameter": "0.0",
-                "page_url": f"https://dragcalculators.com/{slug}"
-            })
-
-    # 3. CAS (Compressed Air Supercharging) / Boost Calculators
-    boost_levels = [15, 20, 25, 30, 35, 40]
-    for boost in boost_levels:
-        slug = f"cas-compressed-air-supercharger-{boost}psi-boost"
-        keyword = f"compressed air supercharger {boost} psi boost calculator"
-        rows.append({
-            "slug": slug,
-            "target_keyword": keyword,
-            "transmission": f"CAS Supercharger ({boost} PSI)",
-            "rear_gear": "0.0",
-            "tire_diameter": "0.0",
-            "page_url": f"https://dragcalculators.com/{slug}"
-        })
-
-    # 4. Turbo Sizing Calculators
-    turbo_hp_targets = [500, 600, 750, 900, 1000, 1250, 1500, 2000]
-    turbo_setups = ["single", "twin"]
-    for hp in turbo_hp_targets:
-        for setup in turbo_setups:
-            slug = f"turbo-sizing-{setup}-{hp}hp-calculator"
-            keyword = f"{setup} turbocharger sizing calculator for {hp} hp engine"
-            rows.append({
-                "slug": slug,
-                "target_keyword": keyword,
-                "transmission": f"Turbo Sizing ({setup.upper()} - {hp}HP)",
-                "rear_gear": "0.0",
-                "tire_diameter": "0.0",
-                "page_url": f"https://dragcalculators.com/{slug}"
-            })
-
-    # 5. Supercharger Pulley & Boost Calculators
-    crank_pulleys = [7.5, 8.0, 8.5]
-    blower_pulleys = [2.75, 3.0, 3.25, 3.5, 3.75, 4.0]
-    blower_types = ["roots", "centrifugal", "twin-screw"]
-
-    for crank in crank_pulleys:
-        for blower in blower_pulleys:
-            for b_type in blower_types:
-                slug = f"supercharger-pulley-{b_type}-{crank}in-crank-{blower}in-blower"
-                keyword = f"{b_type} supercharger pulley ratio calculator {crank} inch crank {blower} inch blower"
-                rows.append({
-                    "slug": slug,
-                    "target_keyword": keyword,
-                    "transmission": f"Supercharger Pulley ({b_type.title()} - {crank}in / {blower}in)",
-                    "rear_gear": "0.0",
-                    "tire_diameter": "0.0",
-                    "page_url": f"https://dragcalculators.com/{slug}"
-                })
-
-    # Save everything to CSV
-    with open("pseo_pages_list.csv", "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["slug", "target_keyword", "transmission", "rear_gear", "tire_diameter", "page_url"])
-        writer.writeheader()
-        writer.writerows(rows)
+rows = [
+    # Transmission & Gear Drop
+    {"slug": "powerglide-3.08-gear-26.0-tire", "target_keyword": "Powerglide (2-Speed) 3.08 gear 26.0 inch tire drag calculator", "transmission": "Powerglide (2-Speed)", "rear_gear": "3.08", "tire_diameter": "26.0"},
+    {"slug": "th400-3.73-gear-28.0-tire", "target_keyword": "TH400 (3-Speed) 3.73 gear 28.0 inch tire drag calculator", "transmission": "TH400 (3-Speed)", "rear_gear": "3.73", "tire_diameter": "28.0"},
     
-    print(f"Successfully generated {len(rows)} total programmatic pages in CSV!")
+    # Turbo Sizing & Boost Matrix
+    {"slug": "turbo-sizing-800hp-gasoline", "target_keyword": "800 HP Gasoline Turbo Sizing & Compressor Map Calculator", "transmission": "Turbo Setup (Single)", "rear_gear": "3.55", "tire_diameter": "28.0"},
+    {"slug": "turbo-sizing-1200hp-e85", "target_keyword": "1200 HP E85 Twin Turbo Airflow & Boost Calculator", "transmission": "Turbo Setup (Twin)", "rear_gear": "3.73", "tire_diameter": "31.0"},
 
-if __name__ == "__main__":
-    generate_all_pages()
+    # Supercharger Pulley & Boost
+    {"slug": "supercharger-pulley-15psi-roots", "target_keyword": "Roots Supercharger 15 PSI Boost Pulley Ratio Calculator", "transmission": "Roots Blower", "rear_gear": "3.42", "tire_diameter": "28.0"},
+    {"slug": "supercharger-pulley-20psi-screws", "target_keyword": "Twin-Screw Supercharger 20 PSI Pulley Calculator", "transmission": "Twin-Screw Blower", "rear_gear": "3.89", "tire_diameter": "29.5"},
+
+    # Rear Gear Ratio Math
+    {"slug": "rear-gear-ratio-4.56-drag-racing", "target_keyword": "4.56 Ring and Pinion Rear Gear Quarter-Mile Calculator", "transmission": "Powerglide (2-Speed)", "rear_gear": "4.56", "tire_diameter": "32.0"},
+    {"slug": "rear-gear-ratio-3.89-street-strip", "target_keyword": "3.89 Rear End Gear Ratio RPM & Trap Speed Calculator", "transmission": "TH400 (3-Speed)", "rear_gear": "3.89", "tire_diameter": "30.0"},
+
+    # Tire Diameter & Growth
+    {"slug": "tire-diameter-growth-33-slick", "target_keyword": "33 Inch Slick Tire Growth & Rollout Drag Calculator", "transmission": "Powerglide (2-Speed)", "rear_gear": "4.10", "tire_diameter": "33.0"},
+    {"slug": "tire-diameter-growth-28-radial", "target_keyword": "28 Inch Drag Radial Effective Circumference Calculator", "transmission": "4L80e (Overdrive)", "rear_gear": "3.50", "tire_diameter": "28.0"}
+]
+
+with open("pseo_pages_list.csv", "w", newline="", encoding="utf-8") as f:
+    writer = csv.DictWriter(f, fieldnames=["slug", "target_keyword", "transmission", "rear_gear", "tire_diameter"])
+    writer.writeheader()
+    writer.writerows(rows)
+
+print("Successfully generated diverse pseo_pages_list.csv data!")
