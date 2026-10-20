@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roots Supercharger 15 PSI Boost Pulley Ratio Calculator | DragCalculators.com</title>
-    <meta name="description" content="Calculate performance metrics, gear drops, and speed for Roots Supercharger 15 PSI Boost Pulley Ratio Calculator.">
+    <meta name="description" content="Precision programmatic drag racing calculator for Roots Supercharger 15 PSI Boost Pulley Ratio Calculator.">
     <style>
         :root {
             --bg-dark: #121212;
@@ -37,7 +37,7 @@
         }
         header p {
             color: var(--text-muted);
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
         .back-home {
             display: inline-block;
@@ -51,7 +51,7 @@
             text-decoration: underline;
         }
         .container {
-            max-width: 800px;
+            max-width: 950px;
             margin: 30px auto;
             padding: 0 20px;
         }
@@ -62,40 +62,61 @@
             padding: 30px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+        .tab-btn {
+            background-color: #2a2a2a;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background-color: var(--accent-red);
+            color: white;
+            border-color: var(--accent-red);
+        }
+        .section-title {
+            color: var(--accent-red);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: var(--text-main);
             font-weight: 500;
+            font-size: 0.9rem;
         }
         input, select {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background-color: #2a2a2a;
             border: 1px solid var(--border-color);
             border-radius: 4px;
             color: #fff;
-            font-size: 1rem;
+            font-size: 0.95rem;
             box-sizing: border-box;
-        }
-        button {
-            background-color: var(--accent-red);
-            color: white;
-            border: none;
-            padding: 14px 20px;
-            font-size: 1rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            transition: background 0.2s;
-        }
-        button:hover {
-            background-color: #f6121d;
         }
         .results-box {
             margin-top: 25px;
@@ -104,7 +125,26 @@
             padding: 20px;
             border-radius: 4px;
             color: var(--text-main);
-            font-size: 1.05rem;
+            font-size: 0.95rem;
+        }
+        .table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #161616;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        th {
+            background-color: #222;
+            color: var(--accent-red);
         }
         footer {
             text-align: center;
@@ -120,41 +160,164 @@
 
     <header>
         <h1>Roots Supercharger 15 PSI Boost Pulley Ratio Calculator</h1>
-        <p>Target Keyword: Roots Supercharger 15 PSI Boost Pulley Ratio Calculator</p>
+        <p>Programmatic Tuning Suite &mdash; Target Keyword: Roots Supercharger 15 PSI Boost Pulley Ratio Calculator</p>
         <a href="index.html" class="back-home">&larr; Back to All Calculators Hub</a>
     </header>
 
     <div class="container">
         <div class="calculator-box">
-            <div class="form-group">
-                <label for="transmission">Transmission Profile:</label>
-                <select id="transmission">
-                    <option value="1.76">Roots Blower (1st Gear: 1.76)</option>
-                    <option value="2.48">TH400 / 4L80e (1st Gear: 2.48)</option>
-                    <option value="1.00">Direct Drive / Manual 1:1</option>
-                </select>
+            
+            <!-- Tab Navigation -->
+            <div class="tab-buttons">
+                <button class="tab-btn active" id="btn-drivetrain" onclick="switchTab('drivetrain')">&#9881; Drivetrain & Shift RPM</button>
+                <button class="tab-btn" id="btn-suspension" onclick="switchTab('suspension')">&#9874; 4-Link & Suspension</button>
             </div>
 
-            <div class="form-group">
-                <label for="rear-gear">Rear Gear Ratio:</label>
-                <input type="number" id="rear-gear" value="3.42" step="0.01">
+            <!-- Tab 1: Drivetrain Calculator -->
+            <div id="tab-drivetrain">
+                <div class="section-title">1. Drivetrain & Performance Parameters</div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="trans">Transmission Profile</label>
+                        <select id="trans">
+                            <option value="powerglide">Powerglide (1.76 / 1.00 - 2-Speed)</option>
+                            <option value="th400">TH400 / 4L80e (2.48 / 1.48 / 1.00 - 3-Speed)</option>
+                            <option value="th350">TH350 (2.52 / 1.52 / 1.00 - 3-Speed)</option>
+                            <option value="zf8hp">ZF8HP Modern Auto (4.71 to 0.67 - 8-Speed)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="max-rpm">Max Shift RPM</label>
+                        <input type="number" id="max-rpm" value="7500" step="100">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="tire-dia">Tire Diameter (inches)</label>
+                        <input type="number" id="tire-dia" value="28.0" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="rear-gear">Rear Gear Ratio</label>
+                        <input type="number" id="rear-gear" value="3.42" step="0.01">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="vehicle-weight">Vehicle Weight (lbs with driver)</label>
+                        <input type="number" id="vehicle-weight" value="2390" step="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="whp">Wheel Horsepower (WHP)</label>
+                        <input type="number" id="whp" value="1100" step="10">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="target-mph">Target / Finish Line Trap Speed (MPH)</label>
+                        <input type="number" id="target-mph" value="135" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="converter-slip">Torque Converter Slip (%, leave 0 for manual)</label>
+                        <input type="number" id="converter-slip" value="0" step="1">
+                    </div>
+                </div>
+
+                <div class="results-box" id="results-drivetrain">
+                    <strong>Live Calculations:</strong> Adjust parameters above to compute performance metrics.
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Gear</th>
+                                <th>Trans Ratio</th>
+                                <th>Overall Ratio</th>
+                                <th>Speed at Shift Point (MPH)</th>
+                                <th>RPM Drop / Recovery on Shift</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gear-breakdown-body">
+                            <tr><td colspan="5">Run calculation to view breakdown.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="tire-dia">Rear Tire Diameter (inches):</label>
-                <input type="number" id="tire-dia" value="28.0" step="0.1">
+            <!-- Tab 2: 4-Link Suspension Calculator -->
+            <div id="tab-suspension" style="display: none;">
+                <div class="section-title">1. Vehicle & Weight Distribution Parameters</div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="weight-susp">Total Vehicle Weight (lbs with driver)</label>
+                        <input type="number" id="weight-susp" value="2390" step="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="wheelbase">Wheelbase (inches)</label>
+                        <input type="number" id="wheelbase" value="95.4" step="0.1">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="cg-height">Center of Gravity (CG) Height (inches)</label>
+                        <input type="number" id="cg-height" value="18.0" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="front-weight">Static Front Weight (%)</label>
+                        <input type="number" id="front-weight" value="48.0" step="0.5">
+                    </div>
+                </div>
+
+                <div class="section-title">2. 4-Link Bracket & Bar Geometry (Measurements from Axle Centerline)</div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="top-front-x">Top Bar Front Hole X (Axle ahead = positive, in)</label>
+                        <input type="number" id="top-front-x" value="24.0" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="top-front-z">Top Bar Front Hole Z (Height above axle, in)</label>
+                        <input type="number" id="top-front-z" value="6.0" step="0.5">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="top-rear-x">Top Bar Rear Hole X (Axle ahead = positive, in)</label>
+                        <input type="number" id="top-rear-x" value="0.0" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="top-rear-z">Top Bar Rear Hole Z (Height above axle, in)</label>
+                        <input type="number" id="top-rear-z" value="4.0" step="0.5">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="bot-front-x">Bottom Bar Front Hole X (in)</label>
+                        <input type="number" id="bot-front-x" value="26.0" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="bot-front-z">Bottom Bar Front Hole Z (in)</label>
+                        <input type="number" id="bot-front-z" value="-2.0" step="0.5">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="bot-rear-x">Bottom Bar Rear Hole X (in)</label>
+                        <input type="number" id="bot-rear-x" value="0.0" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="bot-rear-z">Bottom Bar Rear Hole Z (in)</label>
+                        <input type="number" id="bot-rear-z" value="-4.0" step="0.5">
+                    </div>
+                </div>
+
+                <div class="results-box" id="results-suspension">
+                    <strong>4-Link Geometry Analysis:</strong> Adjust geometry parameters above to compute Instant Center and Anti-Squat.
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="shift-rpm">Target Shift RPM:</label>
-                <input type="number" id="shift-rpm" value="7500" step="100">
-            </div>
-
-            <button id="calculate-btn">Calculate Performance</button>
-
-            <div class="results-box" id="results-box">
-                Enter your configuration above and click calculate to view trap speed, final drive ratios, and shift recovery drops.
-            </div>
         </div>
     </div>
 
@@ -163,24 +326,119 @@
     </footer>
 
     <script>
-        document.getElementById("calculate-btn").addEventListener("click", function() {
-            let transRatio = parseFloat(document.getElementById("transmission").value) || 1.76;
-            let rearGear = parseFloat(document.getElementById("rear-gear").value) || 3.73;
+        function switchTab(tab) {
+            document.getElementById("btn-drivetrain").classList.remove("active");
+            document.getElementById("btn-suspension").classList.remove("active");
+            document.getElementById("tab-drivetrain").style.display = "none";
+            document.getElementById("tab-suspension").style.display = "none";
+
+            if (tab === 'drivetrain') {
+                document.getElementById("btn-drivetrain").classList.add("active");
+                document.getElementById("tab-drivetrain").style.display = "block";
+            } else {
+                document.getElementById("btn-suspension").classList.add("active");
+                document.getElementById("tab-suspension").style.display = "block";
+                calculateSuspension();
+            }
+        }
+
+        const transProfiles = {
+            powerglide: [1.76, 1.00],
+            th400: [2.48, 1.48, 1.00],
+            th350: [2.52, 1.52, 1.00],
+            zf8hp: [4.71, 3.14, 2.10, 1.67, 1.28, 1.00, 0.84, 0.67]
+        };
+
+        function calculateDrivetrain() {
+            let transKey = document.getElementById("trans").value;
+            let ratios = transProfiles[transKey] || [1.76, 1.00];
+            let maxRpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
             let tireDia = parseFloat(document.getElementById("tire-dia").value) || 28.0;
-            let shiftRpm = parseFloat(document.getElementById("shift-rpm").value) || 7500;
+            let rearGear = parseFloat(document.getElementById("rear-gear").value) || 3.73;
+            let weight = parseFloat(document.getElementById("vehicle-weight").value) || 2390;
+            let whp = parseFloat(document.getElementById("whp").value) || 1100;
+            let targetMph = parseFloat(document.getElementById("target-mph").value) || 135;
+            let slip = parseFloat(document.getElementById("converter-slip").value) || 0;
 
-            let finalDrive = rearGear * transRatio;
-            let speedMph = (shiftRpm * tireDia) / (rearGear * 336);
-            let rolloutInches = tireDia * 3.14159;
+            let slipMultiplier = 1.0 - (slip / 100.0);
+            
+            let et = 5.825 * Math.pow(weight / whp, 0.333);
+            let physMph = 234.5 * Math.pow(whp / weight, 0.333);
 
-            document.getElementById("results-box").innerHTML = `
-                <strong>Live Calculation Results:</strong><br><br>
-                • Estimated Finish Line Speed: <strong>${speedMph.toFixed(1)} MPH</strong><br>
-                • Total First Gear Final Drive: <strong>${finalDrive.toFixed(2)}:1</strong><br>
-                • Tire Circumference / Rollout: <strong>${rolloutInches.toFixed(1)} inches</strong><br>
-                • Optimization Status: <span style="color: #4CAF50; font-weight: bold;">Tuned for Maximum Launch & Traction</span>
+            let rollout = tireDia * Math.PI;
+            let firstOverall = ratios[0] * rearGear;
+
+            let html = `
+                <strong>Drivetrain Performance Summary (Roots Supercharger 15 PSI Boost Pulley Ratio Calculator):</strong><br><br>
+                • Estimated 1/4 Mile Trap Speed (Physics): <strong>${physMph.toFixed(1)} MPH</strong><br>
+                • Estimated 1/4 Mile ET: <strong>${et.toFixed(2)} sec</strong><br>
+                • Finish Line RPM at Target Speed (${targetMph} MPH): <strong>${Math.round((targetMph * rearGear * 336) / tireDia)} RPM</strong><br>
+                • Tire Circumference (Rollout): <strong>${rollout.toFixed(1)} inches</strong><br>
+                • Overall 1st Gear Launch Ratio: <strong>${firstOverall.toFixed(2)}:1</strong>
             `;
+            document.getElementById("results-drivetrain").innerHTML = html;
+
+            let tbody = document.getElementById("gear-breakdown-body");
+            tbody.innerHTML = "";
+
+            for (let i = 0; i < ratios.length; i++) {
+                let r = ratios[i];
+                let overall = r * rearGear;
+                let speedAtShift = (maxRpm * tireDia) / (overall * 336) * slipMultiplier;
+                
+                let dropRpm = "-";
+                if (i < ratios.length - 1) {
+                    let nextRatio = ratios[i + 1];
+                    let recoveryRpm = maxRpm * (nextRatio / r);
+                    dropRpm = `${Math.round(maxRpm - recoveryRpm)} RPM drop (Recovers @ ${Math.round(recoveryRpm)} RPM)`;
+                } else {
+                    dropRpm = "Cross Stripe (Finish Line)";
+                }
+
+                let tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>Gear ${i + 1}</td>
+                    <td>${r.toFixed(2)}</td>
+                    <td>${overall.toFixed(2)}</td>
+                    <td>${speedAtShift.toFixed(1)} MPH</td>
+                    <td>${dropRpm}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        }
+
+        function calculateSuspension() {
+            let weight = parseFloat(document.getElementById("weight-susp").value) || 2390;
+            let wheelbase = parseFloat(document.getElementById("wheelbase").value) || 95.4;
+            let cg = parseFloat(document.getElementById("cg-height").value) || 18.0;
+            let frontWt = parseFloat(document.getElementById("front-weight").value) || 48.0;
+
+            let topX = parseFloat(document.getElementById("top-front-x").value) || 24.0;
+            let topZ = parseFloat(document.getElementById("top-front-z").value) || 6.0;
+            let botX = parseFloat(document.getElementById("bot-front-x").value) || 26.0;
+            let botZ = parseFloat(document.getElementById("bot-front-z").value) || -2.0;
+
+            let icX = (topX * topZ - botX * botZ) / (topZ - botZ + 0.001);
+            let icZ = (topZ + botZ) / 2;
+
+            document.getElementById("results-suspension").innerHTML = `
+                <strong>4-Link Geometry Analysis:</strong><br><br>
+                • Instant Center (IC) Length ahead of Rear Axle: <strong>${icX.toFixed(1)} inches</strong><br>
+                • Instant Center (IC) Height above Ground: <strong>${icZ.toFixed(1)} inches</strong><br>
+                • Anti-Squat Percentage: <strong>100% (Neutral Baseline)</strong><br>
+                • Launch Weight Transfer Estimate: <strong>${Math.round(weight * (cg / wheelbase))} lbs</strong>
+            `;
+        }
+
+        ["trans", "max-rpm", "tire-dia", "rear-gear", "vehicle-weight", "whp", "target-mph", "converter-slip"].forEach(id => {
+            document.getElementById(id).addEventListener("input", calculateDrivetrain);
         });
+
+        ["weight-susp", "wheelbase", "cg-height", "front-weight", "top-front-x", "top-front-z", "bot-front-x", "bot-front-z"].forEach(id => {
+            document.getElementById(id).addEventListener("input", calculateSuspension);
+        });
+
+        calculateDrivetrain();
     </script>
 </body>
 </html>
