@@ -1,11 +1,6 @@
-slug,target_keyword,transmission,rear_gear,tire_diameter
-powerglide-3.08-gear-26.0-tire,Powerglide (2-Speed) 3.08 gear 26.0 inch tire drag calculator,Powerglide (2-Speed),3.08,26.0
-th400-3.73-gear-28.0-tire,TH400 (3-Speed) 3.73 gear 28.0 inch tire drag calculator,TH400 (3-Speed),3.73,28.0
-turbo-sizing-800hp-gasoline,800 HP Gasoline Turbo Sizing & Compressor Map Calculator,Turbo Setup (Single),3.55,28.0
-turbo-sizing-1200hp-e85,1200 HP E85 Twin Turbo Airflow & Boost Calculator,Turbo Setup (Twin),3.73,31.0
-supercharger-pulley-15psi-roots,Roots Supercharger 15 PSI Boost Pulley Ratio Calculator,Roots Blower,3.42,28.0
-supercharger-pulley-20psi-screws,Twin-Screw Supercharger 20 PSI Pulley Calculator,Twin-Screw Blower,3.89,29.5
-rear-gear-ratio-4.56-drag-racing,4.56 Ring and Pinion Rear Gear Quarter-Mile Calculator,Powerglide (2-Speed),4.56,32.0
-rear-gear-ratio-3.89-street-strip,3.89 Rear End Gear Ratio RPM & Trap Speed Calculator,TH400 (3-Speed),3.89,30.0
-tire-diameter-growth-33-slick,33 Inch Slick Tire Growth & Rollout Drag Calculator,Powerglide (2-Speed),4.10,33.0
-tire-diameter-growth-28-radial,28 Inch Drag Radial Effective Circumference Calculator,4L80e (Overdrive),3.50,28.0
+slug,target_keyword,category,transmission,rear_gear,tire_diameter
+transmission-gear-drop-calculator,Transmission Shift Recovery & Gear Drop Calculator,Transmission,Powerglide (2-Speed),3.73,28.0
+turbo-sizing-boost-matrix,"Turbo Sizing, Compressor Map & Boost Calculator",Turbo,TH400 (3-Speed),3.55,28.0
+supercharger-pulley-boost-calculator,Supercharger Pulley Ratio & Boost Pressure Calculator,Supercharger,TH400 (3-Speed),3.42,28.0
+rear-gear-ratio-calculator,Ring and Pinion Rear Gear Quarter-Mile Calculator,RearGear,Powerglide (2-Speed),4.56,32.0
+tire-diameter-growth-calculator,Tire Diameter Growth & Rollout Drag Calculator,Tire,4L80e (Overdrive),4.10,33.0

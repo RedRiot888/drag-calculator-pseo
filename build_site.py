@@ -3,447 +3,253 @@ import csv
 
 output_dir = "."
 
-master_suite_template = """<!DOCTYPE html>
+# Templates for different categories so calculators make sense!
+transmission_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
-    <meta name="description" content="{description}">
     <style>
-        :root {{
-            --bg-dark: #121212;
-            --card-bg: #1e1e1e;
-            --accent-red: #e50914;
-            --text-main: #f1f1f1;
-            --text-muted: #aaa;
-            --border-color: #333;
-        }}
-        body {{
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }}
-        header {{
-            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
-            border-bottom: 2px solid var(--accent-red);
-            padding: 30px 20px;
-            text-align: center;
-        }}
-        header h1 {{
-            color: var(--accent-red);
-            font-size: 2rem;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }}
-        header p {{
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }}
-        .back-home {{
-            display: inline-block;
-            margin-top: 10px;
-            color: var(--accent-red);
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }}
-        .back-home:hover {{
-            text-decoration: underline;
-        }}
-        .container {{
-            max-width: 950px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }}
-        .calculator-box {{
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }}
-        .tab-buttons {{
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
-        }}
-        .tab-btn {{
-            background-color: #2a2a2a;
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }}
-        .tab-btn.active {{
-            background-color: var(--accent-red);
-            color: white;
-            border-color: var(--accent-red);
-        }}
-        .section-title {{
-            color: var(--accent-red);
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 5px;
-        }}
-        .grid-2 {{
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }}
-        .form-group {{
-            margin-bottom: 15px;
-        }}
-        label {{
-            display: block;
-            margin-bottom: 6px;
-            color: var(--text-main);
-            font-weight: 500;
-            font-size: 0.9rem;
-        }}
-        input, select {{
-            width: 100%;
-            padding: 10px;
-            background-color: #2a2a2a;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            color: #fff;
-            font-size: 0.95rem;
-            box-sizing: border-box;
-        }}
-        .results-box {{
-            margin-top: 25px;
-            background-color: #161616;
-            border-left: 4px solid var(--accent-red);
-            padding: 20px;
-            border-radius: 4px;
-            color: var(--text-main);
-            font-size: 0.95rem;
-        }}
-        .table-container {{
-            margin-top: 20px;
-            overflow-x: auto;
-        }}
-        table {{
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #161616;
-            font-size: 0.9rem;
-        }}
-        th, td {{
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-        }}
-        th {{
-            background-color: #222;
-            color: var(--accent-red);
-        }}
-        footer {{
-            text-align: center;
-            padding: 30px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            border-top: 1px solid var(--border-color);
-            margin-top: 50px;
-        }}
+        :root {{ --bg-dark: #121212; --card-bg: #1e1e1e; --accent-red: #e50914; --text-main: #f1f1f1; --text-muted: #aaa; --border-color: #333; }}
+        body {{ font-family: sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; }}
+        header {{ background: #1a1a1a; border-bottom: 2px solid var(--accent-red); padding: 30px 20px; text-align: center; }}
+        header h1 {{ color: var(--accent-red); font-size: 2rem; text-transform: uppercase; margin-bottom: 5px; }}
+        .container {{ max-width: 900px; margin: 30px auto; padding: 0 20px; }}
+        .box {{ background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 30px; }}
+        .grid-2 {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }}
+        label {{ display: block; margin-bottom: 5px; font-weight: bold; }}
+        input, select {{ width: 100%; padding: 10px; background: #2a2a2a; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; box-sizing: border-box; }}
+        .results {{ margin-top: 20px; background: #161616; border-left: 4px solid var(--accent-red); padding: 15px; border-radius: 4px; }}
+        table {{ width: 100%; margin-top: 20px; border-collapse: collapse; background: #161616; }}
+        th, td {{ padding: 10px; border: 1px solid var(--border-color); text-align: center; }}
+        th {{ background: #222; color: var(--accent-red); }}
+        .back {{ display: inline-block; margin-top: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; }}
     </style>
 </head>
 <body>
-
     <header>
-        <h1>{h1_title}</h1>
-        <p>Programmatic Tuning Suite &mdash; Target Keyword: {target_keyword}</p>
-        <a href="index.html" class="back-home">&larr; Back to All Calculators Hub</a>
+        <h1>{target_keyword}</h1>
+        <a href="index.html" class="back">&larr; Back to All Calculators Hub</a>
     </header>
-
     <div class="container">
-        <div class="calculator-box">
-            
-            <!-- Tab Navigation -->
-            <div class="tab-buttons">
-                <button class="tab-btn active" id="btn-drivetrain" onclick="switchTab('drivetrain')">&#9881; Drivetrain & Shift RPM</button>
-                <button class="tab-btn" id="btn-suspension" onclick="switchTab('suspension')">&#9874; 4-Link & Suspension</button>
-            </div>
-
-            <!-- Tab 1: Drivetrain Calculator -->
-            <div id="tab-drivetrain">
-                <div class="section-title">1. Drivetrain & Performance Parameters</div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label for="trans">Transmission Profile</label>
-                        <select id="trans">
-                            <option value="powerglide">Powerglide (1.76 / 1.00 - 2-Speed)</option>
-                            <option value="th400">TH400 / 4L80e (2.48 / 1.48 / 1.00 - 3-Speed)</option>
-                            <option value="th350">TH350 (2.52 / 1.52 / 1.00 - 3-Speed)</option>
-                            <option value="zf8hp">ZF8HP Modern Auto (4.71 to 0.67 - 8-Speed)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="max-rpm">Max Shift RPM</label>
-                        <input type="number" id="max-rpm" value="7500" step="100">
-                    </div>
+        <div class="box">
+            <h2>Transmission & Gear Drop Analyzer</h2>
+            <div class="grid-2">
+                <div>
+                    <label>Transmission Profile</label>
+                    <select id="trans">
+                        <option value="powerglide">Powerglide (1.76 / 1.00 - 2-Speed)</option>
+                        <option value="th400">TH400 / 4L80e (2.48 / 1.48 / 1.00 - 3-Speed)</option>
+                        <option value="th350">TH350 (2.52 / 1.52 / 1.00 - 3-Speed)</option>
+                    </select>
                 </div>
-
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label for="tire-dia">Tire Diameter (inches)</label>
-                        <input type="number" id="tire-dia" value="{tire_diameter}" step="0.1">
-                    </div>
-                    <div class="form-group">
-                        <label for="rear-gear">Rear Gear Ratio</label>
-                        <input type="number" id="rear-gear" value="{rear_gear}" step="0.01">
-                    </div>
-                </div>
-
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label for="vehicle-weight">Vehicle Weight (lbs with driver)</label>
-                        <input type="number" id="vehicle-weight" value="2390" step="10">
-                    </div>
-                    <div class="form-group">
-                        <label for="whp">Wheel Horsepower (WHP)</label>
-                        <input type="number" id="whp" value="1100" step="10">
-                    </div>
-                </div>
-
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label for="target-mph">Target / Finish Line Trap Speed (MPH)</label>
-                        <input type="number" id="target-mph" value="135" step="1">
-                    </div>
-                    <div class="form-group">
-                        <label for="converter-slip">Torque Converter Slip (%, leave 0 for manual)</label>
-                        <input type="number" id="converter-slip" value="0" step="1">
-                    </div>
-                </div>
-
-                <div class="results-box" id="results-drivetrain">
-                    <strong>Live Calculations:</strong> Adjust parameters above to compute performance metrics.
-                </div>
-
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Gear</th>
-                                <th>Trans Ratio</th>
-                                <th>Overall Ratio</th>
-                                <th>Speed at Shift Point (MPH)</th>
-                                <th>RPM Drop / Recovery on Shift</th>
-                            </tr>
-                        </thead>
-                        <tbody id="gear-breakdown-body">
-                            <tr><td colspan="5">Run calculation to view breakdown.</td></tr>
-                        </tbody>
-                    </table>
+                <div>
+                    <label>Max Shift RPM</label>
+                    <input type="number" id="max-rpm" value="7500">
                 </div>
             </div>
-
-            <!-- Tab 2: 4-Link Suspension Calculator -->
-            <div id="tab-suspension" style="display: none;">
-                <div class="section-title">1. Vehicle & Weight Distribution Parameters</div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label for="weight-susp">Total Vehicle Weight (lbs with driver)</label>
-                        <input type="number" id="weight-susp" value="2390" step="10">
-                    </div>
-                    <div class="form-group">
-                        <label for="wheelbase">Wheelbase (inches)</label>
-                        <input type="number" id="wheelbase" value="95.4" step="0.1">
-                    </div>
+            <div class="grid-2">
+                <div>
+                    <label>Tire Diameter (inches)</label>
+                    <input type="number" id="tire-dia" value="{tire_diameter}" step="0.1">
                 </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label for="cg-height">Center of Gravity (CG) Height (inches)</label>
-                        <input type="number" id="cg-height" value="18.0" step="0.5">
-                    </div>
-                    <div class="form-group">
-                        <label for="front-weight">Static Front Weight (%)</label>
-                        <input type="number" id="front-weight" value="48.0" step="0.5">
-                    </div>
-                </div>
-
-                <div class="section-title">2. 4-Link Bracket & Bar Geometry (Measurements from Axle Centerline)</div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label for="top-front-x">Top Bar Front Hole X (Axle ahead = positive, in)</label>
-                        <input type="number" id="top-front-x" value="24.0" step="0.5">
-                    </div>
-                    <div class="form-group">
-                        <label for="top-front-z">Top Bar Front Hole Z (Height above axle, in)</label>
-                        <input type="number" id="top-front-z" value="6.0" step="0.5">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label for="top-rear-x">Top Bar Rear Hole X (Axle ahead = positive, in)</label>
-                        <input type="number" id="top-rear-x" value="0.0" step="0.5">
-                    </div>
-                    <div class="form-group">
-                        <label for="top-rear-z">Top Bar Rear Hole Z (Height above axle, in)</label>
-                        <input type="number" id="top-rear-z" value="4.0" step="0.5">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label for="bot-front-x">Bottom Bar Front Hole X (in)</label>
-                        <input type="number" id="bot-front-x" value="26.0" step="0.5">
-                    </div>
-                    <div class="form-group">
-                        <label for="bot-front-z">Bottom Bar Front Hole Z (in)</label>
-                        <input type="number" id="bot-front-z" value="-2.0" step="0.5">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label for="bot-rear-x">Bottom Bar Rear Hole X (in)</label>
-                        <input type="number" id="bot-rear-x" value="0.0" step="0.5">
-                    </div>
-                    <div class="form-group">
-                        <label for="bot-rear-z">Bottom Bar Rear Hole Z (in)</label>
-                        <input type="number" id="bot-rear-z" value="-4.0" step="0.5">
-                    </div>
-                </div>
-
-                <div class="results-box" id="results-suspension">
-                    <strong>4-Link Geometry Analysis:</strong> Adjust geometry parameters above to compute Instant Center and Anti-Squat.
+                <div>
+                    <label>Rear Gear Ratio</label>
+                    <input type="number" id="rear-gear" value="{rear_gear}" step="0.01">
                 </div>
             </div>
-
+            <div class="results" id="results">Adjust parameters above to view shift recovery and RPM drop.</div>
+            <table>
+                <thead><tr><th>Gear</th><th>Trans Ratio</th><th>Overall Ratio</th><th>Shift Speed (MPH)</th><th>RPM Drop on Shift</th></tr></thead>
+                <tbody id="gear-body"></tbody>
+            </table>
         </div>
     </div>
-
-    <footer>
-        &copy; 2026 DragCalculators.com. All rights reserved. Precision Automotive Tuning Data.
-    </footer>
-
     <script>
-        function switchTab(tab) {{
-            document.getElementById("btn-drivetrain").classList.remove("active");
-            document.getElementById("btn-suspension").classList.remove("active");
-            document.getElementById("tab-drivetrain").style.display = "none";
-            document.getElementById("tab-suspension").style.display = "none";
-
-            if (tab === 'drivetrain') {{
-                document.getElementById("btn-drivetrain").classList.add("active");
-                document.getElementById("tab-drivetrain").style.display = "block";
-            }} else {{
-                document.getElementById("btn-suspension").classList.add("active");
-                document.getElementById("tab-suspension").style.display = "block";
-                calculateSuspension();
-            }}
-        }}
-
-        const transProfiles = {{
-            powerglide: [1.76, 1.00],
-            th400: [2.48, 1.48, 1.00],
-            th350: [2.52, 1.52, 1.00],
-            zf8hp: [4.71, 3.14, 2.10, 1.67, 1.28, 1.00, 0.84, 0.67]
-        }};
-
-        function calculateDrivetrain() {{
-            let transKey = document.getElementById("trans").value;
-            let ratios = transProfiles[transKey] || [1.76, 1.00];
-            let maxRpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
-            let tireDia = parseFloat(document.getElementById("tire-dia").value) || 28.0;
-            let rearGear = parseFloat(document.getElementById("rear-gear").value) || 3.73;
-            let weight = parseFloat(document.getElementById("vehicle-weight").value) || 2390;
-            let whp = parseFloat(document.getElementById("whp").value) || 1100;
-            let targetMph = parseFloat(document.getElementById("target-mph").value) || 135;
-            let slip = parseFloat(document.getElementById("converter-slip").value) || 0;
-
-            let slipMultiplier = 1.0 - (slip / 100.0);
+        const ratios = {{ powerglide: [1.76, 1.00], th400: [2.48, 1.48, 1.00], th350: [2.52, 1.52, 1.00] }};
+        function calc() {{
+            let tKey = document.getElementById("trans").value;
+            let rat = ratios[tKey];
+            let rpm = parseFloat(document.getElementById("max-rpm").value);
+            let tire = parseFloat(document.getElementById("tire-dia").value);
+            let gear = parseFloat(document.getElementById("rear-gear").value);
             
-            let et = 5.825 * Math.pow(weight / whp, 0.333);
-            let physMph = 234.5 * Math.pow(whp / weight, 0.333);
+            let html = `<strong>Analysis:</strong><br>• Tire Rollout: ${(tire * Math.PI).toFixed(1)} inches<br>• 1st Gear Overall Ratio: ${(rat[0] * gear).toFixed(2)}:1`;
+            document.getElementById("results").innerHTML = html;
 
-            let rollout = tireDia * Math.PI;
-            let firstOverall = ratios[0] * rearGear;
-
-            let html = `
-                <strong>Drivetrain Performance Summary ({target_keyword}):</strong><br><br>
-                • Estimated 1/4 Mile Trap Speed (Physics): <strong>${{physMph.toFixed(1)}} MPH</strong><br>
-                • Estimated 1/4 Mile ET: <strong>${{et.toFixed(2)}} sec</strong><br>
-                • Finish Line RPM at Target Speed (${{targetMph}} MPH): <strong>${{Math.round((targetMph * rearGear * 336) / tireDia)}} RPM</strong><br>
-                • Tire Circumference (Rollout): <strong>${{rollout.toFixed(1)}} inches</strong><br>
-                • Overall 1st Gear Launch Ratio: <strong>${{firstOverall.toFixed(2)}}:1</strong>
-            `;
-            document.getElementById("results-drivetrain").innerHTML = html;
-
-            let tbody = document.getElementById("gear-breakdown-body");
+            let tbody = document.getElementById("gear-body");
             tbody.innerHTML = "";
-
-            for (let i = 0; i < ratios.length; i++) {{
-                let r = ratios[i];
-                let overall = r * rearGear;
-                let speedAtShift = (maxRpm * tireDia) / (overall * 336) * slipMultiplier;
-                
-                let dropRpm = "-";
-                if (i < ratios.length - 1) {{
-                    let nextRatio = ratios[i + 1];
-                    let recoveryRpm = maxRpm * (nextRatio / r);
-                    dropRpm = `${{Math.round(maxRpm - recoveryRpm)}} RPM drop (Recovers @ ${{Math.round(recoveryRpm)}} RPM)`;
-                }} else {{
-                    dropRpm = "Cross Stripe (Finish Line)";
-                }}
-
-                let tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>Gear ${{i + 1}}</td>
-                    <td>${{r.toFixed(2)}}</td>
-                    <td>${{overall.toFixed(2)}}</td>
-                    <td>${{speedAtShift.toFixed(1)}} MPH</td>
-                    <td>${{dropRpm}}</td>
-                `;
-                tbody.appendChild(tr);
+            for(let i=0; i<rat.length; i++) {{
+                let overall = rat[i] * gear;
+                let speed = (rpm * tire) / (overall * 336);
+                let drop = i < rat.length - 1 ? `${Math.round(rpm * (rat[i+1]/rat[i]))} RPM recovery` : "Finish Line";
+                tbody.innerHTML += `<tr><td>Gear ${i+1}</td><td>${rat[i].toFixed(2)}</td><td>${overall.toFixed(2)}</td><td>${speed.toFixed(1)} MPH</td><td>${drop}</td></tr>`;
             }}
         }}
+        ["trans", "max-rpm", "tire-dia", "rear-gear"].forEach(id => document.getElementById(id).addEventListener("input", calc));
+        calc();
+    </script>
+</body>
+</html>
+"""
 
-        function calculateSuspension() {{
-            let weight = parseFloat(document.getElementById("weight-susp").value) || 2390;
-            let wheelbase = parseFloat(document.getElementById("wheelbase").value) || 95.4;
-            let cg = parseFloat(document.getElementById("cg-height").value) || 18.0;
-            let frontWt = parseFloat(document.getElementById("front-weight").value) || 48.0;
+supercharger_template = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+    <style>
+        :root {{ --bg-dark: #121212; --card-bg: #1e1e1e; --accent-red: #e50914; --text-main: #f1f1f1; --text-muted: #aaa; --border-color: #333; }}
+        body {{ font-family: sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; }}
+        header {{ background: #1a1a1a; border-bottom: 2px solid var(--accent-red); padding: 30px 20px; text-align: center; }}
+        header h1 {{ color: var(--accent-red); font-size: 2rem; text-transform: uppercase; margin-bottom: 5px; }}
+        .container {{ max-width: 900px; margin: 30px auto; padding: 0 20px; }}
+        .box {{ background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 30px; }}
+        .grid-2 {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }}
+        label {{ display: block; margin-bottom: 5px; font-weight: bold; }}
+        input, select {{ width: 100%; padding: 10px; background: #2a2a2a; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; box-sizing: border-box; }}
+        .results {{ margin-top: 20px; background: #161616; border-left: 4px solid var(--accent-red); padding: 15px; border-radius: 4px; }}
+        .back {{ display: inline-block; margin-top: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; }}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{target_keyword}</h1>
+        <a href="index.html" class="back">&larr; Back to All Calculators Hub</a>
+    </header>
+    <div class="container">
+        <div class="box">
+            <h2>Supercharger Pulley & Boost Calculator</h2>
+            <div class="grid-2">
+                <div>
+                    <label>Crankshaft Pulley Diameter (inches)</label>
+                    <input type="number" id="crank-dia" value="8.0" step="0.1">
+                </div>
+                <div>
+                    <label>Blower Pulley Diameter (inches)</label>
+                    <input type="number" id="blower-dia" value="3.0" step="0.1">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <label>Max Crank RPM</label>
+                    <input type="number" id="crank-rpm" value="6500" step="100">
+                </div>
+                <div>
+                    <label>Base Boost Multiplier Factor</label>
+                    <input type="number" id="boost-fac" value="1.45" step="0.05">
+                </div>
+            </div>
+            <div class="results" id="results">Adjust parameters above to calculate pulley ratio and estimated boost pressure.</div>
+        </div>
+    </div>
+    <script>
+        function calc() {{
+            let crank = parseFloat(document.getElementById("crank-dia").value) || 8.0;
+            let blower = parseFloat(document.getElementById("blower-dia").value) || 3.0;
+            let rpm = parseFloat(document.getElementById("crank-rpm").value) || 6500;
+            let fac = parseFloat(document.getElementById("boost-fac").value) || 1.45;
 
-            let topX = parseFloat(document.getElementById("top-front-x").value) || 24.0;
-            let topZ = parseFloat(document.getElementById("top-front-z").value) || 6.0;
-            let botX = parseFloat(document.getElementById("bot-front-x").value) || 26.0;
-            let botZ = parseFloat(document.getElementById("bot-front-z").value) || -2.0;
+            let ratio = crank / blower;
+            let blowerRpm = rpm * ratio;
+            let estBoost = (ratio - 1) * 7.5 * fac;
 
-            let icX = (topX * topZ - botX * botZ) / (topZ - botZ + 0.001);
-            let icZ = (topZ + botZ) / 2;
-
-            document.getElementById("results-suspension").innerHTML = `
-                <strong>4-Link Geometry Analysis:</strong><br><br>
-                • Instant Center (IC) Length ahead of Rear Axle: <strong>${{icX.toFixed(1)}} inches</strong><br>
-                • Instant Center (IC) Height above Ground: <strong>${{icZ.toFixed(1)}} inches</strong><br>
-                • Anti-Squat Percentage: <strong>100% (Neutral Baseline)</strong><br>
-                • Launch Weight Transfer Estimate: <strong>${{Math.round(weight * (cg / wheelbase))}} lbs</strong>
+            document.getElementById("results").innerHTML = `
+                <strong>Supercharger Calculation Results:</strong><br><br>
+                • Pulley Ratio: <strong>${ratio.toFixed(2)}:1</strong><br>
+                • Blower Impeller/Rotor RPM at Max Crank: <strong>${Math.round(blowerRpm).toLocaleString()} RPM</strong><br>
+                • Estimated Boost Pressure: <strong>${estBoost.toFixed(1)} PSI</strong>
             `;
-        }}
+        }
+        ["crank-dia", "blower-dia", "crank-rpm", "boost-fac"].forEach(id => document.getElementById(id).addEventListener("input", calc));
+        calc();
+    </script>
+</body>
+</html>
+"""
 
-        ["trans", "max-rpm", "tire-dia", "rear-gear", "vehicle-weight", "whp", "target-mph", "converter-slip"].forEach(id => {{
-            document.getElementById(id).addEventListener("input", calculateDrivetrain);
-        }});
+turbo_template = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+    <style>
+        :root {{ --bg-dark: #121212; --card-bg: #1e1e1e; --accent-red: #e50914; --text-main: #f1f1f1; --text-muted: #aaa; --border-color: #333; }}
+        body {{ font-family: sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; }}
+        header {{ background: #1a1a1a; border-bottom: 2px solid var(--accent-red); padding: 30px 20px; text-align: center; }}
+        header h1 {{ color: var(--accent-red); font-size: 2rem; text-transform: uppercase; margin-bottom: 5px; }}
+        .container {{ max-width: 900px; margin: 30px auto; padding: 0 20px; }}
+        .box {{ background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 30px; }}
+        .grid-2 {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }}
+        label {{ display: block; margin-bottom: 5px; font-weight: bold; }}
+        input, select {{ width: 100%; padding: 10px; background: #2a2a2a; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; box-sizing: border-box; }}
+        .results {{ margin-top: 20px; background: #161616; border-left: 4px solid var(--accent-red); padding: 15px; border-radius: 4px; }}
+        .back {{ display: inline-block; margin-top: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; }}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{target_keyword}</h1>
+        <a href="index.html" class="back">&larr; Back to All Calculators Hub</a>
+    </header>
+    <div class="container">
+        <div class="box">
+            <h2>Turbo Airflow & Compressor Map Calculator</h2>
+            <div class="grid-2">
+                <div>
+                    <label>Target Horsepower (WHP)</label>
+                    <input type="number" id="hp" value="1000" step="50">
+                </div>
+                <div>
+                    <label>Fuel Type</label>
+                    <select id="fuel">
+                        <option value="gas">Gasoline (BSFC 0.60)</option>
+                        <option value="e85">E85 / Alcohol (BSFC 0.85)</option>
+                        <option value="methane">Methanol (BSFC 1.20)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <label>Target Boost Pressure (PSI)</label>
+                    <input type="number" id="boost" value="25" step="1">
+                </div>
+                <div>
+                    <label>Turbo Configuration</label>
+                    <select id="config">
+                        <option value="single">Single Turbo</option>
+                        <option value="twin">Twin Turbos (Split Flow)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="results" id="results">Adjust parameters to calculate required airflow (lbs/min) and pressure ratio.</div>
+        </div>
+    </div>
+    <script>
+        function calc() {{
+            let hp = parseFloat(document.getElementById("hp").value) || 1000;
+            let fuel = document.getElementById("fuel").value;
+            let boost = parseFloat(document.getElementById("boost").value) || 25;
+            let config = document.getElementById("config").value;
 
-        ["weight-susp", "wheelbase", "cg-height", "front-weight", "top-front-x", "top-front-z", "bot-front-x", "bot-front-z"].forEach(id => {{
-            document.getElementById(id).addEventListener("input", calculateSuspension);
-        }});
+            let bsfc = fuel === 'e85' ? 0.85 : (fuel === 'methane' ? 1.20 : 0.60);
+            let airflow = (hp * bsfc) / 6.0; // lbs/min roughly
+            let pr = (boost + 14.7) / 14.7;
 
-        calculateDrivetrain();
+            if(config === 'twin') airflow /= 2;
+
+            document.getElementById("results").innerHTML = `
+                <strong>Turbo Sizing Results:</strong><br><br>
+                • Required Airflow per Turbo: <strong>${airflow.toFixed(1)} lbs/min</strong><br>
+                • Compressor Pressure Ratio (PR): <strong>${pr.toFixed(2)}:1</strong><br>
+                • Recommended Inducer Size Range: <strong>${Math.round(Math.sqrt(hp) * 2.1)}mm+</strong>
+            `;
+        }
+        ["hp", "fuel", "boost", "config"].forEach(id => document.getElementById(id).addEventListener("input", calc));
+        calc();
     </script>
 </body>
 </html>
@@ -458,13 +264,20 @@ if os.path.exists(csv_file):
         for row in reader:
             slug = row["slug"]
             target_keyword = row["target_keyword"]
+            category = row["category"]
             gear = row["rear_gear"]
             tire = row["tire_diameter"]
 
-            page_content = master_suite_template.format(
+            # Select correct template based on category
+            if category == "Transmission" or category == "RearGear":
+                template = transmission_template
+            elif category == "Supercharger":
+                template = supercharger_template
+            else:
+                template = turbo_template
+
+            page_content = template.format(
                 title=f"{target_keyword} | DragCalculators.com",
-                description=f"Precision programmatic drag racing calculator for {target_keyword}.",
-                h1_title=target_keyword,
                 target_keyword=target_keyword,
                 rear_gear=gear,
                 tire_diameter=tire
@@ -475,4 +288,4 @@ if os.path.exists(csv_file):
                 out_f.write(page_content)
             pages_created += 1
 
-print(f"Successfully compiled {pages_created} Master Suite pSEO landing pages!")
+print(f"Successfully compiled {pages_created} category-tailored pSEO calculators!")
