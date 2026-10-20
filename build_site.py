@@ -37,3 +37,10 @@ print(f"Successfully compiled {pages_created} static pSEO landing pages into the
 # Ensure CNAME file is automatically included in the dist folder build output
 with open(os.path.join(output_dir, "CNAME"), "w", encoding="utf-8") as f:
     f.write("dragcalculators.com\n")
+import shutil
+
+# Copy root index.html into dist so the homepage hub is deployed
+if os.path.exists("index.html"):
+    shutil.copy("index.html", os.path.join(output_dir, "index.html"))
+    print("Successfully copied index.html to /dist/")
+    
