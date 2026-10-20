@@ -36,5 +36,4 @@ with open("pseo_pages_list.csv", mode="r", encoding="utf-8") as f:
 print(f"Successfully compiled {pages_created} static pSEO landing pages into the /{output_dir} folder!")
 # Ensure CNAME file is automatically included in the dist folder build output
 with open(os.path.join(output_dir, "CNAME"), "w", encoding="utf-8") as f:
-    f.write("dragcalculators.co\n")
-    
+    f.write("dragcalculators.com\n")

@@ -24,7 +24,7 @@ def generate_all_pages():
                     "transmission": trans['name'],
                     "rear_gear": str(gear),
                     "tire_diameter": str(tire),
-                    "page_url": f"https://dragcalculators.co/{slug}"
+                    "page_url": f"https://dragcalculators.com/{slug}"
                 })
 
     # 2. Fuel System Calculators
@@ -40,7 +40,7 @@ def generate_all_pages():
                 "transmission": f"Fuel System ({hp}HP {fuel.upper()})",
                 "rear_gear": "0.0",
                 "tire_diameter": "0.0",
-                "page_url": f"https://dragcalculators.co/{slug}"
+                "page_url": f"https://dragcalculators.com/{slug}"
             })
 
     # 3. CAS (Compressed Air Supercharging) / Boost Calculators
@@ -54,7 +54,7 @@ def generate_all_pages():
             "transmission": f"CAS Supercharger ({boost} PSI)",
             "rear_gear": "0.0",
             "tire_diameter": "0.0",
-            "page_url": f"https://dragcalculators.co/{slug}"
+            "page_url": f"https://dragcalculators.com/{slug}"
         })
 
     # 4. Turbo Sizing Calculators
@@ -70,7 +70,7 @@ def generate_all_pages():
                 "transmission": f"Turbo Sizing ({setup.upper()} - {hp}HP)",
                 "rear_gear": "0.0",
                 "tire_diameter": "0.0",
-                "page_url": f"https://dragcalculators.co/{slug}"
+                "page_url": f"https://dragcalculators.com/{slug}"
             })
 
     # 5. Supercharger Pulley & Boost Calculators
@@ -89,7 +89,7 @@ def generate_all_pages():
                     "transmission": f"Supercharger Pulley ({b_type.title()} - {crank}in / {blower}in)",
                     "rear_gear": "0.0",
                     "tire_diameter": "0.0",
-                    "page_url": f"https://dragcalculators.co/{slug}"
+                    "page_url": f"https://dragcalculators.com/{slug}"
                 })
 
     # Save everything to CSV
@@ -102,4 +102,3 @@ def generate_all_pages():
 
 if __name__ == "__main__":
     generate_all_pages()
-    
