@@ -57,20 +57,9 @@ def generate_all_pages():
             "page_url": f"https://dragcalculators.co/{slug}"
         })
 
-    # Save everything to CSV
-    with open("pseo_pages_list.csv", "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["slug", "target_keyword", "transmission", "rear_gear", "tire_diameter", "page_url"])
-        writer.writeheader()
-        writer.writerows(rows)
-    
-    print(f"Successfully generated {len(rows)} total programmatic pages in CSV!")
-
-if __name__ == "__main__":
-    generate_all_pages()
     # 4. Turbo Sizing Calculators
     turbo_hp_targets = [500, 600, 750, 900, 1000, 1250, 1500, 2000]
     turbo_setups = ["single", "twin"]
-    
     for hp in turbo_hp_targets:
         for setup in turbo_setups:
             slug = f"turbo-sizing-{setup}-{hp}hp-calculator"
@@ -83,4 +72,34 @@ if __name__ == "__main__":
                 "tire_diameter": "0.0",
                 "page_url": f"https://dragcalculators.co/{slug}"
             })
-            
+
+    # 5. Supercharger Pulley & Boost Calculators
+    crank_pulleys = [7.5, 8.0, 8.5]
+    blower_pulleys = [2.75, 3.0, 3.25, 3.5, 3.75, 4.0]
+    blower_types = ["roots", "centrifugal", "twin-screw"]
+
+    for crank in crank_pulleys:
+        for blower in blower_pulleys:
+            for b_type in blower_types:
+                slug = f"supercharger-pulley-{b_type}-{crank}in-crank-{blower}in-blower"
+                keyword = f"{b_type} supercharger pulley ratio calculator {crank} inch crank {blower} inch blower"
+                rows.append({
+                    "slug": slug,
+                    "target_keyword": keyword,
+                    "transmission": f"Supercharger Pulley ({b_type.title()} - {crank}in / {blower}in)",
+                    "rear_gear": "0.0",
+                    "tire_diameter": "0.0",
+                    "page_url": f"https://dragcalculators.co/{slug}"
+                })
+
+    # Save everything to CSV
+    with open("pseo_pages_list.csv", "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=["slug", "target_keyword", "transmission", "rear_gear", "tire_diameter", "page_url"])
+        writer.writeheader()
+        writer.writerows(rows)
+    
+    print(f"Successfully generated {len(rows)} total programmatic pages in CSV!")
+
+if __name__ == "__main__":
+    generate_all_pages()
+    
