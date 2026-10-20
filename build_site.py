@@ -2,7 +2,7 @@ import csv
 import os
 
 # Create an output directory for the compiled pSEO pages
-output_dir = "dist"
+output_dir = "."
 os.makedirs(output_dir, exist_ok=True)
 
 # Read the template index.html file
@@ -41,6 +41,6 @@ import shutil
 
 # Copy root index.html into dist so the homepage hub is deployed
 if os.path.exists("index.html"):
-    shutil.copy("index.html", os.path.join(output_dir, "index.html"))
+    ("index.html", os.path.join(output_dir, "index.html"))
     print("Successfully copied index.html to /dist/")
     
