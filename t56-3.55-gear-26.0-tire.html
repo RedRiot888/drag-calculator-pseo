@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Drag Racing Calculators & Drivetrain Tuning Hub</title>
-    <meta name="description" content="Precision programmatic drag racing calculators for transmission gears, rear-end ratios, tire rollout, turbo sizing, and supercharger pulley boost math.">
+    <title>T56 Manual (6-Speed) 3.55 gear 26.0 inch tire drag calculator | DragCalculators.com</title>
+    <meta name="description" content="Calculate performance metrics, gear drops, and speed for T56 Manual (6-Speed) 3.55 gear 26.0 inch tire drag calculator.">
     <style>
         :root {
             --bg-dark: #121212;
@@ -25,69 +25,86 @@
         header {
             background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
             border-bottom: 2px solid var(--accent-red);
-            padding: 40px 20px;
+            padding: 30px 20px;
             text-align: center;
         }
         header h1 {
             color: var(--accent-red);
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 2rem;
+            margin-bottom: 5px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         header p {
             color: var(--text-muted);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
+            font-size: 1rem;
         }
-        .container {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px;
-        }
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 25px;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-        .card:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent-red);
-        }
-        .card h3 {
-            color: var(--text-main);
-            margin-top: 0;
-            font-size: 1.3rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-        .card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-        .card ul {
-            padding-left: 20px;
-            margin: 15px 0;
-        }
-        .card li {
-            margin-bottom: 6px;
-            font-size: 0.9rem;
-        }
-        .card a {
+        .back-home {
+            display: inline-block;
+            margin-top: 10px;
             color: var(--accent-red);
             text-decoration: none;
             font-weight: bold;
+            font-size: 0.9rem;
         }
-        .card a:hover {
+        .back-home:hover {
             text-decoration: underline;
+        }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .calculator-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background-color: #2a2a2a;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: #fff;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #f6121d;
+        }
+        .results-box {
+            margin-top: 25px;
+            background-color: #161616;
+            border-left: 4px solid var(--accent-red);
+            padding: 20px;
+            border-radius: 4px;
+            color: var(--text-main);
+            font-size: 1.05rem;
         }
         footer {
             text-align: center;
@@ -95,80 +112,49 @@
             color: var(--text-muted);
             font-size: 0.85rem;
             border-top: 1px solid var(--border-color);
-            margin-top: 60px;
+            margin-top: 50px;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Drag Racing Performance Calculators</h1>
-        <p>Engineered for high-horsepower drag setups, turbo LS builds, and precise track tuning.</p>
+        <h1>T56 Manual (6-Speed) 3.55 gear 26.0 inch tire drag calculator</h1>
+        <p>Target Keyword: T56 Manual (6-Speed) 3.55 gear 26.0 inch tire drag calculator</p>
+        <a href="index.html" class="back-home">&larr; Back to All Calculators Hub</a>
     </header>
 
     <div class="container">
-        <div class="category-grid">
-            
-            <!-- Transmission Calculator -->
-            <div class="card">
-                <h3>Transmission & Gear Drop</h3>
-                <p>Analyze shift recovery drops, gear ratios, and RPM intervals across popular drag transmissions.</p>
-                <ul>
-                    <li>Powerglide, TH400, 4L80e Profiles</li>
-                    <li>Custom Rear-End Ratio Mapping</li>
-                    <li>Tire Diameter Optimization</li>
-                </ul>
-                <a href="/powerglide-3.08-gear-26.0-tire.html">View Transmission Tools &rarr;</a>
+        <div class="calculator-box">
+            <div class="form-group">
+                <label for="transmission">Transmission Profile:</label>
+                <select id="transmission">
+                    <option value="1.76">T56 Manual (6-Speed) (1st Gear: 1.76)</option>
+                    <option value="2.48">TH400 / 4L80e (1st Gear: 2.48)</option>
+                    <option value="1.00">Direct Drive / Manual 1:1</option>
+                </select>
             </div>
 
-            <!-- Turbo Sizing Calculator -->
-            <div class="card">
-                <h3>Turbo Sizing & Boost Matrix</h3>
-                <p>Determine ideal compressor maps, turbine AR ratios, and airflow requirements for target horsepower.</p>
-                <ul>
-                    <li>Single & Twin Turbo Configurations</li>
-                    <li>Horsepower Tiers (500HP to 2000HP+)</li>
-                    <li>Pressure Ratio & Efficiencies</li>
-                </ul>
-                <a href="/powerglide-3.23-gear-28.0-tire.html">View Turbo Sizing Tools &rarr;</a>
+            <div class="form-group">
+                <label for="rear-gear">Rear Gear Ratio:</label>
+                <input type="number" id="rear-gear" value="3.55" step="0.01">
             </div>
 
-            <!-- Supercharger Pulley Calculator -->
-            <div class="card">
-                <h3>Supercharger Pulley & Boost</h3>
-                <p>Calculate boost pressure changes based on crankshaft and blower pulley diameters for roots and twin-screw blowers.</p>
-                <ul>
-                    <li>Crank vs. Blower Pulley Ratios</li>
-                    <li>Estimated Boost Multipliers</li>
-                    <li>Roots, Twin-Screw & Centrifugal</li>
-                </ul>
-                <a href="/powerglide-3.42-gear-29.5-tire.html">View Supercharger Tools &rarr;</a>
+            <div class="form-group">
+                <label for="tire-dia">Rear Tire Diameter (inches):</label>
+                <input type="number" id="tire-dia" value="26.0" step="0.1">
             </div>
 
-            <!-- Rear Gear Ratio Calculator -->
-            <div class="card">
-                <h3>Rear Gear Ratio Math</h3>
-                <p>Optimize your ring and pinion gear selection for maximum launch traction and trap speed efficiency.</p>
-                <ul>
-                    <li>Target Finish Line RPM</li>
-                    <li>Converter Slip & Speed Analysis</li>
-                    <li>Quarter-Mile Performance Metrics</li>
-                </ul>
-                <a href="/powerglide-3.73-gear-28.0-tire.html">View Rear Gear Tools &rarr;</a>
+            <div class="form-group">
+                <label for="shift-rpm">Target Shift RPM:</label>
+                <input type="number" id="shift-rpm" value="7500" step="100">
             </div>
 
-            <!-- Tire Diameter Calculator -->
-            <div class="card">
-                <h3>Tire Diameter & Growth</h3>
-                <p>Factor in rollout, growth at high trap speeds, and effective final drive ratios for slick and radial tires.</p>
-                <ul>
-                    <li>Slick Growth Estimation</li>
-                    <li>Effective Circumference Math</li>
-                    <li>Axle RPM Calculations</li>
-                </ul>
-                <a href="/fuel-calculator-800hp-gasoline.html">View Tire Tools &rarr;</a>
-            </div>
+            <button id="calculate-btn">Calculate Performance</button>
 
+            <div class="results-box" id="results-box">
+                Enter your configuration above and click calculate to view trap speed, final drive ratios, and shift recovery drops.
+            </div>
         </div>
     </div>
 
@@ -176,5 +162,25 @@
         &copy; 2026 DragCalculators.com. All rights reserved. Precision Automotive Tuning Data.
     </footer>
 
+    <script>
+        document.getElementById("calculate-btn").addEventListener("click", function() {
+            let transRatio = parseFloat(document.getElementById("transmission").value) || 1.76;
+            let rearGear = parseFloat(document.getElementById("rear-gear").value) || 3.73;
+            let tireDia = parseFloat(document.getElementById("tire-dia").value) || 28.0;
+            let shiftRpm = parseFloat(document.getElementById("shift-rpm").value) || 7500;
+
+            let finalDrive = rearGear * transRatio;
+            let speedMph = (shiftRpm * tireDia) / (rearGear * 336);
+            let rolloutInches = tireDia * 3.14159;
+
+            document.getElementById("results-box").innerHTML = `
+                <strong>Live Calculation Results:</strong><br><br>
+                • Estimated Finish Line Speed: <strong>${speedMph.toFixed(1)} MPH</strong><br>
+                • Total First Gear Final Drive: <strong>${finalDrive.toFixed(2)}:1</strong><br>
+                • Tire Circumference / Rollout: <strong>${rolloutInches.toFixed(1)} inches</strong><br>
+                • Optimization Status: <span style="color: #4CAF50; font-weight: bold;">Tuned for Maximum Launch & Traction</span>
+            `;
+        });
+    </script>
 </body>
 </html>

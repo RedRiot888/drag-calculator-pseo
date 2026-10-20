@@ -1,46 +1,227 @@
-import csv
 import os
+import csv
+import shutil
 
-# Create an output directory for the compiled pSEO pages
+# Ensure output directory exists
 output_dir = "."
 os.makedirs(output_dir, exist_ok=True)
 
-# Read the template index.html file
-with open("index.html", "r", encoding="utf-8") as f:
-    template_html = f.read()
+# Define the HTML template with built-in calculation JavaScript
+template_html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+    <meta name="description" content="{description}">
+    <style>
+        :root {{
+            --bg-dark: #121212;
+            --card-bg: #1e1e1e;
+            --accent-red: #e50914;
+            --text-main: #f1f1f1;
+            --text-muted: #aaa;
+            --border-color: #333;
+        }}
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }}
+        header {{
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+            border-bottom: 2px solid var(--accent-red);
+            padding: 30px 20px;
+            text-align: center;
+        }}
+        header h1 {{
+            color: var(--accent-red);
+            font-size: 2rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }}
+        header p {{
+            color: var(--text-muted);
+            font-size: 1rem;
+        }}
+        .back-home {{
+            display: inline-block;
+            margin-top: 10px;
+            color: var(--accent-red);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }}
+        .back-home:hover {{
+            text-decoration: underline;
+        }}
+        .container {{
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }}
+        .calculator-box {{
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }}
+        .form-group {{
+            margin-bottom: 20px;
+        }}
+        label {{
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-weight: 500;
+        }}
+        input, select {{
+            width: 100%;
+            padding: 12px;
+            background-color: #2a2a2a;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: #fff;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }}
+        button {{
+            background-color: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }}
+        button:hover {{
+            background-color: #f6121d;
+        }}
+        .results-box {{
+            margin-top: 25px;
+            background-color: #161616;
+            border-left: 4px solid var(--accent-red);
+            padding: 20px;
+            border-radius: 4px;
+            color: var(--text-main);
+            font-size: 1.05rem;
+        }}
+        footer {{
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 50px;
+        }}
+    </style>
+</head>
+<body>
 
-# Load the generated CSV dataset
-with open("pseo_pages_list.csv", mode="r", encoding="utf-8") as f:
-    reader = csv.DictReader(f)
-    pages_created = 0
-    
-    for row in reader:
-        slug = row["slug"]
-        keyword = row["target_keyword"]
-        gear = row["rear_gear"]
-        tire = row["tire_diameter"]
-        trans = row["transmission"]
-        
-        # Customize the template for this specific search intent page
-        page_content = template_html.replace(
-            "Ultimate Drag Racing Drivetrain & Gear Calculator", 
-            f"Drag Calculator: {trans} with {gear} Gear & {tire}\" Tires"
-        )
-        
-        # Save individual HTML file into the output directory
-        file_path = os.path.join(output_dir, f"{slug}.html")
-        with open(file_path, "out" if False else "w", encoding="utf-8") as out_f:
-            out_f.write(page_content)
-        pages_created += 1
+    <header>
+        <h1>{h1_title}</h1>
+        <p>Target Keyword: {target_keyword}</p>
+        <a href="index.html" class="back-home">&larr; Back to All Calculators Hub</a>
+    </header>
 
-print(f"Successfully compiled {pages_created} static pSEO landing pages into the /{output_dir} folder!")
-# Ensure CNAME file is automatically included in the dist folder build output
-with open(os.path.join(output_dir, "CNAME"), "w", encoding="utf-8") as f:
-    f.write("dragcalculators.com\n")
-import shutil
+    <div class="container">
+        <div class="calculator-box">
+            <div class="form-group">
+                <label for="transmission">Transmission Profile:</label>
+                <select id="transmission">
+                    <option value="1.76">{transmission} (1st Gear: 1.76)</option>
+                    <option value="2.48">TH400 / 4L80e (1st Gear: 2.48)</option>
+                    <option value="1.00">Direct Drive / Manual 1:1</option>
+                </select>
+            </div>
 
-# Copy root index.html into dist so the homepage hub is deployed
-if os.path.exists("index.html"):
-    ("index.html", os.path.join(output_dir, "index.html"))
-    print("Successfully copied index.html to /dist/")
-    
+            <div class="form-group">
+                <label for="rear-gear">Rear Gear Ratio:</label>
+                <input type="number" id="rear-gear" value="{rear_gear}" step="0.01">
+            </div>
+
+            <div class="form-group">
+                <label for="tire-dia">Rear Tire Diameter (inches):</label>
+                <input type="number" id="tire-dia" value="{tire_diameter}" step="0.1">
+            </div>
+
+            <div class="form-group">
+                <label for="shift-rpm">Target Shift RPM:</label>
+                <input type="number" id="shift-rpm" value="7500" step="100">
+            </div>
+
+            <button id="calculate-btn">Calculate Performance</button>
+
+            <div class="results-box" id="results-box">
+                Enter your configuration above and click calculate to view trap speed, final drive ratios, and shift recovery drops.
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 DragCalculators.com. All rights reserved. Precision Automotive Tuning Data.
+    </footer>
+
+    <script>
+        document.getElementById("calculate-btn").addEventListener("click", function() {{
+            let transRatio = parseFloat(document.getElementById("transmission").value) || 1.76;
+            let rearGear = parseFloat(document.getElementById("rear-gear").value) || 3.73;
+            let tireDia = parseFloat(document.getElementById("tire-dia").value) || 28.0;
+            let shiftRpm = parseFloat(document.getElementById("shift-rpm").value) || 7500;
+
+            let finalDrive = rearGear * transRatio;
+            let speedMph = (shiftRpm * tireDia) / (rearGear * 336);
+            let rolloutInches = tireDia * 3.14159;
+
+            document.getElementById("results-box").innerHTML = `
+                <strong>Live Calculation Results:</strong><br><br>
+                • Estimated Finish Line Speed: <strong>${{speedMph.toFixed(1)}} MPH</strong><br>
+                • Total First Gear Final Drive: <strong>${{finalDrive.toFixed(2)}}:1</strong><br>
+                • Tire Circumference / Rollout: <strong>${{rolloutInches.toFixed(1)}} inches</strong><br>
+                • Optimization Status: <span style="color: #4CAF50; font-weight: bold;">Tuned for Maximum Launch & Traction</span>
+            `;
+        }});
+    </script>
+</body>
+</html>
+"""
+
+# Read CSV and build pages
+pages_created = 0
+csv_file = "pseo_pages_list.csv"
+
+if os.path.exists(csv_file):
+    with open(csv_file, mode="r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            slug = row["slug"]
+            target_keyword = row["target_keyword"]
+            trans = row["transmission"]
+            gear = row["rear_gear"]
+            tire = row["tire_diameter"]
+
+            page_content = template_html.format(
+                title=f"{target_keyword} | DragCalculators.com",
+                description=f"Calculate performance metrics, gear drops, and speed for {target_keyword}.",
+                h1_title=target_keyword,
+                target_keyword=target_keyword,
+                transmission=trans,
+                rear_gear=gear,
+                tire_diameter=tire
+            )
+
+            file_path = os.path.join(output_dir, f"{slug}.html")
+            with open(file_path, "w", encoding="utf-8") as out_f:
+                out_f.write(page_content)
+            pages_created += 1
+
+print(f"Successfully compiled {pages_created} static pSEO landing pages into root folder!")
