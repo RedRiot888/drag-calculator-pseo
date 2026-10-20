@@ -1,13 +1,11 @@
 import os
 import csv
-import shutil
 
-# Ensure output directory exists
+# Ensure output directory exists (root folder)
 output_dir = "."
-os.makedirs(output_dir, exist_ok=True)
 
-# Define the HTML template with built-in calculation JavaScript
-template_html = """<!DOCTYPE html>
+# Define the dedicated interactive calculator template for pSEO pages
+calculator_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -195,7 +193,7 @@ template_html = """<!DOCTYPE html>
 </html>
 """
 
-# Read CSV and build pages
+# Read CSV and build only the pSEO pages (leaving index.html alone)
 pages_created = 0
 csv_file = "pseo_pages_list.csv"
 
@@ -209,7 +207,7 @@ if os.path.exists(csv_file):
             gear = row["rear_gear"]
             tire = row["tire_diameter"]
 
-            page_content = template_html.format(
+            page_content = calculator_template.format(
                 title=f"{target_keyword} | DragCalculators.com",
                 description=f"Calculate performance metrics, gear drops, and speed for {target_keyword}.",
                 h1_title=target_keyword,
@@ -224,4 +222,4 @@ if os.path.exists(csv_file):
                 out_f.write(page_content)
             pages_created += 1
 
-print(f"Successfully compiled {pages_created} static pSEO landing pages into root folder!")
+print(f"Successfully compiled {pages_created} static interactive calculator landing pages!")
