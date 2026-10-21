@@ -16,7 +16,6 @@ for row in pages:
     gear = row["rear_gear"]
     tire = row["tire_diameter"]
 
-    # Customize content based on category
     if category in ["Transmission", "RearGear"]:
         primary_title = "Transmission Shift Recovery & Gear Drop Calculator"
         formula_text = "Overall Ratio = Transmission Ratio × Rear Gear Ratio<br>Shift Speed = (Shift RPM × Tire Diameter) / (Overall Ratio × 336)"
@@ -91,17 +90,85 @@ for row in pages:
         });
         calcTool();
         """
-    elif category == "Supercharger":
+    elif category == "Turbo":
+        primary_title = "Turbocharger Airflow & Thermodynamic Calculator"
+        formula_text = "Reference CFM = (CID × RPM × VE) / 3456<br>Pressure Ratio = Manifold PSIA / Atmospheric PSIA<br>Corrected Airflow (lb/min) = Corrected CFM × 0.0765"
+        faqs = """
+            <div class="faq-item">
+                <h4>Why must manifold pressure be entered as absolute pressure?</h4>
+                <p>Pressure ratio compares absolute thermodynamic states; gauge boost omits atmospheric pressure (14.7 PSIA).</p>
+            </div>
+            <div class="faq-item">
+                <h4>How do I estimate volumetric efficiency (VE)?</h4>
+                <p>Standard forced-induction race engines typically range from 85% to 95% VE depending on cylinder head flow and camshaft profile.</p>
+            </div>
+        """
+        primary_tool_html = """
+            <div class="grid-2">
+                <div>
+                    <label>Engine Displacement (CID)</label>
+                    <input type="number" id="cid" value="355" step="1">
+                </div>
+                <div>
+                    <label>Engine Speed (RPM)</label>
+                    <input type="number" id="rpm" value="6500" step="100">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <label>Volumetric Efficiency (%)</label>
+                    <input type="number" id="ve" value="90" step="1">
+                </div>
+                <div>
+                    <label>Atmospheric Pressure (PSIA)</label>
+                    <input type="number" id="atm" value="14.7" step="0.1">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <label>Manifold Absolute Pressure (PSIA)</label>
+                    <input type="number" id="map" value="29.7" step="0.1">
+                </div>
+                <div>
+                    <label>Intake-Air Temperature (°F)</label>
+                    <input type="number" id="iat" value="120" step="1">
+                </div>
+            </div>
+            <div class="results-box" id="results">Adjust parameters above to calculate reference CFM and airflow rate.</div>
+        """
+        tool_script = """
+        function calcTool() {
+            let cid = parseFloat(document.getElementById("cid").value) || 355;
+            let rpm = parseFloat(document.getElementById("rpm").value) || 6500;
+            let ve = (parseFloat(document.getElementById("ve").value) || 90) / 100.0;
+            let atm = parseFloat(document.getElementById("atm").value) || 14.7;
+            let mapVal = parseFloat(document.getElementById("map").value) || 29.7;
+            let iat = parseFloat(document.getElementById("iat").value) || 120;
+
+            let refCfm = (cid * rpm * ve) / 3456;
+            let pressRatio = mapVal / atm;
+            let tempCorr = 518.67 / (iat + 459.67);
+            let correctedCfm = refCfm * pressRatio * tempCorr;
+            let lbMin = correctedCfm * 0.0765;
+
+            let resEl = document.getElementById("results");
+            if(resEl) {
+                resEl.innerHTML = `<strong>Airflow Results:</strong> Reference CFM: <strong>${Math.round(refCfm)} CFM</strong> | Pressure Ratio: <strong>${pressRatio.toFixed(2)}:1</strong> | Airflow Rate: <strong>${lbMin.toFixed(1)} lb/min</strong>`;
+            }
+        }
+        ["cid", "rpm", "ve", "atm", "map", "iat"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+        });
+        calcTool();
+        """
+    else:
         primary_title = "Supercharger Pulley Ratio & Boost Pressure Calculator"
         formula_text = "Pulley Ratio = Crank Pulley Diameter / Blower Pulley Diameter<br>Estimated Boost = Pulley Ratio × 5.2 × Boost Factor"
         faqs = """
             <div class="faq-item">
                 <h4>How do I increase boost?</h4>
                 <p>You can increase boost by installing a smaller blower pulley or a larger crankshaft pulley to overdrive the supercharger speed.</p>
-            </div>
-            <div class="faq-item">
-                <h4>Does belt slip affect boost?</h4>
-                <p>Yes, belt slip under high load reduces effective blower RPM and causes a drop in peak boost pressure.</p>
             </div>
         """
         primary_tool_html = """
@@ -135,131 +202,12 @@ for row in pages:
             let factor = parseFloat(document.getElementById("boost-fac").value) || 1.45;
             
             let ratio = crank / blower;
-            let blowerRpm = rpm * ratio;
             let estBoost = (ratio * 5.2 * factor).toFixed(1);
 
             let resEl = document.getElementById("results");
-            if(resEl) resEl.innerHTML = `<strong>Supercharger Results:</strong> Pulley Ratio: <strong>${ratio.toFixed(2)}:1</strong> | Blower Speed: <strong>${Math.round(blowerRpm)} RPM</strong> | Estimated Boost: <strong>${estBoost} PSI</strong>`;
+            if(resEl) resEl.innerHTML = `<strong>Supercharger Results:</strong> Pulley Ratio: <strong>${ratio.toFixed(2)}:1</strong> | Estimated Boost: <strong>${estBoost} PSI</strong>`;
         }
         ["crank-dia", "blower-dia", "crank-rpm", "boost-fac"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
-        });
-        calcTool();
-        """
-    elif category == "Turbo":
-        primary_title = "Turbo Sizing, Compressor Map & Boost Calculator"
-        formula_text = "Airflow (lbs/min) = (Horsepower × BSFC) / 6.0<br>Pressure Ratio = (Boost PSI + 14.7) / 14.7"
-        faqs = """
-            <div class="faq-item">
-                <h4>What BSFC value should I use?</h4>
-                <p>Standard gasoline engines typically use 0.60, while E85 setups use ~0.85 and methanol setups use ~1.20.</p>
-            </div>
-            <div class="faq-item">
-                <h4>How do I read a compressor map?</h4>
-                <p>Match your required airflow (lbs/min) on the vertical axis and pressure ratio on the horizontal axis to see if the turbo operates in peak efficiency.</p>
-            </div>
-        """
-        primary_tool_html = """
-            <div class="grid-2">
-                <div>
-                    <label>Target Horsepower (WHP)</label>
-                    <input type="number" id="hp" value="1000" step="50">
-                </div>
-                <div>
-                    <label>Fuel Type / BSFC</label>
-                    <select id="fuel">
-                        <option value="0.60">Gasoline (BSFC 0.60)</option>
-                        <option value="0.85">E85 / Alcohol (BSFC 0.85)</option>
-                        <option value="1.20">Methanol (BSFC 1.20)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="grid-2">
-                <div>
-                    <label>Target Boost Pressure (PSI)</label>
-                    <input type="number" id="boost" value="25" step="1">
-                </div>
-                <div>
-                    <label>Turbo Configuration</label>
-                    <select id="config">
-                        <option value="1">Single Turbo</option>
-                        <option value="2">Twin Turbos (Split Flow)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="results-box" id="results">Adjust parameters to calculate required airflow (lbs/min) and pressure ratio.</div>
-        """
-        tool_script = """
-        function calcTool() {
-            let hp = parseFloat(document.getElementById("hp").value) || 1000;
-            let bsfc = parseFloat(document.getElementById("fuel").value) || 0.60;
-            let boost = parseFloat(document.getElementById("boost").value) || 25;
-            let config = parseInt(document.getElementById("config").value) || 1;
-
-            let airflow = (hp * bsfc) / 6.0;
-            let perTurbo = airflow / config;
-            let pressureRatio = ((boost + 14.7) / 14.7).toFixed(2);
-
-            let resEl = document.getElementById("results");
-            if(resEl) {
-                resEl.innerHTML = `<strong>Turbo Results:</strong> Total Airflow: <strong>${airflow.toFixed(1)} lbs/min</strong> (${perTurbo.toFixed(1)} lbs/min per turbo) | Pressure Ratio: <strong>${pressureRatio}:1</strong>`;
-            }
-        }
-        ["hp", "fuel", "boost", "config"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
-        });
-        calcTool();
-        """
-    else:
-        primary_title = "Tire Diameter Growth & Rollout Drag Calculator"
-        formula_text = "Dynamic Diameter = Static Diameter × (1 + (Growth % / 100))<br>Rollout = Diameter × π"
-        faqs = """
-            <div class="faq-item">
-                <h4>Why do drag tires grow at high speed?</h4>
-                <p>Centrifugal force at 150+ MPH causes bias-ply and radial slick treads to expand outward, increasing effective rollout and altering finish line RPM.</p>
-            </div>
-        """
-        primary_tool_html = f"""
-            <div class="grid-2">
-                <div>
-                    <label>Static Tire Diameter (inches)</label>
-                    <input type="number" id="static-dia" value="{tire}" step="0.1">
-                </div>
-                <div>
-                    <label>Trap Speed (MPH)</label>
-                    <input type="number" id="trap-speed" value="150" step="1">
-                </div>
-            </div>
-            <div class="grid-2">
-                <div>
-                    <label>Estimated Growth Factor (%)</label>
-                    <input type="number" id="growth-fac" value="4.5" step="0.1">
-                </div>
-                <div>
-                    <label>Rear Gear Ratio</label>
-                    <input type="number" id="rear-gear" value="{gear}" step="0.01">
-                </div>
-            </div>
-            <div class="results-box" id="results">Adjust parameters above to calculate high-speed growth and effective rollout.</div>
-        """
-        tool_script = """
-        function calcTool() {
-            let staticDia = parseFloat(document.getElementById("static-dia").value) || 28;
-            let trap = parseFloat(document.getElementById("trap-speed").value) || 150;
-            let growth = parseFloat(document.getElementById("growth-fac").value) || 4.5;
-
-            let dynamicDia = staticDia * (1 + (growth / 100));
-            let staticRollout = (staticDia * Math.PI).toFixed(1);
-            let dynamicRollout = (dynamicDia * Math.PI).toFixed(1);
-
-            let resEl = document.getElementById("results");
-            if(resEl) {
-                resEl.innerHTML = `<strong>Tire Results:</strong> Static Rollout: <strong>${staticRollout} in</strong> | High-Speed Growth Diameter: <strong>${dynamicDia.toFixed(2)} in</strong> | Dynamic Rollout: <strong>${dynamicRollout} in</strong>`;
-            }
-        }
-        ["static-dia", "trap-speed", "growth-fac", "rear-gear"].forEach(id => {
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcTool);
         });
@@ -296,31 +244,34 @@ for row in pages:
             max-width: 1200px;
             margin: 30px auto;
             display: grid;
-            grid-template-columns: 1fr 300px;
+            grid-template-columns: 480px 1fr;
             gap: 30px;
+            align-items: start;
         }}
         @media (max-width: 900px) {{
             .layout-grid {{ grid-template-columns: 1fr; }}
         }}
-        .master-container {{
+        .sticky-calculator {{
+            position: sticky;
+            top: 20px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            padding: 35px;
+            padding: 30px;
         }}
-        .sidebar {{
+        .content-column {{
             display: flex;
             flex-direction: column;
             gap: 20px;
         }}
-        .sidebar-box {{
+        .content-box, .sidebar-box {{
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 20px;
+            padding: 25px;
         }}
-        .sidebar-box h3 {{
+        .content-box h3, .sidebar-box h3 {{
             color: var(--accent-red);
             font-size: 0.95rem;
             text-transform: uppercase;
@@ -352,56 +303,47 @@ for row in pages:
         }}
         .master-header {{
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 20px;
+            padding-bottom: 15px;
         }}
         .master-header h1 {{
             color: var(--accent-red);
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin: 0 0 5px 0;
         }}
         .master-header p {{
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             margin: 0;
-        }}
-        .section-title {{
-            color: var(--accent-red);
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 25px 0 15px 0;
-            border-left: 3px solid var(--accent-red);
-            padding-left: 10px;
         }}
         .grid-2 {{
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 15px;
+            gap: 15px;
+            margin-bottom: 12px;
         }}
-        @media (max-width: 768px) {{
+        @media (max-width: 500px) {{
             .grid-2 {{ grid-template-columns: 1fr; }}
         }}
         label {{
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
         }}
         input, select {{
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-main);
             border-radius: 6px;
             box-sizing: border-box;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }}
         input:focus, select:focus {{
             outline: none;
@@ -409,32 +351,18 @@ for row in pages:
             box-shadow: 0 0 5px var(--accent-glow);
         }}
         .results-box {{
-            margin-top: 25px;
+            margin-top: 20px;
             background: #121418;
             border: 1px solid var(--border-color);
             border-left: 4px solid var(--accent-red);
-            padding: 20px;
+            padding: 15px;
             border-radius: 6px;
-            font-size: 1rem;
-        }}
-        .formula-box, .faq-box {{
-            margin-top: 25px;
-            background: #121418;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-        }}
-        .formula-box h3, .faq-box h3 {{
-            color: var(--accent-red);
             font-size: 0.95rem;
-            text-transform: uppercase;
-            margin-top: 0;
-            letter-spacing: 0.5px;
         }}
         .formula-content {{
             font-family: monospace;
             color: #10b981;
-            font-size: 1rem;
+            font-size: 0.95rem;
             background: var(--input-bg);
             padding: 12px;
             border-radius: 6px;
@@ -442,6 +370,7 @@ for row in pages:
         .faq-item {{
             margin-bottom: 15px;
         }}
+        .faq-item:last-child {{ margin-bottom: 0; }}
         .faq-item h4 {{
             margin: 0 0 5px 0;
             font-size: 0.9rem;
@@ -454,23 +383,23 @@ for row in pages:
         }}
         table {{
             width: 100%;
-            margin-top: 25px;
+            margin-top: 20px;
             border-collapse: collapse;
             background: #121418;
             border-radius: 6px;
             overflow: hidden;
         }}
         th, td {{
-            padding: 12px;
+            padding: 10px;
             border: 1px solid var(--border-color);
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }}
         th {{
             background: #1f232b;
             color: var(--accent-red);
             text-transform: uppercase;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             letter-spacing: 0.5px;
         }}
         .back-link {{
@@ -492,26 +421,28 @@ for row in pages:
     </div>
 
     <div class="layout-grid">
-        <div class="master-container">
+        <!-- Sticky Left Calculator -->
+        <div class="sticky-calculator">
             <div class="master-header">
                 <h1>{primary_title}</h1>
-                <p>{target_keyword} &mdash; Professional Track Tuning Engine</p>
+                <p>{target_keyword} &mdash; Track Tuning Engine</p>
             </div>
 
             {primary_tool_html}
+        </div>
 
-            <div class="formula-box">
-                <h3>Formula Used</h3>
+        <!-- Scrolling Right Column -->
+        <div class="content-column">
+            <div class="content-box">
+                <h3>Formula Breakdown</h3>
                 <div class="formula-content">{formula_text}</div>
             </div>
 
-            <div class="faq-box">
+            <div class="content-box">
                 <h3>Frequently Asked Questions</h3>
                 {faqs}
             </div>
-        </div>
 
-        <div class="sidebar">
             <div class="sidebar-box">
                 <h3>Featured Partners</h3>
                 <ul class="sponsor-list">
@@ -521,6 +452,7 @@ for row in pages:
                     <li><a href="https://www.mickeythompsontires.com" target="_blank">Mickey Thompson Tires</a></li>
                 </ul>
             </div>
+
             <div class="sidebar-box" style="text-align: center;">
                 <h3>Advertisement</h3>
                 <div style="background: var(--input-bg); height: 250px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.85rem; border-radius: 6px;">
@@ -542,4 +474,4 @@ for row in pages:
         out_f.write(html)
     pages_created += 1
 
-print(f"Successfully updated {pages_created} pages with Featured Affiliate Partners!")
+print(f"Successfully generated {pages_created} sticky pages with professional math models!")

@@ -28,31 +28,34 @@
             max-width: 1200px;
             margin: 30px auto;
             display: grid;
-            grid-template-columns: 1fr 300px;
+            grid-template-columns: 480px 1fr;
             gap: 30px;
+            align-items: start;
         }
         @media (max-width: 900px) {
             .layout-grid { grid-template-columns: 1fr; }
         }
-        .master-container {
+        .sticky-calculator {
+            position: sticky;
+            top: 20px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            padding: 35px;
+            padding: 30px;
         }
-        .sidebar {
+        .content-column {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-        .sidebar-box {
+        .content-box, .sidebar-box {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 20px;
+            padding: 25px;
         }
-        .sidebar-box h3 {
+        .content-box h3, .sidebar-box h3 {
             color: var(--accent-red);
             font-size: 0.95rem;
             text-transform: uppercase;
@@ -84,56 +87,47 @@
         }
         .master-header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 20px;
+            padding-bottom: 15px;
         }
         .master-header h1 {
             color: var(--accent-red);
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin: 0 0 5px 0;
         }
         .master-header p {
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             margin: 0;
-        }
-        .section-title {
-            color: var(--accent-red);
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 25px 0 15px 0;
-            border-left: 3px solid var(--accent-red);
-            padding-left: 10px;
         }
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 15px;
+            gap: 15px;
+            margin-bottom: 12px;
         }
-        @media (max-width: 768px) {
+        @media (max-width: 500px) {
             .grid-2 { grid-template-columns: 1fr; }
         }
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
         }
         input, select {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-main);
             border-radius: 6px;
             box-sizing: border-box;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
         input:focus, select:focus {
             outline: none;
@@ -141,32 +135,18 @@
             box-shadow: 0 0 5px var(--accent-glow);
         }
         .results-box {
-            margin-top: 25px;
+            margin-top: 20px;
             background: #121418;
             border: 1px solid var(--border-color);
             border-left: 4px solid var(--accent-red);
-            padding: 20px;
+            padding: 15px;
             border-radius: 6px;
-            font-size: 1rem;
-        }
-        .formula-box, .faq-box {
-            margin-top: 25px;
-            background: #121418;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-        }
-        .formula-box h3, .faq-box h3 {
-            color: var(--accent-red);
             font-size: 0.95rem;
-            text-transform: uppercase;
-            margin-top: 0;
-            letter-spacing: 0.5px;
         }
         .formula-content {
             font-family: monospace;
             color: #10b981;
-            font-size: 1rem;
+            font-size: 0.95rem;
             background: var(--input-bg);
             padding: 12px;
             border-radius: 6px;
@@ -174,6 +154,7 @@
         .faq-item {
             margin-bottom: 15px;
         }
+        .faq-item:last-child { margin-bottom: 0; }
         .faq-item h4 {
             margin: 0 0 5px 0;
             font-size: 0.9rem;
@@ -186,23 +167,23 @@
         }
         table {
             width: 100%;
-            margin-top: 25px;
+            margin-top: 20px;
             border-collapse: collapse;
             background: #121418;
             border-radius: 6px;
             overflow: hidden;
         }
         th, td {
-            padding: 12px;
+            padding: 10px;
             border: 1px solid var(--border-color);
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         th {
             background: #1f232b;
             color: var(--accent-red);
             text-transform: uppercase;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             letter-spacing: 0.5px;
         }
         .back-link {
@@ -224,10 +205,11 @@
     </div>
 
     <div class="layout-grid">
-        <div class="master-container">
+        <!-- Sticky Left Calculator -->
+        <div class="sticky-calculator">
             <div class="master-header">
                 <h1>Transmission Shift Recovery & Gear Drop Calculator</h1>
-                <p>Transmission Shift Recovery & Gear Drop Calculator &mdash; Professional Track Tuning Engine</p>
+                <p>Transmission Shift Recovery & Gear Drop Calculator &mdash; Track Tuning Engine</p>
             </div>
 
             
@@ -261,13 +243,16 @@
                 <tbody id="gear-body"></tbody>
             </table>
         
+        </div>
 
-            <div class="formula-box">
-                <h3>Formula Used</h3>
+        <!-- Scrolling Right Column -->
+        <div class="content-column">
+            <div class="content-box">
+                <h3>Formula Breakdown</h3>
                 <div class="formula-content">Overall Ratio = Transmission Ratio × Rear Gear Ratio<br>Shift Speed = (Shift RPM × Tire Diameter) / (Overall Ratio × 336)</div>
             </div>
 
-            <div class="faq-box">
+            <div class="content-box">
                 <h3>Frequently Asked Questions</h3>
                 
             <div class="faq-item">
@@ -280,9 +265,7 @@
             </div>
         
             </div>
-        </div>
 
-        <div class="sidebar">
             <div class="sidebar-box">
                 <h3>Featured Partners</h3>
                 <ul class="sponsor-list">
@@ -292,6 +275,7 @@
                     <li><a href="https://www.mickeythompsontires.com" target="_blank">Mickey Thompson Tires</a></li>
                 </ul>
             </div>
+
             <div class="sidebar-box" style="text-align: center;">
                 <h3>Advertisement</h3>
                 <div style="background: var(--input-bg); height: 250px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.85rem; border-radius: 6px;">
