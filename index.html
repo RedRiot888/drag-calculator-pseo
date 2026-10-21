@@ -126,10 +126,10 @@
             border-color: var(--accent-red);
             box-shadow: 0 0 10px var(--accent-glow);
         }
-        .tab-content {
+        .tab-pane {
             display: none;
         }
-        .tab-content.active {
+        .tab-pane.active {
             display: block;
         }
         .grid-2 {
@@ -220,12 +220,12 @@
 
             <!-- Tabs -->
             <div class="tab-buttons">
-                <button class="tab-btn active" onclick="switchTab('drivetrain', this)">Drivetrain & Shift</button>
-                <button class="tab-btn" onclick="switchTab('suspension', this)">4-Link Suspension</button>
+                <button type="button" class="tab-btn active" id="btn-drivetrain" onclick="switchTab('drivetrain')">Drivetrain & Shift</button>
+                <button type="button" class="tab-btn" id="btn-suspension" onclick="switchTab('suspension')">4-Link Suspension</button>
             </div>
 
             <!-- Tab 1: Drivetrain & Shift -->
-            <div id="tab-drivetrain" class="tab-content active">
+            <div id="pane-drivetrain" class="tab-pane active">
                 <div class="grid-2">
                     <div>
                         <label>Transmission Profile</label>
@@ -301,7 +301,7 @@
             </div>
 
             <!-- Tab 2: 4-Link Suspension -->
-            <div id="tab-suspension" class="tab-content">
+            <div id="pane-suspension" class="tab-pane">
                 <div class="section-title">1. Vehicle Weight & Weight Distribution</div>
                 <div class="grid-2">
                     <div>
@@ -386,12 +386,19 @@
     </div>
 
     <script>
-        function switchTab(tabName, btn) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            let targetTab = document.getElementById('tab-' + tabName);
-            if(targetTab) targetTab.classList.add('active');
-            if(btn) btn.classList.add('active');
+        function switchTab(name) {
+            document.querySelectorAll('.tab-pane').forEach(function(pane) {
+                pane.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            
+            var targetPane = document.getElementById('pane-' + name);
+            var targetBtn = document.getElementById('btn-' + name);
+            
+            if (targetPane) targetPane.classList.add('active');
+            if (targetBtn) targetBtn.classList.add('active');
         }
 
         const ratios = { 
@@ -419,20 +426,19 @@
         function applyTransPreset() {
             let val = document.getElementById("trans").value;
             let customRow = document.getElementById("custom-gears-row");
-            if(val === "custom") {
-                customRow.style.display = "grid";
-            } else {
-                customRow.style.display = "none";
+            if(customRow) {
+                customRow.style.display = (val === "custom") ? "grid" : "none";
             }
-            calcTool();
+            calcAll();
         }
 
-        function calcTool() {
+        function calcAll() {
+            // Drivetrain & Shift Calculations
             let tKey = document.getElementById("trans").value;
             let rat = [];
             if(tKey === "custom") {
                 let customStr = document.getElementById("custom-ratios").value;
-                rat = customStr.split(",").map(x => parseFloat(x.trim())).filter(x => !isNaN(x) && x > 0);
+                rat = customStr.split(",").map(function(x) { return parseFloat(x.trim()); }).filter(function(x) { return !isNaN(x) && x > 0; });
                 if(rat.length === 0) rat = [2.48, 1.48, 1.00];
             } else {
                 rat = ratios[tKey] || [2.48, 1.48, 1.00];
@@ -450,21 +456,21 @@
 
             let resEl = document.getElementById("results");
             if(resEl) {
-                resEl.innerHTML = `<strong>Performance:</strong> Est. 1/4 Mile ET: <strong>${estEt}s @ ${estTrap} MPH</strong><br>Rollout: ${rollout} in | 1st Gear Overall: ${(rat[0] * gear).toFixed(2)}:1`;
+                resEl.innerHTML = "<strong>Performance:</strong> Est. 1/4 Mile ET: <strong>" + estEt + "s @ " + estTrap + " MPH</strong><br>Rollout: " + rollout + " in | 1st Gear Overall: " + (rat[0] * gear).toFixed(2) + ":1";
             }
 
             let tbody = document.getElementById("gear-body");
             if(tbody) {
                 tbody.innerHTML = "";
-                for(let i=0; i<rat.length; i++) {
+                for(let i = 0; i < rat.length; i++) {
                     let overall = rat[i] * gear;
                     let speed = (rpm * tire) / (overall * 336);
-                    let drop = i < rat.length - 1 ? `Drop to ${Math.round(rpm * (rat[i+1] / rat[i]))} RPM` : "Finish Line";
-                    tbody.innerHTML += `<tr><td>Gear ${i+1}</td><td>${rat[i].toFixed(2)}</td><td>${overall.toFixed(2)}</td><td>${speed.toFixed(1)} MPH</td><td>${drop}</td></tr>`;
+                    let drop = i < rat.length - 1 ? "Drop to " + Math.round(rpm * (rat[i+1] / rat[i])) + " RPM" : "Finish Line";
+                    tbody.innerHTML += "<tr><td>Gear " + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.toFixed(1) + " MPH</td><td>" + drop + "</td></tr>";
                 }
             }
 
-            // Suspension Calculation
+            // Suspension Calculations
             let sWt = parseFloat(document.getElementById("susp-wt").value) || 3200;
             let sFront = parseFloat(document.getElementById("susp-front-wt").value) || 52;
             let rearWt = Math.round(sWt * (1 - sFront / 100));
@@ -486,15 +492,17 @@
 
             let sRes = document.getElementById("susp-results");
             if(sRes) {
-                sRes.innerHTML = `<strong>Suspension Geometry:</strong> Rear Static Weight: <strong>${rearWt} lbs</strong> | Estimated Instant Center Length: <strong>${icLength} inches</strong> (Optimal for 60ft launch traction).`;
+                sRes.innerHTML = "<strong>Suspension Geometry:</strong> Rear Static Weight: <strong>" + rearWt + " lbs</strong> | Estimated Instant Center Length: <strong>" + icLength + " inches</strong> (Optimal for 60ft launch traction).";
             }
         }
 
-        ["trans", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "custom-ratios", "susp-wt", "susp-wb", "susp-cg", "susp-front-wt", "tb-fx", "tb-fz", "tb-rx", "tb-rz", "bb-fx", "bb-fz", "bb-rx", "bb-rz"].forEach(id => {
+        var inputIds = ["trans", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "custom-ratios", "susp-wt", "susp-wb", "susp-cg", "susp-front-wt", "tb-fx", "tb-fz", "tb-rx", "tb-rz", "bb-fx", "bb-fz", "bb-rx", "bb-rz"];
+        inputIds.forEach(function(id) {
             let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
+            if(el) el.addEventListener("input", calcAll);
         });
-        calcTool();
+
+        calcAll();
     </script>
 </body>
 </html>
