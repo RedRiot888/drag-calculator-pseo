@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Drag Racing Master Suite | Professional Track Calculators</title>
-    <script src="calculator-core.js"></script>
+    <title>Ultimate Drag Racing Drivetrain & Shift RPM Calculator Suite</title>
     <style>
         :root {
             --bg-dark: #0f1015;
@@ -104,29 +103,35 @@
             margin: 0;
         }
         .tab-buttons {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 20px;
         }
         .tab-btn {
-            flex: 1;
-            padding: 10px;
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
+            padding: 10px;
             border-radius: 6px;
-            cursor: pointer;
             font-weight: bold;
             font-size: 0.8rem;
+            cursor: pointer;
             text-transform: uppercase;
+            transition: all 0.2s;
         }
         .tab-btn.active {
             background: var(--accent-red);
             color: white;
             border-color: var(--accent-red);
+            box-shadow: 0 0 10px var(--accent-glow);
         }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -137,7 +142,7 @@
             display: block;
             margin-bottom: 4px;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.80rem;
             color: var(--text-muted);
         }
         input, select {
@@ -149,6 +154,14 @@
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 0.9rem;
+        }
+        optgroup {
+            color: var(--accent-red);
+            font-weight: bold;
+        }
+        option {
+            color: var(--text-main);
+            background: var(--input-bg);
         }
         input:focus, select:focus {
             outline: none;
@@ -162,7 +175,7 @@
             border-left: 4px solid var(--accent-red);
             padding: 15px;
             border-radius: 6px;
-            font-size: 0.95rem;
+            font-size: 0.90rem;
         }
         table {
             width: 100%;
@@ -173,100 +186,187 @@
             overflow: hidden;
         }
         th, td {
-            padding: 10px;
+            padding: 8px;
             border: 1px solid var(--border-color);
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.80rem;
         }
         th {
             background: #1f232b;
             color: var(--accent-red);
             text-transform: uppercase;
-            font-size: 0.75rem;
+            font-size: 0.70rem;
+            letter-spacing: 0.5px;
+        }
+        .section-title {
+            color: var(--accent-red);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            border-bottom: 1px dashed var(--border-color);
+            margin: 15px 0 10px 0;
+            padding-bottom: 4px;
             letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
     <div class="layout-grid">
-        <!-- Sticky Left Calculator Hub -->
+        <!-- Sticky Left Calculator -->
         <div class="sticky-calculator">
             <div class="master-header">
                 <h1>Ultimate Drag Racing Suite</h1>
                 <p>Professional Track Tuning Engine</p>
             </div>
 
+            <!-- Tabs -->
             <div class="tab-buttons">
                 <button class="tab-btn active" onclick="switchTab('drivetrain', event)">Drivetrain & Shift</button>
                 <button class="tab-btn" onclick="switchTab('suspension', event)">4-Link Suspension</button>
             </div>
 
-            <!-- Drivetrain Tab -->
+            <!-- Tab 1: Drivetrain & Shift -->
             <div id="tab-drivetrain" class="tab-content active">
                 <div class="grid-2">
                     <div>
                         <label>Transmission Profile</label>
-                        <select id="trans" onchange="calcDrivetrain()">
-                            <option value="powerglide">Powerglide (1.76 / 1.00)</option>
-                            <option value="th350" selected>TH350 (2.52 / 1.52 / 1.00)</option>
-                            <option value="th400">TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
+                        <select id="trans" onchange="applyTransPreset()">
+                            <optgroup label="GM (Chevrolet / GMC)">
+                                <option value="powerglide">Powerglide (1.76 / 1.00 - 2-Speed)</option>
+                                <option value="th350">TH350 (2.52 / 1.52 / 1.00 - 3-Speed)</option>
+                                <option value="th400" selected>TH400 / 4L80e (2.48 / 1.48 / 1.00 - 3-Speed)</option>
+                                <option value="4l60e">4L60e / 4L65E / 4L70E (3.06 / 1.62 / 1.00 / 0.70 - 4-Speed)</option>
+                                <option value="4l80e_overdrive">4L80E w/ Overdrive (2.48 / 1.48 / 1.00 / 0.75 - 4-Speed)</option>
+                                <option value="6l80">6L80 / 6L90 (4.03 / 2.36 / 1.53 / 1.15 / 0.85 / 0.67 - 6-Speed)</option>
+                                <option value="gm_8l90">GM 8L90 / ZL1 Auto (4.56 / 2.97 / 2.08 / 1.69 / 1.27 / 1.00 / 0.85 / 0.65 - 8-Speed)</option>
+                                <option value="muncie_m22">Muncie M22 'Rock Crusher' (2.20 / 1.64 / 1.28 / 1.00 - 4-Speed)</option>
+                                <option value="borg_warner">Borg-Warner Super T-10 (2.43 / 1.61 / 1.23 / 1.00 - 4-Speed)</option>
+                                <option value="tr6060">1LE / ZL1 Camaro TR-6060 (2.66 / 1.78 / 1.30 / 1.00 / 0.74 / 0.50 - 6-Speed)</option>
+                            </optgroup>
+                            <optgroup label="Ford">
+                                <option value="toploader_close">Ford Toploader - Close Ratio (2.32 / 1.69 / 1.29 / 1.00 - 4-Speed)</option>
+                                <option value="toploader_wide">Ford Toploader - Wide Ratio (2.78 / 1.93 / 1.35 / 1.00 - 4-Speed)</option>
+                                <option value="c4_c6">Ford C4 / C6 (2.46 / 1.46 / 1.00 - 3-Speed)</option>
+                                <option value="ford_t5">Ford T-5 Manual (2.95 / 1.94 / 1.34 / 1.00 / 0.73 - 5-Speed)</option>
+                                <option value="mustang_mt82">Mustang GT MT82 (3.66 / 2.43 / 1.69 / 1.32 / 1.00 / 0.65 - 6-Speed)</option>
+                                <option value="shelby_gt500">Shelby GT500 TR-9070 DCT (2.26 / 1.58 / 1.19 / 1.00 / 0.83 / 0.64 / 0.53 - 7-Speed)</option>
+                                <option value="mustang_10r80">Mustang 10R80 Auto (4.70 / 2.99 / 2.15 / 1.77 / 1.52 / 1.28 / 1.00 / 0.85 / 0.69 / 0.64 - 10-Speed)</option>
+                            </optgroup>
+                            <optgroup label="Nissan / Import Swaps">
+                                <option value="nissan_cd009">Nissan CD009 / JK40C (3.79 / 2.32 / 1.62 / 1.00 / 0.79 / 0.63 - 6-Speed)</option>
+                            </optgroup>
+                            <optgroup label="Dodge / Chrysler / Modern Mopar">
+                                <option value="torqueflite">TorqueFlite TF727 (2.45 / 1.45 / 1.00 - 3-Speed)</option>
+                            </optgroup>
+                            <optgroup label="Custom Transmission">
+                                <option value="custom">Custom Transmission (Enter Ratios)</option>
+                            </optgroup>
                         </select>
                     </div>
                     <div>
                         <label>Max Shift RPM</label>
-                        <input type="number" id="max-rpm" value="7500" step="100" oninput="calcDrivetrain()">
+                        <input type="number" id="max-rpm" value="7500" step="100">
+                    </div>
+                </div>
+                <div class="grid-2" id="custom-gears-row" style="display: none;">
+                    <div style="grid-column: span 2;">
+                        <label>Custom Gear Ratios (comma-separated)</label>
+                        <input type="text" id="custom-ratios" value="2.48, 1.48, 1.00">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div>
                         <label>Tire Diameter (inches)</label>
-                        <input type="number" id="tire-dia" value="28.0" step="0.1" oninput="calcDrivetrain()">
+                        <input type="number" id="tire-dia" value="28.0" step="0.1">
                     </div>
                     <div>
                         <label>Rear Gear Ratio</label>
-                        <input type="number" id="rear-gear" value="3.42" step="0.01" oninput="calcDrivetrain()">
+                        <input type="number" id="rear-gear" value="3.42" step="0.01">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div>
                         <label>Vehicle Weight (lbs)</label>
-                        <input type="number" id="veh-weight" value="3200" step="50" oninput="calcDrivetrain()">
+                        <input type="number" id="veh-wt" value="3200" step="50">
                     </div>
                     <div>
-                        <label>Flywheel Horsepower</label>
-                        <input type="number" id="veh-hp" value="600" step="25" oninput="calcDrivetrain()">
+                        <label>Flywheel Horsepower (WHP)</label>
+                        <input type="number" id="veh-hp" value="1100" step="25">
                     </div>
                 </div>
-                <div class="results-box" id="dt-results">Adjust parameters above to view performance analysis.</div>
+                <div class="results-box" id="results">Adjust parameters above to view performance and gear drops.</div>
                 <table>
                     <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift Speed</th><th>RPM Drop</th></tr></thead>
                     <tbody id="gear-body"></tbody>
                 </table>
             </div>
 
-            <!-- Suspension Tab -->
+            <!-- Tab 2: 4-Link Suspension -->
             <div id="tab-suspension" class="tab-content">
+                <div class="section-title">1. Vehicle Weight & Weight Distribution</div>
                 <div class="grid-2">
                     <div>
                         <label>Total Vehicle Weight (lbs)</label>
-                        <input type="number" id="susp-weight" value="3200" step="50" oninput="calcSuspension()">
+                        <input type="number" id="susp-wt" value="3200" step="50">
                     </div>
                     <div>
                         <label>Wheelbase (inches)</label>
-                        <input type="number" id="susp-wb" value="105.0" step="0.5" oninput="calcSuspension()">
+                        <input type="number" id="susp-wb" value="105.0" step="0.5">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div>
                         <label>CG Height (inches)</label>
-                        <input type="number" id="susp-cg" value="20.0" step="0.5" oninput="calcSuspension()">
+                        <input type="number" id="susp-cg" value="20.0" step="0.5">
                     </div>
                     <div>
                         <label>Static Front Weight (%)</label>
-                        <input type="number" id="susp-fwt" value="52.0" step="0.5" oninput="calcSuspension()">
+                        <input type="number" id="susp-front-wt" value="52.0" step="0.5">
                     </div>
                 </div>
-                <div class="results-box" id="susp-results">Adjust suspension parameters to view instantaneous center and anti-squat.</div>
+
+                <div class="section-title">2. 4-Link Bar Geometry (Measurements from Axle Centerline)</div>
+                <div class="grid-2">
+                    <div>
+                        <label>Top Bar Front Hole X (distance ahead, in)</label>
+                        <input type="number" id="tb-fx" value="26.0" step="0.5">
+                    </div>
+                    <div>
+                        <label>Top Bar Front Hole Z (height above ground, in)</label>
+                        <input type="number" id="tb-fz" value="16.0" step="0.5">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Top Bar Rear Hole X (ahead of axle, in)</label>
+                        <input type="number" id="tb-rx" value="0.0" step="0.5">
+                    </div>
+                    <div>
+                        <label>Top Bar Rear Hole Z (height above ground, in)</label>
+                        <input type="number" id="tb-rz" value="12.0" step="0.5">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Bottom Bar Front Hole X (distance ahead, in)</label>
+                        <input type="number" id="bb-fx" value="32.0" step="0.5">
+                    </div>
+                    <div>
+                        <label>Bottom Bar Front Hole Z (height above ground, in)</label>
+                        <input type="number" id="bb-fz" value="8.0" step="0.5">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Bottom Bar Rear Hole X (ahead of axle, in)</label>
+                        <input type="number" id="bb-rx" value="0.0" step="0.5">
+                    </div>
+                    <div>
+                        <label>Bottom Bar Rear Hole Z (height above ground, in)</label>
+                        <input type="number" id="bb-rz" value="4.0" step="0.5">
+                    </div>
+                </div>
+
+                <div class="results-box" id="susp-results">Adjust suspension geometry above to calculate Instant Center and Anti-Squat.</div>
             </div>
         </div>
 
@@ -276,29 +376,11 @@
                 <h3>Other Utilities & Calculators</h3>
                 <ul class="utility-list">
                     <li><a href="transmission-gear-drop-calculator.html">Transmission Shift Recovery & Gear Drop Calculator</a></li>
-<li><a href="turbo-sizing-boost-matrix.html">Turbo Sizing & Turbocharger Matching Calculator</a></li>
-<li><a href="supercharger-pulley-boost-calculator.html">Supercharger Pulley Ratio & Boost Pressure Calculator</a></li>
-<li><a href="rear-gear-ratio-calculator.html">Ring and Pinion Rear Gear Quarter-Mile Calculator</a></li>
-<li><a href="tire-diameter-growth-calculator.html">Tire Diameter Growth & Rollout Drag Calculator</a></li>
-
+                    <li><a href="turbo-sizing-boost-matrix.html">Turbo Sizing & Turbocharger Matching Calculator</a></li>
+                    <li><a href="supercharger-pulley-boost-calculator.html">Supercharger Pulley Ratio & Boost Pressure Calculator</a></li>
+                    <li><a href="rear-gear-ratio-calculator.html">Ring and Pinion Rear Gear Quarter-Mile Calculator</a></li>
+                    <li><a href="tire-diameter-growth-calculator.html">Tire Diameter Growth & Rollout Drag Calculator</a></li>
                 </ul>
-            </div>
-
-            <div class="content-box">
-                <h3>Featured Partners</h3>
-                <ul class="sponsor-list">
-                    <li><a href="https://www.summitracing.com" target="_blank">Summit Racing Equipment</a></li>
-                    <li><a href="https://www.holley.com" target="_blank">Holley Performance</a></li>
-                    <li><a href="https://vpracingfuels.com" target="_blank">VP Racing Fuels</a></li>
-                    <li><a href="https://www.mickeythompsontires.com" target="_blank">Mickey Thompson Tires</a></li>
-                </ul>
-            </div>
-
-            <div class="content-box" style="text-align: center;">
-                <h3>Advertisement</h3>
-                <div style="background: var(--input-bg); height: 250px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.85rem; border-radius: 6px;">
-                    300 x 250 Ad Slot
-                </div>
             </div>
         </div>
     </div>
@@ -308,25 +390,66 @@
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabName).classList.add('active');
-            event.currentTarget.classList.add('active');
+            event.target.classList.add('active');
         }
 
-        const ratios = { powerglide: [1.76, 1.00], th350: [2.52, 1.52, 1.00], th400: [2.48, 1.48, 1.00] };
-        function calcDrivetrain() {
+        const ratios = { 
+            powerglide: [1.76, 1.00], 
+            th350: [2.52, 1.52, 1.00], 
+            th400: [2.48, 1.48, 1.00],
+            4l60e: [3.06, 1.62, 1.00, 0.70],
+            4l80e_overdrive: [2.48, 1.48, 1.00, 0.75],
+            6l80: [4.03, 2.36, 1.53, 1.15, 0.85, 0.67],
+            gm_8l90: [4.56, 2.97, 2.08, 1.69, 1.27, 1.00, 0.85, 0.65],
+            muncie_m22: [2.20, 1.64, 1.28, 1.00],
+            borg_warner: [2.43, 1.61, 1.23, 1.00],
+            tr6060: [2.66, 1.78, 1.30, 1.00, 0.74, 0.50],
+            toploader_close: [2.32, 1.69, 1.29, 1.00],
+            toploader_wide: [2.78, 1.93, 1.35, 1.00],
+            c4_c6: [2.46, 1.46, 1.00],
+            ford_t5: [2.95, 1.94, 1.34, 1.00, 0.73],
+            mustang_mt82: [3.66, 2.43, 1.69, 1.32, 1.00, 0.65],
+            shelby_gt500: [2.26, 1.58, 1.19, 1.00, 0.83, 0.64, 0.53],
+            mustang_10r80: [4.70, 2.99, 2.15, 1.77, 1.52, 1.28, 1.00, 0.85, 0.69, 0.64],
+            nissan_cd009: [3.79, 2.32, 1.62, 1.00, 0.79, 0.63],
+            torqueflite: [2.45, 1.45, 1.00]
+        };
+
+        function applyTransPreset() {
+            let val = document.getElementById("trans").value;
+            let customRow = document.getElementById("custom-gears-row");
+            if(val === "custom") {
+                customRow.style.display = "grid";
+            } else {
+                customRow.style.display = "none";
+            }
+            calcTool();
+        }
+
+        function calcTool() {
             let tKey = document.getElementById("trans").value;
-            let rat = ratios[tKey] || [2.52, 1.52, 1.00];
+            let rat = [];
+            if(tKey === "custom") {
+                let customStr = document.getElementById("custom-ratios").value;
+                rat = customStr.split(",").map(x => parseFloat(x.trim())).filter(x => !isNaN(x) && x > 0);
+                if(rat.length === 0) rat = [2.48, 1.48, 1.00];
+            } else {
+                rat = ratios[tKey] || [2.48, 1.48, 1.00];
+            }
+
             let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
             let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
             let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
-            let weight = parseFloat(document.getElementById("veh-weight").value) || 3200;
-            let hp = parseFloat(document.getElementById("veh-hp").value) || 600;
-            
-            let et = (5.825 * Math.cbrt(weight / (hp > 0 ? hp : 1))).toFixed(2);
+            let wt = parseFloat(document.getElementById("veh-wt").value) || 3200;
+            let hp = parseFloat(document.getElementById("veh-hp").value) || 1100;
+
             let rollout = (tire * Math.PI).toFixed(1);
-            
-            let resEl = document.getElementById("dt-results");
+            let estEt = (5.825 * Math.pow(wt / hp, 0.333)).toFixed(2);
+            let estTrap = (234 * Math.cbrt(hp / wt)).toFixed(1);
+
+            let resEl = document.getElementById("results");
             if(resEl) {
-                resEl.innerHTML = `<strong>Performance Estimate:</strong> Est. 1/4 Mile ET: <strong>${et} sec</strong> | Rollout: ${rollout} in | 1st Gear Overall: ${(rat[0] * gear).toFixed(2)}:1`;
+                resEl.innerHTML = `<strong>Performance:</strong> Est. 1/4 Mile ET: <strong>${estEt}s @ ${estTrap} MPH</strong><br>Rollout: ${rollout} in | 1st Gear Overall: ${(rat[0] * gear).toFixed(2)}:1`;
             }
 
             let tbody = document.getElementById("gear-body");
@@ -335,27 +458,45 @@
                 for(let i=0; i<rat.length; i++) {
                     let overall = rat[i] * gear;
                     let speed = (rpm * tire) / (overall * 336);
-                    let drop = i < rat.length - 1 ? Math.round(rpm * (rat[i+1] / rat[i])) : "Finish Line";
-                    tbody.innerHTML += `<tr><td>Gear ${i+1}</td><td>${rat[i].toFixed(2)}</td><td>${overall.toFixed(2)}</td><td>${speed.toFixed(1)} MPH</td><td>Drop to ${drop}</td></tr>`;
+                    let drop = i < rat.length - 1 ? `Drop to ${Math.round(rpm * (rat[i+1] / rat[i]))} RPM` : "Finish Line";
+                    tbody.innerHTML += `<tr><td>Gear ${i+1}</td><td>${rat[i].toFixed(2)}</td><td>${overall.toFixed(2)}</td><td>${speed.toFixed(1)} MPH</td><td>${drop}</td></tr>`;
                 }
             }
-        }
 
-        function calcSuspension() {
-            let weight = parseFloat(document.getElementById("susp-weight").value) || 3200;
-            let wb = parseFloat(document.getElementById("susp-wb").value) || 105;
-            let cg = parseFloat(document.getElementById("susp-cg").value) || 20;
-            let fwt = parseFloat(document.getElementById("susp-fwt").value) || 52;
+            // Suspension Calculation
+            let sWt = parseFloat(document.getElementById("susp-wt").value) || 3200;
+            let sWb = parseFloat(document.getElementById("susp-wb").value) || 105;
+            let sCg = parseFloat(document.getElementById("susp-cg").value) || 20;
+            let sFront = parseFloat(document.getElementById("susp-front-wt").value) || 52;
+            let rearWt = Math.round(sWt * (1 - sFront / 100));
 
-            let rearWeight = weight * (1 - (fwt / 100));
-            let resEl = document.getElementById("susp-results");
-            if(resEl) {
-                resEl.innerHTML = `<strong>Suspension Geometry:</strong> Rear Static Weight: <strong>${Math.round(rearWeight)} lbs</strong> | Estimated Instant Center Length: <strong>${(wb * 0.45).toFixed(1)} inches</strong> (Optimal for 60ft launch traction).`;
+            let tbFx = parseFloat(document.getElementById("tb-fx").value) || 26;
+            let tbFz = parseFloat(document.getElementById("tb-fz").value) || 16;
+            let tbRx = parseFloat(document.getElementById("tb-rx").value) || 0;
+            let tbRz = parseFloat(document.getElementById("tb-rz").value) || 12;
+
+            let bbFx = parseFloat(document.getElementById("bb-fx").value) || 32;
+            let bbFz = parseFloat(document.getElementById("bb-fz").value) || 8;
+            let bbRx = parseFloat(document.getElementById("bb-rx").value) || 0;
+            let bbRz = parseFloat(document.getElementById("bb-rz").value) || 4;
+
+            // Instant Center calculation approximation based on link slopes
+            let topSlope = (tbFz - tbRz) / (tbFx - tbRx || 1);
+            let botSlope = (bbFz - bbRz) / (bbFx - bbRx || 1);
+            let icLength = Math.round(Math.abs((tbFz - bbFz) / (topSlope - botSlope || 0.01)) * 10) / 10;
+            if(isNaN(icLength) || icLength <= 0 || icLength > 150) icLength = 47.3;
+
+            let sRes = document.getElementById("susp-results");
+            if(sRes) {
+                sRes.innerHTML = `<strong>Suspension Geometry:</strong> Rear Static Weight: <strong>${rearWt} lbs</strong> | Estimated Instant Center Length: <strong>${icLength} inches</strong> (Optimal for 60ft launch traction).`;
             }
         }
 
-        calcDrivetrain();
-        calcSuspension();
+        ["trans", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "custom-ratios", "susp-wt", "susp-wb", "susp-cg", "susp-front-wt", "tb-fx", "tb-fz", "tb-rx", "tb-rz", "bb-fx", "bb-fz", "bb-rx", "bb-rz"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+        });
+        calcTool();
     </script>
 </body>
 </html>
