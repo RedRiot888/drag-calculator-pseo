@@ -416,7 +416,7 @@ for cat, cat_pages in categories.items():
 index_html += """
     </div>
     <footer>
-        &copy; 2026 DragCalculators.com. All rights reserved. Precision Automotive Tuning Data.
+        &copy; 2026 DragCalculators.com. All rights  reserved. Precision Automotive Tuning Data.
     </footer>
 </body>
 </html>
