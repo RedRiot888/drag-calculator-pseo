@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turbo Sizing, Compressor Map & Boost Calculator | Ultimate Drag Racing Master Suite</title>
+    <title>Turbo Sizing & Turbocharger Matching Calculator | Ultimate Drag Racing Master Suite</title>
     <script src="calculator-core.js"></script>
     <style>
         :root {
@@ -64,25 +64,25 @@
             padding-bottom: 8px;
             letter-spacing: 0.5px;
         }
-        .sponsor-list {
+        .utility-list, .sponsor-list {
             list-style: none;
             padding: 0;
             margin: 0;
             font-size: 0.9rem;
             color: var(--text-muted);
         }
-        .sponsor-list li {
+        .utility-list li, .sponsor-list li {
             padding: 8px 0;
             border-bottom: 1px dashed var(--border-color);
         }
-        .sponsor-list li:last-child { border-bottom: none; }
-        .sponsor-list li a {
+        .utility-list li:last-child, .sponsor-list li:last-child { border-bottom: none; }
+        .utility-list li a, .sponsor-list li a {
             color: var(--text-muted);
             text-decoration: none;
             display: block;
             transition: color 0.2s;
         }
-        .sponsor-list li a:hover {
+        .utility-list li a:hover, .sponsor-list li a:hover {
             color: var(--accent-red);
         }
         .master-header {
@@ -208,62 +208,72 @@
         <!-- Sticky Left Calculator -->
         <div class="sticky-calculator">
             <div class="master-header">
-                <h1>Turbocharger Airflow & Thermodynamic Calculator</h1>
-                <p>Turbo Sizing, Compressor Map & Boost Calculator &mdash; Track Tuning Engine</p>
+                <h1>Turbo Sizing & Turbocharger Matching Calculator</h1>
+                <p>Turbo Sizing & Turbocharger Matching Calculator &mdash; Track Tuning Engine</p>
             </div>
 
             
             <div class="grid-2">
                 <div>
-                    <label>Engine Displacement (CID)</label>
-                    <input type="number" id="cid" value="355" step="1">
+                    <label>Target Flywheel Horsepower (HP)</label>
+                    <input type="number" id="hp" value="1000" step="50">
                 </div>
                 <div>
-                    <label>Engine Speed (RPM)</label>
-                    <input type="number" id="rpm" value="6500" step="100">
+                    <label>Target Boost Pressure (PSI)</label>
+                    <input type="number" id="boost" value="22" step="1">
                 </div>
             </div>
             <div class="grid-2">
                 <div>
-                    <label>Volumetric Efficiency (%)</label>
-                    <input type="number" id="ve" value="90" step="1">
+                    <label>Fuel BSFC Factor</label>
+                    <select id="bsfc">
+                        <option value="0.60">Gasoline Intercooled (0.60)</option>
+                        <option value="0.70">Gasoline Non-Intercooled (0.70)</option>
+                        <option value="0.85" selected>E85 / Ethanol (0.85)</option>
+                        <option value="1.20">Methanol (1.20)</option>
+                    </select>
                 </div>
                 <div>
-                    <label>Atmospheric Pressure (PSIA)</label>
-                    <input type="number" id="atm" value="14.7" step="0.1">
+                    <label>Turbo Setup</label>
+                    <select id="turbos">
+                        <option value="1" selected>Single Turbocharger</option>
+                        <option value="2">Twin Turbochargers (Split)</option>
+                    </select>
                 </div>
             </div>
-            <div class="grid-2">
-                <div>
-                    <label>Manifold Absolute Pressure (PSIA)</label>
-                    <input type="number" id="map" value="29.7" step="0.1">
-                </div>
-                <div>
-                    <label>Intake-Air Temperature (°F)</label>
-                    <input type="number" id="iat" value="120" step="1">
-                </div>
-            </div>
-            <div class="results-box" id="results">Adjust parameters above to calculate reference CFM and airflow rate.</div>
+            <div class="results-box" id="results">Adjust target horsepower and boost to determine turbo sizing specs.</div>
         
         </div>
 
         <!-- Scrolling Right Column -->
         <div class="content-column">
             <div class="content-box">
+                <h3>Other Utilities & Calculators</h3>
+                <ul class="utility-list">
+                    <li><a href="transmission-gear-drop-calculator.html">Transmission Shift Recovery & Gear Drop Calculator</a></li>
+<li><a href="turbo-sizing-boost-matrix.html">Turbo Sizing & Turbocharger Matching Calculator</a></li>
+<li><a href="supercharger-pulley-boost-calculator.html">Supercharger Pulley Ratio & Boost Pressure Calculator</a></li>
+<li><a href="rear-gear-ratio-calculator.html">Ring and Pinion Rear Gear Quarter-Mile Calculator</a></li>
+<li><a href="tire-diameter-growth-calculator.html">Tire Diameter Growth & Rollout Drag Calculator</a></li>
+
+                </ul>
+            </div>
+
+            <div class="content-box">
                 <h3>Formula Breakdown</h3>
-                <div class="formula-content">Reference CFM = (CID × RPM × VE) / 3456<br>Pressure Ratio = Manifold PSIA / Atmospheric PSIA<br>Corrected Airflow (lb/min) = Corrected CFM × 0.0765</div>
+                <div class="formula-content">Required Airflow (lb/min) = (Target Flywheel HP × BSFC) / 6.0<br>Pressure Ratio = (Boost PSI + 14.7) / 14.7<br>Approx. Compressor Inducer A/R = Airflow / 18.5</div>
             </div>
 
             <div class="content-box">
                 <h3>Frequently Asked Questions</h3>
                 
             <div class="faq-item">
-                <h4>Why must manifold pressure be entered as absolute pressure?</h4>
-                <p>Pressure ratio compares absolute thermodynamic states; gauge boost omits atmospheric pressure (14.7 PSIA).</p>
+                <h4>How do I choose the right turbocharger size?</h4>
+                <p>Calculate your target flywheel horsepower and required airflow in lb/min. Match your airflow to a compressor map where efficiency islands exceed 70%.</p>
             </div>
             <div class="faq-item">
-                <h4>How do I estimate volumetric efficiency (VE)?</h4>
-                <p>Standard forced-induction race engines typically range from 85% to 95% VE depending on cylinder head flow and camshaft profile.</p>
+                <h4>What BSFC factor should I select?</h4>
+                <p>Use 0.60 for gasoline intercooled setups, 0.70 for non-intercooled gasoline, 0.85 for E85, and 1.20 for methanol fuel systems.</p>
             </div>
         
             </div>
@@ -290,25 +300,22 @@
     <script>
         
         function calcTool() {
-            let cid = parseFloat(document.getElementById("cid").value) || 355;
-            let rpm = parseFloat(document.getElementById("rpm").value) || 6500;
-            let ve = (parseFloat(document.getElementById("ve").value) || 90) / 100.0;
-            let atm = parseFloat(document.getElementById("atm").value) || 14.7;
-            let mapVal = parseFloat(document.getElementById("map").value) || 29.7;
-            let iat = parseFloat(document.getElementById("iat").value) || 120;
+            let hp = parseFloat(document.getElementById("hp").value) || 1000;
+            let boost = parseFloat(document.getElementById("boost").value) || 22;
+            let bsfc = parseFloat(document.getElementById("bsfc").value) || 0.85;
+            let count = parseInt(document.getElementById("turbos").value) || 1;
 
-            let refCfm = (cid * rpm * ve) / 3456;
-            let pressRatio = mapVal / atm;
-            let tempCorr = 518.67 / (iat + 459.67);
-            let correctedCfm = refCfm * pressRatio * tempCorr;
-            let lbMin = correctedCfm * 0.0765;
+            let totalAirflow = (hp * bsfc) / 6.0;
+            let perTurbo = totalAirflow / count;
+            let pr = (boost + 14.7) / 14.7;
+            let recInducer = (Math.sqrt(perTurbo * 14.2)).toFixed(1);
 
             let resEl = document.getElementById("results");
             if(resEl) {
-                resEl.innerHTML = `<strong>Airflow Results:</strong> Reference CFM: <strong>${Math.round(refCfm)} CFM</strong> | Pressure Ratio: <strong>${pressRatio.toFixed(2)}:1</strong> | Airflow Rate: <strong>${lbMin.toFixed(1)} lb/min</strong>`;
+                resEl.innerHTML = `<strong>Turbo Sizing Match:</strong> Total Airflow: <strong>${totalAirflow.toFixed(1)} lb/min</strong> (${perTurbo.toFixed(1)} lb/min per turbo) | Pressure Ratio: <strong>${pr.toFixed(2)}:1</strong> | Rec. Inducer: <strong>${recInducer} mm</strong>`;
             }
         }
-        ["cid", "rpm", "ve", "atm", "map", "iat"].forEach(id => {
+        ["hp", "boost", "bsfc", "turbos"].forEach(id => {
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcTool);
         });

@@ -64,25 +64,25 @@
             padding-bottom: 8px;
             letter-spacing: 0.5px;
         }
-        .sponsor-list {
+        .utility-list, .sponsor-list {
             list-style: none;
             padding: 0;
             margin: 0;
             font-size: 0.9rem;
             color: var(--text-muted);
         }
-        .sponsor-list li {
+        .utility-list li, .sponsor-list li {
             padding: 8px 0;
             border-bottom: 1px dashed var(--border-color);
         }
-        .sponsor-list li:last-child { border-bottom: none; }
-        .sponsor-list li a {
+        .utility-list li:last-child, .sponsor-list li:last-child { border-bottom: none; }
+        .utility-list li a, .sponsor-list li a {
             color: var(--text-muted);
             text-decoration: none;
             display: block;
             transition: color 0.2s;
         }
-        .sponsor-list li a:hover {
+        .utility-list li a:hover, .sponsor-list li a:hover {
             color: var(--accent-red);
         }
         .master-header {
@@ -208,60 +208,64 @@
         <!-- Sticky Left Calculator -->
         <div class="sticky-calculator">
             <div class="master-header">
-                <h1>Transmission Shift Recovery & Gear Drop Calculator</h1>
+                <h1>Ring and Pinion Rear Gear Quarter-Mile Calculator</h1>
                 <p>Ring and Pinion Rear Gear Quarter-Mile Calculator &mdash; Track Tuning Engine</p>
             </div>
 
             
             <div class="grid-2">
                 <div>
-                    <label>Transmission Profile</label>
-                    <select id="trans">
-                        <option value="powerglide">Powerglide (1.76 / 1.00)</option>
-                        <option value="th350" selected>TH350 (2.52 / 1.52 / 1.00)</option>
-                        <option value="th400">TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
-                    </select>
+                    <label>Target Trap Speed (MPH)</label>
+                    <input type="number" id="trap" value="125" step="1">
                 </div>
                 <div>
-                    <label>Max Shift RPM</label>
-                    <input type="number" id="max-rpm" value="7500" step="100">
+                    <label>Rear Gear Ratio (Ring & Pinion)</label>
+                    <input type="number" id="gear" value="4.11" step="0.01">
                 </div>
             </div>
             <div class="grid-2">
                 <div>
                     <label>Tire Diameter (inches)</label>
-                    <input type="number" id="tire-dia" value="32.0" step="0.1">
+                    <input type="number" id="tire" value="32.0" step="0.1">
                 </div>
                 <div>
-                    <label>Rear Gear Ratio</label>
-                    <input type="number" id="rear-gear" value="4.56" step="0.01">
+                    <label>Transmission Final Gear Ratio</label>
+                    <input type="number" id="trans-final" value="1.00" step="0.01">
                 </div>
             </div>
-            <div class="results-box" id="results">Adjust parameters above to view shift recovery and RPM drop.</div>
-            <table>
-                <thead><tr><th>Gear</th><th>Static Ratio</th><th>Overall Ratio</th><th>Speed at Shift Point</th><th>RPM Drop / Recovery</th></tr></thead>
-                <tbody id="gear-body"></tbody>
-            </table>
+            <div class="results-box" id="results">Adjust parameters above to calculate finish line engine RPM.</div>
         
         </div>
 
         <!-- Scrolling Right Column -->
         <div class="content-column">
             <div class="content-box">
+                <h3>Other Utilities & Calculators</h3>
+                <ul class="utility-list">
+                    <li><a href="transmission-gear-drop-calculator.html">Transmission Shift Recovery & Gear Drop Calculator</a></li>
+<li><a href="turbo-sizing-boost-matrix.html">Turbo Sizing & Turbocharger Matching Calculator</a></li>
+<li><a href="supercharger-pulley-boost-calculator.html">Supercharger Pulley Ratio & Boost Pressure Calculator</a></li>
+<li><a href="rear-gear-ratio-calculator.html">Ring and Pinion Rear Gear Quarter-Mile Calculator</a></li>
+<li><a href="tire-diameter-growth-calculator.html">Tire Diameter Growth & Rollout Drag Calculator</a></li>
+
+                </ul>
+            </div>
+
+            <div class="content-box">
                 <h3>Formula Breakdown</h3>
-                <div class="formula-content">Overall Ratio = Transmission Ratio × Rear Gear Ratio<br>Shift Speed = (Shift RPM × Tire Diameter) / (Overall Ratio × 336)</div>
+                <div class="formula-content">Finish Line RPM = (Trap Speed × Rear Gear × 336) / Tire Diameter<br>Overall Drive Ratio = Transmission Final × Ring & Pinion</div>
             </div>
 
             <div class="content-box">
                 <h3>Frequently Asked Questions</h3>
                 
             <div class="faq-item">
-                <h4>How is shift recovery RPM calculated?</h4>
-                <p>Shift recovery is determined by multiplying your shift RPM by the ratio of the upcoming higher gear divided by the current gear.</p>
+                <h4>How does changing rear gear affect finish line RPM?</h4>
+                <p>Going from a 3.42 to a 4.11 gear increases your finish line RPM significantly, ensuring you cross the stripe right at your peak horsepower band.</p>
             </div>
             <div class="faq-item">
-                <h4>Why does gear drop matter?</h4>
-                <p>Keeping your engine operating inside its peak power band after a shift prevents acceleration lag down the track.</p>
+                <h4>What gear is best for quarter-mile drag racing?</h4>
+                <p>The optimal rear gear matches your tire height and engine redline so that you cross the 1320-foot finish line at or slightly above peak horsepower RPM in your final 1:1 gear.</p>
             </div>
         
             </div>
@@ -287,30 +291,22 @@
 
     <script>
         
-        const ratios = { powerglide: [1.76, 1.00], th350: [2.52, 1.52, 1.00], th400: [2.48, 1.48, 1.00] };
         function calcTool() {
-            let tKey = document.getElementById("trans").value;
-            let rat = ratios[tKey] || [2.52, 1.52, 1.00];
-            let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
-            let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
-            let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
-            let rollout = (tire * Math.PI).toFixed(1);
-            
-            let resEl = document.getElementById("results");
-            if(resEl) resEl.innerHTML = `<strong>Analysis:</strong> Tire Rollout: ${rollout} in | 1st Gear Ratio: ${(rat[0] * gear).toFixed(2)}:1`;
+            let trap = parseFloat(document.getElementById("trap").value) || 125;
+            let gear = parseFloat(document.getElementById("gear").value) || 4.11;
+            let tire = parseFloat(document.getElementById("tire").value) || 32;
+            let transFinal = parseFloat(document.getElementById("trans-final").value) || 1.00;
 
-            let tbody = document.getElementById("gear-body");
-            if(tbody) {
-                tbody.innerHTML = "";
-                for(let i=0; i<rat.length; i++) {
-                    let overall = rat[i] * gear;
-                    let speed = (rpm * tire) / (overall * 336);
-                    let drop = i < rat.length - 1 ? Math.round(rpm * (rat[i+1] / rat[i])) : "Crossing Line";
-                    tbody.innerHTML += `<tr><td>Gear ${i+1}</td><td>${rat[i].toFixed(2)}</td><td>${overall.toFixed(2)}</td><td>${speed.toFixed(1)} MPH</td><td>Drop to ${drop} RPM</td></tr>`;
-                }
+            let overall = gear * transFinal;
+            let finishRpm = (trap * overall * 336) / tire;
+            let rollout = (tire * Math.PI).toFixed(1);
+
+            let resEl = document.getElementById("results");
+            if(resEl) {
+                resEl.innerHTML = `<strong>Rear Gear Analysis:</strong> Overall Drive Ratio: <strong>${overall.toFixed(2)}:1</strong> | Tire Rollout: <strong>${rollout} in</strong> | Finish Line RPM: <strong>${Math.round(finishRpm)} RPM</strong>`;
             }
         }
-        ["trans", "max-rpm", "tire-dia", "rear-gear"].forEach(id => {
+        ["trap", "gear", "tire", "trans-final"].forEach(id => {
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcTool);
         });
