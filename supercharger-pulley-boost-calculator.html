@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supercharger Pulley Ratio & Boost Pressure Calculator | Ultimate Drag Racing Master Suite</title>
-    <!-- Centralized Math Core -->
     <script src="calculator-core.js"></script>
     <style>
         :root {
@@ -182,7 +181,6 @@
             <button class="suite-tab-btn" onclick="switchSuiteTab('suspension')">&#9874; 4-Link & Suspension</button>
         </div>
 
-        <!-- Tab 1: Drivetrain Suite -->
         <div id="drivetrain-suite" class="suite-content active">
             <div class="section-title">1. Transmission & Gear Parameters</div>
             <div class="grid-2">
@@ -227,7 +225,7 @@
                     <input type="number" id="target-trap" value="120" step="1">
                 </div>
                 <div>
-                    <label>Torque Converter Slip (%, leave 0 for manual/locked)</label>
+                    <label>Torque Converter Slip (%)</label>
                     <input type="number" id="converter-slip" value="0" step="0.5">
                 </div>
             </div>
@@ -244,7 +242,6 @@
             </table>
         </div>
 
-        <!-- Tab 2: Suspension Suite -->
         <div id="suspension-suite" class="suite-content">
             <div class="section-title">1. Vehicle & Weight Distribution Parameters</div>
             <div class="grid-2">
@@ -268,7 +265,7 @@
                 </div>
             </div>
 
-            <div class="section-title">2. 4-Link Bracket & Bar Geometry (Measurements from Axle Centerline)</div>
+            <div class="section-title">2. 4-Link Bracket & Bar Geometry</div>
             <div class="grid-2">
                 <div>
                     <label>Top Bar Front Hole X (Axle ahead = positive, in)</label>
@@ -345,7 +342,6 @@
             let weight = parseFloat(document.getElementById("weight").value) || 2390;
             let hp = parseFloat(document.getElementById("hp").value) || 1100;
             
-            // Calls shared math core from calculator-core.js!
             let et = DragCalc.quarterMileET(weight, hp);
             let trap = DragCalc.trapSpeed(weight, hp);
             let rollout = (tire * Math.PI).toFixed(1);
@@ -355,7 +351,7 @@
             if(resEl) {
                 resEl.innerHTML = `
                     <strong>Estimated Performance:</strong><br>
-                    &bull; Estimated 1/4 Mile Trap Speed (Physics): <strong>${trap} MPH</strong><br>
+                    &bull; Estimated 1/4 Mile Trap Speed: <strong>${trap} MPH</strong><br>
                     &bull; Estimated 1/4 Mile ET: <strong>${et} sec</strong><br>
                     &bull; Tire Circumference (Rollout): <strong>${rollout} inches</strong><br>
                     &bull; Overall 1st Gear Launch Ratio: <strong>${overall1st}:1</strong>
@@ -394,10 +390,9 @@
             if(resEl) {
                 resEl.innerHTML = `
                     <strong>4-Link Geometry Analysis:</strong><br>
-                    &bull; Instant Center (IC) Length ahead of Rear Axle: <strong>${icLength} inches</strong><br>
-                    &bull; Instant Center (IC) Height above Ground: <strong>${icHeight} inches</strong><br>
-                    &bull; Anti-Squat Percentage: <strong>${antisquat}%</strong><br>
-                    ${antisquat < 80 ? '<span style="color: #ff1e27;">&#9888; Low Anti-Squat (&lt;80%): Rear end will squat on launch, transferring less immediate bite to the tires.</span>' : '<span style="color: #10b981;">&#10003; Optimal Anti-Squat: Strong tire plant and instant launch bite.</span>'}
+                    &bull; Instant Center (IC) Length: <strong>${icLength} inches</strong><br>
+                    &bull; Instant Center (IC) Height: <strong>${icHeight} inches</strong><br>
+                    &bull; Anti-Squat Percentage: <strong>${antisquat}%</strong>
                 `;
             }
         }
