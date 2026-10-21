@@ -392,7 +392,7 @@ for row in pages:
         out_f.write(html)
     pages_created += 1
 
-# Generate index.html hub page as the full interactive Master Suite
+# Generate index.html hub page
 index_html = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -804,7 +804,7 @@ index_html += """
         }
 
         function calcMasterSuspension() {
-            let topX1 = parseFloat(document.getElementById("top-x1").value) || 24;
+            let topX1 = parseFloat(data = document.getElementById("top-x1").value) || 24;
             let topZ1 = parseFloat(document.getElementById("top-z1").value) || 6;
             let topX2 = parseFloat(document.getElementById("top-x2").value) || 0;
             let topZ2 = parseFloat(document.getElementById("top-z2").value) || 4;
@@ -853,4 +853,4 @@ index_html += """
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(index_html)
 
-print(f"Successfully built {pages_created} Master Suite pSEO pages AND index.html hub page cleanly!")
+print(f"Successfully built {pages_created} Unique Category pSEO pages AND index.html hub page cleanly!")
