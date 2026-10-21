@@ -220,8 +220,8 @@
 
             <!-- Tabs -->
             <div class="tab-buttons">
-                <button class="tab-btn active" onclick="switchTab('drivetrain', event)">Drivetrain & Shift</button>
-                <button class="tab-btn" onclick="switchTab('suspension', event)">4-Link Suspension</button>
+                <button class="tab-btn active" onclick="switchTab('drivetrain', this)">Drivetrain & Shift</button>
+                <button class="tab-btn" onclick="switchTab('suspension', this)">4-Link Suspension</button>
             </div>
 
             <!-- Tab 1: Drivetrain & Shift -->
@@ -386,11 +386,12 @@
     </div>
 
     <script>
-        function switchTab(tabName, event) {
+        function switchTab(tabName, btn) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabName).classList.add('active');
-            event.target.classList.add('active');
+            let targetTab = document.getElementById('tab-' + tabName);
+            if(targetTab) targetTab.classList.add('active');
+            if(btn) btn.classList.add('active');
         }
 
         const ratios = { 
@@ -465,8 +466,6 @@
 
             // Suspension Calculation
             let sWt = parseFloat(document.getElementById("susp-wt").value) || 3200;
-            let sWb = parseFloat(document.getElementById("susp-wb").value) || 105;
-            let sCg = parseFloat(document.getElementById("susp-cg").value) || 20;
             let sFront = parseFloat(document.getElementById("susp-front-wt").value) || 52;
             let rearWt = Math.round(sWt * (1 - sFront / 100));
 
@@ -480,7 +479,6 @@
             let bbRx = parseFloat(document.getElementById("bb-rx").value) || 0;
             let bbRz = parseFloat(document.getElementById("bb-rz").value) || 4;
 
-            // Instant Center calculation approximation based on link slopes
             let topSlope = (tbFz - tbRz) / (tbFx - tbRx || 1);
             let botSlope = (bbFz - bbRz) / (bbFx - bbRx || 1);
             let icLength = Math.round(Math.abs((tbFz - bbFz) / (topSlope - botSlope || 0.01)) * 10) / 10;
