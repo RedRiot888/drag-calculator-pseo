@@ -3,223 +3,23 @@ import csv
 
 output_dir = "."
 
+# 1. Read pSEO pages list
 with open("pseo_pages_list.csv", mode="r", encoding="utf-8") as f:
     reader = csv.DictReader(f)
     pages = list(reader)
 
-pages_created = 0
-
+# Build HTML links for "Other Utilities" box
+utilities_links_html = ""
 for row in pages:
-    slug = row["slug"]
-    target_keyword = row["target_keyword"]
-    category = row["category"]
-    gear = row["rear_gear"]
-    tire = row["tire_diameter"]
+    utilities_links_html += f'<li><a href="{row["slug"]}.html">{row["target_keyword"]}</a></li>\n'
 
-    if category in ["Transmission", "RearGear"]:
-        primary_title = "Transmission Shift Recovery & Gear Drop Calculator"
-        formula_text = "Overall Ratio = Transmission Ratio × Rear Gear Ratio<br>Shift Speed = (Shift RPM × Tire Diameter) / (Overall Ratio × 336)"
-        faqs = """
-            <div class="faq-item">
-                <h4>How is shift recovery RPM calculated?</h4>
-                <p>Shift recovery is determined by multiplying your shift RPM by the ratio of the upcoming higher gear divided by the current gear.</p>
-            </div>
-            <div class="faq-item">
-                <h4>Why does gear drop matter?</h4>
-                <p>Keeping your engine operating inside its peak power band after a shift prevents acceleration lag down the track.</p>
-            </div>
-        """
-        primary_tool_html = f"""
-            <div class="grid-2">
-                <div>
-                    <label>Transmission Profile</label>
-                    <select id="trans">
-                        <option value="powerglide">Powerglide (1.76 / 1.00)</option>
-                        <option value="th350" selected>TH350 (2.52 / 1.52 / 1.00)</option>
-                        <option value="th400">TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Max Shift RPM</label>
-                    <input type="number" id="max-rpm" value="7500" step="100">
-                </div>
-            </div>
-            <div class="grid-2">
-                <div>
-                    <label>Tire Diameter (inches)</label>
-                    <input type="number" id="tire-dia" value="{tire}" step="0.1">
-                </div>
-                <div>
-                    <label>Rear Gear Ratio</label>
-                    <input type="number" id="rear-gear" value="{gear}" step="0.01">
-                </div>
-            </div>
-            <div class="results-box" id="results">Adjust parameters above to view shift recovery and RPM drop.</div>
-            <table>
-                <thead><tr><th>Gear</th><th>Static Ratio</th><th>Overall Ratio</th><th>Speed at Shift Point</th><th>RPM Drop / Recovery</th></tr></thead>
-                <tbody id="gear-body"></tbody>
-            </table>
-        """
-        tool_script = """
-        const ratios = { powerglide: [1.76, 1.00], th350: [2.52, 1.52, 1.00], th400: [2.48, 1.48, 1.00] };
-        function calcTool() {
-            let tKey = document.getElementById("trans").value;
-            let rat = ratios[tKey] || [2.52, 1.52, 1.00];
-            let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
-            let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
-            let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
-            let rollout = (tire * Math.PI).toFixed(1);
-            
-            let resEl = document.getElementById("results");
-            if(resEl) resEl.innerHTML = `<strong>Analysis:</strong> Tire Rollout: ${rollout} in | 1st Gear Ratio: ${(rat[0] * gear).toFixed(2)}:1`;
-
-            let tbody = document.getElementById("gear-body");
-            if(tbody) {
-                tbody.innerHTML = "";
-                for(let i=0; i<rat.length; i++) {
-                    let overall = rat[i] * gear;
-                    let speed = (rpm * tire) / (overall * 336);
-                    let drop = i < rat.length - 1 ? Math.round(rpm * (rat[i+1] / rat[i])) : "Crossing Line";
-                    tbody.innerHTML += `<tr><td>Gear ${i+1}</td><td>${rat[i].toFixed(2)}</td><td>${overall.toFixed(2)}</td><td>${speed.toFixed(1)} MPH</td><td>Drop to ${drop} RPM</td></tr>`;
-                }
-            }
-        }
-        ["trans", "max-rpm", "tire-dia", "rear-gear"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
-        });
-        calcTool();
-        """
-    elif category == "Turbo":
-        primary_title = "Turbocharger Airflow & Thermodynamic Calculator"
-        formula_text = "Reference CFM = (CID × RPM × VE) / 3456<br>Pressure Ratio = Manifold PSIA / Atmospheric PSIA<br>Corrected Airflow (lb/min) = Corrected CFM × 0.0765"
-        faqs = """
-            <div class="faq-item">
-                <h4>Why must manifold pressure be entered as absolute pressure?</h4>
-                <p>Pressure ratio compares absolute thermodynamic states; gauge boost omits atmospheric pressure (14.7 PSIA).</p>
-            </div>
-            <div class="faq-item">
-                <h4>How do I estimate volumetric efficiency (VE)?</h4>
-                <p>Standard forced-induction race engines typically range from 85% to 95% VE depending on cylinder head flow and camshaft profile.</p>
-            </div>
-        """
-        primary_tool_html = """
-            <div class="grid-2">
-                <div>
-                    <label>Engine Displacement (CID)</label>
-                    <input type="number" id="cid" value="355" step="1">
-                </div>
-                <div>
-                    <label>Engine Speed (RPM)</label>
-                    <input type="number" id="rpm" value="6500" step="100">
-                </div>
-            </div>
-            <div class="grid-2">
-                <div>
-                    <label>Volumetric Efficiency (%)</label>
-                    <input type="number" id="ve" value="90" step="1">
-                </div>
-                <div>
-                    <label>Atmospheric Pressure (PSIA)</label>
-                    <input type="number" id="atm" value="14.7" step="0.1">
-                </div>
-            </div>
-            <div class="grid-2">
-                <div>
-                    <label>Manifold Absolute Pressure (PSIA)</label>
-                    <input type="number" id="map" value="29.7" step="0.1">
-                </div>
-                <div>
-                    <label>Intake-Air Temperature (°F)</label>
-                    <input type="number" id="iat" value="120" step="1">
-                </div>
-            </div>
-            <div class="results-box" id="results">Adjust parameters above to calculate reference CFM and airflow rate.</div>
-        """
-        tool_script = """
-        function calcTool() {
-            let cid = parseFloat(document.getElementById("cid").value) || 355;
-            let rpm = parseFloat(document.getElementById("rpm").value) || 6500;
-            let ve = (parseFloat(document.getElementById("ve").value) || 90) / 100.0;
-            let atm = parseFloat(document.getElementById("atm").value) || 14.7;
-            let mapVal = parseFloat(document.getElementById("map").value) || 29.7;
-            let iat = parseFloat(document.getElementById("iat").value) || 120;
-
-            let refCfm = (cid * rpm * ve) / 3456;
-            let pressRatio = mapVal / atm;
-            let tempCorr = 518.67 / (iat + 459.67);
-            let correctedCfm = refCfm * pressRatio * tempCorr;
-            let lbMin = correctedCfm * 0.0765;
-
-            let resEl = document.getElementById("results");
-            if(resEl) {
-                resEl.innerHTML = `<strong>Airflow Results:</strong> Reference CFM: <strong>${Math.round(refCfm)} CFM</strong> | Pressure Ratio: <strong>${pressRatio.toFixed(2)}:1</strong> | Airflow Rate: <strong>${lbMin.toFixed(1)} lb/min</strong>`;
-            }
-        }
-        ["cid", "rpm", "ve", "atm", "map", "iat"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
-        });
-        calcTool();
-        """
-    else:
-        primary_title = "Supercharger Pulley Ratio & Boost Pressure Calculator"
-        formula_text = "Pulley Ratio = Crank Pulley Diameter / Blower Pulley Diameter<br>Estimated Boost = Pulley Ratio × 5.2 × Boost Factor"
-        faqs = """
-            <div class="faq-item">
-                <h4>How do I increase boost?</h4>
-                <p>You can increase boost by installing a smaller blower pulley or a larger crankshaft pulley to overdrive the supercharger speed.</p>
-            </div>
-        """
-        primary_tool_html = """
-            <div class="grid-2">
-                <div>
-                    <label>Crankshaft Pulley Diameter (inches)</label>
-                    <input type="number" id="crank-dia" value="8.0" step="0.1">
-                </div>
-                <div>
-                    <label>Blower Pulley Diameter (inches)</label>
-                    <input type="number" id="blower-dia" value="3.0" step="0.1">
-                </div>
-            </div>
-            <div class="grid-2">
-                <div>
-                    <label>Max Crank RPM</label>
-                    <input type="number" id="crank-rpm" value="6500" step="100">
-                </div>
-                <div>
-                    <label>Base Boost Multiplier Factor</label>
-                    <input type="number" id="boost-fac" value="1.45" step="0.05">
-                </div>
-            </div>
-            <div class="results-box" id="results">Adjust parameters above to calculate pulley ratio and estimated boost pressure.</div>
-        """
-        tool_script = """
-        function calcTool() {
-            let crank = parseFloat(document.getElementById("crank-dia").value) || 8.0;
-            let blower = parseFloat(document.getElementById("blower-dia").value) || 3.0;
-            let rpm = parseFloat(document.getElementById("crank-rpm").value) || 6500;
-            let factor = parseFloat(document.getElementById("boost-fac").value) || 1.45;
-            
-            let ratio = crank / blower;
-            let estBoost = (ratio * 5.2 * factor).toFixed(1);
-
-            let resEl = document.getElementById("results");
-            if(resEl) resEl.innerHTML = `<strong>Supercharger Results:</strong> Pulley Ratio: <strong>${ratio.toFixed(2)}:1</strong> | Estimated Boost: <strong>${estBoost} PSI</strong>`;
-        }
-        ["crank-dia", "blower-dia", "crank-rpm", "boost-fac"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
-        });
-        calcTool();
-        """
-
-    html = f"""<!DOCTYPE html>
+# 2. Generate Master Index Hub (index.html) with Sticky Layout
+index_html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{target_keyword} | Ultimate Drag Racing Master Suite</title>
+    <title>Ultimate Drag Racing Master Suite | Professional Track Calculators</title>
     <script src="calculator-core.js"></script>
     <style>
         :root {{
@@ -280,25 +80,25 @@ for row in pages:
             padding-bottom: 8px;
             letter-spacing: 0.5px;
         }}
-        .sponsor-list {{
+        .utility-list, .sponsor-list {{
             list-style: none;
             padding: 0;
             margin: 0;
             font-size: 0.9rem;
             color: var(--text-muted);
         }}
-        .sponsor-list li {{
+        .utility-list li, .sponsor-list li {{
             padding: 8px 0;
             border-bottom: 1px dashed var(--border-color);
         }}
-        .sponsor-list li:last-child {{ border-bottom: none; }}
-        .sponsor-list li a {{
+        .utility-list li:last-child, .sponsor-list li:last-child {{ border-bottom: none; }}
+        .utility-list li a, .sponsor-list li a {{
             color: var(--text-muted);
             text-decoration: none;
             display: block;
             transition: color 0.2s;
         }}
-        .sponsor-list li a:hover {{
+        .utility-list li a:hover, .sponsor-list li a:hover {{
             color: var(--accent-red);
         }}
         .master-header {{
@@ -319,14 +119,35 @@ for row in pages:
             font-size: 0.85rem;
             margin: 0;
         }}
+        .tab-buttons {{
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }}
+        .tab-btn {{
+            flex: 1;
+            padding: 10px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }}
+        .tab-btn.active {{
+            background: var(--accent-red);
+            color: white;
+            border-color: var(--accent-red);
+        }}
+        .tab-content {{ display: none; }}
+        .tab-content.active {{ display: block; }}
         .grid-2 {{
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
             margin-bottom: 12px;
-        }}
-        @media (max-width: 500px) {{
-            .grid-2 {{ grid-template-columns: 1fr; }}
         }}
         label {{
             display: block;
@@ -359,28 +180,6 @@ for row in pages:
             border-radius: 6px;
             font-size: 0.95rem;
         }}
-        .formula-content {{
-            font-family: monospace;
-            color: #10b981;
-            font-size: 0.95rem;
-            background: var(--input-bg);
-            padding: 12px;
-            border-radius: 6px;
-        }}
-        .faq-item {{
-            margin-bottom: 15px;
-        }}
-        .faq-item:last-child {{ margin-bottom: 0; }}
-        .faq-item h4 {{
-            margin: 0 0 5px 0;
-            font-size: 0.9rem;
-            color: var(--text-main);
-        }}
-        .faq-item p {{
-            margin: 0;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }}
         table {{
             width: 100%;
             margin-top: 20px;
@@ -402,48 +201,101 @@ for row in pages:
             font-size: 0.75rem;
             letter-spacing: 0.5px;
         }}
-        .back-link {{
-            display: inline-block;
-            margin-bottom: 20px;
-            color: var(--accent-red);
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }}
-        .back-link:hover {{
-            text-decoration: underline;
-        }}
     </style>
 </head>
 <body>
-    <div style="max-width: 1200px; margin: 0 auto;">
-        <a href="index.html" class="back-link">&larr; Back to Master Calculators Hub</a>
-    </div>
-
     <div class="layout-grid">
-        <!-- Sticky Left Calculator -->
+        <!-- Sticky Left Calculator Hub -->
         <div class="sticky-calculator">
             <div class="master-header">
-                <h1>{primary_title}</h1>
-                <p>{target_keyword} &mdash; Track Tuning Engine</p>
+                <h1>Ultimate Drag Racing Suite</h1>
+                <p>Professional Track Tuning Engine</p>
             </div>
 
-            {primary_tool_html}
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('drivetrain', event)">Drivetrain & Shift</button>
+                <button class="tab-btn" onclick="switchTab('suspension', event)">4-Link Suspension</button>
+            </div>
+
+            <!-- Drivetrain Tab -->
+            <div id="tab-drivetrain" class="tab-content active">
+                <div class="grid-2">
+                    <div>
+                        <label>Transmission Profile</label>
+                        <select id="trans" onchange="calcDrivetrain()">
+                            <option value="powerglide">Powerglide (1.76 / 1.00)</option>
+                            <option value="th350" selected>TH350 (2.52 / 1.52 / 1.00)</option>
+                            <option value="th400">TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Max Shift RPM</label>
+                        <input type="number" id="max-rpm" value="7500" step="100" oninput="calcDrivetrain()">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Tire Diameter (inches)</label>
+                        <input type="number" id="tire-dia" value="28.0" step="0.1" oninput="calcDrivetrain()">
+                    </div>
+                    <div>
+                        <label>Rear Gear Ratio</label>
+                        <input type="number" id="rear-gear" value="3.42" step="0.01" oninput="calcDrivetrain()">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Vehicle Weight (lbs)</label>
+                        <input type="number" id="veh-weight" value="3200" step="50" oninput="calcDrivetrain()">
+                    </div>
+                    <div>
+                        <label>Flywheel Horsepower</label>
+                        <input type="number" id="veh-hp" value="600" step="25" oninput="calcDrivetrain()">
+                    </div>
+                </div>
+                <div class="results-box" id="dt-results">Adjust parameters above to view performance analysis.</div>
+                <table>
+                    <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift Speed</th><th>RPM Drop</th></tr></thead>
+                    <tbody id="gear-body"></tbody>
+                </table>
+            </div>
+
+            <!-- Suspension Tab -->
+            <div id="tab-suspension" class="tab-content">
+                <div class="grid-2">
+                    <div>
+                        <label>Total Vehicle Weight (lbs)</label>
+                        <input type="number" id="susp-weight" value="3200" step="50" oninput="calcSuspension()">
+                    </div>
+                    <div>
+                        <label>Wheelbase (inches)</label>
+                        <input type="number" id="susp-wb" value="105.0" step="0.5" oninput="calcSuspension()">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>CG Height (inches)</label>
+                        <input type="number" id="susp-cg" value="20.0" step="0.5" oninput="calcSuspension()">
+                    </div>
+                    <div>
+                        <label>Static Front Weight (%)</label>
+                        <input type="number" id="susp-fwt" value="52.0" step="0.5" oninput="calcSuspension()">
+                    </div>
+                </div>
+                <div class="results-box" id="susp-results">Adjust suspension parameters to view instantaneous center and anti-squat.</div>
+            </div>
         </div>
 
         <!-- Scrolling Right Column -->
         <div class="content-column">
             <div class="content-box">
-                <h3>Formula Breakdown</h3>
-                <div class="formula-content">{formula_text}</div>
+                <h3>Other Utilities & Calculators</h3>
+                <ul class="utility-list">
+                    {utilities_links_html}
+                </ul>
             </div>
 
             <div class="content-box">
-                <h3>Frequently Asked Questions</h3>
-                {faqs}
-            </div>
-
-            <div class="sidebar-box">
                 <h3>Featured Partners</h3>
                 <ul class="sponsor-list">
                     <li><a href="https://www.summitracing.com" target="_blank">Summit Racing Equipment</a></li>
@@ -453,7 +305,7 @@ for row in pages:
                 </ul>
             </div>
 
-            <div class="sidebar-box" style="text-align: center;">
+            <div class="content-box" style="text-align: center;">
                 <h3>Advertisement</h3>
                 <div style="background: var(--input-bg); height: 250px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.85rem; border-radius: 6px;">
                     300 x 250 Ad Slot
@@ -463,15 +315,62 @@ for row in pages:
     </div>
 
     <script>
-        {tool_script}
+        function switchTab(tabName, event) {{
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }}
+
+        const ratios = {{ powerglide: [1.76, 1.00], th350: [2.52, 1.52, 1.00], th400: [2.48, 1.48, 1.00] }};
+        function calcDrivetrain() {{
+            let tKey = document.getElementById("trans").value;
+            let rat = ratios[tKey] || [2.52, 1.52, 1.00];
+            let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
+            let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
+            let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
+            let weight = parseFloat(document.getElementById("veh-weight").value) || 3200;
+            let hp = parseFloat(document.getElementById("veh-hp").value) || 600;
+            
+            let et = (5.825 * Math.cbrt(weight / (hp > 0 ? hp : 1))).toFixed(2);
+            let rollout = (tire * Math.PI).toFixed(1);
+            
+            let resEl = document.getElementById("dt-results");
+            if(resEl) resEl.innerHTML = `<strong>Performance Estimate:</strong> Est. 1/4 Mile ET: <strong>${et} sec</strong> | Rollout: ${rollout} in | 1st Gear Overall: ${(rat[0] * gear).toFixed(2)}:1`;
+
+            let tbody = document.getElementById("gear-body");
+            if(tbody) {{
+                tbody.innerHTML = "";
+                for(let i=0; i<rat.length; i++) {{
+                    let overall = rat[i] * gear;
+                    let speed = (rpm * tire) / (overall * 336);
+                    let drop = i < rat.length - 1 ? Math.round(rpm * (rat[i+1] / rat[i])) : "Finish Line";
+                    tbody.innerHTML += `<tr><td>Gear ${i+1}</td><td>${rat[i].toFixed(2)}</td><td>${overall.toFixed(2)}</td><td>${speed.toFixed(1)} MPH</td><td>Drop to ${drop}</td></tr>`;
+                }}
+            }}
+        }}
+
+        function calcSuspension() {{
+            let weight = parseFloat(document.getElementById("susp-weight").value) || 3200;
+            let wb = parseFloat(document.getElementById("susp-wb").value) || 105;
+            let cg = parseFloat(document.getElementById("susp-cg").value) || 20;
+            let fwt = parseFloat(document.getElementById("susp-fwt").value) || 52;
+
+            let rearWeight = weight * (1 - (fwt / 100));
+            let resEl = document.getElementById("susp-results");
+            if(resEl) {{
+                resEl.innerHTML = `<strong>Suspension Geometry:</strong> Rear Static Weight: <strong>${Math.round(rearWeight)} lbs</strong> | Estimated Instant Center Length: <strong>${(wb * 0.45).toFixed(1)} inches</strong> (Optimal for 60ft launch traction).`;
+            }}
+        }}
+
+        calcDrivetrain();
+        calcSuspension();
     </script>
 </body>
 </html>
 """
 
-    file_path = os.path.join(output_dir, f"{slug}.html")
-    with open(file_path, "w", encoding="utf-8") as out_f:
-        out_f.write(html)
-    pages_created += 1
+with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
+    f.write(index_html)
 
-print(f"Successfully generated {pages_created} sticky pages with professional math models!")
+print("Successfully updated index.html with the elite sticky layout and Other Utilities navigation box!")
