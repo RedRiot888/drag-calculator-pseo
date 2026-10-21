@@ -16,18 +16,28 @@ for row in pages:
     gear = row["rear_gear"]
     tire = row["tire_diameter"]
 
-    # Customize primary tool title and form HTML based on CSV category
+    # Customize content based on category
     if category in ["Transmission", "RearGear"]:
-        primary_title = "Transmission Shift Recovery & Gear Drop Analyzer"
+        primary_title = "Transmission Shift Recovery & Gear Drop Calculator"
+        formula_text = "Overall Ratio = Transmission Ratio × Rear Gear Ratio<br>Shift Speed = (Shift RPM × Tire Diameter) / (Overall Ratio × 336)"
+        faqs = """
+            <div class="faq-item">
+                <h4>How is shift recovery RPM calculated?</h4>
+                <p>Shift recovery is determined by multiplying your shift RPM by the ratio of the upcoming higher gear divided by the current gear.</p>
+            </div>
+            <div class="faq-item">
+                <h4>Why does gear drop matter?</h4>
+                <p>Keeping your engine operating inside its peak power band after a shift prevents acceleration lag down the track.</p>
+            </div>
+        """
         primary_tool_html = f"""
-            <div class="section-title">1. Transmission & Gear Parameters</div>
             <div class="grid-2">
                 <div>
                     <label>Transmission Profile</label>
                     <select id="trans">
-                        <option value="powerglide">Powerglide (1.76 / 1.00 - 2-Speed)</option>
-                        <option value="th350" selected>TH350 (2.52 / 1.52 / 1.00 - 3-Speed)</option>
-                        <option value="th400">TH400 / 4L80e (2.48 / 1.48 / 1.00 - 3-Speed)</option>
+                        <option value="powerglide">Powerglide (1.76 / 1.00)</option>
+                        <option value="th350" selected>TH350 (2.52 / 1.52 / 1.00)</option>
+                        <option value="th400">TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
                     </select>
                 </div>
                 <div>
@@ -83,8 +93,18 @@ for row in pages:
         """
     elif category == "Supercharger":
         primary_title = "Supercharger Pulley Ratio & Boost Pressure Calculator"
+        formula_text = "Pulley Ratio = Crank Pulley Diameter / Blower Pulley Diameter<br>Estimated Boost = Pulley Ratio × 5.2 × Boost Factor"
+        faqs = """
+            <div class="faq-item">
+                <h4>How do I increase boost?</h4>
+                <p>You can increase boost by installing a smaller blower pulley or a larger crankshaft pulley to overdrive the supercharger speed.</p>
+            </div>
+            <div class="faq-item">
+                <h4>Does belt slip affect boost?</h4>
+                <p>Yes, belt slip under high load reduces effective blower RPM and causes a drop in peak boost pressure.</p>
+            </div>
+        """
         primary_tool_html = """
-            <div class="section-title">1. Supercharger Pulley & Drive Parameters</div>
             <div class="grid-2">
                 <div>
                     <label>Crankshaft Pulley Diameter (inches)</label>
@@ -129,8 +149,18 @@ for row in pages:
         """
     elif category == "Turbo":
         primary_title = "Turbo Sizing, Compressor Map & Boost Calculator"
+        formula_text = "Airflow (lbs/min) = (Horsepower × BSFC) / 6.0<br>Pressure Ratio = (Boost PSI + 14.7) / 14.7"
+        faqs = """
+            <div class="faq-item">
+                <h4>What BSFC value should I use?</h4>
+                <p>Standard gasoline engines typically use 0.60, while E85 setups use ~0.85 and methanol setups use ~1.20.</p>
+            </div>
+            <div class="faq-item">
+                <h4>How do I read a compressor map?</h4>
+                <p>Match your required airflow (lbs/min) on the vertical axis and pressure ratio on the horizontal axis to see if the turbo operates in peak efficiency.</p>
+            </div>
+        """
         primary_tool_html = """
-            <div class="section-title">1. Turbo Airflow & Power Parameters</div>
             <div class="grid-2">
                 <div>
                     <label>Target Horsepower (WHP)</label>
@@ -184,8 +214,14 @@ for row in pages:
         """
     else:
         primary_title = "Tire Diameter Growth & Rollout Drag Calculator"
+        formula_text = "Dynamic Diameter = Static Diameter × (1 + (Growth % / 100))<br>Rollout = Diameter × π"
+        faqs = """
+            <div class="faq-item">
+                <h4>Why do drag tires grow at high speed?</h4>
+                <p>Centrifugal force at 150+ MPH causes bias-ply and radial slick treads to expand outward, increasing effective rollout and altering finish line RPM.</p>
+            </div>
+        """
         primary_tool_html = f"""
-            <div class="section-title">1. Tire & Speed Parameters</div>
             <div class="grid-2">
                 <div>
                     <label>Static Tire Diameter (inches)</label>
@@ -256,14 +292,61 @@ for row in pages:
             padding: 20px;
             line-height: 1.5;
         }}
-        .master-container {{
-            max-width: 950px;
+        .layout-grid {{
+            max-width: 1200px;
             margin: 30px auto;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }}
+        @media (max-width: 900px) {{
+            .layout-grid {{ grid-template-columns: 1fr; }}
+        }}
+        .master-container {{
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             padding: 35px;
+        }}
+        .sidebar {{
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }}
+        .sidebar-box {{
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }}
+        .sidebar-box h3 {{
+            color: var(--accent-red);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            letter-spacing: 0.5px;
+        }}
+        .sponsor-list {{
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }}
+        .sponsor-list li {{
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }}
+        .sponsor-list li:last-child {{ border-bottom: none; }}
+        .sponsor-list li::before {{
+            content: "\\2022";
+            color: var(--accent-red);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
         }}
         .master-header {{
             text-align: center;
@@ -332,6 +415,41 @@ for row in pages:
             border-radius: 6px;
             font-size: 1rem;
         }}
+        .formula-box, .faq-box {{
+            margin-top: 25px;
+            background: #121418;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+        }}
+        .formula-box h3, .faq-box h3 {{
+            color: var(--accent-red);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            margin-top: 0;
+            letter-spacing: 0.5px;
+        }}
+        .formula-content {{
+            font-family: monospace;
+            color: #10b981;
+            font-size: 1rem;
+            background: var(--input-bg);
+            padding: 12px;
+            border-radius: 6px;
+        }}
+        .faq-item {{
+            margin-bottom: 15px;
+        }}
+        .faq-item h4 {{
+            margin: 0 0 5px 0;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }}
+        .faq-item p {{
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }}
         table {{
             width: 100%;
             margin-top: 25px;
@@ -367,17 +485,49 @@ for row in pages:
     </style>
 </head>
 <body>
-    <div style="max-width: 950px; margin: 0 auto;">
+    <div style="max-width: 1200px; margin: 0 auto;">
         <a href="index.html" class="back-link">&larr; Back to Master Calculators Hub</a>
     </div>
 
-    <div class="master-container">
-        <div class="master-header">
-            <h1>{primary_title}</h1>
-            <p>{target_keyword} &mdash; Professional Track Tuning Engine</p>
+    <div class="layout-grid">
+        <div class="master-container">
+            <div class="master-header">
+                <h1>{primary_title}</h1>
+                <p>{target_keyword} &mdash; Professional Track Tuning Engine</p>
+            </div>
+
+            {primary_tool_html}
+
+            <div class="formula-box">
+                <h3>Formula Used</h3>
+                <div class="formula-content">{formula_text}</div>
+            </div>
+
+            <div class="faq-box">
+                <h3>Frequently Asked Questions</h3>
+                {faqs}
+            </div>
         </div>
 
-        {primary_tool_html}
+        <div class="sidebar">
+            <div class="sidebar-box">
+                <h3>Sponsored By</h3>
+                <ul class="sponsor-list">
+                    <li>Holley</li>
+                    <li>VP Racing Fuels</li>
+                    <li>Summit Racing</li>
+                    <li>Racepak</li>
+                    <li>Mickey Thompson</li>
+                    <li>FuelTech</li>
+                </ul>
+            </div>
+            <div class="sidebar-box" style="text-align: center;">
+                <h3>Advertisement</h3>
+                <div style="background: var(--input-bg); height: 250px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.85rem; border-radius: 6px;">
+                    300 x 250 Ad Slot
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -392,4 +542,4 @@ for row in pages:
         out_f.write(html)
     pages_created += 1
 
-print(f"Successfully built {pages_created} Unique Category pSEO pages cleanly!")
+print(f"Successfully built {pages_created} high-end pSEO pages with Formula and Sponsor sidebars!")
