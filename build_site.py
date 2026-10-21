@@ -16,6 +16,220 @@ for row in pages:
     gear = row["rear_gear"]
     tire = row["tire_diameter"]
 
+    # Customize primary tool interface based on CSV category
+    if category in ["Transmission", "RearGear"]:
+        primary_title = "Transmission Shift Recovery & Gear Drop Analyzer"
+        primary_tool_html = f"""
+            <div class="section-title">1. Transmission & Gear Parameters</div>
+            <div class="grid-2">
+                <div>
+                    <label>Transmission Profile</label>
+                    <select id="trans">
+                        <option value="powerglide">Powerglide (1.76 / 1.00 - 2-Speed)</option>
+                        <option value="th350" selected>TH350 (2.52 / 1.52 / 1.00 - 3-Speed)</option>
+                        <option value="th400">TH400 / 4L80e (2.48 / 1.48 / 1.00 - 3-Speed)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Max Shift RPM</label>
+                    <input type="number" id="max-rpm" value="7500" step="100">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <label>Tire Diameter (inches)</label>
+                    <input type="number" id="tire-dia" value="{tire}" step="0.1">
+                </div>
+                <div>
+                    <label>Rear Gear Ratio</label>
+                    <input type="number" id="rear-gear" value="{gear}" step="0.01">
+                </div>
+            </div>
+            <div class="results-box" id="results">Adjust parameters above to view shift recovery and RPM drop.</div>
+            <table>
+                <thead><tr><th>Gear</th><th>Static Ratio</th><th>Overall Ratio</th><th>Speed at Shift Point</th><th>RPM Drop / Recovery</th></tr></thead>
+                <tbody id="gear-body"></tbody>
+            </table>
+        """
+        tool_script = """
+        const ratios = { powerglide: [1.76, 1.00], th350: [2.52, 1.52, 1.00], th400: [2.48, 1.48, 1.00] };
+        function calcTool() {
+            let tKey = document.getElementById("trans").value;
+            let rat = ratios[tKey] || [2.52, 1.52, 1.00];
+            let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
+            let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
+            let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
+            let rollout = (tire * Math.PI).toFixed(1);
+            
+            let resEl = document.getElementById("results");
+            if(resEl) resEl.innerHTML = `<strong>Analysis:</strong> Tire Rollout: ${rollout} in | 1st Gear Ratio: ${(rat[0] * gear).toFixed(2)}:1`;
+
+            let tbody = document.getElementById("gear-body");
+            if(tbody) {
+                tbody.innerHTML = "";
+                for(let i=0; i<rat.length; i++) {
+                    let overall = rat[i] * gear;
+                    let speed = (rpm * tire) / (overall * 336);
+                    let drop = i < rat.length - 1 ? Math.round(rpm * (rat[i+1] / rat[i])) : "Crossing Line";
+                    tbody.innerHTML += `<tr><td>Gear ${i+1}</td><td>${rat[i].toFixed(2)}</td><td>${overall.toFixed(2)}</td><td>${speed.toFixed(1)} MPH</td><td>Drop to ${drop} RPM</td></tr>`;
+                }
+            }
+        }
+        ["trans", "max-rpm", "tire-dia", "rear-gear"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+        });
+        calcTool();
+        """
+    elif category == "Supercharger":
+        primary_title = "Supercharger Pulley Ratio & Boost Pressure Calculator"
+        primary_tool_html = """
+            <div class="section-title">1. Supercharger Pulley & Drive Parameters</div>
+            <div class="grid-2">
+                <div>
+                    <label>Crankshaft Pulley Diameter (inches)</label>
+                    <input type="number" id="crank-dia" value="8.0" step="0.1">
+                </div>
+                <div>
+                    <label>Blower Pulley Diameter (inches)</label>
+                    <input type="number" id="blower-dia" value="3.0" step="0.1">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <label>Max Crank RPM</label>
+                    <input type="number" id="crank-rpm" value="6500" step="100">
+                </div>
+                <div>
+                    <label>Base Boost Multiplier Factor</label>
+                    <input type="number" id="boost-fac" value="1.45" step="0.05">
+                </div>
+            </div>
+            <div class="results-box" id="results">Adjust parameters above to calculate pulley ratio and estimated boost pressure.</div>
+        """
+        tool_script = """
+        function calcTool() {
+            let crank = parseFloat(document.getElementById("crank-dia").value) || 8.0;
+            let blower = parseFloat(document.getElementById("blower-dia").value) || 3.0;
+            let rpm = parseFloat(document.getElementById("crank-rpm").value) || 6500;
+            let factor = parseFloat(document.getElementById("boost-fac").value) || 1.45;
+            
+            let ratio = crank / blower;
+            let blowerRpm = rpm * ratio;
+            let estBoost = (ratio * 5.2 * factor).toFixed(1);
+
+            let resEl = document.getElementById("results");
+            if(resEl) resEl.innerHTML = `<strong>Supercharger Results:</strong> Pulley Ratio: <strong>${ratio.toFixed(2)}:1</strong> | Blower Speed: <strong>${Math.round(blowerRpm)} RPM</strong> | Estimated Boost: <strong>${estBoost} PSI</strong>`;
+        }
+        ["crank-dia", "blower-dia", "crank-rpm", "boost-fac"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+        });
+        calcTool();
+        """
+    elif category == "Turbo":
+        primary_title = "Turbo Sizing, Compressor Map & Boost Calculator"
+        primary_tool_html = """
+            <div class="section-title">1. Turbo Airflow & Power Parameters</div>
+            <div class="grid-2">
+                <div>
+                    <label>Target Horsepower (WHP)</label>
+                    <input type="number" id="hp" value="1000" step="50">
+                </div>
+                <div>
+                    <label>Fuel Type / BSFC</label>
+                    <select id="fuel">
+                        <option value="0.60">Gasoline (BSFC 0.60)</option>
+                        <option value="0.85">E85 / Alcohol (BSFC 0.85)</option>
+                        <option value="1.20">Methanol (BSFC 1.20)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <label>Target Boost Pressure (PSI)</label>
+                    <input type="number" id="boost" value="25" step="1">
+                </div>
+                <div>
+                    <label>Turbo Configuration</label>
+                    <select id="config">
+                        <option value="1">Single Turbo</option>
+                        <option value="2">Twin Turbos (Split Flow)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="results-box" id="results">Adjust parameters to calculate required airflow (lbs/min) and pressure ratio.</div>
+        """
+        tool_script = """
+        function calcTool() {
+            let hp = parseFloat(document.getElementById("hp").value) || 1000;
+            let bsfc = parseFloat(document.getElementById("fuel").value) || 0.60;
+            let boost = parseFloat(document.getElementById("boost").value) || 25;
+            let config = parseInt(document.getElementById("config").value) || 1;
+
+            let airflow = (hp * bsfc) / 6.0;
+            let perTurbo = airflow / config;
+            let pressureRatio = ((boost + 14.7) / 14.7).toFixed(2);
+
+            let resEl = document.getElementById("results");
+            if(resEl) {
+                resEl.innerHTML = `<strong>Turbo Results:</strong> Total Airflow: <strong>${airflow.toFixed(1)} lbs/min</strong> (${perTurbo.toFixed(1)} lbs/min per turbo) | Pressure Ratio: <strong>${pressureRatio}:1</strong>`;
+            }
+        }
+        ["hp", "fuel", "boost", "config"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+        });
+        calcTool();
+        """
+    else:
+        primary_title = "Tire Diameter Growth & Rollout Drag Calculator"
+        primary_tool_html = f"""
+            <div class="section-title">1. Tire & Speed Parameters</div>
+            <div class="grid-2">
+                <div>
+                    <label>Static Tire Diameter (inches)</label>
+                    <input type="number" id="static-dia" value="{tire}" step="0.1">
+                </div>
+                <div>
+                    <label>Trap Speed (MPH)</label>
+                    <input type="number" id="trap-speed" value="150" step="1">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <label>Estimated Growth Factor (%)</label>
+                    <input type="number" id="growth-fac" value="4.5" step="0.1">
+                </div>
+                <div>
+                    <label>Rear Gear Ratio</label>
+                    <input type="number" id="rear-gear" value="{gear}" step="0.01">
+                </div>
+            </div>
+            <div class="results-box" id="results">Adjust parameters above to calculate high-speed growth and effective rollout.</div>
+        """
+        tool_script = """
+        function calcTool() {
+            let staticDia = parseFloat(document.getElementById("static-dia").value) || 28;
+            let trap = parseFloat(document.getElementById("trap-speed").value) || 150;
+            let growth = parseFloat(document.getElementById("growth-fac").value) || 4.5;
+
+            let dynamicDia = staticDia * (1 + (growth / 100));
+            let staticRollout = (staticDia * Math.PI).toFixed(1);
+            let dynamicRollout = (dynamicDia * Math.PI).toFixed(1);
+
+            let resEl = document.getElementById("results");
+            if(resEl) {
+                resEl.innerHTML = `<strong>Tire Results:</strong> Static Rollout: <strong>${staticRollout} in</strong> | High-Speed Growth Diameter: <strong>${dynamicDia.toFixed(2)} in</strong> | Dynamic Rollout: <strong>${dynamicRollout} in</strong>`;
+            }
+        }
+        ["static-dia", "trap-speed", "growth-fac", "rear-gear"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+        });
+        calcTool();
+        """
+
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,37 +282,6 @@ for row in pages:
             color: var(--text-muted);
             font-size: 0.95rem;
             margin: 0;
-        }}
-        .suite-tabs {{
-            display: flex;
-            gap: 12px;
-            margin-bottom: 30px;
-            justify-content: center;
-        }}
-        .suite-tab-btn {{
-            background: var(--input-bg);
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            padding: 12px 24px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 8px;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-            transition: all 0.2s ease;
-        }}
-        .suite-tab-btn.active {{
-            background: var(--accent-red);
-            color: #fff;
-            border-color: var(--accent-red);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }}
-        .suite-content {{
-            display: none;
-        }}
-        .suite-content.active {{
-            display: block;
         }}
         .section-title {{
             color: var(--accent-red);
@@ -190,242 +373,15 @@ for row in pages:
 
     <div class="master-container">
         <div class="master-header">
-            <h1>Ultimate Drag Racing Master Suite</h1>
+            <h1>{primary_title}</h1>
             <p>{target_keyword} &mdash; Professional Track Tuning Engine</p>
         </div>
 
-        <div class="suite-tabs">
-            <button class="suite-tab-btn active" onclick="switchSuiteTab('drivetrain')">&#9881; Drivetrain & Shift RPM</button>
-            <button class="suite-tab-btn" onclick="switchSuiteTab('suspension')">&#9874; 4-Link & Suspension</button>
-        </div>
-
-        <div id="drivetrain-suite" class="suite-content active">
-            <div class="section-title">1. Transmission & Gear Parameters</div>
-            <div class="grid-2">
-                <div>
-                    <label>Transmission Profile</label>
-                    <select id="trans">
-                        <option value="powerglide">Powerglide (1.76 / 1.00 - 2-Speed)</option>
-                        <option value="th350" selected>TH350 (2.52 / 1.52 / 1.00 - 3-Speed)</option>
-                        <option value="th400">TH400 / 4L80e (2.48 / 1.48 / 1.00 - 3-Speed)</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Max Shift RPM</label>
-                    <input type="number" id="max-rpm" value="7500" step="100">
-                </div>
-            </div>
-            <div class="grid-2">
-                <div>
-                    <label>Tire Diameter (inches)</label>
-                    <input type="number" id="tire-dia" value="{tire}" step="0.1">
-                </div>
-                <div>
-                    <label>Rear Gear Ratio</label>
-                    <input type="number" id="rear-gear" value="{gear}" step="0.01">
-                </div>
-            </div>
-
-            <div class="section-title">2. Vehicle Weight & Power Analytics</div>
-            <div class="grid-2">
-                <div>
-                    <label>Vehicle Weight (lbs with driver)</label>
-                    <input type="number" id="weight" value="2390" step="50">
-                </div>
-                <div>
-                    <label>Wheel Horsepower (WHP)</label>
-                    <input type="number" id="hp" value="1100" step="25">
-                </div>
-            </div>
-            <div class="grid-2">
-                <div>
-                    <label>Target / Finish Line Trap Speed (MPH)</label>
-                    <input type="number" id="target-trap" value="120" step="1">
-                </div>
-                <div>
-                    <label>Torque Converter Slip (%)</label>
-                    <input type="number" id="converter-slip" value="0" step="0.5">
-                </div>
-            </div>
-
-            <div class="results-box" id="drivetrain-results">
-                Adjust parameters above to view physics-based ET, trap speed, and rollout analytics.
-            </div>
-
-            <table>
-                <thead>
-                    <tr><th>Gear</th><th>Static Ratio</th><th>Overall Ratio</th><th>Speed at Shift Point</th><th>RPM Drop / Recovery on Shift</th></tr>
-                </thead>
-                <tbody id="gear-body"></tbody>
-            </table>
-        </div>
-
-        <div id="suspension-suite" class="suite-content">
-            <div class="section-title">1. Vehicle & Weight Distribution Parameters</div>
-            <div class="grid-2">
-                <div>
-                    <label>Total Vehicle Weight (lbs with driver)</label>
-                    <input type="number" id="wb-weight" value="2390" step="50">
-                </div>
-                <div>
-                    <label>Wheelbase (inches)</label>
-                    <input type="number" id="wb" value="95.4" step="0.5">
-                </div>
-            </div>
-            <div class="grid-2">
-                <div>
-                    <label>Center of Gravity (CG) Height (inches)</label>
-                    <input type="number" id="cg-height" value="18.0" step="0.5">
-                </div>
-                <div>
-                    <label>Static Front Weight (%)</label>
-                    <input type="number" id="front-weight" value="48.0" step="0.5">
-                </div>
-            </div>
-
-            <div class="section-title">2. 4-Link Bracket & Bar Geometry</div>
-            <div class="grid-2">
-                <div>
-                    <label>Top Bar Front Hole X (Axle ahead = positive, in)</label>
-                    <input type="number" id="top-x1" value="24.0" step="0.5">
-                </div>
-                <div>
-                    <label>Top Bar Front Hole Z (Height above axle, in)</label>
-                    <input type="number" id="top-z1" value="6.0" step="0.5">
-                </div>
-            </div>
-            <div class="grid-2">
-                <div>
-                    <label>Top Bar Rear Hole X (Axle ahead = positive, in)</label>
-                    <input type="number" id="top-x2" value="0.0" step="0.5">
-                </div>
-                <div>
-                    <label>Top Bar Rear Hole Z (Height above axle, in)</label>
-                    <input type="number" id="top-z2" value="4.0" step="0.5">
-                </div>
-            </div>
-            <div class="grid-2">
-                <div>
-                    <label>Bottom Bar Front Hole X (in)</label>
-                    <input type="number" id="bot-x1" value="26.0" step="0.5">
-                </div>
-                <div>
-                    <label>Bottom Bar Front Hole Z (in)</label>
-                    <input type="number" id="bot-z1" value="-2.0" step="0.5">
-                </div>
-            </div>
-            <div class="grid-2">
-                <div>
-                    <label>Bottom Bar Rear Hole X (in)</label>
-                    <input type="number" id="bot-x2" value="0.0" step="0.5">
-                </div>
-                <div>
-                    <label>Bottom Bar Rear Hole Z (in)</label>
-                    <input type="number" id="bot-z2" value="-4.0" step="0.5">
-                </div>
-            </div>
-
-            <div class="results-box" id="susp-results">
-                Adjust suspension geometry above to calculate Instant Center and Anti-Squat.
-            </div>
-        </div>
+        {primary_tool_html}
     </div>
 
     <script>
-        function switchSuiteTab(tabName) {{
-            document.querySelectorAll('.suite-tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.suite-content').forEach(content => content.classList.remove('active'));
-            
-            if(tabName === 'drivetrain') {{
-                document.querySelectorAll('.suite-tab-btn')[0].classList.add('active');
-                document.getElementById('drivetrain-suite').classList.add('active');
-            }} else if(tabName === 'suspension') {{
-                document.querySelectorAll('.suite-tab-btn')[1].classList.add('active');
-                document.getElementById('suspension-suite').classList.add('active');
-            }}
-        }}
-
-        const ratios = {{ 
-            powerglide: [1.76, 1.00], 
-            th350: [2.52, 1.52, 1.00], 
-            th400: [2.48, 1.48, 1.00] 
-        }};
-
-        function calcMasterDrivetrain() {{
-            let tKey = document.getElementById("trans").value;
-            let rat = ratios[tKey] || [2.52, 1.52, 1.00];
-            let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
-            let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
-            let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
-            let weight = parseFloat(document.getElementById("weight").value) || 2390;
-            let hp = parseFloat(document.getElementById("hp").value) || 1100;
-            
-            let et = DragCalc.quarterMileET(weight, hp);
-            let trap = DragCalc.trapSpeed(weight, hp);
-            let rollout = (tire * Math.PI).toFixed(1);
-            let overall1st = (rat[0] * gear).toFixed(2);
-
-            let resEl = document.getElementById("drivetrain-results");
-            if(resEl) {{
-                resEl.innerHTML = `
-                    <strong>Estimated Performance:</strong><br>
-                    &bull; Estimated 1/4 Mile Trap Speed: <strong>${{trap}} MPH</strong><br>
-                    &bull; Estimated 1/4 Mile ET: <strong>${{et}} sec</strong><br>
-                    &bull; Tire Circumference (Rollout): <strong>${{rollout}} inches</strong><br>
-                    &bull; Overall 1st Gear Launch Ratio: <strong>${{overall1st}}:1</strong>
-                `;
-            }}
-
-            let tbody = document.getElementById("gear-body");
-            if(tbody) {{
-                tbody.innerHTML = "";
-                for(let i=0; i<rat.length; i++) {{
-                    let overall = rat[i] * gear;
-                    let speed = (rpm * tire) / (overall * 336);
-                    let drop = i < rat.length - 1 ? Math.round(rpm * (rat[i+1] / rat[i])) : "Crossing Line";
-                    tbody.innerHTML += `<tr><td>Gear ${{i+1}}</td><td>${{rat[i].toFixed(2)}}</td><td>${{overall.toFixed(2)}}</td><td>${{speed.toFixed(1)}} MPH</td><td>Drop to ${{drop}} RPM</td></tr>`;
-                }}
-            }}
-        }}
-
-        function calcMasterSuspension() {{
-            let topX1 = parseFloat(document.getElementById("top-x1").value) || 24;
-            let topZ1 = parseFloat(document.getElementById("top-z1").value) || 6;
-            let topX2 = parseFloat(document.getElementById("top-x2").value) || 0;
-            let topZ2 = parseFloat(document.getElementById("top-z2").value) || 4;
-            
-            let botX1 = parseFloat(document.getElementById("bot-x1").value) || 26;
-            let botZ1 = parseFloat(document.getElementById("bot-z1").value) || -2;
-            let botX2 = parseFloat(document.getElementById("bot-x2").value) || 0;
-            let botZ2 = parseFloat(document.getElementById("bot-z2").value) || -4;
-
-            let cg = parseFloat(document.getElementById("cg-height").value) || 18;
-            let icLength = Math.abs((topZ1 - botZ1) / (((topZ2 - topZ1)/((topX2 - topX1)||0.1)) - ((botZ2 - botZ1)/((botX2 - botX1)||0.1)) || 0.001)).toFixed(1);
-            let icHeight = Math.abs(topZ1 + ((topZ2 - topZ1)/((topX2 - topX1)||0.1)) * icLength).toFixed(1);
-            let antisquat = Math.round(100 + (icHeight - (cg * 0.5)) * 4.5);
-
-            let resEl = document.getElementById("susp-results");
-            if(resEl) {{
-                resEl.innerHTML = `
-                    <strong>4-Link Geometry Analysis:</strong><br>
-                    &bull; Instant Center (IC) Length: <strong>${{icLength}} inches</strong><br>
-                    &bull; Instant Center (IC) Height: <strong>${{icHeight}} inches</strong><br>
-                    &bull; Anti-Squat Percentage: <strong>${{antisquat}}%</strong>
-                `;
-            }}
-        }}
-
-        ["trans", "max-rpm", "tire-dia", "rear-gear", "weight", "hp", "target-trap", "converter-slip"].forEach(id => {{
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcMasterDrivetrain);
-        }});
-        ["wb-weight", "wb", "cg-height", "front-weight", "top-x1", "top-z1", "top-x2", "top-z2", "bot-x1", "bot-z1", "bot-x2", "bot-z2"].forEach(id => {{
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcMasterSuspension);
-        }});
-
-        calcMasterDrivetrain();
-        calcMasterSuspension();
+        {tool_script}
     </script>
 </body>
 </html>
@@ -436,6 +392,7 @@ for row in pages:
         out_f.write(html)
     pages_created += 1
 
+# Generate index.html hub page as the full interactive Master Suite
 index_html = """<!DOCTYPE html>
 <html lang="en">
 <head>
