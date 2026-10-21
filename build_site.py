@@ -336,7 +336,9 @@ index_html = f"""<!DOCTYPE html>
             let rollout = (tire * Math.PI).toFixed(1);
             
             let resEl = document.getElementById("dt-results");
-            if(resEl) resEl.innerHTML = `<strong>Performance Estimate:</strong> Est. 1/4 Mile ET: <strong>${et} sec</strong> | Rollout: ${rollout} in | 1st Gear Overall: ${(rat[0] * gear).toFixed(2)}:1`;
+            if(resEl) {{
+                resEl.innerHTML = `<strong>Performance Estimate:</strong> Est. 1/4 Mile ET: <strong>${{et}} sec</strong> | Rollout: ${{rollout}} in | 1st Gear Overall: ${{(rat[0] * gear).toFixed(2)}}:1`;
+            }}
 
             let tbody = document.getElementById("gear-body");
             if(tbody) {{
@@ -345,7 +347,7 @@ index_html = f"""<!DOCTYPE html>
                     let overall = rat[i] * gear;
                     let speed = (rpm * tire) / (overall * 336);
                     let drop = i < rat.length - 1 ? Math.round(rpm * (rat[i+1] / rat[i])) : "Finish Line";
-                    tbody.innerHTML += `<tr><td>Gear ${i+1}</td><td>${rat[i].toFixed(2)}</td><td>${overall.toFixed(2)}</td><td>${speed.toFixed(1)} MPH</td><td>Drop to ${drop}</td></tr>`;
+                    tbody.innerHTML += `<tr><td>Gear ${{i+1}}</td><td>${{rat[i].toFixed(2)}}</td><td>${{overall.toFixed(2)}}</td><td>${{speed.toFixed(1)}} MPH</td><td>Drop to ${{drop}}</td></tr>`;
                 }}
             }}
         }}
@@ -359,7 +361,7 @@ index_html = f"""<!DOCTYPE html>
             let rearWeight = weight * (1 - (fwt / 100));
             let resEl = document.getElementById("susp-results");
             if(resEl) {{
-                resEl.innerHTML = `<strong>Suspension Geometry:</strong> Rear Static Weight: <strong>${Math.round(rearWeight)} lbs</strong> | Estimated Instant Center Length: <strong>${(wb * 0.45).toFixed(1)} inches</strong> (Optimal for 60ft launch traction).`;
+                resEl.innerHTML = `<strong>Suspension Geometry:</strong> Rear Static Weight: <strong>${{Math.round(rearWeight)}} lbs</strong> | Estimated Instant Center Length: <strong>${{(wb * 0.45).toFixed(1)}} inches</strong> (Optimal for 60ft launch traction).`;
             }}
         }}
 
@@ -373,4 +375,4 @@ index_html = f"""<!DOCTYPE html>
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(index_html)
 
-print("Successfully updated index.html with the elite sticky layout and Other Utilities navigation box!")
+print("Successfully updated index.html with fully escaped JavaScript templates!")
