@@ -337,16 +337,18 @@ for row in pages:
             color: var(--text-muted);
         }}
         .sponsor-list li {{
-            padding: 6px 0;
+            padding: 8px 0;
             border-bottom: 1px dashed var(--border-color);
         }}
         .sponsor-list li:last-child {{ border-bottom: none; }}
-        .sponsor-list li::before {{
-            content: "\\2022";
+        .sponsor-list li a {{
+            color: var(--text-muted);
+            text-decoration: none;
+            display: block;
+            transition: color 0.2s;
+        }}
+        .sponsor-list li a:hover {{
             color: var(--accent-red);
-            font-weight: bold;
-            display: inline-block;
-            width: 1em;
         }}
         .master-header {{
             text-align: center;
@@ -511,14 +513,12 @@ for row in pages:
 
         <div class="sidebar">
             <div class="sidebar-box">
-                <h3>Sponsored By</h3>
+                <h3>Featured Partners</h3>
                 <ul class="sponsor-list">
-                    <li>Holley</li>
-                    <li>VP Racing Fuels</li>
-                    <li>Summit Racing</li>
-                    <li>Racepak</li>
-                    <li>Mickey Thompson</li>
-                    <li>FuelTech</li>
+                    <li><a href="https://www.summitracing.com" target="_blank">Summit Racing Equipment</a></li>
+                    <li><a href="https://www.holley.com" target="_blank">Holley Performance</a></li>
+                    <li><a href="https://vpracingfuels.com" target="_blank">VP Racing Fuels</a></li>
+                    <li><a href="https://www.mickeythompsontires.com" target="_blank">Mickey Thompson Tires</a></li>
                 </ul>
             </div>
             <div class="sidebar-box" style="text-align: center;">
@@ -542,4 +542,4 @@ for row in pages:
         out_f.write(html)
     pages_created += 1
 
-print(f"Successfully built {pages_created} high-end pSEO pages with Formula and Sponsor sidebars!")
+print(f"Successfully updated {pages_created} pages with Featured Affiliate Partners!")
