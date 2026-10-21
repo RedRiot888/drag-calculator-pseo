@@ -129,6 +129,14 @@
             box-sizing: border-box;
             font-size: 0.9rem;
         }
+        optgroup {
+            color: var(--accent-red);
+            font-weight: bold;
+        }
+        option {
+            color: var(--text-main);
+            background: var(--input-bg);
+        }
         input:focus, select:focus {
             outline: none;
             border-color: var(--accent-red);
@@ -216,15 +224,48 @@
             <div class="grid-2">
                 <div>
                     <label>Transmission Profile</label>
-                    <select id="trans">
-                        <option value="powerglide">Powerglide (1.76 / 1.00)</option>
-                        <option value="th350" selected>TH350 (2.52 / 1.52 / 1.00)</option>
-                        <option value="th400">TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
+                    <select id="trans" onchange="applyTransPreset()">
+                        <optgroup label="GM (Chevrolet / GMC)">
+                            <option value="powerglide">Powerglide (1.76 / 1.00 - 2-Speed)</option>
+                            <option value="th350">TH350 (2.52 / 1.52 / 1.00 - 3-Speed)</option>
+                            <option value="th400" selected>TH400 / 4L80e (2.48 / 1.48 / 1.00 - 3-Speed)</option>
+                            <option value="4l60e">4L60e / 4L65E / 4L70E (3.06 / 1.62 / 1.00 / 0.70 - 4-Speed)</option>
+                            <option value="4l80e_overdrive">4L80E w/ Overdrive (2.48 / 1.48 / 1.00 / 0.75 - 4-Speed)</option>
+                            <option value="6l80">6L80 / 6L90 (4.03 / 2.36 / 1.53 / 1.15 / 0.85 / 0.67 - 6-Speed)</option>
+                            <option value="gm_8l90">GM 8L90 / ZL1 Auto (4.56 / 2.97 / 2.08 / 1.69 / 1.27 / 1.00 / 0.85 / 0.65 - 8-Speed)</option>
+                            <option value="muncie_m22">Muncie M22 'Rock Crusher' (2.20 / 1.64 / 1.28 / 1.00 - 4-Speed)</option>
+                            <option value="borg_warner">Borg-Warner Super T-10 (2.43 / 1.61 / 1.23 / 1.00 - 4-Speed)</option>
+                            <option value="tr6060">1LE / ZL1 Camaro TR-6060 (2.66 / 1.78 / 1.30 / 1.00 / 0.74 / 0.50 - 6-Speed)</option>
+                        </optgroup>
+                        <optgroup label="Ford">
+                            <option value="toploader_close">Ford Toploader - Close Ratio (2.32 / 1.69 / 1.29 / 1.00 - 4-Speed)</option>
+                            <option value="toploader_wide">Ford Toploader - Wide Ratio (2.78 / 1.93 / 1.35 / 1.00 - 4-Speed)</option>
+                            <option value="c4_c6">Ford C4 / C6 (2.46 / 1.46 / 1.00 - 3-Speed)</option>
+                            <option value="ford_t5">Ford T-5 Manual (2.95 / 1.94 / 1.34 / 1.00 / 0.73 - 5-Speed)</option>
+                            <option value="mustang_mt82">Mustang GT MT82 (3.66 / 2.43 / 1.69 / 1.32 / 1.00 / 0.65 - 6-Speed)</option>
+                            <option value="shelby_gt500">Shelby GT500 TR-9070 DCT (2.26 / 1.58 / 1.19 / 1.00 / 0.83 / 0.64 / 0.53 - 7-Speed)</option>
+                            <option value="mustang_10r80">Mustang 10R80 Auto (4.70 / 2.99 / 2.15 / 1.77 / 1.52 / 1.28 / 1.00 / 0.85 / 0.69 / 0.64 - 10-Speed)</option>
+                        </optgroup>
+                        <optgroup label="Nissan / Import Swaps">
+                            <option value="nissan_cd009">Nissan CD009 / JK40C (3.79 / 2.32 / 1.62 / 1.00 / 0.79 / 0.63 - 6-Speed)</option>
+                        </optgroup>
+                        <optgroup label="Dodge / Chrysler / Modern Mopar">
+                            <option value="torqueflite">TorqueFlite TF727 (2.45 / 1.45 / 1.00 - 3-Speed)</option>
+                        </optgroup>
+                        <optgroup label="Custom Transmission">
+                            <option value="custom">Custom Transmission (Enter Ratios)</option>
+                        </optgroup>
                     </select>
                 </div>
                 <div>
                     <label>Max Shift RPM</label>
                     <input type="number" id="max-rpm" value="7500" step="100">
+                </div>
+            </div>
+            <div class="grid-2" id="custom-gears-row" style="display: none;">
+                <div style="grid-column: span 2;">
+                    <label>Custom Gear Ratios (comma-separated, e.g. 2.48, 1.48, 1.00)</label>
+                    <input type="text" id="custom-ratios" value="2.48, 1.48, 1.00">
                 </div>
             </div>
             <div class="grid-2">
@@ -272,8 +313,8 @@
                 <p>Shift recovery is determined by multiplying your shift RPM by the ratio of the upcoming higher gear divided by the current gear.</p>
             </div>
             <div class="faq-item">
-                <h4>Why does gear drop matter?</h4>
-                <p>Keeping your engine operating inside its peak power band after a shift prevents acceleration lag down the track.</p>
+                <h4>Why do manufacturer presets and custom gear sets matter?</h4>
+                <p>Manufacturer presets give you instant access to factory and race-proven gear stacks across GM, Ford, Mopar, and imports, while custom ratios accommodate custom gearboxes.</p>
             </div>
         
             </div>
@@ -299,10 +340,50 @@
 
     <script>
         
-        const ratios = { powerglide: [1.76, 1.00], th350: [2.52, 1.52, 1.00], th400: [2.48, 1.48, 1.00] };
+        const ratios = { 
+            powerglide: [1.76, 1.00], 
+            th350: [2.52, 1.52, 1.00], 
+            th400: [2.48, 1.48, 1.00],
+            4l60e: [3.06, 1.62, 1.00, 0.70],
+            4l80e_overdrive: [2.48, 1.48, 1.00, 0.75],
+            6l80: [4.03, 2.36, 1.53, 1.15, 0.85, 0.67],
+            gm_8l90: [4.56, 2.97, 2.08, 1.69, 1.27, 1.00, 0.85, 0.65],
+            muncie_m22: [2.20, 1.64, 1.28, 1.00],
+            borg_warner: [2.43, 1.61, 1.23, 1.00],
+            tr6060: [2.66, 1.78, 1.30, 1.00, 0.74, 0.50],
+            toploader_close: [2.32, 1.69, 1.29, 1.00],
+            toploader_wide: [2.78, 1.93, 1.35, 1.00],
+            c4_c6: [2.46, 1.46, 1.00],
+            ford_t5: [2.95, 1.94, 1.34, 1.00, 0.73],
+            mustang_mt82: [3.66, 2.43, 1.69, 1.32, 1.00, 0.65],
+            shelby_gt500: [2.26, 1.58, 1.19, 1.00, 0.83, 0.64, 0.53],
+            mustang_10r80: [4.70, 2.99, 2.15, 1.77, 1.52, 1.28, 1.00, 0.85, 0.69, 0.64],
+            nissan_cd009: [3.79, 2.32, 1.62, 1.00, 0.79, 0.63],
+            torqueflite: [2.45, 1.45, 1.00]
+        };
+
+        function applyTransPreset() {
+            let val = document.getElementById("trans").value;
+            let customRow = document.getElementById("custom-gears-row");
+            if(val === "custom") {
+                customRow.style.display = "grid";
+            } else {
+                customRow.style.display = "none";
+            }
+            calcTool();
+        }
+
         function calcTool() {
             let tKey = document.getElementById("trans").value;
-            let rat = ratios[tKey] || [2.52, 1.52, 1.00];
+            let rat = [];
+            if(tKey === "custom") {
+                let customStr = document.getElementById("custom-ratios").value;
+                rat = customStr.split(",").map(x => parseFloat(x.trim())).filter(x => !isNaN(x) && x > 0);
+                if(rat.length === 0) rat = [2.48, 1.48, 1.00];
+            } else {
+                rat = ratios[tKey] || [2.48, 1.48, 1.00];
+            }
+
             let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
             let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
             let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
@@ -322,7 +403,7 @@
                 }
             }
         }
-        ["trans", "max-rpm", "tire-dia", "rear-gear"].forEach(id => {
+        ["trans", "max-rpm", "tire-dia", "rear-gear", "custom-ratios"].forEach(id => {
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcTool);
         });
