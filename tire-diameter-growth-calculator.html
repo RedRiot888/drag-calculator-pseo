@@ -110,13 +110,13 @@
             margin-bottom: 12px;
         }
         @media (max-width: 500px) {
-            .grid-2 { grid-template-columns: 1fr; }
+            .layout-grid { grid-template-columns: 1fr; }
         }
         label {
             display: block;
             margin-bottom: 4px;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.80rem;
             color: var(--text-muted);
         }
         input, select {
@@ -225,12 +225,28 @@
             </div>
             <div class="grid-2">
                 <div>
-                    <label>Estimated Growth Factor (%)</label>
+                    <label>Tire Construction Preset</label>
+                    <select id="tire-preset" onchange="applyPreset()">
+                        <option value="custom">Custom Growth Factor</option>
+                        <option value="7.0">Bias-Ply Drag Slick (7.0%)</option>
+                        <option value="4.5" selected>Stiff Sidewall Slick (4.5%)</option>
+                        <option value="2.5">Radial Drag Slick (2.5%)</option>
+                        <option value="1.0">Street Radial / DOT Tire (1.0%)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Growth Factor (%)</label>
                     <input type="number" id="growth-fac" value="4.5" step="0.1">
                 </div>
+            </div>
+            <div class="grid-2">
                 <div>
                     <label>Rear Gear Ratio</label>
                     <input type="number" id="rear-gear" value="3.42" step="0.01">
+                </div>
+                <div>
+                    <label style="opacity:0">Spacer</label>
+                    <div style="font-size:0.80rem; color: var(--text-muted); padding-top:8px;">Select preset above for beginner guidance</div>
                 </div>
             </div>
             <div class="results-box" id="results">Adjust parameters above to calculate high-speed growth and effective rollout.</div>
@@ -253,7 +269,7 @@
 
             <div class="content-box">
                 <h3>Formula Breakdown</h3>
-                <div class="formula-content">Dynamic Diameter = Static Diameter × (1 + (Growth % / 100))<br>Rollout = Diameter × π</div>
+                <div class="formula-content">Dynamic Diameter = Static Diameter × (1 + (Growth % / 100))<br>Rollout = Diameter × π<br>Finish Line RPM = (Trap Speed × Rear Gear × 336) / Dynamic Diameter</div>
             </div>
 
             <div class="content-box">
@@ -262,6 +278,10 @@
             <div class="faq-item">
                 <h4>Why do drag tires grow at high speed?</h4>
                 <p>Centrifugal force at 150+ MPH causes bias-ply and radial slick treads to expand outward, increasing effective rollout and altering finish line RPM.</p>
+            </div>
+            <div class="faq-item">
+                <h4>How do tire construction types affect growth?</h4>
+                <p>Traditional bias-ply slicks expand significantly more (6-8%) due to flexible sidewalls, whereas stiff-sidewall slicks and radial drag tires maintain much tighter dimensional stability (2-4%).</p>
             </div>
         
             </div>
@@ -287,23 +307,35 @@
 
     <script>
         
+        function applyPreset() {
+            let pVal = document.getElementById("tire-preset").value;
+            if(pVal !== "custom") {
+                document.getElementById("growth-fac").value = pVal;
+                calcTool();
+            }
+        }
         function calcTool() {
             let staticDia = parseFloat(document.getElementById("static-dia").value) || 28;
             let trap = parseFloat(document.getElementById("trap-speed").value) || 150;
             let growth = parseFloat(document.getElementById("growth-fac").value) || 4.5;
+            let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
 
             let dynamicDia = staticDia * (1 + (growth / 100));
             let staticRollout = (staticDia * Math.PI).toFixed(1);
             let dynamicRollout = (dynamicDia * Math.PI).toFixed(1);
+            let estFinishRpm = Math.round((trap * gear * 336) / dynamicDia);
 
             let resEl = document.getElementById("results");
             if(resEl) {
-                resEl.innerHTML = `<strong>Tire Results:</strong> Static Rollout: <strong>${staticRollout} in</strong> | Growth Diameter: <strong>${dynamicDia.toFixed(2)} in</strong> | Dynamic Rollout: <strong>${dynamicRollout} in</strong>`;
+                resEl.innerHTML = `<strong>Tire Results:</strong> Static Rollout: <strong>${staticRollout} in</strong> | Dynamic Dia: <strong>${dynamicDia.toFixed(2)} in</strong> | Dynamic Rollout: <strong>${dynamicRollout} in</strong><br>Est. Finish Line RPM: <strong>${estFinishRpm} RPM</strong>`;
             }
         }
         ["static-dia", "trap-speed", "growth-fac", "rear-gear"].forEach(id => {
             let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
+            if(el) el.addEventListener("input", () => {
+                document.getElementById("tire-preset").value = "custom";
+                calcTool();
+            });
         });
         calcTool();
         
