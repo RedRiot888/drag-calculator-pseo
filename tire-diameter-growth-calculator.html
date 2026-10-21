@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tire Diameter Growth & Rollout Drag Calculator | DragCalculators.com</title>
+    <!-- Linked Centralized Math Core -->
+    <script src="calculator-core.js"></script>
     <style>
         :root { --bg-dark: #121212; --card-bg: #1e1e1e; --accent-red: #e50914; --text-main: #f1f1f1; --text-muted: #aaa; --border-color: #333; }
         body { font-family: sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; }
@@ -197,19 +199,19 @@
         calcSuper2();
     </script>
     
-    <script>
-        function calcTire() {
-            let staticDia = parseFloat(document.getElementById("static-dia").value) || 28;
-            let rollout = staticDia * Math.PI;
-            let resEl = document.getElementById("results");
-            if(resEl) resEl.innerHTML = `<strong>Tire Results:</strong> Static Rollout: ${rollout.toFixed(1)} inches`;
-        }
-        ["static-dia", "trap-speed", "growth-fac", "rear-gear"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTire);
-        });
-        calcTire();
-    </script>
+        <script>
+            function calcTire() {
+                let staticDia = parseFloat(document.getElementById("static-dia").value) || 28;
+                let rollout = staticDia * Math.PI;
+                let resEl = document.getElementById("results");
+                if(resEl) resEl.innerHTML = `<strong>Tire Results:</strong> Static Rollout: ${rollout.toFixed(1)} inches`;
+            }
+            ["static-dia", "trap-speed", "growth-fac", "rear-gear"].forEach(id => {
+                let el = document.getElementById(id);
+                if(el) el.addEventListener("input", calcTire);
+            });
+            calcTire();
+        </script>
         
 </body>
 </html>

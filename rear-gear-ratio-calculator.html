@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ring and Pinion Rear Gear Quarter-Mile Calculator | DragCalculators.com</title>
+    <!-- Linked Centralized Math Core -->
+    <script src="calculator-core.js"></script>
     <style>
         :root { --bg-dark: #121212; --card-bg: #1e1e1e; --accent-red: #e50914; --text-main: #f1f1f1; --text-muted: #aaa; --border-color: #333; }
         body { font-family: sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; }
@@ -205,34 +207,34 @@
         calcSuper2();
     </script>
     
-    <script>
-        const ratios = { powerglide: [1.76, 1.00], th400: [2.48, 1.48, 1.00], th350: [2.52, 1.52, 1.00] };
-        function calc() {
-            let tKey = document.getElementById("trans").value;
-            let rat = ratios[tKey] || [1.76, 1.00];
-            let rpm = parseFloat(document.getElementById("max-rpm").value);
-            let tire = parseFloat(document.getElementById("tire-dia").value);
-            let gear = parseFloat(document.getElementById("rear-gear").value);
-            
-            let resEl = document.getElementById("results");
-            if(resEl) resEl.innerHTML = `<strong>Analysis:</strong> Tire Rollout: ${(tire * Math.PI).toFixed(1)} in | 1st Gear Ratio: ${(rat[0] * gear).toFixed(2)}:1`;
+        <script>
+            const ratios = { powerglide: [1.76, 1.00], th400: [2.48, 1.48, 1.00], th350: [2.52, 1.52, 1.00] };
+            function calc() {
+                let tKey = document.getElementById("trans").value;
+                let rat = ratios[tKey] || [1.76, 1.00];
+                let rpm = parseFloat(document.getElementById("max-rpm").value);
+                let tire = parseFloat(document.getElementById("tire-dia").value);
+                let gear = parseFloat(document.getElementById("rear-gear").value);
+                
+                let resEl = document.getElementById("results");
+                if(resEl) resEl.innerHTML = `<strong>Analysis:</strong> Tire Rollout: ${(tire * Math.PI).toFixed(1)} in | 1st Gear Ratio: ${(rat[0] * gear).toFixed(2)}:1`;
 
-            let tbody = document.getElementById("gear-body");
-            if(tbody) {
-                tbody.innerHTML = "";
-                for(let i=0; i<rat.length; i++) {
-                    let overall = rat[i] * gear;
-                    let speed = (rpm * tire) / (overall * 336);
-                    tbody.innerHTML += `<tr><td>Gear ${i+1}</td><td>${rat[i].toFixed(2)}</td><td>${overall.toFixed(2)}</td><td>${speed.toFixed(1)} MPH</td><td>Shift Recovery Active</td></tr>`;
+                let tbody = document.getElementById("gear-body");
+                if(tbody) {
+                    tbody.innerHTML = "";
+                    for(let i=0; i<rat.length; i++) {
+                        let overall = rat[i] * gear;
+                        let speed = (rpm * tire) / (overall * 336);
+                        tbody.innerHTML += `<tr><td>Gear ${i+1}</td><td>${rat[i].toFixed(2)}</td><td>${overall.toFixed(2)}</td><td>${speed.toFixed(1)} MPH</td><td>Shift Recovery Active</td></tr>`;
+                    }
                 }
             }
-        }
-        ["trans", "max-rpm", "tire-dia", "rear-gear"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calc);
-        });
-        calc();
-    </script>
+            ["trans", "max-rpm", "tire-dia", "rear-gear"].forEach(id => {
+                let el = document.getElementById(id);
+                if(el) el.addEventListener("input", calc);
+            });
+            calc();
+        </script>
         
 </body>
 </html>

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turbo Sizing, Compressor Map & Boost Calculator | DragCalculators.com</title>
+    <!-- Linked Centralized Math Core -->
+    <script src="calculator-core.js"></script>
     <style>
         :root { --bg-dark: #121212; --card-bg: #1e1e1e; --accent-red: #e50914; --text-main: #f1f1f1; --text-muted: #aaa; --border-color: #333; }
         body { font-family: sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; }
@@ -204,20 +206,20 @@
         calcSuper2();
     </script>
     
-    <script>
-        function calcTurbo() {
-            let hp = parseFloat(document.getElementById("hp").value) || 1000;
-            let boost = parseFloat(document.getElementById("boost").value) || 25;
-            let airflow = (hp * 0.60) / 6.0;
-            let resEl = document.getElementById("results");
-            if(resEl) resEl.innerHTML = `<strong>Turbo Results:</strong> Required Airflow: ${airflow.toFixed(1)} lbs/min`;
-        }
-        ["hp", "fuel", "boost", "config"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTurbo);
-        });
-        calcTurbo();
-    </script>
+        <script>
+            function calcTurbo() {
+                let hp = parseFloat(document.getElementById("hp").value) || 1000;
+                let boost = parseFloat(document.getElementById("boost").value) || 25;
+                let airflow = (hp * 0.60) / 6.0;
+                let resEl = document.getElementById("results");
+                if(resEl) resEl.innerHTML = `<strong>Turbo Results:</strong> Required Airflow: ${airflow.toFixed(1)} lbs/min`;
+            }
+            ["hp", "fuel", "boost", "config"].forEach(id => {
+                let el = document.getElementById(id);
+                if(el) el.addEventListener("input", calcTurbo);
+            });
+            calcTurbo();
+        </script>
         
 </body>
 </html>

@@ -51,34 +51,34 @@ for row in pages:
             </table>
         """
         calc_script = """
-    <script>
-        const ratios = { powerglide: [1.76, 1.00], th400: [2.48, 1.48, 1.00], th350: [2.52, 1.52, 1.00] };
-        function calc() {
-            let tKey = document.getElementById("trans").value;
-            let rat = ratios[tKey] || [1.76, 1.00];
-            let rpm = parseFloat(document.getElementById("max-rpm").value);
-            let tire = parseFloat(document.getElementById("tire-dia").value);
-            let gear = parseFloat(document.getElementById("rear-gear").value);
-            
-            let resEl = document.getElementById("results");
-            if(resEl) resEl.innerHTML = `<strong>Analysis:</strong> Tire Rollout: ${(tire * Math.PI).toFixed(1)} in | 1st Gear Ratio: ${(rat[0] * gear).toFixed(2)}:1`;
+        <script>
+            const ratios = { powerglide: [1.76, 1.00], th400: [2.48, 1.48, 1.00], th350: [2.52, 1.52, 1.00] };
+            function calc() {
+                let tKey = document.getElementById("trans").value;
+                let rat = ratios[tKey] || [1.76, 1.00];
+                let rpm = parseFloat(document.getElementById("max-rpm").value);
+                let tire = parseFloat(document.getElementById("tire-dia").value);
+                let gear = parseFloat(document.getElementById("rear-gear").value);
+                
+                let resEl = document.getElementById("results");
+                if(resEl) resEl.innerHTML = `<strong>Analysis:</strong> Tire Rollout: ${(tire * Math.PI).toFixed(1)} in | 1st Gear Ratio: ${(rat[0] * gear).toFixed(2)}:1`;
 
-            let tbody = document.getElementById("gear-body");
-            if(tbody) {
-                tbody.innerHTML = "";
-                for(let i=0; i<rat.length; i++) {
-                    let overall = rat[i] * gear;
-                    let speed = (rpm * tire) / (overall * 336);
-                    tbody.innerHTML += `<tr><td>Gear ${i+1}</td><td>${rat[i].toFixed(2)}</td><td>${overall.toFixed(2)}</td><td>${speed.toFixed(1)} MPH</td><td>Shift Recovery Active</td></tr>`;
+                let tbody = document.getElementById("gear-body");
+                if(tbody) {
+                    tbody.innerHTML = "";
+                    for(let i=0; i<rat.length; i++) {
+                        let overall = rat[i] * gear;
+                        let speed = (rpm * tire) / (overall * 336);
+                        tbody.innerHTML += `<tr><td>Gear ${i+1}</td><td>${rat[i].toFixed(2)}</td><td>${overall.toFixed(2)}</td><td>${speed.toFixed(1)} MPH</td><td>Shift Recovery Active</td></tr>`;
+                    }
                 }
             }
-        }
-        ["trans", "max-rpm", "tire-dia", "rear-gear"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calc);
-        });
-        calc();
-    </script>
+            ["trans", "max-rpm", "tire-dia", "rear-gear"].forEach(id => {
+                let el = document.getElementById(id);
+                if(el) el.addEventListener("input", calc);
+            });
+            calc();
+        </script>
         """
     elif category == "Supercharger":
         primary_title = "Supercharger Pulley & Boost Calculator"
@@ -106,20 +106,20 @@ for row in pages:
             <div class="results" id="results">Adjust parameters above to calculate pulley ratio and estimated boost pressure.</div>
         """
         calc_script = """
-    <script>
-        function calcSupercharger() {
-            let crank = parseFloat(document.getElementById("crank-dia").value) || 8.0;
-            let blower = parseFloat(document.getElementById("blower-dia").value) || 3.0;
-            let ratio = crank / blower;
-            let resEl = document.getElementById("results");
-            if(resEl) resEl.innerHTML = `<strong>Supercharger Results:</strong> Pulley Ratio: ${ratio.toFixed(2)}:1`;
-        }
-        ["crank-dia", "blower-dia", "crank-rpm", "boost-fac"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcSupercharger);
-        });
-        calcSupercharger();
-    </script>
+        <script>
+            function calcSupercharger() {
+                let crank = parseFloat(document.getElementById("crank-dia").value) || 8.0;
+                let blower = parseFloat(document.getElementById("blower-dia").value) || 3.0;
+                let ratio = crank / blower;
+                let resEl = document.getElementById("results");
+                if(resEl) resEl.innerHTML = `<strong>Supercharger Results:</strong> Pulley Ratio: ${ratio.toFixed(2)}:1`;
+            }
+            ["crank-dia", "blower-dia", "crank-rpm", "boost-fac"].forEach(id => {
+                let el = document.getElementById(id);
+                if(el) el.addEventListener("input", calcSupercharger);
+            });
+            calcSupercharger();
+        </script>
         """
     elif category == "Turbo":
         primary_title = "Turbo Airflow & Compressor Map Calculator"
@@ -154,20 +154,20 @@ for row in pages:
             <div class="results" id="results">Adjust parameters to calculate required airflow (lbs/min) and pressure ratio.</div>
         """
         calc_script = """
-    <script>
-        function calcTurbo() {
-            let hp = parseFloat(document.getElementById("hp").value) || 1000;
-            let boost = parseFloat(document.getElementById("boost").value) || 25;
-            let airflow = (hp * 0.60) / 6.0;
-            let resEl = document.getElementById("results");
-            if(resEl) resEl.innerHTML = `<strong>Turbo Results:</strong> Required Airflow: ${airflow.toFixed(1)} lbs/min`;
-        }
-        ["hp", "fuel", "boost", "config"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTurbo);
-        });
-        calcTurbo();
-    </script>
+        <script>
+            function calcTurbo() {
+                let hp = parseFloat(document.getElementById("hp").value) || 1000;
+                let boost = parseFloat(document.getElementById("boost").value) || 25;
+                let airflow = (hp * 0.60) / 6.0;
+                let resEl = document.getElementById("results");
+                if(resEl) resEl.innerHTML = `<strong>Turbo Results:</strong> Required Airflow: ${airflow.toFixed(1)} lbs/min`;
+            }
+            ["hp", "fuel", "boost", "config"].forEach(id => {
+                let el = document.getElementById(id);
+                if(el) el.addEventListener("input", calcTurbo);
+            });
+            calcTurbo();
+        </script>
         """
     else:
         primary_title = "Tire Diameter Growth & Rollout Calculator"
@@ -195,19 +195,19 @@ for row in pages:
             <div class="results" id="results">Adjust parameters above to calculate high-speed growth and effective rollout.</div>
         """
         calc_script = """
-    <script>
-        function calcTire() {
-            let staticDia = parseFloat(document.getElementById("static-dia").value) || 28;
-            let rollout = staticDia * Math.PI;
-            let resEl = document.getElementById("results");
-            if(resEl) resEl.innerHTML = `<strong>Tire Results:</strong> Static Rollout: ${rollout.toFixed(1)} inches`;
-        }
-        ["static-dia", "trap-speed", "growth-fac", "rear-gear"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTire);
-        });
-        calcTire();
-    </script>
+        <script>
+            function calcTire() {
+                let staticDia = parseFloat(document.getElementById("static-dia").value) || 28;
+                let rollout = staticDia * Math.PI;
+                let resEl = document.getElementById("results");
+                if(resEl) resEl.innerHTML = `<strong>Tire Results:</strong> Static Rollout: ${rollout.toFixed(1)} inches`;
+            }
+            ["static-dia", "trap-speed", "growth-fac", "rear-gear"].forEach(id => {
+                let el = document.getElementById(id);
+                if(el) el.addEventListener("input", calcTire);
+            });
+            calcTire();
+        </script>
         """
 
     html = f"""<!DOCTYPE html>
@@ -216,6 +216,8 @@ for row in pages:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{target_keyword} | DragCalculators.com</title>
+    <!-- Linked Centralized Math Core -->
+    <script src="calculator-core.js"></script>
     <style>
         :root {{ --bg-dark: #121212; --card-bg: #1e1e1e; --accent-red: #e50914; --text-main: #f1f1f1; --text-muted: #aaa; --border-color: #333; }}
         body {{ font-family: sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; }}
@@ -396,13 +398,15 @@ for row in pages:
         out_f.write(html)
     pages_created += 1
 
-# Generate index.html hub page with Featured Quarter-Mile Calculator
+# Generate index.html hub page utilizing DragCalc core math functions
 index_html = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Drag Racing Calculators Hub</title>
+    <!-- Linked Centralized Math Core -->
+    <script src="calculator-core.js"></script>
     <style>
         :root { --bg-dark: #121212; --card-bg: #1e1e1e; --accent-red: #e50914; --text-main: #f1f1f1; --text-muted: #aaa; --border-color: #333; }
         body { font-family: sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; }
@@ -485,13 +489,13 @@ index_html += """
             let weight = parseFloat(document.getElementById("hub-weight").value) || 3200;
             let hp = parseFloat(document.getElementById("hub-hp").value) || 1000;
             
-            // Basic ET and Trap Speed estimation formulas for drag racing
-            let et = 5.825 * Math.cbrt(weight / hp);
-            let trap = 234.0 * Math.cbrt(hp / weight);
+            // Calls our modular math core from calculator-core.js!
+            let et = DragCalc.quarterMileET(weight, hp);
+            let trap = DragCalc.trapSpeed(weight, hp);
             
             let resEl = document.getElementById("hub-results");
             if(resEl) {
-                resEl.innerHTML = `<strong>Estimated Performance:</strong> 1/4 Mile ET: <strong>${et.toFixed(2)} seconds</strong> | Trap Speed: <strong>${trap.toFixed(1)} MPH</strong>`;
+                resEl.innerHTML = `<strong>Estimated Performance:</strong> 1/4 Mile ET: <strong>${et} seconds</strong> | Trap Speed: <strong>${trap} MPH</strong>`;
             }
         }
         ["hub-weight", "hub-hp"].forEach(id => {

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Drag Racing Calculators Hub</title>
+    <!-- Linked Centralized Math Core -->
+    <script src="calculator-core.js"></script>
     <style>
         :root { --bg-dark: #121212; --card-bg: #1e1e1e; --accent-red: #e50914; --text-main: #f1f1f1; --text-muted: #aaa; --border-color: #333; }
         body { font-family: sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; }
@@ -108,13 +110,13 @@
             let weight = parseFloat(document.getElementById("hub-weight").value) || 3200;
             let hp = parseFloat(document.getElementById("hub-hp").value) || 1000;
             
-            // Basic ET and Trap Speed estimation formulas for drag racing
-            let et = 5.825 * Math.cbrt(weight / hp);
-            let trap = 234.0 * Math.cbrt(hp / weight);
+            // Calls our modular math core from calculator-core.js!
+            let et = DragCalc.quarterMileET(weight, hp);
+            let trap = DragCalc.trapSpeed(weight, hp);
             
             let resEl = document.getElementById("hub-results");
             if(resEl) {
-                resEl.innerHTML = `<strong>Estimated Performance:</strong> 1/4 Mile ET: <strong>${et.toFixed(2)} seconds</strong> | Trap Speed: <strong>${trap.toFixed(1)} MPH</strong>`;
+                resEl.innerHTML = `<strong>Estimated Performance:</strong> 1/4 Mile ET: <strong>${et} seconds</strong> | Trap Speed: <strong>${trap} MPH</strong>`;
             }
         }
         ["hub-weight", "hub-hp"].forEach(id => {
