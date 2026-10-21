@@ -276,7 +276,7 @@ for row in pages:
                 <div>
                     <label>Transmission Profile</label>
                     <select id="trans2">
-                        <option value="powerglide">Powerglide (1.76 / 1.00 - 2-Speed)</option>
+                        <option value="powerglide">Powerglide (1.76 / 1.00)</option>
                         <option value="th400">TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
                     </select>
                 </div>
@@ -286,7 +286,7 @@ for row in pages:
                 <div><label>Tire Diameter</label><input type="number" id="tire-dia2" value="{tire}"></div>
                 <div><label>Rear Gear</label><input type="number" id="rear-gear2" value="{gear}"></div>
             </div>
-            <div class="results" id="results2">Drivetrain analysis active.</div>
+            <div class="results" id="results2">Adjust parameters to calculate shift speeds.</div>
         </div>
 
         <div id="turbo-tab" class="tab-content box">
@@ -295,7 +295,7 @@ for row in pages:
                 <div><label>Target HP</label><input type="number" id="hp2" value="1000"></div>
                 <div><label>Target Boost (PSI)</label><input type="number" id="boost2" value="25"></div>
             </div>
-            <div class="results" id="results-turbo">Turbo analysis active.</div>
+            <div class="results" id="results-turbo">Adjust parameters to calculate airflow.</div>
         </div>
 
         <div id="supercharger-tab" class="tab-content box">
@@ -304,7 +304,7 @@ for row in pages:
                 <div><label>Crank Pulley</label><input type="number" id="crank2" value="8.0"></div>
                 <div><label>Blower Pulley</label><input type="number" id="blower2" value="3.0"></div>
             </div>
-            <div class="results" id="results-super">Supercharger math active.</div>
+            <div class="results" id="results-super">Adjust pulleys to calculate ratio.</div>
         </div>
     </div>
 
@@ -339,15 +339,52 @@ for row in pages:
             let antisquat = Math.round(100 + (top - bot) * 12.5 + (cg * 1.5));
             let icLength = (top * bot / Math.abs(top - bot + 0.1)).toFixed(1);
             let el = document.getElementById("susp-results");
-            if(el) {{
-                el.innerHTML = `<strong>4-Link Analysis:</strong> Anti-Squat: ${{antisquat}}%, IC Length: ${{icLength}} inches`;
-            }}
+            if(el) el.innerHTML = `<strong>4-Link Analysis:</strong> Anti-Squat: ${{antisquat}}%, IC Length: ${{icLength}} inches`;
         }}
         ["wb", "cg-height", "top-bar", "bot-bar"].forEach(id => {{
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcSuspension);
         }});
         calcSuspension();
+
+        function calcDrivetrain2() {{
+            let rpm = parseFloat(document.getElementById("max-rpm2").value) || 7500;
+            let tire = parseFloat(document.getElementById("tire-dia2").value) || 28;
+            let gear = parseFloat(document.getElementById("rear-gear2").value) || 3.5;
+            let speed = (rpm * tire) / (gear * 336);
+            let el = document.getElementById("results2");
+            if(el) el.innerHTML = `<strong>Drivetrain Results:</strong> Top Speed in 1:1 Gear: ${{speed.toFixed(1)}} MPH`;
+        }}
+        ["max-rpm2", "tire-dia2", "rear-gear2"].forEach(id => {{
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcDrivetrain2);
+        }});
+        calcDrivetrain2();
+
+        function calcTurbo2() {{
+            let hp = parseFloat(document.getElementById("hp2").value) || 1000;
+            let airflow = (hp * 0.60) / 6.0;
+            let el = document.getElementById("results-turbo");
+            if(el) el.innerHTML = `<strong>Turbo Results:</strong> Estimated Airflow: ${{airflow.toFixed(1)}} lbs/min`;
+        }}
+        ["hp2", "boost2"].forEach(id => {{
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTurbo2);
+        }});
+        calcTurbo2();
+
+        function calcSuper2() {{
+            let crank = parseFloat(document.getElementById("crank2").value) || 8.0;
+            let blower = parseFloat(document.getElementById("blower2").value) || 3.0;
+            let ratio = crank / blower;
+            let el = document.getElementById("results-super");
+            if(el) el.innerHTML = `<strong>Supercharger Results:</strong> Pulley Ratio: ${{ratio.toFixed(2)}}:1`;
+        }}
+        ["crank2", "blower2"].forEach(id => {{
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcSuper2);
+        }});
+        calcSuper2();
     </script>
     {calc_script}
 </body>
@@ -359,7 +396,7 @@ for row in pages:
         out_f.write(html)
     pages_created += 1
 
-# Generate index.html hub page
+# Generate index.html hub page with Featured Quarter-Mile Calculator
 index_html = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -372,7 +409,14 @@ index_html = """<!DOCTYPE html>
         header { background: #1a1a1a; border-bottom: 2px solid var(--accent-red); padding: 40px 20px; text-align: center; }
         header h1 { color: var(--accent-red); font-size: 2.2rem; text-transform: uppercase; margin-bottom: 10px; }
         header p { color: var(--text-muted); font-size: 1.1rem; }
-        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        .featured-box { background: var(--card-bg); border: 2px solid var(--accent-red); border-radius: 8px; padding: 30px; margin-bottom: 40px; }
+        .featured-box h2 { color: var(--accent-red); margin-top: 0; text-transform: uppercase; font-size: 1.6rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+        input { width: 100%; padding: 10px; background: #2a2a2a; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; box-sizing: border-box; }
+        .results { margin-top: 20px; background: #161616; border-left: 4px solid var(--accent-red); padding: 15px; border-radius: 4px; font-size: 1.1rem; }
+        .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
         .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 30px; transition: transform 0.2s, border-color 0.2s; }
         .card:hover { transform: translateY(-3px); border-color: var(--accent-red); }
         .card h3 { color: var(--accent-red); margin-top: 0; font-size: 1.4rem; text-transform: uppercase; }
@@ -389,7 +433,26 @@ index_html = """<!DOCTYPE html>
         <h1>Ultimate Drag Racing Calculators</h1>
         <p>Engineered for high-horsepower drag setups, turbo LS builds, and precise track tuning.</p>
     </header>
+    
     <div class="container">
+        <!-- Featured Quarter-Mile Calculator on Main Screen -->
+        <div class="featured-box">
+            <h2>&#9889; Featured Quarter-Mile & ET Estimator</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Quickly estimate your vehicle's 1/4 mile ET and trap speed based on weight and horsepower.</p>
+            <div class="grid-2">
+                <div>
+                    <label>Vehicle Weight (lbs with driver)</label>
+                    <input type="number" id="hub-weight" value="3200" step="50">
+                </div>
+                <div>
+                    <label>Rear Wheel Horsepower (WHP)</label>
+                    <input type="number" id="hub-hp" value="1000" step="25">
+                </div>
+            </div>
+            <div class="results" id="hub-results">Adjust vehicle parameters above to calculate estimated performance.</div>
+        </div>
+
+        <div class="categories-grid">
 """
 
 categories = {}
@@ -401,22 +464,45 @@ for p in pages:
 
 for cat, cat_pages in categories.items():
     index_html += f"""
-        <div class="card">
-            <h3>{cat} Tools</h3>
-            <p>Direct access to optimized {cat.lower()} performance calculators.</p>
-            <ul class="links-list">
+            <div class="card">
+                <h3>{cat} Tools</h3>
+                <p>Direct access to optimized {cat.lower()} performance calculators.</p>
+                <ul class="links-list">
     """
     for cp in cat_pages:
         index_html += f'<li><a href="{cp["slug"]}.html">&rarr; {cp["target_keyword"]}</a></li>\n'
     index_html += """
-            </ul>
-        </div>
+                </ul>
+            </div>
     """
 
 index_html += """
+        </div>
     </div>
+
+    <script>
+        function calcHubQuarterMile() {
+            let weight = parseFloat(document.getElementById("hub-weight").value) || 3200;
+            let hp = parseFloat(document.getElementById("hub-hp").value) || 1000;
+            
+            // Basic ET and Trap Speed estimation formulas for drag racing
+            let et = 5.825 * Math.cbrt(weight / hp);
+            let trap = 234.0 * Math.cbrt(hp / weight);
+            
+            let resEl = document.getElementById("hub-results");
+            if(resEl) {
+                resEl.innerHTML = `<strong>Estimated Performance:</strong> 1/4 Mile ET: <strong>${et.toFixed(2)} seconds</strong> | Trap Speed: <strong>${trap.toFixed(1)} MPH</strong>`;
+            }
+        }
+        ["hub-weight", "hub-hp"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcHubQuarterMile);
+        });
+        calcHubQuarterMile();
+    </script>
+
     <footer>
-        &copy; 2026 DragCalculators.com. All rights  reserved. Precision Automotive Tuning Data.
+        &copy; 2026 DragCalculators.com. All rights reserved. Precision Automotive Tuning Data.
     </footer>
 </body>
 </html>
