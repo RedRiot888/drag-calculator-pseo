@@ -1047,15 +1047,15 @@ for row in pages:
         """
     elif category == "Turbo":
         primary_title = "Turbo Sizing & Turbocharger Matching Calculator"
-        formula_text = "Required Airflow (lb/min) = (Target Flywheel HP x BSFC) / 6.0<br>Pressure Ratio = (Target Boost + 14.7) / 14.7"
+        formula_text = "Required Airflow (lb/min) = (Target Flywheel HP x BSFC) / 6.0<br>Pressure Ratio = (Target Boost + 14.7) / 14.7<br>Application Factor = Adjusts turbine A/R & wheel trim for spool vs top-end."
         faqs = """
             <div class="faq-item">
-                <h4>How do I choose the correct turbocharger size?</h4>
-                <p>Match your total required airflow in lb/min and compressor pressure ratio to manufacturer compressor maps, ensuring surge lines and choke limits are respected.</p>
+                <h4>How does vehicle application affect turbo choice?</h4>
+                <p>Street cars and drag-and-drive builds require faster spool and broader torque curves (smaller turbine A/R), while full race cars prioritize maximum top-end airflow and lower backpressure (larger turbine A/R).</p>
             </div>
             <div class="faq-item" style="margin-top: 10px;">
-                <h4>Single vs. Twin Turbochargers: Which is better?</h4>
-                <p>Singles are simpler to plumb and excel at top-end power. Twins spool faster due to divided exhaust energy and are ideal for responsive street/strip setups.</p>
+                <h4>How do I choose the correct turbocharger size?</h4>
+                <p>Match your total required airflow in lb/min and compressor pressure ratio to manufacturer compressor maps, ensuring surge lines and choke limits are respected.</p>
             </div>
         """
         primary_tool_html = """
@@ -1070,6 +1070,16 @@ for row in pages:
             <div class="grid-2">
                 <div><label>Fuel BSFC</label><select id="bsfc"><option value="0.60">Gasoline (0.60)</option><option value="0.85" selected>E85 (0.85)</option></select></div>
                 <div><label>Turbo Count</label><select id="turbos"><option value="1" selected>Single</option><option value="2">Twin</option></select></div>
+            </div>
+            <div class="grid-2">
+                <div style="grid-column: span 2;">
+                    <label>Vehicle Application & Purpose</label>
+                    <select id="app-type">
+                        <option value="street">Street / Weekend Cruiser (Fast Spool & Low-End Response)</option>
+                        <option value="dragndrive" selected>Drag-and-Drive / Street-Strip (Balanced Spool & Top-End)</option>
+                        <option value="race">Full Blown Race Car (Maximum Top-End & Low Backpressure)</option>
+                    </select>
+                </div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
             
@@ -1089,6 +1099,7 @@ for row in pages:
             let boost = parseFloat(document.getElementById("boost").value) || 22;
             let bsfc = parseFloat(document.getElementById("bsfc").value) || 0.85;
             let count = parseInt(document.getElementById("turbos").value) || 1;
+            let app = document.getElementById("app-type").value;
             
             let totalAirflow = (hp * bsfc) / 6.0;
             let perTurbo = totalAirflow / count;
@@ -1101,42 +1112,65 @@ for row in pages:
             let ar = "1.10 A/R T4 Divided";
             let price = "$1,099.99";
             
-            if(perTurbo > 90) {
-                brand = "Precision Turbo Pro Mod Series";
-                model = "PM88 / 88mm CEA Turbine";
-                ar = "1.28 A/R T6 Housing";
-                price = "$2,899.99";
-            } else if(perTurbo > 75) {
-                brand = "Garrett GTX Series";
-                model = "GTX4204R / 82mm Ball Bearing";
-                ar = "1.15 A/R Stainless V-Band";
-                price = "$2,499.99";
-            } else if(perTurbo > 55) {
-                brand = "BorgWarner S400SX";
-                model = "S480 / 80mm Extended Tip";
-                ar = "1.25 A/R T4 Divided";
-                price = "$1,249.99";
-            } else if(perTurbo > 35) {
-                brand = "Precision Turbo Next Gen";
-                model = "7675 CEA Journal Bearing";
-                ar = "0.96 A/R T4";
-                price = "$1,799.99";
+            if(app === "street") {
+                if(perTurbo > 75) {
+                    brand = "Precision Turbo CEA Ball Bearing";
+                    model = "7675 Gen II Ball Bearing";
+                    ar = "0.81 A/R T4 (Quick Spool)";
+                    price = "$2,399.99";
+                } else {
+                    brand = "Garrett GTX Gen II Series";
+                    model = "GTX3584RS / 67mm";
+                    ar = "0.72 A/R V-Band (Instant Spool)";
+                    price = "$2,199.99";
+                }
+            } else if(app === "dragndrive") {
+                if(perTurbo > 90) {
+                    brand = "Precision Turbo Pro Mod";
+                    model = "PM85 / 85mm CEA Turbine";
+                    ar = "1.15 A/R T4 Divided";
+                    price = "$2,699.99";
+                } else if(perTurbo > 60) {
+                    brand = "BorgWarner S400SX-III";
+                    model = "S480 / 80mm Extended Tip";
+                    ar = "1.25 A/R T4 Divided";
+                    price = "$1,249.99";
+                } else {
+                    brand = "BorgWarner S300SX-E";
+                    model = "S369 / 69mm Turbine";
+                    ar = "0.91 A/R T4";
+                    price = "$899.99";
+                }
             } else {
-                brand = "Garrett GT3076R Gen II";
-                model = "58mm Dual Ball Bearing";
-                ar = "0.82 A/R T3";
-                price = "$1,499.99";
+                // Race car
+                if(perTurbo > 90) {
+                    brand = "Precision Turbo Pro Mod Series";
+                    model = "PM91 / 91mm CEA Pro Mod";
+                    ar = "1.39 A/R T6 Housing";
+                    price = "$3,199.99";
+                } else if(perTurbo > 70) {
+                    brand = "Garrett Pro Mod Series";
+                    model = "GTX5533R Gen II / 88mm";
+                    ar = "1.40 A/R Stainless T6";
+                    price = "$3,499.99";
+                } else {
+                    brand = "BorgWarner S400SX";
+                    model = "S476R Race Spec";
+                    ar = "1.32 A/R T4 Divided";
+                    price = "$1,499.99";
+                }
             }
 
             let setupType = (count === 2) ? "Twin Turbo Setup (Dual Units)" : "Single Turbo Setup";
+            let appName = (app === "street") ? "Street / Weekend Cruiser" : (app === "dragndrive" ? "Drag-and-Drive / Street-Strip" : "Full Blown Race Car");
 
             document.getElementById("turbo-part-details").innerHTML = 
-                "<strong>Configuration:</strong> " + setupType + "<br>" +
+                "<strong>Application:</strong> " + appName + " (" + setupType + ")<br>" +
                 "<strong>Model:</strong> " + brand + " &mdash; " + model + "<br>" +
                 "<strong>A/R Ratio:</strong> " + ar + " | <strong>Est. Price:</strong> " + price + "<br>" +
-                "<span style='color: var(--text-muted); font-size: 0.75rem;'><strong>Match Quality:</strong> Optimized for " + Math.round(totalAirflow) + " lb/min total airflow at " + pr.toFixed(1) + " PR.</span>";
+                "<span style='color: var(--text-muted); font-size: 0.75rem;'><strong>Match Quality:</strong> Tuned for " + Math.round(totalAirflow) + " lb/min airflow at " + pr.toFixed(1) + " PR.</span>";
         }
-        ["disp", "hp", "rpm", "boost", "bsfc", "turbos"].forEach(id => {
+        ["disp", "hp", "rpm", "boost", "bsfc", "turbos", "app-type"].forEach(id => {
             let el = document.getElementById(id);
             if(el) {
                 el.addEventListener("input", calcTool);
