@@ -3,6 +3,7 @@ import csv
 
 output_dir = "."
 
+# Ensure pseo_pages_list.csv includes the new Fuel Injector Calculator
 csv_content = """slug,target_keyword,category,rear_gear,tire_diameter
 transmission-shift-recovery-calculator,Transmission Shift Recovery & Gear Drop Calculator,Transmission,3.42,28.0
 turbo-sizing-calculator,Turbo Sizing & Turbocharger Matching Calculator,Turbo,3.42,28.0
@@ -10,6 +11,7 @@ supercharger-pulley-calculator,Supercharger Pulley Ratio & Boost Pressure Calcul
 rear-gear-calculator,Ring and Pinion Rear Gear Quarter-Mile Calculator,RearGear,4.11,32.0
 tire-growth-calculator,Tire Diameter Growth & Rollout Drag Calculator,Tire,3.42,28.0
 wastegate-sizing-calculator,Wastegate Sizing & Boost Control Calculator,Wastegate,3.42,28.0
+fuel-injector-calculator,Fuel Injector Flow Rate & Sizing Calculator,Fuel,3.42,28.0
 """
 with open("pseo_pages_list.csv", "w", encoding="utf-8") as f:
     f.write(csv_content)
@@ -31,6 +33,7 @@ for row in pages:
     elif "Tire" in cat: icon = "🛞"
     elif "Transmission" in cat: icon = "🏎️"
     elif "Wastegate" in cat: icon = "🎛️"
+    elif "Fuel" in cat: icon = "⛽"
     
     utilities_grid_html += f'''
     <a href="{slug}.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
@@ -1141,6 +1144,52 @@ for row in pages:
         });
         calcTool();
         """
+    elif category == "Fuel":
+        primary_title = "Fuel Injector Flow Rate & Sizing Calculator"
+        formula_text = "Required Flow (cc/min) = (Target HP x BSFC) / (# of Injectors x Max Duty Cycle) x 10.5"
+        faqs = '<div class="faq-item"><h4>What is safe maximum injector duty cycle?</h4><p>80% to 85% duty cycle is standard practice to prevent injector overheating and lean spikes.</p></div>'
+        primary_tool_html = """
+            <div class="grid-2">
+                <div><label>Target Crank HP</label><input type="number" id="inj-hp" value="1200" step="50"></div>
+                <div><label>Number of Injectors</label><input type="number" id="inj-count" value="8" step="1"></div>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <label>Fuel Type / BSFC</label>
+                    <select id="inj-fuel" onchange="updateBsfc()">
+                        <option value="0.50">Gasoline (BSFC 0.50)</option>
+                        <option value="0.65" selected>E85 / Ethanol (BSFC 0.65)</option>
+                        <option value="1.10">Methanol (BSFC 1.10)</option>
+                    </select>
+                </div>
+                <div><label>Max Duty Cycle (%)</label><input type="number" id="inj-duty" value="85" step="1"></div>
+            </div>
+            <div class="results-box" id="inj-results">Adjust parameters above.</div>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
+        """
+        tool_script = """
+        function calcTool() {
+            let hp = parseFloat(document.getElementById("inj-hp").value) || 1200;
+            let count = parseInt(document.getElementById("inj-count").value) || 8;
+            let bsfc = parseFloat(document.getElementById("inj-fuel").value) || 0.65;
+            let duty = (parseFloat(document.getElementById("inj-duty").value) || 85) / 100.0;
+            
+            // Total fuel required in lb/hr = (HP * BSFC) / duty
+            let totalLbHr = (hp * bsfc) / duty;
+            let perInjectorLbHr = totalLbHr / count;
+            let perInjectorCcMin = perInjectorLbHr * 10.5; // conversion factor roughly 10.5 cc/min per lb/hr
+            
+            document.getElementById("inj-results").innerHTML = "Required Per-Injector Flow: <strong>" + Math.round(perInjectorCcMin) + " cc/min</strong> (" + perInjectorLbHr.toFixed(1) + " lb/hr) | Total System: <strong>" + Math.round(totalLbHr * 10.5) + " cc/min</strong>";
+        }
+        ["inj-hp", "inj-count", "inj-fuel", "inj-duty"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) {
+                el.addEventListener("input", calcTool);
+                el.addEventListener("change", calcTool);
+            }
+        });
+        calcTool();
+        """
     else:
         primary_title = "Drag Racing Calculator Suite"
         formula_text = "Standard Automotive Calculation"
@@ -1166,4 +1215,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully updated all pages with the advanced Turbo Sizing & Matching Calculator!")
+print(f"Successfully generated index.html and {pages_created} PSEO pages including the new Fuel Injector Calculator!")
