@@ -33,6 +33,34 @@ partners_html = """
             </div>
 """
 
+# Extended Track-Side Tuning Cheat Sheets HTML
+tuning_guides_html = """
+            <div class="content-box">
+                <h3>Track-Side Tuning Cheat Sheets</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Essential round-by-round reference guides for the trailer:</p>
+                
+                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
+                    <strong style="color: var(--text-main); font-size: 0.85rem;">1. Density Altitude (DA) & Weather</strong>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Every 1,000 ft increase in DA costs naturally aspirated engines ~3% horsepower. Forced induction setups compensate better via wastegate control, but watch inlet air temps.</p>
+                </div>
+
+                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
+                    <strong style="color: var(--text-main); font-size: 0.85rem;">2. Torque Converter Slip</strong>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Target 5% to 8% slip at the finish line for max efficiency. Excessive slip generates transmission heat and kills trap speed; too tight kills 60-foot times.</p>
+                </div>
+
+                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
+                    <strong style="color: var(--text-main); font-size: 0.85rem;">3. Boost & Nitro Management</strong>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Read spark plug ground straps for heat mark placement. Back off timing 1 to 2 degrees per additional 3–4 PSI of boost or when stepping up nitrous jetting.</p>
+                </div>
+
+                <div>
+                    <strong style="color: var(--text-main); font-size: 0.85rem;">4. 4-Link Anti-Squat & Launch</strong>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">If the car bounces or unloads the tires immediately on launch, lower the instantaneous center (IC) or soften rear shock extension.</p>
+                </div>
+            </div>
+"""
+
 # 1. MASTER index.html HUB
 master_index_html = """<!DOCTYPE html>
 <html lang="en">
@@ -413,15 +441,7 @@ master_index_html = """<!DOCTYPE html>
         <!-- Right Column -->
         <div class="content-column">
             REPLACE_TOP_AD
-            <div class="content-box">
-                <h3>Track-Side Tuning Cheat Sheet</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Quick references for track-side adjustments between rounds:</p>
-                <ul class="utility-list" style="font-size: 0.85rem;">
-                    <li><strong>Tire Pressure:</strong> Lowering psi increases rollout and footprint, but watch for tire shake.</li>
-                    <li><strong>4-Link Anti-Squat:</strong> Raising instantaneous center (IC) increases initial hit to the tires.</li>
-                    <li><strong>Shift Point:</strong> Set shift RPM 200–300 RPM past peak horsepower so recovery falls into your powerband.</li>
-                </ul>
-            </div>
+            REPLACE_TUNING_GUIDES
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
                 <ul class="utility-list">
@@ -553,12 +573,13 @@ master_index_html = (
     .replace("REPLACE_STICKY_AD", ad_block_html)
     .replace("REPLACE_TOP_AD", ad_block_html)
     .replace("REPLACE_BOTTOM_AD", ad_block_html)
+    .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
     .replace("REPLACE_PARTNERS", partners_html)
 )
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
-# 2. PSEO SUB-PAGES TEMPLATE (Updated with Print Sheet Button & Tuning Cheat Sheet)
+# 2. PSEO SUB-PAGES TEMPLATE
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -778,15 +799,7 @@ base_html_template = """<!DOCTYPE html>
 
         <div class="content-column">
             REPLACE_TOP_AD
-            <div class="content-box">
-                <h3>Track-Side Tuning Cheat Sheet</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Quick references for track-side adjustments between rounds:</p>
-                <ul class="utility-list" style="font-size: 0.85rem;">
-                    <li><strong>Density Altitude (DA):</strong> Every 1,000 ft increase in DA costs naturally aspirated engines ~3% power (forced induction compensates better).</li>
-                    <li><strong>Spark Plug Read:</strong> Look for the fuel ring transition at the base of the ground strap to verify proper AFR.</li>
-                    <li><strong>Chassis Tuning:</strong> If the car unloads the tires on launch, inspect instant center length and shock extension.</li>
-                </ul>
-            </div>
+            REPLACE_TUNING_GUIDES
             <div class="content-box">
                 <h3>Formula Breakdown</h3>
                 <div class="formula-content">FORMULA_TEXT</div>
@@ -1088,6 +1101,7 @@ for row in pages:
             .replace("REPLACE_STICKY_AD", ad_block_html)
             .replace("REPLACE_TOP_AD", ad_block_html)
             .replace("REPLACE_BOTTOM_AD", ad_block_html)
+            .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
             .replace("FORMULA_TEXT", formula_text)
             .replace("FAQS_HTML", faqs)
             .replace("REPLACE_PARTNERS", partners_html)
@@ -1099,4 +1113,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully generated index.html and {pages_created} PSEO pages with Print Track Sheets and Tuning Cheat Sheets!")
+print(f"Successfully generated index.html and {pages_created} PSEO pages with extended track-side tuning cheat sheets!")
