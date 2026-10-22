@@ -163,6 +163,21 @@
             border-radius: 6px;
             font-size: 0.85rem;
         }
+        .action-btn {
+            width: 100%;
+            margin-top: 12px;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .action-btn:hover { background: #e0161f; }
         table {
             width: 100%;
             margin-top: 15px;
@@ -190,6 +205,12 @@
             border-bottom: 1px dashed var(--border-color);
             margin: 15px 0 8px 0;
             padding-bottom: 4px;
+        }
+        @media print {
+            body { background: white; color: black; padding: 0; }
+            .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
+            .content-column, .tab-buttons, .action-btn { display: none; }
+            input, select { border: 1px solid #ccc; background: white; color: black; }
         }
     </style>
 </head>
@@ -273,6 +294,7 @@
                         </div>
                     </div>
                     <div class="results-box" id="results">Adjust parameters above to view performance.</div>
+                    <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
                     <table>
                         <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift Speed</th><th>RPM Drop</th></tr></thead>
                         <tbody id="gear-body"></tbody>
@@ -345,6 +367,7 @@
                     </div>
 
                     <div class="results-box" id="susp-results">Adjust suspension geometry above.</div>
+                    <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Suspension Sheet</button>
                 </div>
             </div>
 
@@ -368,6 +391,15 @@
                 </div>
             </div>
 
+            <div class="content-box">
+                <h3>Track-Side Tuning Cheat Sheet</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Quick references for track-side adjustments between rounds:</p>
+                <ul class="utility-list" style="font-size: 0.85rem;">
+                    <li><strong>Tire Pressure:</strong> Lowering psi increases rollout and footprint, but watch for tire shake.</li>
+                    <li><strong>4-Link Anti-Squat:</strong> Raising instantaneous center (IC) increases initial hit to the tires.</li>
+                    <li><strong>Shift Point:</strong> Set shift RPM 200–300 RPM past peak horsepower so recovery falls into your powerband.</li>
+                </ul>
+            </div>
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
                 <ul class="utility-list">

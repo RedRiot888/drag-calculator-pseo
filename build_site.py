@@ -199,6 +199,21 @@ master_index_html = """<!DOCTYPE html>
             border-radius: 6px;
             font-size: 0.85rem;
         }
+        .action-btn {
+            width: 100%;
+            margin-top: 12px;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .action-btn:hover { background: #e0161f; }
         table {
             width: 100%;
             margin-top: 15px;
@@ -226,6 +241,12 @@ master_index_html = """<!DOCTYPE html>
             border-bottom: 1px dashed var(--border-color);
             margin: 15px 0 8px 0;
             padding-bottom: 4px;
+        }
+        @media print {
+            body { background: white; color: black; padding: 0; }
+            .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
+            .content-column, .tab-buttons, .action-btn { display: none; }
+            input, select { border: 1px solid #ccc; background: white; color: black; }
         }
     </style>
 </head>
@@ -309,6 +330,7 @@ master_index_html = """<!DOCTYPE html>
                         </div>
                     </div>
                     <div class="results-box" id="results">Adjust parameters above to view performance.</div>
+                    <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
                     <table>
                         <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift Speed</th><th>RPM Drop</th></tr></thead>
                         <tbody id="gear-body"></tbody>
@@ -381,6 +403,7 @@ master_index_html = """<!DOCTYPE html>
                     </div>
 
                     <div class="results-box" id="susp-results">Adjust suspension geometry above.</div>
+                    <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Suspension Sheet</button>
                 </div>
             </div>
 
@@ -390,6 +413,15 @@ master_index_html = """<!DOCTYPE html>
         <!-- Right Column -->
         <div class="content-column">
             REPLACE_TOP_AD
+            <div class="content-box">
+                <h3>Track-Side Tuning Cheat Sheet</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Quick references for track-side adjustments between rounds:</p>
+                <ul class="utility-list" style="font-size: 0.85rem;">
+                    <li><strong>Tire Pressure:</strong> Lowering psi increases rollout and footprint, but watch for tire shake.</li>
+                    <li><strong>4-Link Anti-Squat:</strong> Raising instantaneous center (IC) increases initial hit to the tires.</li>
+                    <li><strong>Shift Point:</strong> Set shift RPM 200–300 RPM past peak horsepower so recovery falls into your powerband.</li>
+                </ul>
+            </div>
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
                 <ul class="utility-list">
@@ -526,7 +558,7 @@ master_index_html = (
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
-# 2. PSEO SUB-PAGES TEMPLATE
+# 2. PSEO SUB-PAGES TEMPLATE (Updated with Print Sheet Button & Tuning Cheat Sheet)
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -664,6 +696,21 @@ base_html_template = """<!DOCTYPE html>
             border-radius: 6px;
             font-size: 0.85rem;
         }
+        .action-btn {
+            width: 100%;
+            margin-top: 12px;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .action-btn:hover { background: #e0161f; }
         .formula-content {
             font-family: monospace;
             color: #10b981;
@@ -704,6 +751,12 @@ base_html_template = """<!DOCTYPE html>
             font-size: 0.85rem;
         }
         .back-link:hover { text-decoration: underline; }
+        @media print {
+            body { background: white; color: black; padding: 0; }
+            .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
+            .content-column, .back-link, .action-btn { display: none; }
+            input, select { border: 1px solid #ccc; background: white; color: black; }
+        }
     </style>
 </head>
 <body>
@@ -725,6 +778,15 @@ base_html_template = """<!DOCTYPE html>
 
         <div class="content-column">
             REPLACE_TOP_AD
+            <div class="content-box">
+                <h3>Track-Side Tuning Cheat Sheet</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Quick references for track-side adjustments between rounds:</p>
+                <ul class="utility-list" style="font-size: 0.85rem;">
+                    <li><strong>Density Altitude (DA):</strong> Every 1,000 ft increase in DA costs naturally aspirated engines ~3% power (forced induction compensates better).</li>
+                    <li><strong>Spark Plug Read:</strong> Look for the fuel ring transition at the base of the ground strap to verify proper AFR.</li>
+                    <li><strong>Chassis Tuning:</strong> If the car unloads the tires on launch, inspect instant center length and shock extension.</li>
+                </ul>
+            </div>
             <div class="content-box">
                 <h3>Formula Breakdown</h3>
                 <div class="formula-content">FORMULA_TEXT</div>
@@ -823,6 +885,7 @@ for row in pages:
                 </div>
             </div>
             <div class="results-box" id="results">Adjust parameters above to view shift recovery and RPM drop.</div>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
             <table>
                 <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift Speed</th><th>RPM Drop</th></tr></thead>
                 <tbody id="gear-body"></tbody>
@@ -892,6 +955,7 @@ for row in pages:
                 <div><label>Trans Final Ratio</label><input type="number" id="trans-final" value="1.00" step="0.01"></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
         """
         tool_script = """
         function calcTool() {
@@ -924,6 +988,7 @@ for row in pages:
                 <div><label>Turbo Count</label><select id="turbos"><option value="1" selected>Single</option><option value="2">Twin</option></select></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
         """
         tool_script = """
         function calcTool() {
@@ -956,6 +1021,7 @@ for row in pages:
                 <div><label>Boost Factor</label><input type="number" id="boost-fac" value="1.45" step="0.05"></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
         """
         tool_script = """
         function calcTool() {
@@ -987,6 +1053,7 @@ for row in pages:
                 <div><label>Rear Gear Ratio</label><input type="number" id="rear-gear" value="{gear}" step="0.01"></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
         """
         tool_script = """
         function calcTool() {
@@ -1032,4 +1099,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully generated index.html and {pages_created} PSEO pages without any banner!")
+print(f"Successfully generated index.html and {pages_created} PSEO pages with Print Track Sheets and Tuning Cheat Sheets!")

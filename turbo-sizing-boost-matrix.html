@@ -135,6 +135,21 @@
             border-radius: 6px;
             font-size: 0.85rem;
         }
+        .action-btn {
+            width: 100%;
+            margin-top: 12px;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .action-btn:hover { background: #e0161f; }
         .formula-content {
             font-family: monospace;
             color: #10b981;
@@ -175,6 +190,12 @@
             font-size: 0.85rem;
         }
         .back-link:hover { text-decoration: underline; }
+        @media print {
+            body { background: white; color: black; padding: 0; }
+            .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
+            .content-column, .back-link, .action-btn { display: none; }
+            input, select { border: 1px solid #ccc; background: white; color: black; }
+        }
     </style>
 </head>
 <body>
@@ -199,6 +220,7 @@
                 <div><label>Turbo Count</label><select id="turbos"><option value="1" selected>Single</option><option value="2">Twin</option></select></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
         
             </div>
             
@@ -220,6 +242,15 @@
                 </div>
             </div>
 
+            <div class="content-box">
+                <h3>Track-Side Tuning Cheat Sheet</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Quick references for track-side adjustments between rounds:</p>
+                <ul class="utility-list" style="font-size: 0.85rem;">
+                    <li><strong>Density Altitude (DA):</strong> Every 1,000 ft increase in DA costs naturally aspirated engines ~3% power (forced induction compensates better).</li>
+                    <li><strong>Spark Plug Read:</strong> Look for the fuel ring transition at the base of the ground strap to verify proper AFR.</li>
+                    <li><strong>Chassis Tuning:</strong> If the car unloads the tires on launch, inspect instant center length and shock extension.</li>
+                </ul>
+            </div>
             <div class="content-box">
                 <h3>Formula Breakdown</h3>
                 <div class="formula-content">Required Airflow (lb/min) = (Target Flywheel HP x BSFC) / 6.0</div>
