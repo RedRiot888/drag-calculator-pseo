@@ -7,9 +7,27 @@ with open("pseo_pages_list.csv", mode="r", encoding="utf-8") as f:
     reader = csv.DictReader(f)
     pages = list(reader)
 
-utilities_links_html = ""
+# Build a sleek grid of small calculator cards for the sidebar
+utilities_grid_html = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">\n'
 for row in pages:
-    utilities_links_html += f'<li><a href="{row["slug"]}.html">{row["target_keyword"]}</a></li>\n'
+    slug = row["slug"]
+    keyword = row["target_keyword"]
+    # Assign icons based on category
+    cat = row["category"]
+    icon = "⚙️"
+    if "Turbo" in cat: icon = "🌀"
+    elif "Supercharger" in cat: icon = "⚡"
+    elif "Rear" in cat: icon = "🔧"
+    elif "Tire" in cat: icon = "🛞"
+    elif "Transmission" in cat: icon = "🏎️"
+    
+    utilities_grid_html += f'''
+    <a href="{slug}.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">{icon}</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">{keyword}</span>
+    </a>
+'''
+utilities_grid_html += '</div>\n'
 
 # Ad block snippet
 ad_block_html = """
@@ -21,7 +39,7 @@ ad_block_html = """
             </div>
 """
 
-# Affiliate / Sponsor Promo Slot (Future-proof for Wastegates, Turbos, BOVs)
+# Affiliate / Sponsor Promo Slot
 affiliate_banner_html = """
             <div class="content-box" style="background: linear-gradient(135deg, #181a20 0%, #21242c 100%); border: 1px solid var(--accent-red);">
                 <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">
@@ -73,7 +91,7 @@ tuning_guides_html = """
             </div>
 """
 
-# 1. MASTER index.html HUB
+# 1. MASTER index.html HUB (Focused sticky calculator: Drivetrain & Suspension tabs, with Wastegate as a dedicated utility card or quick calculator)
 master_index_html = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,25 +159,6 @@ master_index_html = """<!DOCTYPE html>
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
         }
-        .utility-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-        .utility-list li {
-            padding: 8px 0;
-            border-bottom: 1px dashed var(--border-color);
-        }
-        .utility-list li a {
-            color: var(--text-muted);
-            text-decoration: none;
-            display: block;
-        }
-        .utility-list li a:hover {
-            color: var(--accent-red);
-        }
         .master-header {
             text-align: center;
             margin-bottom: 5px;
@@ -179,18 +178,18 @@ master_index_html = """<!DOCTYPE html>
         }
         .tab-buttons {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 6px;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
             margin-bottom: 10px;
         }
         .tab-btn {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
-            padding: 8px 4px;
+            padding: 10px;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 0.65rem;
+            font-size: 0.75rem;
             cursor: pointer;
             text-transform: uppercase;
             text-align: center;
@@ -283,20 +282,6 @@ master_index_html = """<!DOCTYPE html>
             margin: 12px 0 6px 0;
             padding-bottom: 3px;
         }
-        .guide-box {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 0.78rem;
-            color: var(--text-muted);
-        }
-        .guide-box h4 {
-            color: var(--text-main);
-            margin: 0 0 5px 0;
-            font-size: 0.82rem;
-        }
         @media print {
             body { background: white; color: black; padding: 0; }
             .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
@@ -316,12 +301,10 @@ master_index_html = """<!DOCTYPE html>
                 </div>
 
                 <div class="tab-buttons">
-                    <button type="button" class="tab-btn active" id="btn-drivetrain">Drivetrain</button>
-                    <button type="button" class="tab-btn" id="btn-suspension">4-Link</button>
-                    <button type="button" class="tab-btn" id="btn-wastegate">Wastegate</button>
+                    <button type="button" class="tab-btn active" id="btn-drivetrain">Drivetrain & Shift</button>
+                    <button type="button" class="tab-btn" id="btn-suspension">4-Link Suspension</button>
                 </div>
 
-                <!-- Drivetrain Tab -->
                 <div id="pane-drivetrain" class="tab-pane active">
                     <div class="grid-2">
                         <div>
@@ -394,7 +377,6 @@ master_index_html = """<!DOCTYPE html>
                     </table>
                 </div>
 
-                <!-- 4-Link Suspension Tab -->
                 <div id="pane-suspension" class="tab-pane">
                     <div class="section-title">1. Vehicle Weight & Distribution</div>
                     <div class="grid-2">
@@ -463,45 +445,6 @@ master_index_html = """<!DOCTYPE html>
                     <div class="results-box" id="susp-results">Adjust suspension geometry above.</div>
                     <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Suspension Sheet</button>
                 </div>
-
-                <!-- Wastegate Sizing Tab -->
-                <div id="pane-wastegate" class="tab-pane">
-                    <div class="section-title">Wastegate Sizing Engine</div>
-                    <div class="grid-2">
-                        <div>
-                            <label>Target Flywheel HP</label>
-                            <input type="number" id="wg-hp" value="1000" step="50" oninput="calcWastegate()">
-                        </div>
-                        <div>
-                            <label>Target Boost (PSI)</label>
-                            <input type="number" id="wg-boost" value="22" step="1" oninput="calcWastegate()">
-                        </div>
-                    </div>
-                    <div class="grid-2">
-                        <div style="grid-column: span 2;">
-                            <label>Turbo Frame Size / Exhaust Flow</label>
-                            <select id="wg-turbo" onchange="calcWastegate()">
-                                <option value="small">Small Frame (T3, 50-60mm, 400-700 HP)</option>
-                                <option value="medium" selected>Medium Frame (T4, 62-76mm, 700-1200 HP)</option>
-                                <option value="large">Large Frame (T6 / Pro Mod, 80mm+, 1200+ HP)</option>
-                                <option value="twin">Twin Turbo Setup (Divided / Dual Gates)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="results-box" id="wg-results">Recommended Wastegate: <strong>44mm - 50mm</strong></div>
-                    
-                    <div class="guide-box">
-                        <h4>Understanding Wastegate Sizing</h4>
-                        <p style="margin: 0 0 6px 0;">Wastegates regulate exhaust flow before the turbine. High boost combined with low target spring pressure requires larger valves to bypass excessive exhaust gas.</p>
-                        <strong style="color: var(--text-main);">Common Issues & Fixes:</strong>
-                        <ul style="margin: 4px 0 0 0; padding-left: 16px; color: var(--text-muted);">
-                            <li><strong>Boost Creep:</strong> Valve is too small or routing has too much backpressure. Upgrade to a larger size or plumb secondary gate.</li>
-                            <li><strong>Overboosting:</strong> Spring pressure is too high or reference line is restricted.</li>
-                        </ul>
-                    </div>
-                    <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Wastegate Spec Sheet</button>
-                </div>
-
             </div>
 
             REPLACE_STICKY_AD
@@ -513,9 +456,7 @@ master_index_html = """<!DOCTYPE html>
             REPLACE_AFFILIATE_BANNER
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
-                <ul class="utility-list">
-                    REPLACE_UTILITIES
-                </ul>
+                REPLACE_UTILITIES_GRID
             </div>
             REPLACE_TUNING_GUIDES
             REPLACE_PARTNERS
@@ -527,29 +468,15 @@ master_index_html = """<!DOCTYPE html>
         document.getElementById('btn-drivetrain').addEventListener('click', function() {
             document.getElementById('pane-drivetrain').classList.add('active');
             document.getElementById('pane-suspension').classList.remove('active');
-            document.getElementById('pane-wastegate').classList.remove('active');
             document.getElementById('btn-drivetrain').classList.add('active');
             document.getElementById('btn-suspension').classList.remove('active');
-            document.getElementById('btn-wastegate').classList.remove('active');
         });
 
         document.getElementById('btn-suspension').addEventListener('click', function() {
             document.getElementById('pane-suspension').classList.add('active');
             document.getElementById('pane-drivetrain').classList.remove('active');
-            document.getElementById('pane-wastegate').classList.remove('active');
             document.getElementById('btn-suspension').classList.add('active');
             document.getElementById('btn-drivetrain').classList.remove('active');
-            document.getElementById('btn-wastegate').classList.remove('active');
-        });
-
-        document.getElementById('btn-wastegate').addEventListener('click', function() {
-            document.getElementById('pane-wastegate').classList.add('active');
-            document.getElementById('pane-drivetrain').classList.remove('active');
-            document.getElementById('pane-suspension').classList.remove('active');
-            document.getElementById('btn-wastegate').classList.add('active');
-            document.getElementById('btn-drivetrain').classList.remove('active');
-            document.getElementById('btn-suspension').classList.remove('active');
-            calcWastegate();
         });
 
         const ratios = { 
@@ -577,28 +504,6 @@ master_index_html = """<!DOCTYPE html>
                 customRow.style.display = (val === "custom") ? "grid" : "none";
             }
             calcAll();
-        }
-
-        function calcWastegate() {
-            let hp = parseFloat(document.getElementById("wg-hp").value) || 1000;
-            let boost = parseFloat(document.getElementById("wg-boost").value) || 22;
-            let frame = document.getElementById("wg-turbo").value;
-            
-            let rec = "38mm";
-            if(hp > 1200 || frame === "large") {
-                rec = "60mm+ (or Dual 44mm Gates)";
-            } else if(hp > 800 || boost > 20 || frame === "medium") {
-                rec = "44mm - 50mm";
-            } else if(hp > 500) {
-                rec = "40mm - 44mm";
-            } else {
-                rec = "38mm";
-            }
-            
-            let wgRes = document.getElementById("wg-results");
-            if(wgRes) {
-                wgRes.innerHTML = "Recommended Wastegate: <strong>" + rec + "</strong> (Target: " + hp + " HP @ " + boost + " PSI)";
-            }
         }
 
         function calcAll() {
@@ -669,14 +574,13 @@ master_index_html = """<!DOCTYPE html>
         });
 
         calcAll();
-        calcWastegate();
     </script>
 </body>
 </html>
 """
 
 master_index_html = (
-    master_index_html.replace("REPLACE_UTILITIES", utilities_links_html)
+    master_index_html.replace("REPLACE_UTILITIES_GRID", utilities_grid_html)
     .replace("REPLACE_STICKY_AD", ad_block_html)
     .replace("REPLACE_TOP_AD", ad_block_html)
     .replace("REPLACE_BOTTOM_AD", ad_block_html)
@@ -754,25 +658,6 @@ base_html_template = """<!DOCTYPE html>
             margin-top: 0;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
-        }
-        .utility-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-        .utility-list li {
-            padding: 8px 0;
-            border-bottom: 1px dashed var(--border-color);
-        }
-        .utility-list li a {
-            color: var(--text-muted);
-            text-decoration: none;
-            display: block;
-        }
-        .utility-list li a:hover {
-            color: var(--accent-red);
         }
         .master-header {
             text-align: center;
@@ -910,9 +795,7 @@ base_html_template = """<!DOCTYPE html>
             REPLACE_AFFILIATE_BANNER
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
-                <ul class="utility-list">
-                    UTILITIES_LINKS_HTML
-                </ul>
+                REPLACE_UTILITIES_GRID
             </div>
             REPLACE_TUNING_GUIDES
             <div class="content-box">
@@ -1206,13 +1089,14 @@ for row in pages:
         base_html_template.replace("TARGET_KEYWORD", target_keyword)
             .replace("PRIMARY_TITLE", primary_title)
             .replace("PRIMARY_TOOL_HTML", primary_tool_html)
-            .replace("UTILITIES_LINKS_HTML", utilities_links_html)
+            .replace("REPLACE_UTILITIES_GRID", utilities_grid_html)
             .replace("REPLACE_STICKY_AD", ad_block_html)
             .replace("REPLACE_TOP_AD", ad_block_html)
             .replace("REPLACE_BOTTOM_AD", ad_block_html)
             .replace("REPLACE_AFFILIATE_BANNER", affiliate_banner_html)
             .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
             .replace("REPLACE_PARTNERS", partners_html)
+            .replace("TOOL_SCRIPT", tool_script)
     )
 
     file_path = os.path.join(output_dir, f"{slug}.html")
@@ -1220,4 +1104,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully generated index.html and {pages_created} PSEO pages with the new Wastegate Sizing Calculator!")
+print(f"Successfully updated index.html and {pages_created} PSEO pages with the sleek calculator grid in the sidebar!")

@@ -65,25 +65,6 @@
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
         }
-        .utility-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-        .utility-list li {
-            padding: 8px 0;
-            border-bottom: 1px dashed var(--border-color);
-        }
-        .utility-list li a {
-            color: var(--text-muted);
-            text-decoration: none;
-            display: block;
-        }
-        .utility-list li a:hover {
-            color: var(--accent-red);
-        }
         .master-header {
             text-align: center;
             margin-bottom: 5px;
@@ -303,14 +284,34 @@
 
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
-                <ul class="utility-list">
-                    <li><a href="transmission-gear-drop-calculator.html">Transmission Shift Recovery & Gear Drop Calculator</a></li>
-<li><a href="turbo-sizing-boost-matrix.html">Turbo Sizing & Turbocharger Matching Calculator</a></li>
-<li><a href="supercharger-pulley-boost-calculator.html">Supercharger Pulley Ratio & Boost Pressure Calculator</a></li>
-<li><a href="rear-gear-ratio-calculator.html">Ring and Pinion Rear Gear Quarter-Mile Calculator</a></li>
-<li><a href="tire-diameter-growth-calculator.html">Tire Diameter Growth & Rollout Drag Calculator</a></li>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
 
-                </ul>
+    <a href="transmission-gear-drop-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">🏎️</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Transmission Shift Recovery & Gear Drop Calculator</span>
+    </a>
+
+    <a href="turbo-sizing-boost-matrix.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">🌀</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Turbo Sizing & Turbocharger Matching Calculator</span>
+    </a>
+
+    <a href="supercharger-pulley-boost-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">⚡</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Supercharger Pulley Ratio & Boost Pressure Calculator</span>
+    </a>
+
+    <a href="rear-gear-ratio-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">🔧</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Ring and Pinion Rear Gear Quarter-Mile Calculator</span>
+    </a>
+
+    <a href="tire-diameter-growth-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">🛞</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Tire Diameter Growth & Rollout Drag Calculator</span>
+    </a>
+</div>
+
             </div>
             
             <div class="content-box">
@@ -368,7 +369,56 @@
     </div>
 
     <script>
-        TOOL_SCRIPT
+        
+        const ratios = { 
+            powerglide: [1.76, 1.00], 
+            th350: [2.52, 1.52, 1.00], 
+            th400: [2.48, 1.48, 1.00],
+            "4l60e": [3.06, 1.62, 1.00, 0.70],
+            "6l80": [4.03, 2.36, 1.53, 1.15, 0.85, 0.67],
+            "8l90": [4.56, 2.97, 2.08, 1.69, 1.27, 1.00, 0.85, 0.65],
+            "10l90": [4.70, 2.98, 2.14, 1.77, 1.52, 1.27, 1.00, 0.85, 0.69, 0.64],
+            c4_c6: [2.46, 1.46, 1.00],
+            aod: [2.40, 1.47, 1.00, 0.67],
+            "4r70w": [2.84, 1.55, 1.00, 0.70],
+            mustang_10r80: [4.70, 2.99, 2.15, 1.77, 1.52, 1.28, 1.00, 0.85, 0.69, 0.64],
+            torque_727: [2.45, 1.45, 1.00],
+            ford_t5: [2.95, 1.94, 1.34, 1.00, 0.73],
+            t56: [2.66, 1.78, 1.30, 1.00, 0.74, 0.50],
+            tremec_tkx: [2.87, 1.89, 1.28, 1.00, 0.68]
+        };
+        function applyTransPreset() {
+            let val = document.getElementById("trans").value;
+            let customRow = document.getElementById("custom-gears-row");
+            if(customRow) { customRow.style.display = (val === "custom") ? "grid" : "none"; }
+            calcTool();
+        }
+        function calcTool() {
+            let tKey = document.getElementById("trans").value;
+            let rat = tKey === "custom" ? (document.getElementById("custom-ratios").value.split(",").map(x => parseFloat(x.trim())).filter(x => !isNaN(x) && x > 0) || [2.48, 1.48, 1.00]) : (ratios[tKey] || [2.48, 1.48, 1.00]);
+            let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
+            let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
+            let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
+            let rollout = (tire * Math.PI).toFixed(1);
+            let resEl = document.getElementById("results");
+            if(resEl) resEl.innerHTML = "Tire Rollout: " + rollout + " in | 1st Gear Ratio: " + (rat[0] * gear).toFixed(2) + ":1";
+            let tbody = document.getElementById("gear-body");
+            if(tbody) {
+                tbody.innerHTML = "";
+                for(let i=0; i<rat.length; i++) {
+                    let overall = rat[i] * gear;
+                    let speed = (rpm * tire) / (overall * 336);
+                    let drop = i < rat.length - 1 ? "Drop to " + Math.round(rpm * (rat[i+1] / rat[i])) + " RPM" : "Crossing Line";
+                    tbody.innerHTML += "<tr><td>Gear " + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.toFixed(1) + " MPH</td><td>" + drop + "</td></tr>";
+                }
+            }
+        }
+        ["trans", "max-rpm", "tire-dia", "rear-gear", "custom-ratios"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+        });
+        calcTool();
+        
     </script>
 </body>
 </html>
