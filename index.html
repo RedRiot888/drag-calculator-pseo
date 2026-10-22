@@ -211,20 +211,17 @@
 </head>
 <body>
     <div class="layout-grid">
-        <!-- Sticky Left Calculator -->
         <div class="sticky-calculator">
             <div class="master-header">
                 <h1>Ultimate Drag Racing Suite</h1>
                 <p>Professional Track Tuning Engine</p>
             </div>
 
-            <!-- Tabs -->
             <div class="tab-buttons">
                 <button type="button" class="tab-btn active" id="btn-drivetrain" onclick="switchTab('drivetrain')">Drivetrain & Shift</button>
                 <button type="button" class="tab-btn" id="btn-suspension" onclick="switchTab('suspension')">4-Link Suspension</button>
             </div>
 
-            <!-- Tab 1: Drivetrain & Shift -->
             <div id="pane-drivetrain" class="tab-pane active">
                 <div class="grid-2">
                     <div>
@@ -300,7 +297,6 @@
                 </table>
             </div>
 
-            <!-- Tab 2: 4-Link Suspension -->
             <div id="pane-suspension" class="tab-pane">
                 <div class="section-title">1. Vehicle Weight & Weight Distribution</div>
                 <div class="grid-2">
@@ -370,7 +366,6 @@
             </div>
         </div>
 
-        <!-- Scrolling Right Column -->
         <div class="content-column">
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
@@ -433,7 +428,6 @@
         }
 
         function calcAll() {
-            // Drivetrain & Shift Calculations
             let tKey = document.getElementById("trans").value;
             let rat = [];
             if(tKey === "custom") {
@@ -470,7 +464,6 @@
                 }
             }
 
-            // Suspension Calculations
             let sWt = parseFloat(document.getElementById("susp-wt").value) || 3200;
             let sFront = parseFloat(document.getElementById("susp-front-wt").value) || 52;
             let rearWt = Math.round(sWt * (1 - sFront / 100));
