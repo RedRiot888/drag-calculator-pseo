@@ -33,7 +33,7 @@ partners_html = """
             </div>
 """
 
-# Extended Track-Side Tuning Cheat Sheets HTML
+# Extended Track-Side Tuning Cheat Sheets HTML (Placed under utilities)
 tuning_guides_html = """
             <div class="content-box">
                 <h3>Track-Side Tuning Cheat Sheets</h3>
@@ -438,16 +438,16 @@ master_index_html = """<!DOCTYPE html>
             REPLACE_STICKY_AD
         </div>
 
-        <!-- Right Column -->
+        <!-- Right Column (Utilities First, Cheat Sheet Second) -->
         <div class="content-column">
             REPLACE_TOP_AD
-            REPLACE_TUNING_GUIDES
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
                 <ul class="utility-list">
                     REPLACE_UTILITIES
                 </ul>
             </div>
+            REPLACE_TUNING_GUIDES
             REPLACE_PARTNERS
             REPLACE_BOTTOM_AD
         </div>
@@ -579,7 +579,7 @@ master_index_html = (
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
-# 2. PSEO SUB-PAGES TEMPLATE
+# 2. PSEO SUB-PAGES TEMPLATE (Utilities first, Cheat Sheets second)
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -799,6 +799,12 @@ base_html_template = """<!DOCTYPE html>
 
         <div class="content-column">
             REPLACE_TOP_AD
+            <div class="content-box">
+                <h3>Other Utilities & Calculators</h3>
+                <ul class="utility-list">
+                    UTILITIES_LINKS_HTML
+                </ul>
+            </div>
             REPLACE_TUNING_GUIDES
             <div class="content-box">
                 <h3>Formula Breakdown</h3>
@@ -807,12 +813,6 @@ base_html_template = """<!DOCTYPE html>
             <div class="content-box">
                 <h3>Frequently Asked Questions</h3>
                 FAQS_HTML
-            </div>
-            <div class="content-box">
-                <h3>Other Utilities & Calculators</h3>
-                <ul class="utility-list">
-                    UTILITIES_LINKS_HTML
-                </ul>
             </div>
             REPLACE_PARTNERS
             REPLACE_BOTTOM_AD
@@ -944,7 +944,7 @@ for row in pages:
                     let overall = rat[i] * gear;
                     let speed = (rpm * tire) / (overall * 336);
                     let drop = i < rat.length - 1 ? "Drop to " + Math.round(rpm * (rat[i+1] / rat[i])) + " RPM" : "Crossing Line";
-                    tbody.innerHTML += "<tr><td>Gear " + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.toFixed(1) + " MPH</td><td>" + drop + "</td></tr>";
+                    tbody.innerHTML += "<tr><td>Gear " + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.displayText + " MPH</td><td>" + drop + "</td></tr>";
                 }
             }
         }
@@ -1113,4 +1113,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully generated index.html and {pages_created} PSEO pages with extended track-side tuning cheat sheets!")
+print(f"Successfully updated sidebar order: Utilities first, Cheat Sheets second across all pages!")

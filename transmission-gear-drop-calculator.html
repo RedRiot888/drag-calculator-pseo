@@ -291,6 +291,17 @@
                 </div>
             </div>
 
+            <div class="content-box">
+                <h3>Other Utilities & Calculators</h3>
+                <ul class="utility-list">
+                    <li><a href="transmission-gear-drop-calculator.html">Transmission Shift Recovery & Gear Drop Calculator</a></li>
+<li><a href="turbo-sizing-boost-matrix.html">Turbo Sizing & Turbocharger Matching Calculator</a></li>
+<li><a href="supercharger-pulley-boost-calculator.html">Supercharger Pulley Ratio & Boost Pressure Calculator</a></li>
+<li><a href="rear-gear-ratio-calculator.html">Ring and Pinion Rear Gear Quarter-Mile Calculator</a></li>
+<li><a href="tire-diameter-growth-calculator.html">Tire Diameter Growth & Rollout Drag Calculator</a></li>
+
+                </ul>
+            </div>
             
             <div class="content-box">
                 <h3>Track-Side Tuning Cheat Sheets</h3>
@@ -329,17 +340,6 @@
                 <p>Shift recovery is determined by multiplying your shift RPM by the ratio of the upcoming higher gear divided by the current gear.</p>
             </div>
         
-            </div>
-            <div class="content-box">
-                <h3>Other Utilities & Calculators</h3>
-                <ul class="utility-list">
-                    <li><a href="transmission-gear-drop-calculator.html">Transmission Shift Recovery & Gear Drop Calculator</a></li>
-<li><a href="turbo-sizing-boost-matrix.html">Turbo Sizing & Turbocharger Matching Calculator</a></li>
-<li><a href="supercharger-pulley-boost-calculator.html">Supercharger Pulley Ratio & Boost Pressure Calculator</a></li>
-<li><a href="rear-gear-ratio-calculator.html">Ring and Pinion Rear Gear Quarter-Mile Calculator</a></li>
-<li><a href="tire-diameter-growth-calculator.html">Tire Diameter Growth & Rollout Drag Calculator</a></li>
-
-                </ul>
             </div>
             
             <div class="content-box">
@@ -403,7 +403,7 @@
                     let overall = rat[i] * gear;
                     let speed = (rpm * tire) / (overall * 336);
                     let drop = i < rat.length - 1 ? "Drop to " + Math.round(rpm * (rat[i+1] / rat[i])) + " RPM" : "Crossing Line";
-                    tbody.innerHTML += "<tr><td>Gear " + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.toFixed(1) + " MPH</td><td>" + drop + "</td></tr>";
+                    tbody.innerHTML += "<tr><td>Gear " + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.displayText + " MPH</td><td>" + drop + "</td></tr>";
                 }
             }
         }
