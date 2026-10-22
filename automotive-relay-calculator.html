@@ -199,12 +199,16 @@
             </div>
             <div class="grid-2">
                 <div><label>Wire Run Length (One Way, Ft)</label><input type="number" id="relay-ft" value="10" step="1"></div>
-                <div><label>Accessory Type</label>
-                    <select id="relay-type">
-                        <option value="pump">Electric Fuel / Water Pump</option>
-                        <option value="fan">Intercooler / Radiator Fan</option>
-                        <option value="nitros">Nitros Solenoids</option>
-                        <option value="headlights">Headlights / Aux Lighting</option>
+                <div><label>Accessory Type (Auto-Preset Amps)</label>
+                    <select id="relay-type" onchange="applyAccessoryPreset()">
+                        <option value="custom">Custom Amperage</option>
+                        <option value="fuel_single">Single Electric Fuel Pump (~15A)</option>
+                        <option value="fuel_dual">Dual Fuel Pumps / Aeromotive (~30A)</option>
+                        <option value="fan_single">Radiator / Intercooler Fan (~25A)</option>
+                        <option value="fan_dual">Dual High-Output Fans (~45A)</option>
+                        <option value="water_pump">Electric Water Pump (~12A)</option>
+                        <option value="nitros">Nitrous Solenoids (~20A)</option>
+                        <option value="headlights">Headlights / Aux Lighting (~10A)</option>
                     </select>
                 </div>
             </div>
@@ -361,25 +365,46 @@
 
     <script>
         
+        const accessoryAmps = {
+            fuel_single: 15,
+            fuel_dual: 30,
+            fan_single: 25,
+            fan_dual: 45,
+            water_pump: 12,
+            nitros: 20,
+            headlights: 10
+        };
+
+        function applyAccessoryPreset() {
+            let val = document.getElementById("relay-type").value;
+            if(val !== "custom" && accessoryAmps[val] !== undefined) {
+                document.getElementById("relay-amps").value = accessoryAmps[val];
+            }
+            calcTool();
+        }
+
         function calcTool() {
             let amps = parseFloat(document.getElementById("relay-amps").value) || 20;
             let volts = parseFloat(document.getElementById("relay-volts").value) || 12;
             let ft = parseFloat(document.getElementById("relay-ft").value) || 10;
-            let type = document.getElementById("relay-type").value;
             
-            let fuseAmps = Math.ceil(amps * 1.25 / 5) * 5; // Round up to nearest standard fuse size
+            let fuseAmps = Math.ceil(amps * 1.25 / 5) * 5; 
             if(fuseAmps < 10) fuseAmps = 10;
             
             let wireGauge = "14 AWG";
             let wireDesc = "Standard GXL Automotive Wire";
-            if(amps > 40) { wireGauge = "8 AWG"; wireDesc = "Heavy Duty Power Cable"; }
-            else if(amps > 30) { wireGauge = "10 AWG"; wireDesc = "Primary Power Wire"; }
-            else if(amps > 15) { wireGauge = "12 AWG"; wireDesc = "Standard Power Wire"; }
+            if(amps > 50) { wireGauge = "6 AWG"; wireDesc = "Heavy Duty Battery Cable"; }
+            else if(amps > 35) { wireGauge = "8 AWG"; wireDesc = "Heavy Duty Power Cable"; }
+            else if(amps > 20) { wireGauge = "10 AWG"; wireDesc = "Primary Power Wire"; }
+            else if(amps > 12) { wireGauge = "12 AWG"; wireDesc = "Standard Power Wire"; }
             
             let relayType = "Standard Bosch 40A Weatherproof Relay";
             let kitPrice = "$24.99";
             
-            if(amps > 30) {
+            if(amps > 50) {
+                relayType = "Dual 40A Relays in Parallel (or 100A High-Amp Solenoid)";
+                kitPrice = "$54.99";
+            } else if(amps > 30) {
                 relayType = "Heavy Duty 70/80A SPDT Relay";
                 kitPrice = "$39.99";
             }
