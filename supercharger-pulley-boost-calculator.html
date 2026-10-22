@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supercharger Pulley Ratio & Boost Pressure Calculator | Ultimate Drag Racing Master Suite</title>
+    <title>{target_keyword} | Ultimate Drag Racing Master Suite</title>
     <style>
-        :root {
+        :root {{
             --bg-dark: #0f1015;
             --card-bg: #181a20;
             --accent-red: #ff1e27;
@@ -14,27 +14,27 @@
             --text-muted: #9ca3af;
             --border-color: #2d3139;
             --input-bg: #21242c;
-        }
-        body {
+        }}
+        body {{
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
             line-height: 1.5;
-        }
-        .layout-grid {
+        }}
+        .layout-grid {{
             max-width: 1200px;
             margin: 30px auto;
             display: grid;
             grid-template-columns: 480px 1fr;
             gap: 30px;
             align-items: start;
-        }
-        @media (max-width: 900px) {
-            .layout-grid { grid-template-columns: 1fr; }
-        }
-        .sticky-calculator {
+        }}
+        @media (max-width: 900px) {{
+            .layout-grid {{ grid-template-columns: 1fr; }}
+        }}
+        .sticky-calculator {{
             position: sticky;
             top: 20px;
             background: var(--card-bg);
@@ -42,165 +42,136 @@
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             padding: 30px;
-        }
-        .content-column {
+        }}
+        .content-column {{
             display: flex;
             flex-direction: column;
             gap: 20px;
-        }
-        .content-box, .sidebar-box {
+        }}
+        .content-box {{
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 25px;
-        }
-        .content-box h3, .sidebar-box h3 {
+        }}
+        .content-box h3 {{
             color: var(--accent-red);
             font-size: 0.95rem;
             text-transform: uppercase;
             margin-top: 0;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
-        .utility-list, .sponsor-list {
+        }}
+        .utility-list {{
             list-style: none;
             padding: 0;
             margin: 0;
             font-size: 0.9rem;
             color: var(--text-muted);
-        }
-        .utility-list li, .sponsor-list li {
+        }}
+        .utility-list li {{
             padding: 8px 0;
             border-bottom: 1px dashed var(--border-color);
-        }
-        .utility-list li:last-child, .sponsor-list li:last-child { border-bottom: none; }
-        .utility-list li a, .sponsor-list li a {
+        }}
+        .utility-list li a {{
             color: var(--text-muted);
             text-decoration: none;
             display: block;
-            transition: color 0.2s;
-        }
-        .utility-list li a:hover, .sponsor-list li a:hover {
+        }}
+        .utility-list li a:hover {{
             color: var(--accent-red);
-        }
-        .master-header {
+        }}
+        .master-header {{
             text-align: center;
             margin-bottom: 20px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 15px;
-        }
-        .master-header h1 {
+        }}
+        .master-header h1 {{
             color: var(--accent-red);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
             margin: 0 0 5px 0;
-        }
-        .master-header p {
+        }}
+        .master-header p {{
             color: var(--text-muted);
             font-size: 0.85rem;
             margin: 0;
-        }
-        .grid-2 {
+        }}
+        .grid-2 {{
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 12px;
-        }
-        label {
+            gap: 12px;
+            margin-bottom: 10px;
+        }}
+        label {{
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             font-weight: 600;
-            font-size: 0.80rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
-        }
-        input, select {
+        }}
+        input, select {{
             width: 100%;
-            padding: 10px;
+            padding: 8px 10px;
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-main);
             border-radius: 6px;
             box-sizing: border-box;
-            font-size: 0.9rem;
-        }
-        optgroup {
-            color: var(--accent-red);
-            font-weight: bold;
-        }
-        option {
-            color: var(--text-main);
-            background: var(--input-bg);
-        }
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--accent-red);
-            box-shadow: 0 0 5px var(--accent-glow);
-        }
-        .results-box {
-            margin-top: 20px;
+            font-size: 0.85rem;
+        }}
+        optgroup {{ color: var(--accent-red); font-weight: bold; }}
+        option {{ color: var(--text-main); background: var(--input-bg); }}
+        .results-box {{
+            margin-top: 15px;
             background: #121418;
             border: 1px solid var(--border-color);
             border-left: 4px solid var(--accent-red);
-            padding: 15px;
-            border-radius: 6px;
-            font-size: 0.95rem;
-        }
-        .formula-content {
-            font-family: monospace;
-            color: #10b981;
-            font-size: 0.95rem;
-            background: var(--input-bg);
             padding: 12px;
             border-radius: 6px;
-        }
-        .faq-item {
-            margin-bottom: 15px;
-        }
-        .faq-item:last-child { margin-bottom: 0; }
-        .faq-item h4 {
-            margin: 0 0 5px 0;
-            font-size: 0.9rem;
-            color: var(--text-main);
-        }
-        .faq-item p {
-            margin: 0;
             font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-        table {
+        }}
+        .formula-content {{
+            font-family: monospace;
+            color: #10b981;
+            font-size: 0.85rem;
+            background: var(--input-bg);
+            padding: 10px;
+            border-radius: 6px;
+        }}
+        .faq-item {{ margin-bottom: 12px; }}
+        .faq-item h4 {{ margin: 0 0 3px 0; font-size: 0.85rem; color: var(--text-main); }}
+        .faq-item p {{ margin: 0; font-size: 0.8rem; color: var(--text-muted); }}
+        table {{
             width: 100%;
-            margin-top: 20px;
+            margin-top: 15px;
             border-collapse: collapse;
             background: #121418;
             border-radius: 6px;
             overflow: hidden;
-        }
-        th, td {
-            padding: 10px;
+        }}
+        th, td {{
+            padding: 6px 4px;
             border: 1px solid var(--border-color);
             text-align: center;
-            font-size: 0.85rem;
-        }
-        th {
+            font-size: 0.75rem;
+        }}
+        th {{
             background: #1f232b;
             color: var(--accent-red);
             text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-        }
-        .back-link {
+            font-size: 0.65rem;
+        }}
+        .back-link {{
             display: inline-block;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             color: var(--accent-red);
             text-decoration: none;
             font-weight: bold;
-            font-size: 0.9rem;
-        }
-        .back-link:hover {
-            text-decoration: underline;
-        }
+            font-size: 0.85rem;
+        }}
+        .back-link:hover {{ text-decoration: underline; }}
     </style>
 </head>
 <body>
@@ -211,85 +182,32 @@
     <div class="layout-grid">
         <div class="sticky-calculator">
             <div class="master-header">
-                <h1>Supercharger Pulley Ratio & Boost Pressure Calculator</h1>
-                <p>Supercharger Pulley Ratio & Boost Pressure Calculator &mdash; Track Tuning Engine</p>
+                <h1>{primary_title}</h1>
+                <p>{target_keyword} &mdash; Track Tuning Engine</p>
             </div>
-
-            
-            <div class="grid-2">
-                <div>
-                    <label>Crankshaft Pulley Diameter (inches)</label>
-                    <input type="number" id="crank-dia" value="8.0" step="0.1">
-                </div>
-                <div>
-                    <label>Blower Pulley Diameter (inches)</label>
-                    <input type="number" id="blower-dia" value="3.0" step="0.1">
-                </div>
-            </div>
-            <div class="grid-2">
-                <div>
-                    <label>Max Crank RPM</label>
-                    <input type="number" id="crank-rpm" value="6500" step="100">
-                </div>
-                <div>
-                    <label>Base Boost Multiplier Factor</label>
-                    <input type="number" id="boost-fac" value="1.45" step="0.05">
-                </div>
-            </div>
-            <div class="results-box" id="results">Adjust parameters above to calculate pulley ratio and estimated boost pressure.</div>
-        
+            {primary_tool_html}
         </div>
 
         <div class="content-column">
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
                 <ul class="utility-list">
-                    <li><a href="transmission-gear-drop-calculator.html">Transmission Shift Recovery & Gear Drop Calculator</a></li>
-<li><a href="turbo-sizing-boost-matrix.html">Turbo Sizing & Turbocharger Matching Calculator</a></li>
-<li><a href="supercharger-pulley-boost-calculator.html">Supercharger Pulley Ratio & Boost Pressure Calculator</a></li>
-<li><a href="rear-gear-ratio-calculator.html">Ring and Pinion Rear Gear Quarter-Mile Calculator</a></li>
-<li><a href="tire-diameter-growth-calculator.html">Tire Diameter Growth & Rollout Drag Calculator</a></li>
-
+                    {utilities_links_html}
                 </ul>
             </div>
-
             <div class="content-box">
                 <h3>Formula Breakdown</h3>
-                <div class="formula-content">Pulley Ratio = Crank Pulley Diameter / Blower Pulley Diameter<br>Estimated Boost = Pulley Ratio × 5.2 × Boost Factor</div>
+                <div class="formula-content">{formula_text}</div>
             </div>
-
             <div class="content-box">
                 <h3>Frequently Asked Questions</h3>
-                
-            <div class="faq-item">
-                <h4>How do I increase boost?</h4>
-                <p>You can increase boost by installing a smaller blower pulley or a larger crankshaft pulley to overdrive the supercharger speed.</p>
-            </div>
-        
+                {faqs}
             </div>
         </div>
     </div>
 
     <script>
-        
-        function calcTool() {
-            let crank = parseFloat(document.getElementById("crank-dia").value) || 8.0;
-            let blower = parseFloat(document.getElementById("blower-dia").value) || 3.0;
-            let rpm = parseFloat(document.getElementById("crank-rpm").value) || 6500;
-            let factor = parseFloat(document.getElementById("boost-fac").value) || 1.45;
-            
-            let ratio = crank / blower;
-            let estBoost = (ratio * 5.2 * factor).toFixed(1);
-
-            let resEl = document.getElementById("results");
-            if(resEl) resEl.innerHTML = "<strong>Supercharger Results:</strong> Pulley Ratio: <strong>" + ratio.toFixed(2) + ":1</strong> | Estimated Boost: <strong>" + estBoost + " PSI</strong>";
-        }
-        ["crank-dia", "blower-dia", "crank-rpm", "boost-fac"].forEach(function(id) {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
-        });
-        calcTool();
-        
+        {tool_script}
     </script>
 </body>
 </html>
