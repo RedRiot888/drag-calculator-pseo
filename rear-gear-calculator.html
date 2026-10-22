@@ -31,9 +31,6 @@
             gap: 30px;
             align-items: start;
         }
-        @media (max-width: 900px) {
-            .layout-grid { grid-template-columns: 1fr; }
-        }
         .sticky-calculator {
             position: sticky;
             top: 20px;
@@ -45,6 +42,10 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+        }
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; }
+            .sticky-calculator { position: static; top: auto; box-shadow: none; }
         }
         .content-column {
             display: flex;

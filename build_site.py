@@ -134,9 +134,6 @@ master_index_html = """<!DOCTYPE html>
             gap: 30px;
             align-items: start;
         }
-        @media (max-width: 900px) {
-            .layout-grid { grid-template-columns: 1fr; }
-        }
         .sticky-calculator {
             position: sticky;
             top: 20px;
@@ -148,6 +145,10 @@ master_index_html = """<!DOCTYPE html>
             display: flex;
             flex-direction: column;
             gap: 15px;
+        }
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; }
+            .sticky-calculator { position: static; top: auto; box-shadow: none; }
         }
         .content-column {
             display: flex;
@@ -599,7 +600,7 @@ master_index_html = (
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
-# 2. PSEO SUB-PAGES TEMPLATE
+# 2. PSEO SUB-PAGES TEMPLATE (same mobile fix for sticky sidebar)
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -633,9 +634,6 @@ base_html_template = """<!DOCTYPE html>
             gap: 30px;
             align-items: start;
         }
-        @media (max-width: 900px) {
-            .layout-grid { grid-template-columns: 1fr; }
-        }
         .sticky-calculator {
             position: sticky;
             top: 20px;
@@ -647,6 +645,10 @@ base_html_template = """<!DOCTYPE html>
             display: flex;
             flex-direction: column;
             gap: 15px;
+        }
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; }
+            .sticky-calculator { position: static; top: auto; box-shadow: none; }
         }
         .content-column {
             display: flex;
