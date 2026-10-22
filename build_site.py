@@ -3,7 +3,6 @@ import csv
 
 output_dir = "."
 
-# Ensure pseo_pages_list.csv includes the new Fuel Injector Calculator
 csv_content = """slug,target_keyword,category,rear_gear,tire_diameter
 transmission-shift-recovery-calculator,Transmission Shift Recovery & Gear Drop Calculator,Transmission,3.42,28.0
 turbo-sizing-calculator,Turbo Sizing & Turbocharger Matching Calculator,Turbo,3.42,28.0
@@ -46,8 +45,8 @@ utilities_grid_html += '</div>\n'
 ad_block_html = """
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
                 <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">
-                    Your Ad Here<br>Contact for Track Sponsor Rates
+                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">
+                    Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a>
                 </div>
             </div>
 """
@@ -88,6 +87,17 @@ tuning_guides_html = """
                     <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">If the car bounces or unloads the tires immediately on launch, lower the instantaneous center (IC) or soften rear shock extension.</p>
                 </div>
             </div>
+"""
+
+footer_html = """
+    <footer style="max-width: 1200px; margin: 40px auto 20px auto; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px; font-size: 0.8rem; color: var(--text-muted);">
+        <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved. Professional Track Tuning & Engineering Tools.</p>
+        <p style="margin-top: 5px;">
+            <a href="contact.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px;">Contact & Sponsorships</a> | 
+            <a href="privacy.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px;">Privacy Policy & Affiliate Disclosure</a>
+        </p>
+        <p style="font-size: 0.72rem; color: #6b7280; margin-top: 8px;">Disclosure: We may earn an affiliate commission from qualifying purchases made through links on this site at no extra cost to you.</p>
+    </footer>
 """
 
 # 1. MASTER index.html HUB
@@ -284,7 +294,7 @@ master_index_html = """<!DOCTYPE html>
         @media print {
             body { background: white; color: black; padding: 0; }
             .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
-            .content-column, .tab-buttons, .action-btn { display: none; }
+            .content-column, .tab-buttons, .action-btn, footer { display: none; }
             input, select { border: 1px solid #ccc; background: white; color: black; }
         }
     </style>
@@ -460,6 +470,8 @@ master_index_html = """<!DOCTYPE html>
         </div>
     </div>
 
+    REPLACE_FOOTER
+
     <script>
         document.getElementById('btn-drivetrain').addEventListener('click', function() {
             document.getElementById('pane-drivetrain').classList.add('active');
@@ -582,6 +594,7 @@ master_index_html = (
     .replace("REPLACE_BOTTOM_AD", ad_block_html)
     .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
     .replace("REPLACE_PARTNERS", partners_html)
+    .replace("REPLACE_FOOTER", footer_html)
 )
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
@@ -763,7 +776,7 @@ base_html_template = """<!DOCTYPE html>
         @media print {
             body { background: white; color: black; padding: 0; }
             .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
-            .content-column, .back-link, .action-btn { display: none; }
+            .content-column, .back-link, .action-btn, footer { display: none; }
             input, select { border: 1px solid #ccc; background: white; color: black; }
         }
     </style>
@@ -804,6 +817,8 @@ base_html_template = """<!DOCTYPE html>
             REPLACE_BOTTOM_AD
         </div>
     </div>
+
+    REPLACE_FOOTER
 
     <script>
         TOOL_SCRIPT
@@ -950,10 +965,25 @@ for row in pages:
                 <div><label>Rear Gear Ratio</label><input type="number" id="gear" value="{gear}" step="0.01"></div>
             </div>
             <div class="grid-2">
+                <div><label>Axle Housing / Differential</label>
+                    <select id="housing">
+                        <option value="ford88">Ford 8.8\" Rear Axle</option>
+                        <option value="ford9">Ford 9\" Pinion Carrier</option>
+                        <option value="gm10">GM 10-Bolt (8.5\")</option>
+                        <option value="gm12">GM 12-Bolt Passenger</option>
+                        <option value="dana60">Dana 60 Heavy Duty</option>
+                    </select>
+                </div>
                 <div><label>Tire Diameter (in)</label><input type="number" id="tire" value="{tire}" step="0.1"></div>
-                <div><label>Trans Final Ratio</label><input type="number" id="trans-final" value="1.00" step="0.01"></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
+            
+            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-top: 12px;" id="affiliate-box">
+                <div style="font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Recommended Match & Parts</div>
+                <div id="part-details" style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">Loading matching ring & pinion...</div>
+                <a href="#" id="buy-btn" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at Summit Racing &rarr;</a>
+            </div>
+
             <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
         """
         tool_script = """
@@ -961,15 +991,51 @@ for row in pages:
             let trap = parseFloat(document.getElementById("trap").value) || 125;
             let gear = parseFloat(document.getElementById("gear").value) || 4.11;
             let tire = parseFloat(document.getElementById("tire").value) || 32;
-            let transFinal = parseFloat(document.getElementById("trans-final").value) || 1.00;
-            let overall = gear * transFinal;
-            let finishRpm = (trap * overall * 336) / tire;
+            let housing = document.getElementById("housing").value;
+            
+            let finishRpm = (trap * gear * 336) / tire;
             let rollout = (tire * Math.PI).toFixed(1);
-            document.getElementById("results").innerHTML = "Overall Ratio: <strong>" + overall.toFixed(2) + ":1</strong> | Rollout: <strong>" + rollout + " in</strong> | Finish RPM: <strong>" + Math.round(finishRpm) + " RPM</strong>";
+            document.getElementById("results").innerHTML = "Gear Ratio: <strong>" + gear.toFixed(2) + ":1</strong> | Rollout: <strong>" + rollout + " in</strong> | Finish RPM: <strong>" + Math.round(finishRpm) + " RPM</strong>";
+            
+            let brand = "Yukon Gear & Axle";
+            let housingName = "Ford 8.8\\" Rear Axle";
+            let price = "$249.99";
+            let toolsNeeded = "Timken Master Bearing Kit, Gear Marking Compound, 80W-90 Gear Oil";
+            
+            if(housing === "ford9") {
+                housingName = "Ford 9\\" Drop-Out Carrier";
+                brand = "Strange Engineering Pro";
+                price = "$319.99";
+                toolsNeeded = "Daytona Pinion Support, Solid Spacer Shim Kit, Gear Lube";
+            } else if(housing === "gm10") {
+                housingName = "GM 10-Bolt 8.5\\" Axle";
+                brand = "Motive Gear Performance";
+                price = "$239.99";
+                toolsNeeded = "GM 10-Bolt Master Install Kit, Crush Sleeve, Gear Paint";
+            } else if(housing === "gm12") {
+                housingName = "GM 12-Bolt Passenger Car";
+                brand = "Yukon Gear & Axle";
+                price = "$289.99";
+                toolsNeeded = "12-Bolt Master Bearing Kit, Heavy Duty Shim Pack";
+            } else if(housing === "dana60") {
+                housingName = "Dana 60 Heavy Duty Axle";
+                brand = "Yukon Hardcore Series";
+                price = "$389.99";
+                toolsNeeded = "Dana 60 Install Kit with Timken Bearings, Gear Oil";
+            }
+
+            document.getElementById("part-details").innerHTML = 
+                "<strong>Target:</strong> " + gear.toFixed(2) + " Ratio (" + housingName + ")<br>" +
+                "<strong>Kit:</strong> " + brand + " Ring & Pinion<br>" +
+                "<strong>Price:</strong> " + price + "<br>" +
+                "<span style='color: var(--text-muted); font-size: 0.75rem;'><strong>Required Setup Supplies:</strong> " + toolsNeeded + "</span>";
         }
-        ["trap", "gear", "tire", "trans-final"].forEach(id => {
+        ["trap", "gear", "tire", "housing"].forEach(id => {
             let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
+            if(el) {
+                el.addEventListener("input", calcTool);
+                el.addEventListener("change", calcTool);
+            }
         });
         calcTool();
         """
@@ -1139,8 +1205,10 @@ for row in pages:
         }
         ["wg-hp", "wg-boost", "wg-turbo"].forEach(id => {
             let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
-            if(el) el.addEventListener("change", calcTool);
+            if(el) {
+                el.addEventListener("input", calcTool);
+                el.addEventListener("change", calcTool);
+            }
         });
         calcTool();
         """
@@ -1174,10 +1242,9 @@ for row in pages:
             let bsfc = parseFloat(document.getElementById("inj-fuel").value) || 0.65;
             let duty = (parseFloat(document.getElementById("inj-duty").value) || 85) / 100.0;
             
-            // Total fuel required in lb/hr = (HP * BSFC) / duty
             let totalLbHr = (hp * bsfc) / duty;
             let perInjectorLbHr = totalLbHr / count;
-            let perInjectorCcMin = perInjectorLbHr * 10.5; // conversion factor roughly 10.5 cc/min per lb/hr
+            let perInjectorCcMin = perInjectorLbHr * 10.5;
             
             document.getElementById("inj-results").innerHTML = "Required Per-Injector Flow: <strong>" + Math.round(perInjectorCcMin) + " cc/min</strong> (" + perInjectorLbHr.toFixed(1) + " lb/hr) | Total System: <strong>" + Math.round(totalLbHr * 10.5) + " cc/min</strong>";
         }
@@ -1207,6 +1274,7 @@ for row in pages:
             .replace("REPLACE_BOTTOM_AD", ad_block_html)
             .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
             .replace("REPLACE_PARTNERS", partners_html)
+            .replace("REPLACE_FOOTER", footer_html)
             .replace("TOOL_SCRIPT", tool_script)
     )
 
@@ -1215,4 +1283,164 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully generated index.html and {pages_created} PSEO pages including the new Fuel Injector Calculator!")
+# 3. GENERATE CONTACT & SPONSORSHIPS PAGE
+contact_html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Track Sponsorships | Ultimate Drag Racing Suite</title>
+    <style>
+        :root {
+            --bg-dark: #0f1015;
+            --card-bg: #181a20;
+            --accent-red: #ff1e27;
+            --text-main: #f8f9fa;
+            --text-muted: #9ca3af;
+            --border-color: #2d3139;
+            --input-bg: #21242c;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+        h1 { color: var(--accent-red); text-transform: uppercase; font-size: 1.5rem; margin-top: 0; }
+        h3 { color: var(--text-main); font-size: 1.05rem; margin-top: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
+        p { color: var(--text-muted); font-size: 0.9rem; }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--accent-red);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+        .contact-box {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .contact-email {
+            font-size: 1.2rem;
+            color: var(--accent-red);
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div style="max-width: 800px; margin: 0 auto;">
+        <a href="index.html" class="back-link">&larr; Back to Master Hub</a>
+    </div>
+    <div class="container">
+        <h1>Contact & Track Sponsorships</h1>
+        <p>Get in touch with our team for advertising rates, technical calculator feedback, or partnership inquiries.</p>
+        
+        <h3>Track Sponsor Rates & Advertising</h3>
+        <p>Are you a performance part manufacturer, cylinder head porter, turbo supplier, or track-side vendor? Our high-performance calculator suite reaches thousands of dedicated racers and builders actively spec'ing out components for their builds.</p>
+        
+        <div class="contact-box">
+            <p style="margin: 0 0 10px 0; color: var(--text-main); font-weight: bold;">Direct Partnership Inquiries:</p>
+            <a href="mailto:support@dragcalculators.com" class="contact-email">support@dragcalculators.com</a>
+        </div>
+
+        <h3>Support & Calculator Questions</h3>
+        <p>Found a bug in our gear drop formula or want to request a new calculator (like a torque converter slip or nitrous jetting calculator)? Drop us an email and our track engineers will review it.</p>
+    </div>
+    """ + footer_html + """
+</body>
+</html>
+"""
+with open(os.path.join(output_dir, "contact.html"), "w", encoding="utf-8") as f:
+    f.write(contact_html)
+
+# 4. GENERATE PRIVACY POLICY & AFFILIATE DISCLOSURE PAGE
+privacy_html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy & Affiliate Disclosure | Ultimate Drag Racing Suite</title>
+    <style>
+        :root {
+            --bg-dark: #0f1015;
+            --card-bg: #181a20;
+            --accent-red: #ff1e27;
+            --text-main: #f8f9fa;
+            --text-muted: #9ca3af;
+            --border-color: #2d3139;
+            --input-bg: #21242c;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+        h1 { color: var(--accent-red); text-transform: uppercase; font-size: 1.5rem; margin-top: 0; }
+        h3 { color: var(--text-main); font-size: 1.05rem; margin-top: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
+        p { color: var(--text-muted); font-size: 0.9rem; }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--accent-red);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div style="max-width: 800px; margin: 0 auto;">
+        <a href="index.html" class="back-link">&larr; Back to Master Hub</a>
+    </div>
+    <div class="container">
+        <h1>Privacy Policy & Affiliate Disclosure</h1>
+        <p>Last updated: October 2026</p>
+        
+        <h3>1. FTC Affiliate Disclosure</h3>
+        <p>In compliance with FTC guidelines, please assume that any links leading to products or services on this website are affiliate links. Ultimate Drag Racing Calculator Suite may receive monetary compensation from merchants (such as Summit Racing, Jegs, or Amazon) when visitors click on these links and complete a qualifying purchase, at no additional cost to the buyer.</p>
+
+        <h3>2. Information We Collect</h3>
+        <p>Our calculators operate entirely client-side in your web browser. Numerical values you enter (such as horsepower, gear ratios, and tire diameters) are processed locally by JavaScript and are never stored or transmitted to our servers.</p>
+
+        <h3>3. Cookies & Analytics</h3>
+        <p>We may use standard analytics tools or hosting providers (such as GitHub Pages) that collect anonymous telemetry data (such as browser type, referral URLs, and visit timestamps) to help us improve site speed and performance.</p>
+    </div>
+    """ + footer_html + """
+</body>
+</html>
+"""
+with open(os.path.join(output_dir, "privacy.html"), "w", encoding="utf-8") as f:
+    f.write(privacy_html)
+
+print(f"Successfully generated master hub, {pages_created} calculator pages, contact.html, and privacy.html with professional footers!")

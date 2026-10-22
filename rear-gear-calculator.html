@@ -174,7 +174,7 @@
         @media print {
             body { background: white; color: black; padding: 0; }
             .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
-            .content-column, .back-link, .action-btn { display: none; }
+            .content-column, .back-link, .action-btn, footer { display: none; }
             input, select { border: 1px solid #ccc; background: white; color: black; }
         }
     </style>
@@ -197,18 +197,33 @@
                 <div><label>Rear Gear Ratio</label><input type="number" id="gear" value="4.11" step="0.01"></div>
             </div>
             <div class="grid-2">
+                <div><label>Axle Housing / Differential</label>
+                    <select id="housing">
+                        <option value="ford88">Ford 8.8" Rear Axle</option>
+                        <option value="ford9">Ford 9" Pinion Carrier</option>
+                        <option value="gm10">GM 10-Bolt (8.5")</option>
+                        <option value="gm12">GM 12-Bolt Passenger</option>
+                        <option value="dana60">Dana 60 Heavy Duty</option>
+                    </select>
+                </div>
                 <div><label>Tire Diameter (in)</label><input type="number" id="tire" value="32.0" step="0.1"></div>
-                <div><label>Trans Final Ratio</label><input type="number" id="trans-final" value="1.00" step="0.01"></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
+            
+            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-top: 12px;" id="affiliate-box">
+                <div style="font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Recommended Match & Parts</div>
+                <div id="part-details" style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">Loading matching ring & pinion...</div>
+                <a href="#" id="buy-btn" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at Summit Racing &rarr;</a>
+            </div>
+
             <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
         
             </div>
             
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
                 <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">
-                    Your Ad Here<br>Contact for Track Sponsor Rates
+                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">
+                    Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a>
                 </div>
             </div>
 
@@ -218,8 +233,8 @@
             
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
                 <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">
-                    Your Ad Here<br>Contact for Track Sponsor Rates
+                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">
+                    Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a>
                 </div>
             </div>
 
@@ -311,13 +326,24 @@
             
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
                 <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">
-                    Your Ad Here<br>Contact for Track Sponsor Rates
+                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">
+                    Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a>
                 </div>
             </div>
 
         </div>
     </div>
+
+    
+    <footer style="max-width: 1200px; margin: 40px auto 20px auto; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px; font-size: 0.8rem; color: var(--text-muted);">
+        <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved. Professional Track Tuning & Engineering Tools.</p>
+        <p style="margin-top: 5px;">
+            <a href="contact.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px;">Contact & Sponsorships</a> | 
+            <a href="privacy.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px;">Privacy Policy & Affiliate Disclosure</a>
+        </p>
+        <p style="font-size: 0.72rem; color: #6b7280; margin-top: 8px;">Disclosure: We may earn an affiliate commission from qualifying purchases made through links on this site at no extra cost to you.</p>
+    </footer>
+
 
     <script>
         
@@ -325,15 +351,51 @@
             let trap = parseFloat(document.getElementById("trap").value) || 125;
             let gear = parseFloat(document.getElementById("gear").value) || 4.11;
             let tire = parseFloat(document.getElementById("tire").value) || 32;
-            let transFinal = parseFloat(document.getElementById("trans-final").value) || 1.00;
-            let overall = gear * transFinal;
-            let finishRpm = (trap * overall * 336) / tire;
+            let housing = document.getElementById("housing").value;
+            
+            let finishRpm = (trap * gear * 336) / tire;
             let rollout = (tire * Math.PI).toFixed(1);
-            document.getElementById("results").innerHTML = "Overall Ratio: <strong>" + overall.toFixed(2) + ":1</strong> | Rollout: <strong>" + rollout + " in</strong> | Finish RPM: <strong>" + Math.round(finishRpm) + " RPM</strong>";
+            document.getElementById("results").innerHTML = "Gear Ratio: <strong>" + gear.toFixed(2) + ":1</strong> | Rollout: <strong>" + rollout + " in</strong> | Finish RPM: <strong>" + Math.round(finishRpm) + " RPM</strong>";
+            
+            let brand = "Yukon Gear & Axle";
+            let housingName = "Ford 8.8\" Rear Axle";
+            let price = "$249.99";
+            let toolsNeeded = "Timken Master Bearing Kit, Gear Marking Compound, 80W-90 Gear Oil";
+            
+            if(housing === "ford9") {
+                housingName = "Ford 9\" Drop-Out Carrier";
+                brand = "Strange Engineering Pro";
+                price = "$319.99";
+                toolsNeeded = "Daytona Pinion Support, Solid Spacer Shim Kit, Gear Lube";
+            } else if(housing === "gm10") {
+                housingName = "GM 10-Bolt 8.5\" Axle";
+                brand = "Motive Gear Performance";
+                price = "$239.99";
+                toolsNeeded = "GM 10-Bolt Master Install Kit, Crush Sleeve, Gear Paint";
+            } else if(housing === "gm12") {
+                housingName = "GM 12-Bolt Passenger Car";
+                brand = "Yukon Gear & Axle";
+                price = "$289.99";
+                toolsNeeded = "12-Bolt Master Bearing Kit, Heavy Duty Shim Pack";
+            } else if(housing === "dana60") {
+                housingName = "Dana 60 Heavy Duty Axle";
+                brand = "Yukon Hardcore Series";
+                price = "$389.99";
+                toolsNeeded = "Dana 60 Install Kit with Timken Bearings, Gear Oil";
+            }
+
+            document.getElementById("part-details").innerHTML = 
+                "<strong>Target:</strong> " + gear.toFixed(2) + " Ratio (" + housingName + ")<br>" +
+                "<strong>Kit:</strong> " + brand + " Ring & Pinion<br>" +
+                "<strong>Price:</strong> " + price + "<br>" +
+                "<span style='color: var(--text-muted); font-size: 0.75rem;'><strong>Required Setup Supplies:</strong> " + toolsNeeded + "</span>";
         }
-        ["trap", "gear", "tire", "trans-final"].forEach(id => {
+        ["trap", "gear", "tire", "housing"].forEach(id => {
             let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
+            if(el) {
+                el.addEventListener("input", calcTool);
+                el.addEventListener("change", calcTool);
+            }
         });
         calcTool();
         
