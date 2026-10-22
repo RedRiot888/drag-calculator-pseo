@@ -1048,7 +1048,16 @@ for row in pages:
     elif category == "Turbo":
         primary_title = "Turbo Sizing & Turbocharger Matching Calculator"
         formula_text = "Required Airflow (lb/min) = (Target Flywheel HP x BSFC) / 6.0<br>Pressure Ratio = (Target Boost + 14.7) / 14.7"
-        faqs = '<div class="faq-item"><h4>How do I choose turbo size?</h4><p>Match total required airflow in lb/min and pressure ratio to compressor maps.</p></div>'
+        faqs = """
+            <div class="faq-item">
+                <h4>How do I choose the correct turbocharger size?</h4>
+                <p>Match your total required airflow in lb/min and compressor pressure ratio to manufacturer compressor maps, ensuring surge lines and choke limits are respected.</p>
+            </div>
+            <div class="faq-item" style="margin-top: 10px;">
+                <h4>Single vs. Twin Turbochargers: Which is better?</h4>
+                <p>Singles are simpler to plumb and excel at top-end power. Twins spool faster due to divided exhaust energy and are ideal for responsive street/strip setups.</p>
+            </div>
+        """
         primary_tool_html = """
             <div class="grid-2">
                 <div><label>Engine Displacement (L)</label><input type="number" id="disp" value="5.3" step="0.1"></div>
@@ -1063,9 +1072,13 @@ for row in pages:
                 <div><label>Turbo Count</label><select id="turbos"><option value="1" selected>Single</option><option value="2">Twin</option></select></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
-            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin-top: 10px; font-size: 0.78rem;" id="turbo-rec">
-                <strong>Turbo Recommendation:</strong> Loading...
+            
+            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-top: 12px;" id="affiliate-box">
+                <div style="font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Recommended Specific Turbo Match</div>
+                <div id="turbo-part-details" style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">Loading precise turbo recommendation...</div>
+                <a href="#" id="turbo-buy-btn" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at Summit Racing &rarr;</a>
             </div>
+
             <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
         """
         tool_script = """
@@ -1081,18 +1094,47 @@ for row in pages:
             let perTurbo = totalAirflow / count;
             let pr = (boost + 14.7) / 14.7;
             
-            let rec = "Small Frame (T3 / 55-61mm)";
-            let ar = "0.63 - 0.82 A/R";
-            if(perTurbo > 85) {
-                rec = "Large Frame (T6 / Pro Mod 80mm+)";
-                ar = "1.10 - 1.41 A/R";
-            } else if(perTurbo > 50) {
-                rec = "Medium Frame (T4 / 62-76mm)";
-                ar = "0.82 - 1.00 A/R";
-            }
-            
             document.getElementById("results").innerHTML = "Required Airflow: <strong>" + totalAirflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
-            document.getElementById("turbo-rec").innerHTML = "<strong>Turbo Recommendation:</strong> " + rec + "<br><span style='color: var(--text-muted);'>Suggested Turbine A/R: <strong>" + ar + "</strong></span>";
+            
+            let brand = "BorgWarner AirWerks S400SX-III";
+            let model = "S476 / 76mm Turbine V-Band";
+            let ar = "1.10 A/R T4 Divided";
+            let price = "$1,099.99";
+            
+            if(perTurbo > 90) {
+                brand = "Precision Turbo Pro Mod Series";
+                model = "PM88 / 88mm CEA Turbine";
+                ar = "1.28 A/R T6 Housing";
+                price = "$2,899.99";
+            } else if(perTurbo > 75) {
+                brand = "Garrett GTX Series";
+                model = "GTX4204R / 82mm Ball Bearing";
+                ar = "1.15 A/R Stainless V-Band";
+                price = "$2,499.99";
+            } else if(perTurbo > 55) {
+                brand = "BorgWarner S400SX";
+                model = "S480 / 80mm Extended Tip";
+                ar = "1.25 A/R T4 Divided";
+                price = "$1,249.99";
+            } else if(perTurbo > 35) {
+                brand = "Precision Turbo Next Gen";
+                model = "7675 CEA Journal Bearing";
+                ar = "0.96 A/R T4";
+                price = "$1,799.99";
+            } else {
+                brand = "Garrett GT3076R Gen II";
+                model = "58mm Dual Ball Bearing";
+                ar = "0.82 A/R T3";
+                price = "$1,499.99";
+            }
+
+            let setupType = (count === 2) ? "Twin Turbo Setup (Dual Units)" : "Single Turbo Setup";
+
+            document.getElementById("turbo-part-details").innerHTML = 
+                "<strong>Configuration:</strong> " + setupType + "<br>" +
+                "<strong>Model:</strong> " + brand + " &mdash; " + model + "<br>" +
+                "<strong>A/R Ratio:</strong> " + ar + " | <strong>Est. Price:</strong> " + price + "<br>" +
+                "<span style='color: var(--text-muted); font-size: 0.75rem;'><strong>Match Quality:</strong> Optimized for " + Math.round(totalAirflow) + " lb/min total airflow at " + pr.toFixed(1) + " PR.</span>";
         }
         ["disp", "hp", "rpm", "boost", "bsfc", "turbos"].forEach(id => {
             let el = document.getElementById(id);
