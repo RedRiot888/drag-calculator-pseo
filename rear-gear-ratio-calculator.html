@@ -288,10 +288,10 @@
 
             let resEl = document.getElementById("results");
             if(resEl) {
-                resEl.innerHTML = `<strong>Rear Gear Analysis:</strong> Overall Drive Ratio: <strong>${overall.toFixed(2)}:1</strong> | Tire Rollout: <strong>${rollout} in</strong> | Finish Line RPM: <strong>${Math.round(finishRpm)} RPM</strong>`;
+                resEl.innerHTML = "<strong>Rear Gear Analysis:</strong> Overall Drive Ratio: <strong>" + overall.toFixed(2) + ":1</strong> | Tire Rollout: <strong>" + rollout + " in</strong> | Finish Line RPM: <strong>" + Math.round(finishRpm) + " RPM</strong>";
             }
         }
-        ["trap", "gear", "tire", "trans-final"].forEach(id => {
+        ["trap", "gear", "tire", "trans-final"].forEach(function(id) {
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcTool);
         });

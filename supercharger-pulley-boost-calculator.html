@@ -282,9 +282,9 @@
             let estBoost = (ratio * 5.2 * factor).toFixed(1);
 
             let resEl = document.getElementById("results");
-            if(resEl) resEl.innerHTML = `<strong>Supercharger Results:</strong> Pulley Ratio: <strong>${ratio.toFixed(2)}:1</strong> | Estimated Boost: <strong>${estBoost} PSI</strong>`;
+            if(resEl) resEl.innerHTML = "<strong>Supercharger Results:</strong> Pulley Ratio: <strong>" + ratio.toFixed(2) + ":1</strong> | Estimated Boost: <strong>" + estBoost + " PSI</strong>";
         }
-        ["crank-dia", "blower-dia", "crank-rpm", "boost-fac"].forEach(id => {
+        ["crank-dia", "blower-dia", "crank-rpm", "boost-fac"].forEach(function(id) {
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcTool);
         });

@@ -312,12 +312,12 @@
 
             let resEl = document.getElementById("results");
             if(resEl) {
-                resEl.innerHTML = `<strong>Tire Results:</strong> Static Rollout: <strong>${staticRollout} in</strong> | Dynamic Dia: <strong>${dynamicDia.toFixed(2)} in</strong> | Dynamic Rollout: <strong>${dynamicRollout} in</strong><br>Est. Finish Line RPM: <strong>${estFinishRpm} RPM</strong>`;
+                resEl.innerHTML = "<strong>Tire Results:</strong> Static Rollout: <strong>" + staticRollout + " in</strong> | Dynamic Dia: <strong>" + dynamicDia.toFixed(2) + " in</strong> | Dynamic Rollout: <strong>" + dynamicRollout + " in</strong><br>Est. Finish Line RPM: <strong>" + estFinishRpm + " RPM</strong>";
             }
         }
-        ["static-dia", "trap-speed", "growth-fac", "rear-gear"].forEach(id => {
+        ["static-dia", "trap-speed", "growth-fac", "rear-gear"].forEach(function(id) {
             let el = document.getElementById(id);
-            if(el) el.addEventListener("input", () => {
+            if(el) el.addEventListener("input", function() {
                 document.getElementById("tire-preset").value = "custom";
                 calcTool();
             });

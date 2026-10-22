@@ -297,10 +297,10 @@
 
             let resEl = document.getElementById("results");
             if(resEl) {
-                resEl.innerHTML = `<strong>Turbo Sizing Match:</strong> Total Airflow: <strong>${totalAirflow.toFixed(1)} lb/min</strong> (${perTurbo.toFixed(1)} lb/min per turbo) | Pressure Ratio: <strong>${pr.toFixed(2)}:1</strong> | Rec. Inducer: <strong>${recInducer} mm</strong>`;
+                resEl.innerHTML = "<strong>Turbo Sizing Match:</strong> Total Airflow: <strong>" + totalAirflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " lb/min per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong> | Rec. Inducer: <strong>" + recInducer + " mm</strong>";
             }
         }
-        ["hp", "boost", "bsfc", "turbos"].forEach(id => {
+        ["hp", "boost", "bsfc", "turbos"].forEach(function(id) {
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcTool);
         });
