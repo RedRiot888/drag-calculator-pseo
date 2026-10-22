@@ -27,7 +27,7 @@
             max-width: 1200px;
             margin: 30px auto;
             display: grid;
-            grid-template-columns: 480px 1fr;
+            grid-template-columns: 500px 1fr;
             gap: 30px;
             align-items: start;
         }
@@ -92,7 +92,7 @@
         }
         .master-header h1 {
             color: var(--accent-red);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin: 0 0 5px 0;
@@ -112,10 +112,10 @@
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
-            padding: 10px;
+            padding: 12px 8px;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
             text-transform: uppercase;
             transition: all 0.2s;
@@ -135,25 +135,25 @@
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 12px;
+            gap: 12px;
+            margin-bottom: 10px;
         }
         label {
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             font-weight: 600;
-            font-size: 0.80rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
         }
         input, select {
             width: 100%;
-            padding: 10px;
+            padding: 8px 10px;
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-main);
             border-radius: 6px;
             box-sizing: border-box;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         optgroup {
             color: var(--accent-red);
@@ -169,41 +169,42 @@
             box-shadow: 0 0 5px var(--accent-glow);
         }
         .results-box {
-            margin-top: 20px;
+            margin-top: 15px;
             background: #121418;
             border: 1px solid var(--border-color);
             border-left: 4px solid var(--accent-red);
-            padding: 15px;
+            padding: 12px;
             border-radius: 6px;
-            font-size: 0.90rem;
+            font-size: 0.85rem;
+            word-break: break-word;
         }
         table {
             width: 100%;
-            margin-top: 20px;
+            margin-top: 15px;
             border-collapse: collapse;
             background: #121418;
             border-radius: 6px;
             overflow: hidden;
         }
         th, td {
-            padding: 8px;
+            padding: 6px 4px;
             border: 1px solid var(--border-color);
             text-align: center;
-            font-size: 0.80rem;
+            font-size: 0.75rem;
         }
         th {
             background: #1f232b;
             color: var(--accent-red);
             text-transform: uppercase;
-            font-size: 0.70rem;
+            font-size: 0.65rem;
             letter-spacing: 0.5px;
         }
         .section-title {
             color: var(--accent-red);
-            font-size: 0.85rem;
+            font-size: 0.80rem;
             text-transform: uppercase;
             border-bottom: 1px dashed var(--border-color);
-            margin: 15px 0 10px 0;
+            margin: 15px 0 8px 0;
             padding-bottom: 4px;
             letter-spacing: 0.5px;
         }
@@ -220,12 +221,12 @@
 
             <!-- Tabs -->
             <div class="tab-buttons">
-                <button type="button" class="tab-btn active" id="btn-drivetrain" onclick="switchTab('drivetrain')">Drivetrain & Shift</button>
-                <button type="button" class="tab-btn" id="btn-suspension" onclick="switchTab('suspension')">4-Link Suspension</button>
+                <button type="button" class="tab-btn active" id="btn-drivetrain">Drivetrain & Shift</button>
+                <button type="button" class="tab-btn" id="btn-suspension">4-Link Suspension</button>
             </div>
 
             <!-- Tab 1: Drivetrain & Shift -->
-            <div id="pane-drivetrain" class="tab-pane active" style="display: block;">
+            <div id="pane-drivetrain" class="tab-pane active">
                 <div class="grid-2">
                     <div>
                         <label>Transmission Profile</label>
@@ -301,7 +302,7 @@
             </div>
 
             <!-- Tab 2: 4-Link Suspension -->
-            <div id="pane-suspension" class="tab-pane" style="display: none;">
+            <div id="pane-suspension" class="tab-pane">
                 <div class="section-title">1. Vehicle Weight & Weight Distribution</div>
                 <div class="grid-2">
                     <div>
@@ -386,24 +387,20 @@
     </div>
 
     <script>
-        function switchTab(name) {
-            var dtPane = document.getElementById('pane-drivetrain');
-            var suPane = document.getElementById('pane-suspension');
-            var dtBtn = document.getElementById('btn-drivetrain');
-            var suBtn = document.getElementById('btn-suspension');
+        // Bulletproof tab switching via DOM event listeners
+        document.getElementById('btn-drivetrain').addEventListener('click', function() {
+            document.getElementById('pane-drivetrain').classList.add('active');
+            document.getElementById('pane-suspension').classList.remove('active');
+            document.getElementById('btn-drivetrain').classList.add('active');
+            document.getElementById('btn-suspension').classList.remove('active');
+        });
 
-            if (name === 'drivetrain') {
-                if (dtPane) dtPane.style.display = 'block';
-                if (suPane) suPane.style.display = 'none';
-                if (dtBtn) dtBtn.classList.add('active');
-                if (suBtn) suBtn.classList.remove('active');
-            } else {
-                if (dtPane) dtPane.style.display = 'none';
-                if (suPane) suPane.style.display = 'block';
-                if (dtBtn) dtBtn.classList.remove('active');
-                if (suBtn) suBtn.classList.add('active');
-            }
-        }
+        document.getElementById('btn-suspension').addEventListener('click', function() {
+            document.getElementById('pane-suspension').classList.add('active');
+            document.getElementById('pane-drivetrain').classList.remove('active');
+            document.getElementById('btn-suspension').classList.add('active');
+            document.getElementById('btn-drivetrain').classList.remove('active');
+        });
 
         const ratios = { 
             powerglide: [1.76, 1.00], 
@@ -459,7 +456,7 @@
 
             let resEl = document.getElementById("results");
             if(resEl) {
-                resEl.innerHTML = "<strong>Performance:</strong> Est. 1/4 Mile ET: <strong>" + estEt + "s @ " + estTrap + " MPH</strong><br>Rollout: " + rollout + " in | 1st Gear Overall: " + (rat[0] * gear).toFixed(2) + ":1";
+                resEl.innerHTML = "<strong>Performance:</strong> Est. 1/4 Mile ET: " + estEt + "s @ " + estTrap + " MPH<br>Rollout: " + rollout + " in | 1st Gear: " + (rat[0] * gear).toFixed(2) + ":1";
             }
 
             let tbody = document.getElementById("gear-body");
@@ -494,7 +491,7 @@
 
             let sRes = document.getElementById("susp-results");
             if(sRes) {
-                sRes.innerHTML = "<strong>Suspension Geometry:</strong> Rear Static Weight: <strong>" + rearWt + " lbs</strong> | Estimated Instant Center Length: <strong>" + icLength + " inches</strong> (Optimal for 60ft launch traction).";
+                sRes.innerHTML = "<strong>Suspension Geometry:</strong> Rear Static Weight: " + rearWt + " lbs | IC Length: " + icLength + " in (Optimal for 60ft traction).";
             }
         }
 
