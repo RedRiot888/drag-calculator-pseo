@@ -11,15 +11,15 @@ utilities_links_html = ""
 for row in pages:
     utilities_links_html += f'<li><a href="{row["slug"]}.html">{row["target_keyword"]}</a></li>\n'
 
-# 1. GENERATE THE MASTER HUB (index.html)
-master_index_html = f"""<!DOCTYPE html>
+# 1. GENERATE THE MASTER HUB (index.html) using a raw string (no f-string escaping bugs)
+master_index_html = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Drag Racing Drivetrain & Shift RPM Calculator Suite</title>
     <style>
-        :root {{
+        :root {
             --bg-dark: #0f1015;
             --card-bg: #181a20;
             --accent-red: #ff1e27;
@@ -28,27 +28,27 @@ master_index_html = f"""<!DOCTYPE html>
             --text-muted: #9ca3af;
             --border-color: #2d3139;
             --input-bg: #21242c;
-        }}
-        body {{
+        }
+        body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
             line-height: 1.5;
-        }}
-        .layout-grid {{
+        }
+        .layout-grid {
             max-width: 1200px;
             margin: 30px auto;
             display: grid;
             grid-template-columns: 500px 1fr;
             gap: 30px;
             align-items: start;
-        }}
-        @media (max-width: 900px) {{
-            .layout-grid {{ grid-template-columns: 1fr; }}
-        }}
-        .sticky-calculator {{
+        }
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; }
+        }
+        .sticky-calculator {
             position: sticky;
             top: 20px;
             background: var(--card-bg);
@@ -56,19 +56,19 @@ master_index_html = f"""<!DOCTYPE html>
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             padding: 30px;
-        }}
-        .content-column {{
+        }
+        .content-column {
             display: flex;
             flex-direction: column;
             gap: 20px;
-        }}
-        .content-box, .sidebar-box {{
+        }
+        .content-box, .sidebar-box {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 25px;
-        }}
-        .content-box h3, .sidebar-box h3 {{
+        }
+        .content-box h3, .sidebar-box h3 {
             color: var(--accent-red);
             font-size: 0.95rem;
             text-transform: uppercase;
@@ -76,53 +76,53 @@ master_index_html = f"""<!DOCTYPE html>
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
             letter-spacing: 0.5px;
-        }}
-        .utility-list, .sponsor-list {{
+        }
+        .utility-list, .sponsor-list {
             list-style: none;
             padding: 0;
             margin: 0;
             font-size: 0.9rem;
             color: var(--text-muted);
-        }}
-        .utility-list li, .sponsor-list li {{
+        }
+        .utility-list li, .sponsor-list li {
             padding: 8px 0;
             border-bottom: 1px dashed var(--border-color);
-        }}
-        .utility-list li:last-child, .sponsor-list li:last-child {{ border-bottom: none; }}
-        .utility-list li a, .sponsor-list li a {{
+        }
+        .utility-list li:last-child, .sponsor-list li:last-child { border-bottom: none; }
+        .utility-list li a, .sponsor-list li a {
             color: var(--text-muted);
             text-decoration: none;
             display: block;
             transition: color 0.2s;
-        }}
-        .utility-list li a:hover, .sponsor-list li a:hover {{
+        }
+        .utility-list li a:hover, .sponsor-list li a:hover {
             color: var(--accent-red);
-        }}
-        .master-header {{
+        }
+        .master-header {
             text-align: center;
             margin-bottom: 20px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 15px;
-        }}
-        .master-header h1 {{
+        }
+        .master-header h1 {
             color: var(--accent-red);
             font-size: 1.4rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin: 0 0 5px 0;
-        }}
-        .master-header p {{
+        }
+        .master-header p {
             color: var(--text-muted);
             font-size: 0.85rem;
             margin: 0;
-        }}
-        .tab-buttons {{
+        }
+        .tab-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 20px;
-        }}
-        .tab-btn {{
+        }
+        .tab-btn {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
@@ -133,33 +133,33 @@ master_index_html = f"""<!DOCTYPE html>
             cursor: pointer;
             text-transform: uppercase;
             transition: all 0.2s;
-        }}
-        .tab-btn.active {{
+        }
+        .tab-btn.active {
             background: var(--accent-red);
             color: white;
             border-color: var(--accent-red);
             box-shadow: 0 0 10px var(--accent-glow);
-        }}
-        .tab-pane {{
+        }
+        .tab-pane {
             display: none;
-        }}
-        .tab-pane.active {{
+        }
+        .tab-pane.active {
             display: block;
-        }}
-        .grid-2 {{
+        }
+        .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin-bottom: 10px;
-        }}
-        label {{
+        }
+        label {
             display: block;
             margin-bottom: 3px;
             font-weight: 600;
             font-size: 0.75rem;
             color: var(--text-muted);
-        }}
-        input, select {{
+        }
+        input, select {
             width: 100%;
             padding: 8px 10px;
             background: var(--input-bg);
@@ -168,21 +168,21 @@ master_index_html = f"""<!DOCTYPE html>
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 0.85rem;
-        }}
-        optgroup {{
+        }
+        optgroup {
             color: var(--accent-red);
             font-weight: bold;
-        }}
-        option {{
+        }
+        option {
             color: var(--text-main);
             background: var(--input-bg);
-        }}
-        input:focus, select:focus {{
+        }
+        input:focus, select:focus {
             outline: none;
             border-color: var(--accent-red);
             box-shadow: 0 0 5px var(--accent-glow);
-        }}
-        .results-box {{
+        }
+        .results-box {
             margin-top: 15px;
             background: #121418;
             border: 1px solid var(--border-color);
@@ -191,29 +191,29 @@ master_index_html = f"""<!DOCTYPE html>
             border-radius: 6px;
             font-size: 0.85rem;
             word-break: break-word;
-        }}
-        table {{
+        }
+        table {
             width: 100%;
             margin-top: 15px;
             border-collapse: collapse;
             background: #121418;
             border-radius: 6px;
             overflow: hidden;
-        }}
-        th, td {{
+        }
+        th, td {
             padding: 6px 4px;
             border: 1px solid var(--border-color);
             text-align: center;
             font-size: 0.75rem;
-        }}
-        th {{
+        }
+        th {
             background: #1f232b;
             color: var(--accent-red);
             text-transform: uppercase;
             font-size: 0.65rem;
             letter-spacing: 0.5px;
-        }}
-        .section-title {{
+        }
+        .section-title {
             color: var(--accent-red);
             font-size: 0.80rem;
             text-transform: uppercase;
@@ -221,7 +221,7 @@ master_index_html = f"""<!DOCTYPE html>
             margin: 15px 0 8px 0;
             padding-bottom: 4px;
             letter-spacing: 0.5px;
-        }}
+        }
     </style>
 </head>
 <body>
@@ -390,28 +390,28 @@ master_index_html = f"""<!DOCTYPE html>
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
                 <ul class="utility-list">
-                    {utilities_links_html}
+                    REPLACE_UTILITIES_LINKS
                 </ul>
             </div>
         </div>
     </div>
 
     <script>
-        document.getElementById('btn-drivetrain').addEventListener('click', function() {{
+        document.getElementById('btn-drivetrain').addEventListener('click', function() {
             document.getElementById('pane-drivetrain').classList.add('active');
             document.getElementById('pane-suspension').classList.remove('active');
             document.getElementById('btn-drivetrain').classList.add('active');
             document.getElementById('btn-suspension').classList.remove('active');
-        }});
+        });
 
-        document.getElementById('btn-suspension').addEventListener('click', function() {{
+        document.getElementById('btn-suspension').addEventListener('click', function() {
             document.getElementById('pane-suspension').classList.add('active');
             document.getElementById('pane-drivetrain').classList.remove('active');
             document.getElementById('btn-suspension').classList.add('active');
             document.getElementById('btn-drivetrain').classList.remove('active');
-        }});
+        });
 
-        const ratios = {{ 
+        const ratios = { 
             powerglide: [1.76, 1.00], 
             th350: [2.52, 1.52, 1.00], 
             th400: [2.48, 1.48, 1.00],
@@ -431,27 +431,27 @@ master_index_html = f"""<!DOCTYPE html>
             mustang_10r80: [4.70, 2.99, 2.15, 1.77, 1.52, 1.28, 1.00, 0.85, 0.69, 0.64],
             nissan_cd009: [3.79, 2.32, 1.62, 1.00, 0.79, 0.63],
             torqueflite: [2.45, 1.45, 1.00]
-        }};
+        };
 
-        function applyTransPreset() {{
+        function applyTransPreset() {
             let val = document.getElementById("trans").value;
             let customRow = document.getElementById("custom-gears-row");
-            if(customRow) {{
+            if(customRow) {
                 customRow.style.display = (val === "custom") ? "grid" : "none";
-            }}
+            }
             calcAll();
-        }}
+        }
 
-        function calcAll() {{
+        function calcAll() {
             let tKey = document.getElementById("trans").value;
             let rat = [];
-            if(tKey === "custom") {{
+            if(tKey === "custom") {
                 let customStr = document.getElementById("custom-ratios").value;
-                rat = customStr.split(",").map(function(x) {{ return parseFloat(x.trim()); }}).filter(function(x) {{ return !isNaN(x) && x > 0; }});
+                rat = customStr.split(",").map(function(x) { return parseFloat(x.trim()); }).filter(function(x) { return !isNaN(x) && x > 0; });
                 if(rat.length === 0) rat = [2.48, 1.48, 1.00];
-            }} else {{
+            } else {
                 rat = ratios[tKey] || [2.48, 1.48, 1.00];
-            }}
+            }
 
             let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
             let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
@@ -464,20 +464,20 @@ master_index_html = f"""<!DOCTYPE html>
             let estTrap = (234 * Math.cbrt(hp / wt)).toFixed(1);
 
             let resEl = document.getElementById("results");
-            if(resEl) {{
+            if(resEl) {
                 resEl.innerHTML = "<strong>Performance:</strong> Est. 1/4 Mile ET: " + estEt + "s @ " + estTrap + " MPH<br>Rollout: " + rollout + " in | 1st Gear: " + (rat[0] * gear).toFixed(2) + ":1";
-            }}
+            }
 
             let tbody = document.getElementById("gear-body");
-            if(tbody) {{
+            if(tbody) {
                 tbody.innerHTML = "";
-                for(let i = 0; i < rat.length; i++) {{
+                for(let i = 0; i < rat.length; i++) {
                     let overall = rat[i] * gear;
                     let speed = (rpm * tire) / (overall * 336);
                     let drop = i < rat.length - 1 ? "Drop to " + Math.round(rpm * (rat[i+1] / rat[i])) + " RPM" : "Finish Line";
                     tbody.innerHTML += "<tr><td>Gear " + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.toFixed(1) + " MPH</td><td>" + drop + "</td></tr>";
-                }}
-            }}
+                }
+            }
 
             let sWt = parseFloat(document.getElementById("susp-wt").value) || 3200;
             let sFront = parseFloat(document.getElementById("susp-front-wt").value) || 52;
@@ -499,16 +499,16 @@ master_index_html = f"""<!DOCTYPE html>
             if(isNaN(icLength) || icLength <= 0 || icLength > 150) icLength = 47.3;
 
             let sRes = document.getElementById("susp-results");
-            if(sRes) {{
+            if(sRes) {
                 sRes.innerHTML = "<strong>Suspension Geometry:</strong> Rear Static Weight: " + rearWt + " lbs | IC Length: " + icLength + " in (Optimal for 60ft traction).";
-            }}
-        }}
+            }
+        }
 
         var inputIds = ["trans", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "custom-ratios", "susp-wt", "susp-wb", "susp-cg", "susp-front-wt", "tb-fx", "tb-fz", "tb-rx", "tb-rz", "bb-fx", "bb-fz", "bb-rx", "bb-rz"];
-        inputIds.forEach(function(id) {{
+        inputIds.forEach(function(id) {
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcAll);
-        }});
+        });
 
         calcAll();
     </script>
@@ -516,7 +516,10 @@ master_index_html = f"""<!DOCTYPE html>
 </html>
 """
 
-# Write out index.html
+# Inject dynamic utility links
+master_index_html = master_index_html.replace("REPLACE_UTILITIES_LINKS", utilities_links_html)
+
+# Write out index.html safely
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as idx_f:
     idx_f.write(master_index_html)
 
@@ -1196,4 +1199,4 @@ for row in pages:
         out_f.write(html)
     pages_created += 1
 
-print(f"Successfully generated index.html and {pages_created} PSEO pages!")
+print(f"Successfully generated index.html and {pages_created} PSEO pages without syntax errors!")
