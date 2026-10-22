@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automotive Relay & Circuit Sizing Calculator | Ultimate Drag Racing Master Suite</title>
+    <style>
+        :root {
+            --bg-dark: #0f1015;
+            --card-bg: #181a20;
+            --accent-red: #ff1e27;
+            --accent-glow: rgba(255, 30, 39, 0.25);
+            --text-main: #f8f9fa;
+            --text-muted: #9ca3af;
+            --border-color: #2d3139;
+            --input-bg: #21242c;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .layout-grid {
+            max-width: 1200px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: 480px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        .sticky-calculator {
+            position: sticky;
+            top: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; }
+            .sticky-calculator { position: static; top: auto; box-shadow: none; }
+        }
+        .content-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .content-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+        }
+        .content-box h3 {
+            color: var(--accent-red);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+        .master-header {
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+        .master-header h1 {
+            color: var(--accent-red);
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            margin: 0 0 3px 0;
+        }
+        .master-header p {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin: 0;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        label {
+            display: block;
+            margin-bottom: 2px;
+            font-weight: 600;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+        input, select {
+            width: 100%;
+            padding: 7px 9px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 0.82rem;
+        }
+        optgroup { color: var(--accent-red); font-weight: bold; }
+        option { color: var(--text-main); background: var(--input-bg); }
+        .results-box {
+            margin-top: 10px;
+            background: #121418;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-red);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+        }
+        .action-btn {
+            width: 100%;
+            margin-top: 10px;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .action-btn:hover { background: #e0161f; }
+        .formula-content {
+            font-family: monospace;
+            color: #10b981;
+            font-size: 0.85rem;
+            background: var(--input-bg);
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .faq-item { margin-bottom: 12px; }
+        .faq-item h4 { margin: 0 0 3px 0; font-size: 0.85rem; color: var(--text-main); }
+        .faq-item p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+        table {
+            width: 100%;
+            margin-top: 12px;
+            border-collapse: collapse;
+            background: #121418;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 5px 4px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.72rem;
+        }
+        th {
+            background: #1f232b;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            font-size: 0.62rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: var(--accent-red);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+        @media print {
+            body { background: white; color: black; padding: 0; }
+            .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
+            .content-column, .back-link, .action-btn, footer { display: none; }
+            input, select { border: 1px solid #ccc; background: white; color: black; }
+        }
+    </style>
+</head>
+<body>
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <a href="index.html" class="back-link">&larr; Back to Master Hub</a>
+    </div>
+
+    <div class="layout-grid">
+        <div class="sticky-calculator">
+            <div>
+                <div class="master-header">
+                    <h1>Automotive Relay & Circuit Sizing Calculator</h1>
+                    <p>Automotive Relay & Circuit Sizing Calculator &mdash; Track Tuning Engine</p>
+                </div>
+                
+            <div class="grid-2">
+                <div><label>Accessory Power Draw (Amps)</label><input type="number" id="relay-amps" value="20" step="1"></div>
+                <div><label>System Voltage</label><select id="relay-volts"><option value="12" selected>12V Standard</option><option value="16">16V Race Battery</option></select></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Wire Run Length (One Way, Ft)</label><input type="number" id="relay-ft" value="10" step="1"></div>
+                <div><label>Accessory Type</label>
+                    <select id="relay-type">
+                        <option value="pump">Electric Fuel / Water Pump</option>
+                        <option value="fan">Intercooler / Radiator Fan</option>
+                        <option value="nitros">Nitros Solenoids</option>
+                        <option value="headlights">Headlights / Aux Lighting</option>
+                    </select>
+                </div>
+            </div>
+            <div class="results-box" id="relay-results">Adjust parameters above.</div>
+            
+            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-top: 12px;" id="relay-affiliate-box">
+                <div style="font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Recommended Relay & Wiring Kit</div>
+                <div id="relay-part-details" style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">Loading relay kit specs...</div>
+                <a href="#" id="relay-buy-btn" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at Summit Racing &rarr;</a>
+            </div>
+
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
+        
+            </div>
+            
+            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
+                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
+                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">
+                    Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="content-column">
+            
+            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
+                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
+                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">
+                    Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>Other Utilities & Calculators</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+
+    <a href="transmission-shift-recovery-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">🏎️</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Transmission Shift Recovery & Gear Drop Calculator</span>
+    </a>
+
+    <a href="turbo-sizing-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">🌀</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Turbo Sizing & Turbocharger Matching Calculator</span>
+    </a>
+
+    <a href="supercharger-pulley-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">⚡</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Supercharger Pulley Ratio & Boost Pressure Calculator</span>
+    </a>
+
+    <a href="rear-gear-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">🔧</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Ring and Pinion Rear Gear Quarter-Mile Calculator</span>
+    </a>
+
+    <a href="tire-growth-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">🛞</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Tire Diameter Growth & Rollout Drag Calculator</span>
+    </a>
+
+    <a href="wastegate-sizing-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">🎛️</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Wastegate Sizing & Boost Control Calculator</span>
+    </a>
+
+    <a href="fuel-injector-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">⛽</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Fuel Injector Flow Rate & Sizing Calculator</span>
+    </a>
+
+    <a href="automotive-relay-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
+        <span style="font-size: 1.1rem;">⚡</span>
+        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Automotive Relay & Circuit Sizing Calculator</span>
+    </a>
+</div>
+
+            </div>
+            
+            <div class="content-box">
+                <h3>Track-Side Tuning Cheat Sheets</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Essential round-by-round reference guides for the trailer:</p>
+                
+                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
+                    <strong style="color: var(--text-main); font-size: 0.85rem;">1. Density Altitude (DA) & Weather</strong>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Every 1,000 ft increase in DA costs naturally aspirated engines ~3% horsepower. Forced induction setups compensate better via wastegate control, but watch inlet air temps.</p>
+                </div>
+
+                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
+                    <strong style="color: var(--text-main); font-size: 0.85rem;">2. Torque Converter Slip</strong>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Target 5% to 8% slip at the finish line for max efficiency. Excessive slip generates transmission heat and kills trap speed; too tight kills 60-foot times.</p>
+                </div>
+
+                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
+                    <strong style="color: var(--text-main); font-size: 0.85rem;">3. Boost & Nitro Management</strong>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Read spark plug ground straps for heat mark placement. Back off timing 1 to 2 degrees per additional 3-4 PSI of boost or when stepping up nitrous jetting.</p>
+                </div>
+
+                <div>
+                    <strong style="color: var(--text-main); font-size: 0.85rem;">4. 4-Link Anti-Squat & Launch</strong>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">If the car bounces or unloads the tires immediately on launch, lower the instantaneous center (IC) or soften rear shock extension.</p>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>Formula Breakdown</h3>
+                <div class="formula-content">Current (Amps) = Watts / Volts<br>Recommended Fuse = Current Draw x 1.25 (25% safety margin)<br>Trigger Coil Power = ~1.6W (approx 135mA at 12V)</div>
+            </div>
+            <div class="content-box">
+                <h3>Frequently Asked Questions</h3>
+                
+            <div class="faq-item">
+                <h4>Why use an automotive relay for high-draw accessories?</h4>
+                <p>Relays allow a low-current switch or ECU output (trigger) to safely control high-current components (like fuel pumps or fans) through heavy-gauge wire, preventing switch meltdowns and voltage drop.</p>
+            </div>
+            <div class="faq-item" style="margin-top: 10px;">
+                <h4>What do relay pins 30, 85, 86, and 87 mean?</h4>
+                <p>Pin 30 = Battery Power In (Fused), Pin 85 = Ground (Trigger Switch), Pin 86 = 12V Trigger In (Switch/ECU), Pin 87 = Switched Power Out to Accessory.</p>
+            </div>
+        
+            </div>
+            
+            <div class="content-box">
+                <h3>Featured Partners</h3>
+                <ul class="sponsor-list" style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem; color: var(--text-muted);">
+                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color);"><a href="#" style="color: var(--text-muted); text-decoration: none;">Pro-Comp Race Transmissions</a></li>
+                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color);"><a href="#" style="color: var(--text-muted); text-decoration: none;">Precision Turbo & Engine</a></li>
+                    <li style="padding: 8px 0;"><a href="#" style="color: var(--text-muted); text-decoration: none;">DragStrip Tire & Compound Tech</a></li>
+                </ul>
+            </div>
+
+            
+            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
+                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
+                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">
+                    Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    
+    <footer style="max-width: 1200px; margin: 40px auto 20px auto; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px; font-size: 0.8rem; color: var(--text-muted);">
+        <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved. Professional Track Tuning & Engineering Tools.</p>
+        <p style="margin-top: 5px;">
+            <a href="contact.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px;">Contact & Sponsorships</a> | 
+            <a href="privacy.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px;">Privacy Policy & Affiliate Disclosure</a>
+        </p>
+        <p style="font-size: 0.72rem; color: #6b7280; margin-top: 8px;">Disclosure: We may earn an affiliate commission from qualifying purchases made through links on this site at no extra cost to you.</p>
+    </footer>
+
+
+    <script>
+        
+        function calcTool() {
+            let amps = parseFloat(document.getElementById("relay-amps").value) || 20;
+            let volts = parseFloat(document.getElementById("relay-volts").value) || 12;
+            let ft = parseFloat(document.getElementById("relay-ft").value) || 10;
+            let type = document.getElementById("relay-type").value;
+            
+            let fuseAmps = Math.ceil(amps * 1.25 / 5) * 5; // Round up to nearest standard fuse size
+            if(fuseAmps < 10) fuseAmps = 10;
+            
+            let wireGauge = "14 AWG";
+            let wireDesc = "Standard GXL Automotive Wire";
+            if(amps > 40) { wireGauge = "8 AWG"; wireDesc = "Heavy Duty Power Cable"; }
+            else if(amps > 30) { wireGauge = "10 AWG"; wireDesc = "Primary Power Wire"; }
+            else if(amps > 15) { wireGauge = "12 AWG"; wireDesc = "Standard Power Wire"; }
+            
+            let relayType = "Standard Bosch 40A Weatherproof Relay";
+            let kitPrice = "$24.99";
+            
+            if(amps > 30) {
+                relayType = "Heavy Duty 70/80A SPDT Relay";
+                kitPrice = "$39.99";
+            }
+            
+            document.getElementById("relay-results").innerHTML = 
+                "Rec. Fuse Size: <strong>" + fuseAmps + " Amps</strong> | Rec. Wire Gauge: <strong>" + wireGauge + "</strong><br>" +
+                "Pinout: Pin 30 (Bat+), Pin 85 (Gnd), Pin 86 (Trigger), Pin 87 (Out)";
+                
+            document.getElementById("relay-part-details").innerHTML = 
+                "<strong>Relay Needed:</strong> " + relayType + "<br>" +
+                "<strong>Wire & Fuse Kit:</strong> " + wireGauge + " " + wireDesc + " with inline waterproof holder<br>" +
+                "<strong>Kit Price:</strong> " + kitPrice + "<br>" +
+                "<span style='color: var(--text-muted); font-size: 0.75rem;'><strong>Wiring Note:</strong> Calculated with 25% safety margin for surge current.</span>";
+        }
+        ["relay-amps", "relay-volts", "relay-ft", "relay-type"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) {
+                el.addEventListener("input", calcTool);
+                el.addEventListener("change", calcTool);
+            }
+        });
+        calcTool();
+        
+    </script>
+</body>
+</html>

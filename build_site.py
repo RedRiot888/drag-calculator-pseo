@@ -11,6 +11,7 @@ rear-gear-calculator,Ring and Pinion Rear Gear Quarter-Mile Calculator,RearGear,
 tire-growth-calculator,Tire Diameter Growth & Rollout Drag Calculator,Tire,3.42,28.0
 wastegate-sizing-calculator,Wastegate Sizing & Boost Control Calculator,Wastegate,3.42,28.0
 fuel-injector-calculator,Fuel Injector Flow Rate & Sizing Calculator,Fuel,3.42,28.0
+automotive-relay-calculator,Automotive Relay & Circuit Sizing Calculator,Electrical,3.42,28.0
 """
 with open("pseo_pages_list.csv", "w", encoding="utf-8") as f:
     f.write(csv_content)
@@ -33,6 +34,7 @@ for row in pages:
     elif "Transmission" in cat: icon = "🏎️"
     elif "Wastegate" in cat: icon = "🎛️"
     elif "Fuel" in cat: icon = "⛽"
+    elif "Electrical" in cat: icon = "⚡"
     
     utilities_grid_html += f'''
     <a href="{slug}.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
@@ -1142,7 +1144,6 @@ for row in pages:
                     price = "$899.99";
                 }
             } else {
-                // Race car
                 if(perTurbo > 90) {
                     brand = "Precision Turbo Pro Mod Series";
                     model = "PM91 / 91mm CEA Pro Mod";
@@ -1331,6 +1332,88 @@ for row in pages:
             document.getElementById("inj-results").innerHTML = "Required Per-Injector Flow: <strong>" + Math.round(perInjectorCcMin) + " cc/min</strong> (" + perInjectorLbHr.toFixed(1) + " lb/hr) | Total System: <strong>" + Math.round(totalLbHr * 10.5) + " cc/min</strong>";
         }
         ["inj-hp", "inj-count", "inj-fuel", "inj-duty"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) {
+                el.addEventListener("input", calcTool);
+                el.addEventListener("change", calcTool);
+            }
+        });
+        calcTool();
+        """
+    elif category == "Electrical":
+        primary_title = "Automotive Relay & Circuit Sizing Calculator"
+        formula_text = "Current (Amps) = Watts / Volts<br>Recommended Fuse = Current Draw x 1.25 (25% safety margin)<br>Trigger Coil Power = ~1.6W (approx 135mA at 12V)"
+        faqs = """
+            <div class="faq-item">
+                <h4>Why use an automotive relay for high-draw accessories?</h4>
+                <p>Relays allow a low-current switch or ECU output (trigger) to safely control high-current components (like fuel pumps or fans) through heavy-gauge wire, preventing switch meltdowns and voltage drop.</p>
+            </div>
+            <div class="faq-item" style="margin-top: 10px;">
+                <h4>What do relay pins 30, 85, 86, and 87 mean?</h4>
+                <p>Pin 30 = Battery Power In (Fused), Pin 85 = Ground (Trigger Switch), Pin 86 = 12V Trigger In (Switch/ECU), Pin 87 = Switched Power Out to Accessory.</p>
+            </div>
+        """
+        primary_tool_html = """
+            <div class="grid-2">
+                <div><label>Accessory Power Draw (Amps)</label><input type="number" id="relay-amps" value="20" step="1"></div>
+                <div><label>System Voltage</label><select id="relay-volts"><option value="12" selected>12V Standard</option><option value="16">16V Race Battery</option></select></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Wire Run Length (One Way, Ft)</label><input type="number" id="relay-ft" value="10" step="1"></div>
+                <div><label>Accessory Type</label>
+                    <select id="relay-type">
+                        <option value="pump">Electric Fuel / Water Pump</option>
+                        <option value="fan">Intercooler / Radiator Fan</option>
+                        <option value="nitros">Nitros Solenoids</option>
+                        <option value="headlights">Headlights / Aux Lighting</option>
+                    </select>
+                </div>
+            </div>
+            <div class="results-box" id="relay-results">Adjust parameters above.</div>
+            
+            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-top: 12px;" id="relay-affiliate-box">
+                <div style="font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Recommended Relay & Wiring Kit</div>
+                <div id="relay-part-details" style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">Loading relay kit specs...</div>
+                <a href="#" id="relay-buy-btn" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at Summit Racing &rarr;</a>
+            </div>
+
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
+        """
+        tool_script = """
+        function calcTool() {
+            let amps = parseFloat(document.getElementById("relay-amps").value) || 20;
+            let volts = parseFloat(document.getElementById("relay-volts").value) || 12;
+            let ft = parseFloat(document.getElementById("relay-ft").value) || 10;
+            let type = document.getElementById("relay-type").value;
+            
+            let fuseAmps = Math.ceil(amps * 1.25 / 5) * 5; // Round up to nearest standard fuse size
+            if(fuseAmps < 10) fuseAmps = 10;
+            
+            let wireGauge = "14 AWG";
+            let wireDesc = "Standard GXL Automotive Wire";
+            if(amps > 40) { wireGauge = "8 AWG"; wireDesc = "Heavy Duty Power Cable"; }
+            else if(amps > 30) { wireGauge = "10 AWG"; wireDesc = "Primary Power Wire"; }
+            else if(amps > 15) { wireGauge = "12 AWG"; wireDesc = "Standard Power Wire"; }
+            
+            let relayType = "Standard Bosch 40A Weatherproof Relay";
+            let kitPrice = "$24.99";
+            
+            if(amps > 30) {
+                relayType = "Heavy Duty 70/80A SPDT Relay";
+                kitPrice = "$39.99";
+            }
+            
+            document.getElementById("relay-results").innerHTML = 
+                "Rec. Fuse Size: <strong>" + fuseAmps + " Amps</strong> | Rec. Wire Gauge: <strong>" + wireGauge + "</strong><br>" +
+                "Pinout: Pin 30 (Bat+), Pin 85 (Gnd), Pin 86 (Trigger), Pin 87 (Out)";
+                
+            document.getElementById("relay-part-details").innerHTML = 
+                "<strong>Relay Needed:</strong> " + relayType + "<br>" +
+                "<strong>Wire & Fuse Kit:</strong> " + wireGauge + " " + wireDesc + " with inline waterproof holder<br>" +
+                "<strong>Kit Price:</strong> " + kitPrice + "<br>" +
+                "<span style='color: var(--text-muted); font-size: 0.75rem;'><strong>Wiring Note:</strong> Calculated with 25% safety margin for surge current.</span>";
+        }
+        ["relay-amps", "relay-volts", "relay-ft", "relay-type"].forEach(id => {
             let el = document.getElementById(id);
             if(el) {
                 el.addEventListener("input", calcTool);
