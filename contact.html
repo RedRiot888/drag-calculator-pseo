@@ -43,20 +43,45 @@
             font-size: 0.9rem;
         }
         .back-link:hover { text-decoration: underline; }
-        .contact-box {
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
             background: var(--input-bg);
             border: 1px solid var(--border-color);
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 15px;
-            text-align: center;
+            color: var(--text-main);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 0.9rem;
         }
-        .contact-email {
-            font-size: 1.2rem;
-            color: var(--accent-red);
+        textarea {
+            resize: vertical;
+            height: 120px;
+        }
+        .submit-btn {
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
             font-weight: bold;
-            text-decoration: none;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
         }
+        .submit-btn:hover { background: #e0161f; }
     </style>
 </head>
 <body>
@@ -68,15 +93,27 @@
         <p>Get in touch with our team for advertising rates, technical calculator feedback, or partnership inquiries.</p>
         
         <h3>Track Sponsor Rates & Advertising</h3>
-        <p>Are you a performance part manufacturer, cylinder head porter, turbo supplier, or track-side vendor? Our high-performance calculator suite reaches thousands of dedicated racers and builders actively spec'ing out components for their builds.</p>
+        <p>Are you a performance part manufacturer, cylinder head porter, turbo supplier, or track-side vendor? Send us a message below to discuss banner placements and sponsor rates.</p>
         
-        <div class="contact-box">
-            <p style="margin: 0 0 10px 0; color: var(--text-main); font-weight: bold;">Direct Partnership Inquiries:</p>
-            <a href="mailto:support@dragcalculators.com" class="contact-email">support@dragcalculators.com</a>
-        </div>
+        <!-- FORMSPREE CONTACT FORM -->
+        <form action="https://formspree.io/f/xqppzgab" method="POST" style="margin-top: 20px;">
+            <div class="form-group">
+                <label for="name">Your Name / Company</label>
+                <input type="text" id="name" name="name" required placeholder="e.g. Pro-Comp Transmissions">
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="name@example.com">
+            </div>
+            <div class="form-group">
+                <label for="message">Message / Sponsorship Inquiry</label>
+                <textarea id="message" name="message" required placeholder="Tell us about your brand or calculator feedback..."></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Send Message</button>
+        </form>
 
         <h3>Support & Calculator Questions</h3>
-        <p>Found a bug in our gear drop formula or want to request a new calculator (like a torque converter slip or nitrous jetting calculator)? Drop us an email and our track engineers will review it.</p>
+        <p>Found a bug in our gear drop formula or want to request a new calculator? Use the form above and our track engineers will review your request.</p>
     </div>
     
     <footer style="max-width: 1200px; margin: 40px auto 20px auto; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px; font-size: 0.8rem; color: var(--text-muted);">
