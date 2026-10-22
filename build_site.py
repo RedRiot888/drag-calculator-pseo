@@ -15,9 +15,21 @@ for row in pages:
 ad_block_html = """
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
                 <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 25px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">
+                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">
                     Your Ad Here<br>Contact for Track Sponsor Rates
                 </div>
+            </div>
+"""
+
+# Affiliate / Sponsor Promo Slot (Future-proof for Wastegates, Turbos, BOVs)
+affiliate_banner_html = """
+            <div class="content-box" style="background: linear-gradient(135deg, #181a20 0%, #21242c 100%); border: 1px solid var(--accent-red);">
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">
+                    <span>Featured Track Affiliate Offer</span>
+                    <span>Sponsored</span>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-main); margin: 0 0 10px 0;">Looking for precision control? Save 10% on high-performance wastegates, turbos, and BOVs with our trusted track partners.</p>
+                <a href="#" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.8rem; text-transform: uppercase;">Shop Precision Boost Hardware &rarr;</a>
             </div>
 """
 
@@ -33,7 +45,7 @@ partners_html = """
             </div>
 """
 
-# Extended Track-Side Tuning Cheat Sheets HTML (Placed under utilities)
+# Extended Track-Side Tuning Cheat Sheets HTML
 tuning_guides_html = """
             <div class="content-box">
                 <h3>Track-Side Tuning Cheat Sheets</h3>
@@ -105,10 +117,10 @@ master_index_html = """<!DOCTYPE html>
             border: 1px solid var(--border-color);
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            padding: 30px;
+            padding: 25px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
         .content-column {
             display: flex;
@@ -150,37 +162,38 @@ master_index_html = """<!DOCTYPE html>
         }
         .master-header {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
+            padding-bottom: 12px;
         }
         .master-header h1 {
             color: var(--accent-red);
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             text-transform: uppercase;
-            margin: 0 0 5px 0;
+            margin: 0 0 3px 0;
         }
         .master-header p {
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin: 0;
         }
         .tab-buttons {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 10px;
         }
         .tab-btn {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
-            padding: 12px 8px;
+            padding: 8px 4px;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             cursor: pointer;
             text-transform: uppercase;
+            text-align: center;
         }
         .tab-btn.active {
             background: var(--accent-red);
@@ -196,47 +209,47 @@ master_index_html = """<!DOCTYPE html>
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 10px;
+            gap: 10px;
+            margin-bottom: 8px;
         }
         label {
             display: block;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             font-weight: 600;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: var(--text-muted);
         }
         input, select {
             width: 100%;
-            padding: 8px 10px;
+            padding: 7px 9px;
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-main);
             border-radius: 6px;
             box-sizing: border-box;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
         }
         optgroup { color: var(--accent-red); font-weight: bold; }
         option { color: var(--text-main); background: var(--input-bg); }
         .results-box {
-            margin-top: 15px;
+            margin-top: 10px;
             background: #121418;
             border: 1px solid var(--border-color);
             border-left: 4px solid var(--accent-red);
-            padding: 12px;
+            padding: 10px;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
         }
         .action-btn {
             width: 100%;
-            margin-top: 12px;
+            margin-top: 10px;
             background: var(--accent-red);
             color: white;
             border: none;
-            padding: 10px;
+            padding: 8px;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -244,31 +257,45 @@ master_index_html = """<!DOCTYPE html>
         .action-btn:hover { background: #e0161f; }
         table {
             width: 100%;
-            margin-top: 15px;
+            margin-top: 12px;
             border-collapse: collapse;
             background: #121418;
             border-radius: 6px;
             overflow: hidden;
         }
         th, td {
-            padding: 6px 4px;
+            padding: 5px 4px;
             border: 1px solid var(--border-color);
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
         }
         th {
             background: #1f232b;
             color: var(--accent-red);
             text-transform: uppercase;
-            font-size: 0.65rem;
+            font-size: 0.62rem;
         }
         .section-title {
             color: var(--accent-red);
-            font-size: 0.80rem;
+            font-size: 0.78rem;
             text-transform: uppercase;
             border-bottom: 1px dashed var(--border-color);
-            margin: 15px 0 8px 0;
-            padding-bottom: 4px;
+            margin: 12px 0 6px 0;
+            padding-bottom: 3px;
+        }
+        .guide-box {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .guide-box h4 {
+            color: var(--text-main);
+            margin: 0 0 5px 0;
+            font-size: 0.82rem;
         }
         @media print {
             body { background: white; color: black; padding: 0; }
@@ -289,10 +316,12 @@ master_index_html = """<!DOCTYPE html>
                 </div>
 
                 <div class="tab-buttons">
-                    <button type="button" class="tab-btn active" id="btn-drivetrain">Drivetrain & Shift</button>
-                    <button type="button" class="tab-btn" id="btn-suspension">4-Link Suspension</button>
+                    <button type="button" class="tab-btn active" id="btn-drivetrain">Drivetrain</button>
+                    <button type="button" class="tab-btn" id="btn-suspension">4-Link</button>
+                    <button type="button" class="tab-btn" id="btn-wastegate">Wastegate</button>
                 </div>
 
+                <!-- Drivetrain Tab -->
                 <div id="pane-drivetrain" class="tab-pane active">
                     <div class="grid-2">
                         <div>
@@ -365,6 +394,7 @@ master_index_html = """<!DOCTYPE html>
                     </table>
                 </div>
 
+                <!-- 4-Link Suspension Tab -->
                 <div id="pane-suspension" class="tab-pane">
                     <div class="section-title">1. Vehicle Weight & Distribution</div>
                     <div class="grid-2">
@@ -433,14 +463,54 @@ master_index_html = """<!DOCTYPE html>
                     <div class="results-box" id="susp-results">Adjust suspension geometry above.</div>
                     <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Suspension Sheet</button>
                 </div>
+
+                <!-- Wastegate Sizing Tab -->
+                <div id="pane-wastegate" class="tab-pane">
+                    <div class="section-title">Wastegate Sizing Engine</div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Target Flywheel HP</label>
+                            <input type="number" id="wg-hp" value="1000" step="50" oninput="calcWastegate()">
+                        </div>
+                        <div>
+                            <label>Target Boost (PSI)</label>
+                            <input type="number" id="wg-boost" value="22" step="1" oninput="calcWastegate()">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div style="grid-column: span 2;">
+                            <label>Turbo Frame Size / Exhaust Flow</label>
+                            <select id="wg-turbo" onchange="calcWastegate()">
+                                <option value="small">Small Frame (T3, 50-60mm, 400-700 HP)</option>
+                                <option value="medium" selected>Medium Frame (T4, 62-76mm, 700-1200 HP)</option>
+                                <option value="large">Large Frame (T6 / Pro Mod, 80mm+, 1200+ HP)</option>
+                                <option value="twin">Twin Turbo Setup (Divided / Dual Gates)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="results-box" id="wg-results">Recommended Wastegate: <strong>44mm - 50mm</strong></div>
+                    
+                    <div class="guide-box">
+                        <h4>Understanding Wastegate Sizing</h4>
+                        <p style="margin: 0 0 6px 0;">Wastegates regulate exhaust flow before the turbine. High boost combined with low target spring pressure requires larger valves to bypass excessive exhaust gas.</p>
+                        <strong style="color: var(--text-main);">Common Issues & Fixes:</strong>
+                        <ul style="margin: 4px 0 0 0; padding-left: 16px; color: var(--text-muted);">
+                            <li><strong>Boost Creep:</strong> Valve is too small or routing has too much backpressure. Upgrade to a larger size or plumb secondary gate.</li>
+                            <li><strong>Overboosting:</strong> Spring pressure is too high or reference line is restricted.</li>
+                        </ul>
+                    </div>
+                    <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Wastegate Spec Sheet</button>
+                </div>
+
             </div>
 
             REPLACE_STICKY_AD
         </div>
 
-        <!-- Right Column (Utilities First, Cheat Sheet Second) -->
+        <!-- Right Column -->
         <div class="content-column">
             REPLACE_TOP_AD
+            REPLACE_AFFILIATE_BANNER
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
                 <ul class="utility-list">
@@ -457,15 +527,29 @@ master_index_html = """<!DOCTYPE html>
         document.getElementById('btn-drivetrain').addEventListener('click', function() {
             document.getElementById('pane-drivetrain').classList.add('active');
             document.getElementById('pane-suspension').classList.remove('active');
+            document.getElementById('pane-wastegate').classList.remove('active');
             document.getElementById('btn-drivetrain').classList.add('active');
             document.getElementById('btn-suspension').classList.remove('active');
+            document.getElementById('btn-wastegate').classList.remove('active');
         });
 
         document.getElementById('btn-suspension').addEventListener('click', function() {
             document.getElementById('pane-suspension').classList.add('active');
             document.getElementById('pane-drivetrain').classList.remove('active');
+            document.getElementById('pane-wastegate').classList.remove('active');
             document.getElementById('btn-suspension').classList.add('active');
             document.getElementById('btn-drivetrain').classList.remove('active');
+            document.getElementById('btn-wastegate').classList.remove('active');
+        });
+
+        document.getElementById('btn-wastegate').addEventListener('click', function() {
+            document.getElementById('pane-wastegate').classList.add('active');
+            document.getElementById('pane-drivetrain').classList.remove('active');
+            document.getElementById('pane-suspension').classList.remove('active');
+            document.getElementById('btn-wastegate').classList.add('active');
+            document.getElementById('btn-drivetrain').classList.remove('active');
+            document.getElementById('btn-suspension').classList.remove('active');
+            calcWastegate();
         });
 
         const ratios = { 
@@ -493,6 +577,28 @@ master_index_html = """<!DOCTYPE html>
                 customRow.style.display = (val === "custom") ? "grid" : "none";
             }
             calcAll();
+        }
+
+        function calcWastegate() {
+            let hp = parseFloat(document.getElementById("wg-hp").value) || 1000;
+            let boost = parseFloat(document.getElementById("wg-boost").value) || 22;
+            let frame = document.getElementById("wg-turbo").value;
+            
+            let rec = "38mm";
+            if(hp > 1200 || frame === "large") {
+                rec = "60mm+ (or Dual 44mm Gates)";
+            } else if(hp > 800 || boost > 20 || frame === "medium") {
+                rec = "44mm - 50mm";
+            } else if(hp > 500) {
+                rec = "40mm - 44mm";
+            } else {
+                rec = "38mm";
+            }
+            
+            let wgRes = document.getElementById("wg-results");
+            if(wgRes) {
+                wgRes.innerHTML = "Recommended Wastegate: <strong>" + rec + "</strong> (Target: " + hp + " HP @ " + boost + " PSI)";
+            }
         }
 
         function calcAll() {
@@ -563,6 +669,7 @@ master_index_html = """<!DOCTYPE html>
         });
 
         calcAll();
+        calcWastegate();
     </script>
 </body>
 </html>
@@ -573,13 +680,14 @@ master_index_html = (
     .replace("REPLACE_STICKY_AD", ad_block_html)
     .replace("REPLACE_TOP_AD", ad_block_html)
     .replace("REPLACE_BOTTOM_AD", ad_block_html)
+    .replace("REPLACE_AFFILIATE_BANNER", affiliate_banner_html)
     .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
     .replace("REPLACE_PARTNERS", partners_html)
 )
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
-# 2. PSEO SUB-PAGES TEMPLATE (Utilities first, Cheat Sheets second)
+# 2. PSEO SUB-PAGES TEMPLATE
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -623,10 +731,10 @@ base_html_template = """<!DOCTYPE html>
             border: 1px solid var(--border-color);
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            padding: 30px;
+            padding: 25px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
         .content-column {
             display: flex;
@@ -668,65 +776,65 @@ base_html_template = """<!DOCTYPE html>
         }
         .master-header {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
+            padding-bottom: 12px;
         }
         .master-header h1 {
             color: var(--accent-red);
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             text-transform: uppercase;
-            margin: 0 0 5px 0;
+            margin: 0 0 3px 0;
         }
         .master-header p {
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin: 0;
         }
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 10px;
+            gap: 10px;
+            margin-bottom: 8px;
         }
         label {
             display: block;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             font-weight: 600;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: var(--text-muted);
         }
         input, select {
             width: 100%;
-            padding: 8px 10px;
+            padding: 7px 9px;
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-main);
             border-radius: 6px;
             box-sizing: border-box;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
         }
         optgroup { color: var(--accent-red); font-weight: bold; }
         option { color: var(--text-main); background: var(--input-bg); }
         .results-box {
-            margin-top: 15px;
+            margin-top: 10px;
             background: #121418;
             border: 1px solid var(--border-color);
             border-left: 4px solid var(--accent-red);
-            padding: 12px;
+            padding: 10px;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
         }
         .action-btn {
             width: 100%;
-            margin-top: 12px;
+            margin-top: 10px;
             background: var(--accent-red);
             color: white;
             border: none;
-            padding: 10px;
+            padding: 8px;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -745,23 +853,23 @@ base_html_template = """<!DOCTYPE html>
         .faq-item p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
         table {
             width: 100%;
-            margin-top: 15px;
+            margin-top: 12px;
             border-collapse: collapse;
             background: #121418;
             border-radius: 6px;
             overflow: hidden;
         }
         th, td {
-            padding: 6px 4px;
+            padding: 5px 4px;
             border: 1px solid var(--border-color);
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
         }
         th {
             background: #1f232b;
             color: var(--accent-red);
             text-transform: uppercase;
-            font-size: 0.65rem;
+            font-size: 0.62rem;
         }
         .back-link {
             display: inline-block;
@@ -799,6 +907,7 @@ base_html_template = """<!DOCTYPE html>
 
         <div class="content-column">
             REPLACE_TOP_AD
+            REPLACE_AFFILIATE_BANNER
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
                 <ul class="utility-list">
@@ -944,7 +1053,7 @@ for row in pages:
                     let overall = rat[i] * gear;
                     let speed = (rpm * tire) / (overall * 336);
                     let drop = i < rat.length - 1 ? "Drop to " + Math.round(rpm * (rat[i+1] / rat[i])) + " RPM" : "Crossing Line";
-                    tbody.innerHTML += "<tr><td>Gear " + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.displayText + " MPH</td><td>" + drop + "</td></tr>";
+                    tbody.innerHTML += "<tr><td>Gear " + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.toFixed(1) + " MPH</td><td>" + drop + "</td></tr>";
                 }
             }
         }
@@ -1101,11 +1210,9 @@ for row in pages:
             .replace("REPLACE_STICKY_AD", ad_block_html)
             .replace("REPLACE_TOP_AD", ad_block_html)
             .replace("REPLACE_BOTTOM_AD", ad_block_html)
+            .replace("REPLACE_AFFILIATE_BANNER", affiliate_banner_html)
             .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
-            .replace("FORMULA_TEXT", formula_text)
-            .replace("FAQS_HTML", faqs)
             .replace("REPLACE_PARTNERS", partners_html)
-            .replace("TOOL_SCRIPT", tool_script)
     )
 
     file_path = os.path.join(output_dir, f"{slug}.html")
@@ -1113,4 +1220,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully updated sidebar order: Utilities first, Cheat Sheets second across all pages!")
+print(f"Successfully generated index.html and {pages_created} PSEO pages with the new Wastegate Sizing Calculator!")
