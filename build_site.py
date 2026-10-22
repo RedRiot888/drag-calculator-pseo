@@ -231,7 +231,7 @@ master_index_html = """<!DOCTYPE html>
 </head>
 <body>
     <div class="layout-grid">
-        <!-- Sticky Left Column: Calculator + Sticky Ad -->
+        <!-- Sticky Left Column -->
         <div class="sticky-calculator">
             <div>
                 <div class="master-header">
@@ -249,20 +249,31 @@ master_index_html = """<!DOCTYPE html>
                         <div>
                             <label>Transmission Profile</label>
                             <select id="trans" onchange="applyTransPreset()">
-                                <optgroup label="GM">
+                                <optgroup label="Custom">
+                                    <option value="custom">Custom Ratios</option>
+                                </optgroup>
+                                <optgroup label="GM Automatic">
                                     <option value="powerglide">Powerglide (1.76 / 1.00)</option>
                                     <option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
                                     <option value="th400" selected>TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
                                     <option value="4l60e">4L60e (3.06 / 1.62 / 1.00 / 0.70)</option>
                                     <option value="6l80">6L80 (4.03 / 2.36 / 1.53 / 1.15 / 0.85 / 0.67)</option>
+                                    <option value="8l90">8L90 (4.56 / 2.97 / 2.08 / 1.69 / 1.27 / 1.00 / 0.85 / 0.65)</option>
+                                    <option value="10l90">10L90 (4.70 / 2.98 / 2.14 / 1.77 / 1.52 / 1.27 / 1.00 / 0.85 / 0.69 / 0.64)</option>
                                 </optgroup>
-                                <optgroup label="Ford">
+                                <optgroup label="Ford Automatic">
                                     <option value="c4_c6">Ford C4 / C6 (2.46 / 1.46 / 1.00)</option>
-                                    <option value="ford_t5">Ford T-5 (2.95 / 1.94 / 1.34 / 1.00 / 0.73)</option>
-                                    <option value="mustang_10r80">Mustang 10R80 (10-Speed)</option>
+                                    <option value="aod">AOD (2.40 / 1.47 / 1.00 / 0.67)</option>
+                                    <option value="4r70w">4R70W (2.84 / 1.55 / 1.00 / 0.70)</option>
+                                    <option value="mustang_10r80">Mustang 10R80 (4.70 / 2.99 / 2.15 / 1.77 / 1.52 / 1.28 / 1.00 / 0.85 / 0.69 / 0.64)</option>
                                 </optgroup>
-                                <optgroup label="Custom">
-                                    <option value="custom">Custom Ratios</option>
+                                <optgroup label="Mopar Automatic">
+                                    <option value="torque_727">Torqueflite 727 (2.45 / 1.45 / 1.00)</option>
+                                </optgroup>
+                                <optgroup label="Manuals">
+                                    <option value="ford_t5">Ford T-5 (2.95 / 1.94 / 1.34 / 1.00 / 0.73)</option>
+                                    <option value="t56">T56 / TR-6060 (2.66 / 1.78 / 1.30 / 1.00 / 0.74 / 0.50)</option>
+                                    <option value="tremec_tkx">Tremec TKX (2.87 / 1.89 / 1.28 / 1.00 / 0.68)</option>
                                 </optgroup>
                             </select>
                         </div>
@@ -373,15 +384,13 @@ master_index_html = """<!DOCTYPE html>
                 </div>
             </div>
 
-            <!-- Sticky Ad Underneath Calculator -->
             REPLACE_STICKY_AD
         </div>
 
-        <!-- Right Column: Ad -> Formula -> FAQ -> Utilities -> Partners -> Ad -->
+        <!-- Right Column -->
         <div class="content-column">
+            REPLACE_DRAG_TREE
             REPLACE_TOP_AD
-            REPLACE_FORMULA
-            REPLACE_FAQS
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
                 <ul class="utility-list">
@@ -414,9 +423,16 @@ master_index_html = """<!DOCTYPE html>
             th400: [2.48, 1.48, 1.00],
             "4l60e": [3.06, 1.62, 1.00, 0.70],
             "6l80": [4.03, 2.36, 1.53, 1.15, 0.85, 0.67],
+            "8l90": [4.56, 2.97, 2.08, 1.69, 1.27, 1.00, 0.85, 0.65],
+            "10l90": [4.70, 2.98, 2.14, 1.77, 1.52, 1.27, 1.00, 0.85, 0.69, 0.64],
             c4_c6: [2.46, 1.46, 1.00],
+            aod: [2.40, 1.47, 1.00, 0.67],
+            "4r70w": [2.84, 1.55, 1.00, 0.70],
+            mustang_10r80: [4.70, 2.99, 2.15, 1.77, 1.52, 1.28, 1.00, 0.85, 0.69, 0.64],
+            torque_727: [2.45, 1.45, 1.00],
             ford_t5: [2.95, 1.94, 1.34, 1.00, 0.73],
-            mustang_10r80: [4.70, 2.99, 2.15, 1.77, 1.52, 1.28, 1.00, 0.85, 0.69, 0.64]
+            t56: [2.66, 1.78, 1.30, 1.00, 0.74, 0.50],
+            tremec_tkx: [2.87, 1.89, 1.28, 1.00, 0.68]
         };
 
         function applyTransPreset() {
@@ -506,14 +522,29 @@ master_index_html = (
     .replace("REPLACE_STICKY_AD", ad_block_html)
     .replace("REPLACE_TOP_AD", ad_block_html)
     .replace("REPLACE_BOTTOM_AD", ad_block_html)
-    .replace("REPLACE_FORMULA", "")
-    .replace("REPLACE_FAQS", "")
+    .replace(
+        "REPLACE_DRAG_TREE",
+        """
+            <div class="content-box" style="text-align: center; background: #121418; padding: 15px;">
+                <svg viewBox="0 0 300 90" width="100%" height="auto" style="max-height: 80px;">
+                    <path d="M 10 45 L 60 45 L 75 20 L 90 70 L 105 45 L 130 45" fill="none" stroke="#ff1e27" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <rect x="138" y="10" width="24" height="70" rx="4" fill="#181a20" stroke="#2d3139" stroke-width="2"/>
+                    <circle cx="145" cy="18" r="2.5" fill="#fbbf24"/><circle cx="155" cy="18" r="2.5" fill="#fbbf24"/>
+                    <circle cx="145" cy="26" r="2.5" fill="#fbbf24"/><circle cx="155" cy="26" r="2.5" fill="#fbbf24"/>
+                    <circle cx="150" cy="36" r="3.5" fill="#fbbf24"/><circle cx="150" cy="46" r="3.5" fill="#fbbf24"/><circle cx="150" cy="56" r="3.5" fill="#fbbf24"/>
+                    <circle cx="150" cy="66" r="4" fill="#10b981" filter="drop-shadow(0 0 4px #10b981)"/>
+                    <circle cx="150" cy="74" r="3" fill="#ff1e27"/>
+                    <path d="M 170 45 L 195 45 L 210 20 L 225 70 L 240 45 L 290 45" fill="none" stroke="#ff1e27" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        """,
+    )
     .replace("REPLACE_PARTNERS", partners_html)
 )
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
-# 2. PSEO SUB-PAGES TEMPLATE
+# 2. PSEO SUB-PAGES TEMPLATE (Updating transmissions here as well)
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -711,6 +742,7 @@ base_html_template = """<!DOCTYPE html>
         </div>
 
         <div class="content-column">
+            REPLACE_DRAG_TREE
             REPLACE_TOP_AD
             <div class="content-box">
                 <h3>Formula Breakdown</h3>
@@ -760,20 +792,31 @@ for row in pages:
                 <div>
                     <label>Transmission Profile</label>
                     <select id="trans" onchange="applyTransPreset()">
-                        <optgroup label="GM">
+                        <optgroup label="Custom">
+                            <option value="custom">Custom Ratios</option>
+                        </optgroup>
+                        <optgroup label="GM Automatic">
                             <option value="powerglide">Powerglide (1.76 / 1.00)</option>
                             <option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
                             <option value="th400" selected>TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
                             <option value="4l60e">4L60e (3.06 / 1.62 / 1.00 / 0.70)</option>
                             <option value="6l80">6L80 (4.03 / 2.36 / 1.53 / 1.15 / 0.85 / 0.67)</option>
+                            <option value="8l90">8L90 (4.56 / 2.97 / 2.08 / 1.69 / 1.27 / 1.00 / 0.85 / 0.65)</option>
+                            <option value="10l90">10L90 (4.70 / 2.98 / 2.14 / 1.77 / 1.52 / 1.27 / 1.00 / 0.85 / 0.69 / 0.64)</option>
                         </optgroup>
-                        <optgroup label="Ford">
+                        <optgroup label="Ford Automatic">
                             <option value="c4_c6">Ford C4 / C6 (2.46 / 1.46 / 1.00)</option>
-                            <option value="ford_t5">Ford T-5 (2.95 / 1.94 / 1.34 / 1.00 / 0.73)</option>
-                            <option value="mustang_10r80">Mustang 10R80 (10-Speed)</option>
+                            <option value="aod">AOD (2.40 / 1.47 / 1.00 / 0.67)</option>
+                            <option value="4r70w">4R70W (2.84 / 1.55 / 1.00 / 0.70)</option>
+                            <option value="mustang_10r80">Mustang 10R80 (4.70 / 2.99 / 2.15 / 1.77 / 1.52 / 1.28 / 1.00 / 0.85 / 0.69 / 0.64)</option>
                         </optgroup>
-                        <optgroup label="Custom">
-                            <option value="custom">Custom Ratios</option>
+                        <optgroup label="Mopar Automatic">
+                            <option value="torque_727">Torqueflite 727 (2.45 / 1.45 / 1.00)</option>
+                        </optgroup>
+                        <optgroup label="Manuals">
+                            <option value="ford_t5">Ford T-5 (2.95 / 1.94 / 1.34 / 1.00 / 0.73)</option>
+                            <option value="t56">T56 / TR-6060 (2.66 / 1.78 / 1.30 / 1.00 / 0.74 / 0.50)</option>
+                            <option value="tremec_tkx">Tremec TKX (2.87 / 1.89 / 1.28 / 1.00 / 0.68)</option>
                         </optgroup>
                     </select>
                 </div>
@@ -811,9 +854,16 @@ for row in pages:
             th400: [2.48, 1.48, 1.00],
             "4l60e": [3.06, 1.62, 1.00, 0.70],
             "6l80": [4.03, 2.36, 1.53, 1.15, 0.85, 0.67],
+            "8l90": [4.56, 2.97, 2.08, 1.69, 1.27, 1.00, 0.85, 0.65],
+            "10l90": [4.70, 2.98, 2.14, 1.77, 1.52, 1.27, 1.00, 0.85, 0.69, 0.64],
             c4_c6: [2.46, 1.46, 1.00],
+            aod: [2.40, 1.47, 1.00, 0.67],
+            "4r70w": [2.84, 1.55, 1.00, 0.70],
+            mustang_10r80: [4.70, 2.99, 2.15, 1.77, 1.52, 1.28, 1.00, 0.85, 0.69, 0.64],
+            torque_727: [2.45, 1.45, 1.00],
             ford_t5: [2.95, 1.94, 1.34, 1.00, 0.73],
-            mustang_10r80: [4.70, 2.99, 2.15, 1.77, 1.52, 1.28, 1.00, 0.85, 0.69, 0.64]
+            t56: [2.66, 1.78, 1.30, 1.00, 0.74, 0.50],
+            tremec_tkx: [2.87, 1.89, 1.28, 1.00, 0.68]
         };
         function applyTransPreset() {
             let val = document.getElementById("trans").value;
@@ -990,6 +1040,23 @@ for row in pages:
             .replace("REPLACE_STICKY_AD", ad_block_html)
             .replace("REPLACE_TOP_AD", ad_block_html)
             .replace("REPLACE_BOTTOM_AD", ad_block_html)
+            .replace(
+                "REPLACE_DRAG_TREE",
+                """
+                    <div class="content-box" style="text-align: center; background: #121418; padding: 15px;">
+                        <svg viewBox="0 0 300 90" width="100%" height="auto" style="max-height: 80px;">
+                            <path d="M 10 45 L 60 45 L 75 20 L 90 70 L 105 45 L 130 45" fill="none" stroke="#ff1e27" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <rect x="138" y="10" width="24" height="70" rx="4" fill="#181a20" stroke="#2d3139" stroke-width="2"/>
+                            <circle cx="145" cy="18" r="2.5" fill="#fbbf24"/><circle cx="155" cy="18" r="2.5" fill="#fbbf24"/>
+                            <circle cx="145" cy="26" r="2.5" fill="#fbbf24"/><circle cx="155" cy="26" r="2.5" fill="#fbbf24"/>
+                            <circle cx="150" cy="36" r="3.5" fill="#fbbf24"/><circle cx="150" cy="46" r="3.5" fill="#fbbf24"/><circle cx="150" cy="56" r="3.5" fill="#fbbf24"/>
+                            <circle cx="150" cy="66" r="4" fill="#10b981" filter="drop-shadow(0 0 4px #10b981)"/>
+                            <circle cx="150" cy="74" r="3" fill="#ff1e27"/>
+                            <path d="M 170 45 L 195 45 L 210 20 L 225 70 L 240 45 L 290 45" fill="none" stroke="#ff1e27" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                """,
+            )
             .replace("FORMULA_TEXT", formula_text)
             .replace("FAQS_HTML", faqs)
             .replace("REPLACE_PARTNERS", partners_html)
@@ -1001,4 +1068,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully generated index.html and {pages_created} PSEO pages with 3 ad spaces per page!")
+print(f"Successfully generated index.html and {pages_created} PSEO pages with full transmission list and Custom Ratios at top!")
