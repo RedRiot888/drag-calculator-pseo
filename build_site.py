@@ -105,15 +105,15 @@ footer_html = """
 impact_meta_tag = "    <meta name='impact-site-verification' value='b2bb3042-cfc7-4ed4-b783-57a9b5a6451f'>"
 
 # 1. MASTER index.html HUB
-master_index_html = f"""<!DOCTYPE html>
+master_index_html = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Drag Racing Drivetrain & Shift RPM Calculator Suite</title>
-{impact_meta_tag}
+    IMPACT_META_PLACEHOLDER
     <style>
-        :root {{
+        :root {
             --bg-dark: #0f1015;
             --card-bg: #181a20;
             --accent-red: #ff1e27;
@@ -122,24 +122,24 @@ master_index_html = f"""<!DOCTYPE html>
             --text-muted: #9ca3af;
             --border-color: #2d3139;
             --input-bg: #21242c;
-        }}
-        body {{
+        }
+        body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
             line-height: 1.5;
-        }}
-        .layout-grid {{
+        }
+        .layout-grid {
             max-width: 1200px;
             margin: 30px auto;
             display: grid;
             grid-template-columns: 500px 1fr;
             gap: 30px;
             align-items: start;
-        }}
-        .sticky-calculator {{
+        }
+        .sticky-calculator {
             position: sticky;
             top: 20px;
             background: var(--card-bg);
@@ -150,54 +150,54 @@ master_index_html = f"""<!DOCTYPE html>
             display: flex;
             flex-direction: column;
             gap: 15px;
-        }}
-        @media (max-width: 900px) {{
-            .layout-grid {{ grid-template-columns: 1fr; }}
-            .sticky-calculator {{ position: static; top: auto; box-shadow: none; }}
-        }}
-        .content-column {{
+        }
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; }
+            .sticky-calculator { position: static; top: auto; box-shadow: none; }
+        }
+        .content-column {
             display: flex;
             flex-direction: column;
             gap: 20px;
-        }}
-        .content-box {{
+        }
+        .content-box {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 25px;
-        }}
-        .content-box h3 {{
+        }
+        .content-box h3 {
             color: var(--accent-red);
             font-size: 0.95rem;
             text-transform: uppercase;
             margin-top: 0;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
-        }}
-        .master-header {{
+        }
+        .master-header {
             text-align: center;
             margin-bottom: 5px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 12px;
-        }}
-        .master-header h1 {{
+        }
+        .master-header h1 {
             color: var(--accent-red);
             font-size: 1.3rem;
             text-transform: uppercase;
             margin: 0 0 3px 0;
-        }}
-        .master-header p {{
+        }
+        .master-header p {
             color: var(--text-muted);
             font-size: 0.8rem;
             margin: 0;
-        }}
-        .tab-buttons {{
+        }
+        .tab-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 10px;
-        }}
-        .tab-btn {{
+        }
+        .tab-btn {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
@@ -208,32 +208,32 @@ master_index_html = f"""<!DOCTYPE html>
             cursor: pointer;
             text-transform: uppercase;
             text-align: center;
-        }}
-        .tab-btn.active {{
+        }
+        .tab-btn.active {
             background: var(--accent-red);
             color: white;
             border-color: var(--accent-red);
-        }}
-        .tab-pane {{
+        }
+        .tab-pane {
             display: none;
-        }}
-        .tab-pane.active {{
+        }
+        .tab-pane.active {
             display: block;
-        }}
-        .grid-2 {{
+        }
+        .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 8px;
-        }}
-        label {{
+        }
+        label {
             display: block;
             margin-bottom: 2px;
             font-weight: 600;
             font-size: 0.72rem;
             color: var(--text-muted);
-        }}
-        input, select {{
+        }
+        input, select {
             width: 100%;
             padding: 7px 9px;
             background: var(--input-bg);
@@ -242,10 +242,10 @@ master_index_html = f"""<!DOCTYPE html>
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 0.82rem;
-        }}
-        optgroup {{ color: var(--accent-red); font-weight: bold; }}
-        option {{ color: var(--text-main); background: var(--input-bg); }}
-        .results-box {{
+        }
+        optgroup { color: var(--accent-red); font-weight: bold; }
+        option { color: var(--text-main); background: var(--input-bg); }
+        .results-box {
             margin-top: 10px;
             background: #121418;
             border: 1px solid var(--border-color);
@@ -253,8 +253,8 @@ master_index_html = f"""<!DOCTYPE html>
             padding: 10px;
             border-radius: 6px;
             font-size: 0.82rem;
-        }}
-        .action-btn {{
+        }
+        .action-btn {
             width: 100%;
             margin-top: 10px;
             background: var(--accent-red);
@@ -267,42 +267,42 @@ master_index_html = f"""<!DOCTYPE html>
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }}
-        .action-btn:hover {{ background: #e0161f; }}
-        table {{
+        }
+        .action-btn:hover { background: #e0161f; }
+        table {
             width: 100%;
             margin-top: 12px;
             border-collapse: collapse;
             background: #121418;
             border-radius: 6px;
             overflow: hidden;
-        }}
-        th, td {{
+        }
+        th, td {
             padding: 5px 4px;
             border: 1px solid var(--border-color);
             text-align: center;
             font-size: 0.72rem;
-        }}
-        th {{
+        }
+        th {
             background: #1f232b;
             color: var(--accent-red);
             text-transform: uppercase;
             font-size: 0.62rem;
-        }}
-        .section-title {{
+        }
+        .section-title {
             color: var(--accent-red);
             font-size: 0.78rem;
             text-transform: uppercase;
             border-bottom: 1px dashed var(--border-color);
             margin: 12px 0 6px 0;
             padding-bottom: 3px;
-        }}
-        @media print {{
-            body {{ background: white; color: black; padding: 0; }}
-            .sticky-calculator {{ border: none; box-shadow: none; background: white; padding: 0; position: static; }}
-            .content-column, .tab-buttons, .action-btn, footer {{ display: none; }}
-            input, select {{ border: 1px solid #ccc; background: white; color: black; }}
-        }}
+        }
+        @media print {
+            body { background: white; color: black; padding: 0; }
+            .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
+            .content-column, .tab-buttons, .action-btn, footer { display: none; }
+            input, select { border: 1px solid #ccc; background: white; color: black; }
+        }
     </style>
 </head>
 <body>
@@ -493,7 +493,7 @@ master_index_html = f"""<!DOCTYPE html>
             document.getElementById('btn-drivetrain').classList.remove('active');
         });
 
-        const ratios = {{ 
+        const ratios = { 
             powerglide: [1.76, 1.00], 
             th350: [2.52, 1.52, 1.00], 
             th400: [2.48, 1.48, 1.00],
@@ -509,27 +509,27 @@ master_index_html = f"""<!DOCTYPE html>
             ford_t5: [2.95, 1.94, 1.34, 1.00, 0.73],
             t56: [2.66, 1.78, 1.30, 1.00, 0.74, 0.50],
             tremec_tkx: [2.87, 1.89, 1.28, 1.00, 0.68]
-        }};
+        };
 
-        function applyTransPreset() {{
+        function applyTransPreset() {
             let val = document.getElementById("trans").value;
             let customRow = document.getElementById("custom-gears-row");
-            if(customRow) {{
+            if(customRow) {
                 customRow.style.display = (val === "custom") ? "grid" : "none";
-            }}
+            }
             calcAll();
-        }}
+        }
 
-        function calcAll() {{
+        function calcAll() {
             let tKey = document.getElementById("trans").value;
             let rat = [];
-            if(tKey === "custom") {{
+            if(tKey === "custom") {
                 let customStr = document.getElementById("custom-ratios").value;
-                rat = customStr.split(",").map(function(x) {{ return parseFloat(x.trim()); }}).filter(function(x) {{ return !isNaN(x) && x > 0; }});
+                rat = customStr.split(",").map(function(x) { return parseFloat(x.trim()); }).filter(function(x) { return !isNaN(x) && x > 0; });
                 if(rat.length === 0) rat = [2.48, 1.48, 1.00];
-            }} else {{
+            } else {
                 rat = ratios[tKey] || [2.48, 1.48, 1.00];
-            }}
+            }
 
             let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
             let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
@@ -542,20 +542,20 @@ master_index_html = f"""<!DOCTYPE html>
             let estTrap = (234 * Math.cbrt(hp / wt)).toFixed(1);
 
             let resEl = document.getElementById("results");
-            if(resEl) {{
+            if(resEl) {
                 resEl.innerHTML = "Est. 1/4 Mile ET: " + estEt + "s @ " + estTrap + " MPH | Rollout: " + rollout + " in";
-            }}
+            }
 
             let tbody = document.getElementById("gear-body");
-            if(tbody) {{
+            if(tbody) {
                 tbody.innerHTML = "";
-                for(let i = 0; i < rat.length; i++) {{
+                for(let i = 0; i < rat.length; i++) {
                     let overall = rat[i] * gear;
                     let speed = (rpm * tire) / (overall * 336);
                     let drop = i < rat.length - 1 ? "Drop to " + Math.round(rpm * (rat[i+1] / rat[i])) + " RPM" : "Finish";
                     tbody.innerHTML += "<tr><td>" + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.toFixed(1) + " MPH</td><td>" + drop + "</td></tr>";
-                }}
-            }}
+                }
+            }
 
             let sWt = parseFloat(document.getElementById("susp-wt").value) || 3200;
             let sFront = parseFloat(document.getElementById("susp-front-wt").value) || 52;
@@ -577,15 +577,15 @@ master_index_html = f"""<!DOCTYPE html>
             if(isNaN(icLength) || icLength <= 0 || icLength > 150) icLength = 47.3;
 
             let sRes = document.getElementById("susp-results");
-            if(sRes) {{
+            if(sRes) {
                 sRes.innerHTML = "Rear Static Weight: " + rearWt + " lbs | IC Length: " + icLength + " in";
-            }}
-        }}
+            }
+        }
 
-        ["trans", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "custom-ratios", "susp-wt", "susp-wb", "susp-cg", "susp-front-wt", "tb-fx", "tb-fz", "tb-rx", "tb-rz", "bb-fx", "bb-fz", "bb-rx", "bb-rz"].forEach(function(id) {{
+        ["trans", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "custom-ratios", "susp-wt", "susp-wb", "susp-cg", "susp-front-wt", "tb-fx", "tb-fz", "tb-rx", "tb-rz", "bb-fx", "bb-fz", "bb-rx", "bb-rz"].forEach(function(id) {
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcAll);
-        }});
+        });
 
         calcAll();
     </script>
@@ -594,7 +594,8 @@ master_index_html = f"""<!DOCTYPE html>
 """
 
 master_index_html = (
-    master_index_html.replace("REPLACE_UTILITIES_GRID", utilities_grid_html)
+    master_index_html.replace("IMPACT_META_PLACEHOLDER", impact_meta_tag)
+    .replace("REPLACE_UTILITIES_GRID", utilities_grid_html)
     .replace("REPLACE_STICKY_AD", ad_block_html)
     .replace("REPLACE_TOP_AD", ad_block_html)
     .replace("REPLACE_BOTTOM_AD", ad_block_html)
@@ -606,15 +607,15 @@ with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
 # 2. PSEO SUB-PAGES TEMPLATE
-base_html_template = f"""<!DOCTYPE html>
+base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TARGET_KEYWORD | Ultimate Drag Racing Master Suite</title>
-{impact_meta_tag}
+    IMPACT_META_PLACEHOLDER
     <style>
-        :root {{
+        :root {
             --bg-dark: #0f1015;
             --card-bg: #181a20;
             --accent-red: #ff1e27;
@@ -623,24 +624,24 @@ base_html_template = f"""<!DOCTYPE html>
             --text-muted: #9ca3af;
             --border-color: #2d3139;
             --input-bg: #21242c;
-        }}
-        body {{
+        }
+        body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
             line-height: 1.5;
-        }}
-        .layout-grid {{
+        }
+        .layout-grid {
             max-width: 1200px;
             margin: 30px auto;
             display: grid;
             grid-template-columns: 480px 1fr;
             gap: 30px;
             align-items: start;
-        }}
-        .sticky-calculator {{
+        }
+        .sticky-calculator {
             position: sticky;
             top: 20px;
             background: var(--card-bg);
@@ -651,61 +652,61 @@ base_html_template = f"""<!DOCTYPE html>
             display: flex;
             flex-direction: column;
             gap: 15px;
-        }}
-        @media (max-width: 900px) {{
-            .layout-grid {{ grid-template-columns: 1fr; }}
-            .sticky-calculator {{ position: static; top: auto; box-shadow: none; }}
-        }}
-        .content-column {{
+        }
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; }
+            .sticky-calculator { position: static; top: auto; box-shadow: none; }
+        }
+        .content-column {
             display: flex;
             flex-direction: column;
             gap: 20px;
-        }}
-        .content-box {{
+        }
+        .content-box {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 25px;
-        }}
-        .content-box h3 {{
+        }
+        .content-box h3 {
             color: var(--accent-red);
             font-size: 0.95rem;
             text-transform: uppercase;
             margin-top: 0;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
-        }}
-        .master-header {{
+        }
+        .master-header {
             text-align: center;
             margin-bottom: 5px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 12px;
-        }}
-        .master-header h1 {{
+        }
+        .master-header h1 {
             color: var(--accent-red);
             font-size: 1.3rem;
             text-transform: uppercase;
             margin: 0 0 3px 0;
-        }}
-        .master-header p {{
+        }
+        .master-header p {
             color: var(--text-muted);
             font-size: 0.8rem;
             margin: 0;
-        }}
-        .grid-2 {{
+        }
+        .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 8px;
-        }}
-        label {{
+        }
+        label {
             display: block;
             margin-bottom: 2px;
             font-weight: 600;
             font-size: 0.72rem;
             color: var(--text-muted);
-        }}
-        input, select {{
+        }
+        input, select {
             width: 100%;
             padding: 7px 9px;
             background: var(--input-bg);
@@ -714,10 +715,10 @@ base_html_template = f"""<!DOCTYPE html>
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 0.82rem;
-        }}
-        optgroup {{ color: var(--accent-red); font-weight: bold; }}
-        option {{ color: var(--text-main); background: var(--input-bg); }}
-        .results-box {{
+        }
+        optgroup { color: var(--accent-red); font-weight: bold; }
+        option { color: var(--text-main); background: var(--input-bg); }
+        .results-box {
             margin-top: 10px;
             background: #121418;
             border: 1px solid var(--border-color);
@@ -725,8 +726,8 @@ base_html_template = f"""<!DOCTYPE html>
             padding: 10px;
             border-radius: 6px;
             font-size: 0.82rem;
-        }}
-        .action-btn {{
+        }
+        .action-btn {
             width: 100%;
             margin-top: 10px;
             background: var(--accent-red);
@@ -739,54 +740,54 @@ base_html_template = f"""<!DOCTYPE html>
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }}
-        .action-btn:hover {{ background: #e0161f; }}
-        .formula-content {{
+        }
+        .action-btn:hover { background: #e0161f; }
+        .formula-content {
             font-family: monospace;
             color: #10b981;
             font-size: 0.85rem;
             background: var(--input-bg);
             padding: 10px;
             border-radius: 6px;
-        }}
-        .faq-item {{ margin-bottom: 12px; }}
-        .faq-item h4 {{ margin: 0 0 3px 0; font-size: 0.85rem; color: var(--text-main); }}
-        .faq-item p {{ margin: 0; font-size: 0.8rem; color: var(--text-muted); }}
-        table {{
+        }
+        .faq-item { margin-bottom: 12px; }
+        .faq-item h4 { margin: 0 0 3px 0; font-size: 0.85rem; color: var(--text-main); }
+        .faq-item p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+        table {
             width: 100%;
             margin-top: 12px;
             border-collapse: collapse;
             background: #121418;
             border-radius: 6px;
             overflow: hidden;
-        }}
-        th, td {{
+        }
+        th, td {
             padding: 5px 4px;
             border: 1px solid var(--border-color);
             text-align: center;
             font-size: 0.72rem;
-        }}
-        th {{
+        }
+        th {
             background: #1f232b;
             color: var(--accent-red);
             text-transform: uppercase;
             font-size: 0.62rem;
-        }}
-        .back-link {{
+        }
+        .back-link {
             display: inline-block;
             margin-bottom: 15px;
             color: var(--accent-red);
             text-decoration: none;
             font-weight: bold;
             font-size: 0.85rem;
-        }}
-        .back-link:hover {{ text-decoration: underline; }}
-        @media print {{
-            body {{ background: white; color: black; padding: 0; }}
-            .sticky-calculator {{ border: none; box-shadow: none; background: white; padding: 0; position: static; }}
-            .content-column, .back-link, .action-btn, footer {{ display: none; }}
-            input, select {{ border: 1px solid #ccc; background: white; color: black; }}
-        }}
+        }
+        .back-link:hover { text-decoration: underline; }
+        @media print {
+            body { background: white; color: black; padding: 0; }
+            .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
+            .content-column, .back-link, .action-btn, footer { display: none; }
+            input, select { border: 1px solid #ccc; background: white; color: black; }
+        }
     </style>
 </head>
 <body>
@@ -1459,7 +1460,8 @@ for row in pages:
         tool_script = ""
 
     page_html = (
-        base_html_template.replace("TARGET_KEYWORD", target_keyword)
+        base_html_template.replace("IMPACT_META_PLACEHOLDER", impact_meta_tag)
+            .replace("TARGET_KEYWORD", target_keyword)
             .replace("PRIMARY_TITLE", primary_title)
             .replace("PRIMARY_TOOL_HTML", primary_tool_html)
             .replace("FORMULA_TEXT", formula_text)
@@ -1480,15 +1482,15 @@ for row in pages:
     pages_created += 1
 
 # 3. GENERATE CONTACT & SPONSORSHIPS PAGE WITH FORMSPREE
-contact_html = f"""<!DOCTYPE html>
+contact_html = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact & Track Sponsorships | Ultimate Drag Racing Suite</title>
-{impact_meta_tag}
+    IMPACT_META_PLACEHOLDER
     <style>
-        :root {{
+        :root {
             --bg-dark: #0f1015;
             --card-bg: #181a20;
             --accent-red: #ff1e27;
@@ -1496,16 +1498,16 @@ contact_html = f"""<!DOCTYPE html>
             --text-muted: #9ca3af;
             --border-color: #2d3139;
             --input-bg: #21242c;
-        }}
-        body {{
+        }
+        body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
             line-height: 1.6;
-        }}
-        .container {{
+        }
+        .container {
             max-width: 800px;
             margin: 40px auto;
             background: var(--card-bg);
@@ -1513,31 +1515,31 @@ contact_html = f"""<!DOCTYPE html>
             border-radius: 12px;
             padding: 40px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }}
-        h1 {{ color: var(--accent-red); text-transform: uppercase; font-size: 1.5rem; margin-top: 0; }}
-        h3 {{ color: var(--text-main); font-size: 1.05rem; margin-top: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }}
-        p {{ color: var(--text-muted); font-size: 0.9rem; }}
-        .back-link {{
+        }
+        h1 { color: var(--accent-red); text-transform: uppercase; font-size: 1.5rem; margin-top: 0; }
+        h3 { color: var(--text-main); font-size: 1.05rem; margin-top: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
+        p { color: var(--text-muted); font-size: 0.9rem; }
+        .back-link {
             display: inline-block;
             margin-bottom: 20px;
             color: var(--accent-red);
             text-decoration: none;
             font-weight: bold;
             font-size: 0.9rem;
-        }}
-        .back-link:hover {{ text-decoration: underline; }}
-        .form-group {{
+        }
+        .back-link:hover { text-decoration: underline; }
+        .form-group {
             margin-bottom: 15px;
-        }}
-        label {{
+        }
+        label {
             display: block;
             font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-muted);
             margin-bottom: 5px;
             text-transform: uppercase;
-        }}
-        input, textarea {{
+        }
+        input, textarea {
             width: 100%;
             padding: 10px;
             background: var(--input-bg);
@@ -1546,12 +1548,12 @@ contact_html = f"""<!DOCTYPE html>
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 0.9rem;
-        }}
-        textarea {{
+        }
+        textarea {
             resize: vertical;
             height: 120px;
-        }}
-        .submit-btn {{
+        }
+        .submit-btn {
             background: var(--accent-red);
             color: white;
             border: none;
@@ -1563,8 +1565,8 @@ contact_html = f"""<!DOCTYPE html>
             text-transform: uppercase;
             letter-spacing: 0.5px;
             width: 100%;
-        }}
-        .submit-btn:hover {{ background: #e0161f; }}
+        }
+        .submit-btn:hover { background: #e0161f; }
     </style>
 </head>
 <body>
@@ -1598,23 +1600,24 @@ contact_html = f"""<!DOCTYPE html>
         <h3>Support & Calculator Questions</h3>
         <p>Found a bug in our gear drop formula or want to request a new calculator? Use the form above and our track engineers will review your request.</p>
     </div>
-    {footer_html}
+    REPLACE_FOOTER
 </body>
 </html>
 """
+contact_html = contact_html.replace("IMPACT_META_PLACEHOLDER", impact_meta_tag).replace("REPLACE_FOOTER", footer_html)
 with open(os.path.join(output_dir, "contact.html"), "w", encoding="utf-8") as f:
     f.write(contact_html)
 
 # 4. GENERATE PRIVACY POLICY & AFFILIATE DISCLOSURE PAGE
-privacy_html = f"""<!DOCTYPE html>
+privacy_html = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy & Affiliate Disclosure | Ultimate Drag Racing Suite</title>
-{impact_meta_tag}
+    IMPACT_META_PLACEHOLDER
     <style>
-        :root {{
+        :root {
             --bg-dark: #0f1015;
             --card-bg: #181a20;
             --accent-red: #ff1e27;
@@ -1622,16 +1625,16 @@ privacy_html = f"""<!DOCTYPE html>
             --text-muted: #9ca3af;
             --border-color: #2d3139;
             --input-bg: #21242c;
-        }}
-        body {{
+        }
+        body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
             line-height: 1.6;
-        }}
-        .container {{
+        }
+        .container {
             max-width: 800px;
             margin: 40px auto;
             background: var(--card-bg);
@@ -1639,19 +1642,19 @@ privacy_html = f"""<!DOCTYPE html>
             border-radius: 12px;
             padding: 40px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }}
-        h1 {{ color: var(--accent-red); text-transform: uppercase; font-size: 1.5rem; margin-top: 0; }}
-        h3 {{ color: var(--text-main); font-size: 1.05rem; margin-top: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }}
-        p {{ color: var(--text-muted); font-size: 0.9rem; }}
-        .back-link {{
+        }
+        h1 { color: var(--accent-red); text-transform: uppercase; font-size: 1.5rem; margin-top: 0; }
+        h3 { color: var(--text-main); font-size: 1.05rem; margin-top: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
+        p { color: var(--text-muted); font-size: 0.9rem; }
+        .back-link {
             display: inline-block;
             margin-bottom: 20px;
             color: var(--accent-red);
             text-decoration: none;
             font-weight: bold;
             font-size: 0.9rem;
-        }}
-        .back-link:hover {{ text-decoration: underline; }}
+        }
+        .back-link:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -1671,11 +1674,12 @@ privacy_html = f"""<!DOCTYPE html>
         <h3>3. Cookies & Analytics</h3>
         <p>We may use standard analytics tools or hosting providers (such as GitHub Pages) that collect anonymous telemetry data (such as browser type, referral URLs, and visit timestamps) to help us improve site speed and performance.</p>
     </div>
-    {footer_html}
+    REPLACE_FOOTER
 </body>
 </html>
 """
+privacy_html = privacy_html.replace("IMPACT_META_PLACEHOLDER", impact_meta_tag).replace("REPLACE_FOOTER", footer_html)
 with open(os.path.join(output_dir, "privacy.html"), "w", encoding="utf-8") as f:
     f.write(privacy_html)
 
-print(f"Successfully generated master hub, {pages_created} calculator pages, contact.html with Formspree, and privacy.html with verification tag!")
+print(f"Successfully generated master hub, {pages_created} calculator pages, contact.html, and privacy.html with verification meta tag!")
