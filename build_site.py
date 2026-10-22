@@ -11,6 +11,25 @@ utilities_links_html = ""
 for row in pages:
     utilities_links_html += f'<li><a href="{row["slug"]}.html">{row["target_keyword"]}</a></li>\n'
 
+# Standard sponsor/partner links & ad blocks HTML for the sidebar
+sidebar_extras_html = """
+            <div class="content-box" style="margin-top: 20px;">
+                <h3>Featured Partners</h3>
+                <ul class="sponsor-list" style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem; color: var(--text-muted);">
+                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color);"><a href="#" style="color: var(--text-muted); text-decoration: none;">Pro-Comp Race Transmissions</a></li>
+                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color);"><a href="#" style="color: var(--text-muted); text-decoration: none;">Apex Boost & Turbo Systems</a></li>
+                    <li style="padding: 8px 0;"><a href="#" style="color: var(--text-muted); text-decoration: none;">DragStrip Tire & Compound Tech</a></li>
+                </ul>
+            </div>
+
+            <div class="content-box" style="margin-top: 20px; text-align: center; background: #121418; border: 1px dashed var(--border-color);">
+                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
+                <div style="padding: 30px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">
+                    Your Ad Here<br>Contact for Track Sponsor Rates
+                </div>
+            </div>
+"""
+
 # 1. MASTER index.html HUB
 master_index_html = """<!DOCTYPE html>
 <html lang="en">
@@ -353,6 +372,7 @@ master_index_html = """<!DOCTYPE html>
                     REPLACE_UTILITIES
                 </ul>
             </div>
+            REPLACE_EXTRAS
         </div>
     </div>
 
@@ -464,11 +484,11 @@ master_index_html = """<!DOCTYPE html>
 </html>
 """
 
-master_index_html = master_index_html.replace("REPLACE_UTILITIES", utilities_links_html)
+master_index_html = master_index_html.replace("REPLACE_UTILITIES", utilities_links_html).replace("REPLACE_EXTRAS", sidebar_extras_html)
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
-# 2. PSEO SUB-PAGES TEMPLATE WITH FULL CALCULATOR LOGIC
+# 2. PSEO SUB-PAGES TEMPLATE WITH EXTRAS
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -666,6 +686,7 @@ base_html_template = """<!DOCTYPE html>
                     UTILITIES_LINKS_HTML
                 </ul>
             </div>
+            REPLACE_EXTRAS
             <div class="content-box">
                 <h3>Formula Breakdown</h3>
                 <div class="formula-content">FORMULA_TEXT</div>
@@ -699,10 +720,6 @@ for row in pages:
             <div class="faq-item">
                 <h4>How is shift recovery RPM calculated?</h4>
                 <p>Shift recovery is determined by multiplying your shift RPM by the ratio of the upcoming higher gear divided by the current gear.</p>
-            </div>
-            <div class="faq-item">
-                <h4>Why do manufacturer presets and custom gear sets matter?</h4>
-                <p>Manufacturer presets give you instant access to factory and race-proven gear stacks across GM, Ford, Mopar, and imports, while custom ratios accommodate custom gearboxes.</p>
             </div>
         """
         primary_tool_html = f"""
@@ -937,6 +954,7 @@ for row in pages:
             .replace("PRIMARY_TITLE", primary_title)
             .replace("PRIMARY_TOOL_HTML", primary_tool_html)
             .replace("UTILITIES_LINKS_HTML", utilities_links_html)
+            .replace("REPLACE_EXTRAS", sidebar_extras_html)
             .replace("FORMULA_TEXT", formula_text)
             .replace("FAQS_HTML", faqs)
             .replace("TOOL_SCRIPT", tool_script)
@@ -947,4 +965,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully generated index.html and {pages_created} PSEO pages!")
+print(f"Successfully generated index.html and {pages_created} PSEO pages with full calculators and partner/ad sidebars!")
