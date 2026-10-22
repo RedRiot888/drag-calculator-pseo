@@ -3,6 +3,9 @@ import csv
 
 output_dir = "."
 
+# TODO: Once approved by JEGS/Summit, replace this placeholder with your live tracking link or publisher ID
+AFFILIATE_TRACKING_URL = "https://www.pjtra.com/t/YOUR_IMPACT_ID_HERE?url="
+
 csv_content = """slug,target_keyword,category,rear_gear,tire_diameter
 transmission-shift-recovery-calculator,Transmission Shift Recovery & Gear Drop Calculator,Transmission,3.42,28.0
 turbo-sizing-calculator,Turbo Sizing & Turbocharger Matching Calculator,Turbo,3.42,28.0
@@ -994,7 +997,7 @@ for row in pages:
             <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-top: 12px;" id="affiliate-box">
                 <div style="font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Recommended Match & Parts</div>
                 <div id="part-details" style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">Loading matching ring & pinion...</div>
-                <a href="#" id="buy-btn" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at Summit Racing &rarr;</a>
+                <a href="{AFFILIATE_TRACKING_URL}https%3A%2F%2Fwww.jegs.com" id="buy-btn" target="_blank" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at JEGS / Summit &rarr;</a>
             </div>
 
             <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
@@ -1065,7 +1068,7 @@ for row in pages:
                 <p>Match your total required airflow in lb/min and compressor pressure ratio to manufacturer compressor maps, ensuring surge lines and choke limits are respected.</p>
             </div>
         """
-        primary_tool_html = """
+        primary_tool_html = f"""
             <div class="grid-2">
                 <div><label>Engine Displacement (L)</label><input type="number" id="disp" value="5.3" step="0.1"></div>
                 <div><label>Target Flywheel HP</label><input type="number" id="hp" value="1000" step="50"></div>
@@ -1093,7 +1096,7 @@ for row in pages:
             <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-top: 12px;" id="affiliate-box">
                 <div style="font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Recommended Specific Turbo Match</div>
                 <div id="turbo-part-details" style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">Loading precise turbo recommendation...</div>
-                <a href="#" id="turbo-buy-btn" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at Summit Racing &rarr;</a>
+                <a href="{AFFILIATE_TRACKING_URL}https%3A%2F%2Fwww.jegs.com" id="turbo-buy-btn" target="_blank" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at JEGS / Summit &rarr;</a>
             </div>
 
             <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
@@ -1358,7 +1361,7 @@ for row in pages:
                 <p>Pin 30 = Battery Power In (Fused), Pin 85 = Ground (Trigger Switch), Pin 86 = 12V Trigger In (Switch/ECU), Pin 87 = Switched Power Out to Accessory.</p>
             </div>
         """
-        primary_tool_html = """
+        primary_tool_html = f"""
             <div class="grid-2">
                 <div><label>Accessory Power Draw (Amps)</label><input type="number" id="relay-amps" value="20" step="1"></div>
                 <div><label>System Voltage</label><select id="relay-volts"><option value="12" selected>12V Standard</option><option value="16">16V Race Battery</option></select></div>
@@ -1383,7 +1386,7 @@ for row in pages:
             <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-top: 12px;" id="relay-affiliate-box">
                 <div style="font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Recommended Relay & Wiring Kit</div>
                 <div id="relay-part-details" style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">Loading relay kit specs...</div>
-                <a href="#" id="relay-buy-btn" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at Summit Racing &rarr;</a>
+                <a href="{AFFILIATE_TRACKING_URL}https%3A%2F%2Fwww.jegs.com" id="relay-buy-btn" target="_blank" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at JEGS / Summit &rarr;</a>
             </div>
 
             <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
@@ -1682,4 +1685,4 @@ privacy_html = privacy_html.replace("IMPACT_META_PLACEHOLDER", impact_meta_tag).
 with open(os.path.join(output_dir, "privacy.html"), "w", encoding="utf-8") as f:
     f.write(privacy_html)
 
-print(f"Successfully generated master hub, {pages_created} calculator pages, contact.html, and privacy.html with verification meta tag!")
+print(f"Successfully generated master hub, {pages_created} calculator pages, contact.html, and privacy.html with affiliate link structure!")
