@@ -215,7 +215,7 @@
             <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-top: 12px;" id="affiliate-box">
                 <div style="font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Recommended Match & Parts</div>
                 <div id="part-details" style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">Loading matching ring & pinion...</div>
-                <a href="https://www.pjtra.com/t/YOUR_IMPACT_ID_HERE?url=https%3A%2F%2Fwww.jegs.com" id="buy-btn" target="_blank" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at JEGS / Summit &rarr;</a>
+                <a href="https://www.pjtra.com/t/YOUR_IMPACT_ID_HERE?url=https%3A%2F%2Fwww.performanceparts.com" id="buy-btn" target="_blank" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Explore Hardware & Parts &rarr;</a>
             </div>
 
             <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
@@ -364,31 +364,31 @@
             let rollout = (tire * Math.PI).toFixed(1);
             document.getElementById("results").innerHTML = "Gear Ratio: <strong>" + gear.toFixed(2) + ":1</strong> | Rollout: <strong>" + rollout + " in</strong> | Finish RPM: <strong>" + Math.round(finishRpm) + " RPM</strong>";
             
-            let brand = "Yukon Gear & Axle";
+            let brand = "Heavy Duty Performance Series";
             let housingName = "Ford 8.8\" Rear Axle";
             let price = "$249.99";
-            let toolsNeeded = "Timken Master Bearing Kit, Gear Marking Compound, 80W-90 Gear Oil";
+            let toolsNeeded = "Master Bearing Kit, Gear Marking Compound, 80W-90 Gear Oil";
             
             if(housing === "ford9") {
                 housingName = "Ford 9\" Drop-Out Carrier";
-                brand = "Strange Engineering Pro";
+                brand = "Pro Series Heavy Duty";
                 price = "$319.99";
                 toolsNeeded = "Daytona Pinion Support, Solid Spacer Shim Kit, Gear Lube";
             } else if(housing === "gm10") {
                 housingName = "GM 10-Bolt 8.5\" Axle";
-                brand = "Motive Gear Performance";
+                brand = "Performance Ring & Pinion";
                 price = "$239.99";
-                toolsNeeded = "GM 10-Bolt Master Install Kit, Crush Sleeve, Gear Paint";
+                toolsNeeded = "Master Install Kit, Crush Sleeve, Gear Paint";
             } else if(housing === "gm12") {
                 housingName = "GM 12-Bolt Passenger Car";
-                brand = "Yukon Gear & Axle";
+                brand = "Heavy Duty Series";
                 price = "$289.99";
-                toolsNeeded = "12-Bolt Master Bearing Kit, Heavy Duty Shim Pack";
+                toolsNeeded = "Master Bearing Kit, Heavy Duty Shim Pack";
             } else if(housing === "dana60") {
                 housingName = "Dana 60 Heavy Duty Axle";
-                brand = "Yukon Hardcore Series";
+                brand = "Hardcore Pro Series";
                 price = "$389.99";
-                toolsNeeded = "Dana 60 Install Kit with Timken Bearings, Gear Oil";
+                toolsNeeded = "Install Kit with Timken Bearings, Gear Oil";
             }
 
             document.getElementById("part-details").innerHTML = 

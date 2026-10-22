@@ -3,7 +3,6 @@ import csv
 
 output_dir = "."
 
-# TODO: Once approved by JEGS/Summit, replace this placeholder with your live tracking link or publisher ID
 AFFILIATE_TRACKING_URL = "https://www.pjtra.com/t/YOUR_IMPACT_ID_HERE?url="
 
 csv_content = """slug,target_keyword,category,rear_gear,tire_diameter
@@ -107,7 +106,6 @@ footer_html = """
 
 impact_meta_tag = "    <meta name='impact-site-verification' value='b2bb3042-cfc7-4ed4-b783-57a9b5a6451f'>"
 
-# 1. MASTER index.html HUB
 master_index_html = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -997,7 +995,7 @@ for row in pages:
             <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-top: 12px;" id="affiliate-box">
                 <div style="font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Recommended Match & Parts</div>
                 <div id="part-details" style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">Loading matching ring & pinion...</div>
-                <a href="{AFFILIATE_TRACKING_URL}https%3A%2F%2Fwww.jegs.com" id="buy-btn" target="_blank" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at JEGS / Summit &rarr;</a>
+                <a href="{AFFILIATE_TRACKING_URL}https%3A%2F%2Fwww.performanceparts.com" id="buy-btn" target="_blank" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Explore Hardware & Parts &rarr;</a>
             </div>
 
             <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
@@ -1013,31 +1011,31 @@ for row in pages:
             let rollout = (tire * Math.PI).toFixed(1);
             document.getElementById("results").innerHTML = "Gear Ratio: <strong>" + gear.toFixed(2) + ":1</strong> | Rollout: <strong>" + rollout + " in</strong> | Finish RPM: <strong>" + Math.round(finishRpm) + " RPM</strong>";
             
-            let brand = "Yukon Gear & Axle";
+            let brand = "Heavy Duty Performance Series";
             let housingName = "Ford 8.8\\" Rear Axle";
             let price = "$249.99";
-            let toolsNeeded = "Timken Master Bearing Kit, Gear Marking Compound, 80W-90 Gear Oil";
+            let toolsNeeded = "Master Bearing Kit, Gear Marking Compound, 80W-90 Gear Oil";
             
             if(housing === "ford9") {
                 housingName = "Ford 9\\" Drop-Out Carrier";
-                brand = "Strange Engineering Pro";
+                brand = "Pro Series Heavy Duty";
                 price = "$319.99";
                 toolsNeeded = "Daytona Pinion Support, Solid Spacer Shim Kit, Gear Lube";
             } else if(housing === "gm10") {
                 housingName = "GM 10-Bolt 8.5\\" Axle";
-                brand = "Motive Gear Performance";
+                brand = "Performance Ring & Pinion";
                 price = "$239.99";
-                toolsNeeded = "GM 10-Bolt Master Install Kit, Crush Sleeve, Gear Paint";
+                toolsNeeded = "Master Install Kit, Crush Sleeve, Gear Paint";
             } else if(housing === "gm12") {
                 housingName = "GM 12-Bolt Passenger Car";
-                brand = "Yukon Gear & Axle";
+                brand = "Heavy Duty Series";
                 price = "$289.99";
-                toolsNeeded = "12-Bolt Master Bearing Kit, Heavy Duty Shim Pack";
+                toolsNeeded = "Master Bearing Kit, Heavy Duty Shim Pack";
             } else if(housing === "dana60") {
                 housingName = "Dana 60 Heavy Duty Axle";
-                brand = "Yukon Hardcore Series";
+                brand = "Hardcore Pro Series";
                 price = "$389.99";
-                toolsNeeded = "Dana 60 Install Kit with Timken Bearings, Gear Oil";
+                toolsNeeded = "Install Kit with Timken Bearings, Gear Oil";
             }
 
             document.getElementById("part-details").innerHTML = 
@@ -1096,7 +1094,7 @@ for row in pages:
             <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-top: 12px;" id="affiliate-box">
                 <div style="font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Recommended Specific Turbo Match</div>
                 <div id="turbo-part-details" style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">Loading precise turbo recommendation...</div>
-                <a href="{AFFILIATE_TRACKING_URL}https%3A%2F%2Fwww.jegs.com" id="turbo-buy-btn" target="_blank" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at JEGS / Summit &rarr;</a>
+                <a href="{AFFILIATE_TRACKING_URL}https%3A%2F%2Fwww.performanceparts.com" id="turbo-buy-btn" target="_blank" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Explore Turbochargers & Parts &rarr;</a>
             </div>
 
             <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
@@ -1117,54 +1115,54 @@ for row in pages:
             
             document.getElementById("results").innerHTML = "Required Airflow: <strong>" + totalAirflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
             
-            let brand = "BorgWarner AirWerks S400SX-III";
-            let model = "S476 / 76mm Turbine V-Band";
+            let brand = "Heavy Duty Performance Turbo";
+            let model = "76mm Turbine V-Band";
             let ar = "1.10 A/R T4 Divided";
             let price = "$1,099.99";
             
             if(app === "street") {
                 if(perTurbo > 75) {
-                    brand = "Precision Turbo CEA Ball Bearing";
+                    brand = "Ball Bearing Pro Turbo";
                     model = "7675 Gen II Ball Bearing";
                     ar = "0.81 A/R T4 (Quick Spool)";
                     price = "$2,399.99";
                 } else {
-                    brand = "Garrett GTX Gen II Series";
-                    model = "GTX3584RS / 67mm";
-                    ar = "0.72 A/R V-Band (Instant Spool)";
+                    brand = "Performance Series";
+                    model = "67mm High Flow";
+                    ar = "0.72 A/R V-Band";
                     price = "$2,199.99";
                 }
             } else if(app === "dragndrive") {
                 if(perTurbo > 90) {
-                    brand = "Precision Turbo Pro Mod";
-                    model = "PM85 / 85mm CEA Turbine";
+                    brand = "Pro Mod Series";
+                    model = "85mm Turbine";
                     ar = "1.15 A/R T4 Divided";
                     price = "$2,699.99";
                 } else if(perTurbo > 60) {
-                    brand = "BorgWarner S400SX-III";
-                    model = "S480 / 80mm Extended Tip";
+                    brand = "AirWerks Series";
+                    model = "80mm Extended Tip";
                     ar = "1.25 A/R T4 Divided";
                     price = "$1,249.99";
                 } else {
-                    brand = "BorgWarner S300SX-E";
-                    model = "S369 / 69mm Turbine";
+                    brand = "Performance Series";
+                    model = "69mm Turbine";
                     ar = "0.91 A/R T4";
                     price = "$899.99";
                 }
             } else {
                 if(perTurbo > 90) {
-                    brand = "Precision Turbo Pro Mod Series";
-                    model = "PM91 / 91mm CEA Pro Mod";
+                    brand = "Pro Mod Competition Series";
+                    model = "91mm Pro Mod";
                     ar = "1.39 A/R T6 Housing";
                     price = "$3,199.99";
                 } else if(perTurbo > 70) {
-                    brand = "Garrett Pro Mod Series";
-                    model = "GTX5533R Gen II / 88mm";
-                    ar = "1.40 A/R Stainless T6";
+                    brand = "Elite Race Series";
+                    model = "88mm Stainless";
+                    ar = "1.40 A/R T6";
                     price = "$3,499.99";
                 } else {
-                    brand = "BorgWarner S400SX";
-                    model = "S476R Race Spec";
+                    brand = "Race Spec Series";
+                    model = "76R Race Unit";
                     ar = "1.32 A/R T4 Divided";
                     price = "$1,499.99";
                 }
@@ -1386,7 +1384,7 @@ for row in pages:
             <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-top: 12px;" id="relay-affiliate-box">
                 <div style="font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Recommended Relay & Wiring Kit</div>
                 <div id="relay-part-details" style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">Loading relay kit specs...</div>
-                <a href="{AFFILIATE_TRACKING_URL}https%3A%2F%2Fwww.jegs.com" id="relay-buy-btn" target="_blank" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Buy Now at JEGS / Summit &rarr;</a>
+                <a href="{AFFILIATE_TRACKING_URL}https%3A%2F%2Fwww.performanceparts.com" id="relay-buy-btn" target="_blank" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 7px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">Explore Wiring Kits &rarr;</a>
             </div>
 
             <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
@@ -1685,4 +1683,4 @@ privacy_html = privacy_html.replace("IMPACT_META_PLACEHOLDER", impact_meta_tag).
 with open(os.path.join(output_dir, "privacy.html"), "w", encoding="utf-8") as f:
     f.write(privacy_html)
 
-print(f"Successfully generated master hub, {pages_created} calculator pages, contact.html, and privacy.html with affiliate link structure!")
+print("Successfully generated all site pages with clean, brand-neutral part recommendations!")
