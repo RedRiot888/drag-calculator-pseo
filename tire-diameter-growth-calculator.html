@@ -182,10 +182,20 @@
     <div class="layout-grid">
         <div class="sticky-calculator">
             <div class="master-header">
-                <h1>Drag Racing Calculator Suite</h1>
+                <h1>Tire Diameter Growth & Rollout Drag Calculator</h1>
                 <p>Tire Diameter Growth & Rollout Drag Calculator &mdash; Track Tuning Engine</p>
             </div>
-            <div>Select a tool from the hub.</div>
+            
+            <div class="grid-2">
+                <div><label>Static Tire Dia (in)</label><input type="number" id="static-dia" value="28.0" step="0.1"></div>
+                <div><label>Trap Speed (MPH)</label><input type="number" id="trap-speed" value="150" step="1"></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Growth Factor (%)</label><input type="number" id="growth-fac" value="4.5" step="0.1"></div>
+                <div><label>Rear Gear Ratio</label><input type="number" id="rear-gear" value="3.42" step="0.01"></div>
+            </div>
+            <div class="results-box" id="results">Adjust parameters above.</div>
+        
         </div>
 
         <div class="content-column">
@@ -202,16 +212,33 @@
             </div>
             <div class="content-box">
                 <h3>Formula Breakdown</h3>
-                <div class="formula-content">Standard Automotive Calculation</div>
+                <div class="formula-content">Dynamic Diameter = Static Diameter x (1 + (Growth % / 100))</div>
             </div>
             <div class="content-box">
                 <h3>Frequently Asked Questions</h3>
-                
+                <div class="faq-item"><h4>Why do tires grow?</h4><p>Centrifugal force expands the tire at speed.</p></div>
             </div>
         </div>
     </div>
 
     <script>
+        
+        function calcTool() {
+            let staticDia = parseFloat(document.getElementById("static-dia").value) || 28;
+            let trap = parseFloat(document.getElementById("trap-speed").value) || 150;
+            let growth = parseFloat(document.getElementById("growth-fac").value) || 4.5;
+            let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
+            let dynamicDia = staticDia * (1 + (growth / 100));
+            let staticRollout = (staticDia * Math.PI).toFixed(1);
+            let dynamicRollout = (dynamicDia * Math.PI).toFixed(1);
+            let estFinishRpm = Math.round((trap * gear * 336) / dynamicDia);
+            document.getElementById("results").innerHTML = "Static Rollout: <strong>" + staticRollout + " in</strong> | Dynamic Rollout: <strong>" + dynamicRollout + " in</strong> | Est. Finish RPM: <strong>" + estFinishRpm + " RPM</strong>";
+        }
+        ["static-dia", "trap-speed", "growth-fac", "rear-gear"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+        });
+        calcTool();
         
     </script>
 </body>

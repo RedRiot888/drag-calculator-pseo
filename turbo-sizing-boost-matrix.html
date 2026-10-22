@@ -182,10 +182,20 @@
     <div class="layout-grid">
         <div class="sticky-calculator">
             <div class="master-header">
-                <h1>Drag Racing Calculator Suite</h1>
+                <h1>Turbo Sizing & Turbocharger Matching Calculator</h1>
                 <p>Turbo Sizing & Turbocharger Matching Calculator &mdash; Track Tuning Engine</p>
             </div>
-            <div>Select a tool from the hub.</div>
+            
+            <div class="grid-2">
+                <div><label>Target Flywheel HP</label><input type="number" id="hp" value="1000" step="50"></div>
+                <div><label>Target Boost (PSI)</label><input type="number" id="boost" value="22" step="1"></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Fuel BSFC</label><select id="bsfc"><option value="0.60">Gasoline (0.60)</option><option value="0.85" selected>E85 (0.85)</option></select></div>
+                <div><label>Turbo Count</label><select id="turbos"><option value="1" selected>Single</option><option value="2">Twin</option></select></div>
+            </div>
+            <div class="results-box" id="results">Adjust parameters above.</div>
+        
         </div>
 
         <div class="content-column">
@@ -202,16 +212,32 @@
             </div>
             <div class="content-box">
                 <h3>Formula Breakdown</h3>
-                <div class="formula-content">Standard Automotive Calculation</div>
+                <div class="formula-content">Required Airflow (lb/min) = (Target Flywheel HP x BSFC) / 6.0</div>
             </div>
             <div class="content-box">
                 <h3>Frequently Asked Questions</h3>
-                
+                <div class="faq-item"><h4>How do I choose turbo size?</h4><p>Match total required airflow in lb/min to compressor maps.</p></div>
             </div>
         </div>
     </div>
 
     <script>
+        
+        function calcTool() {
+            let hp = parseFloat(document.getElementById("hp").value) || 1000;
+            let boost = parseFloat(document.getElementById("boost").value) || 22;
+            let bsfc = parseFloat(document.getElementById("bsfc").value) || 0.85;
+            let count = parseInt(document.getElementById("turbos").value) || 1;
+            let totalAirflow = (hp * bsfc) / 6.0;
+            let perTurbo = totalAirflow / count;
+            let pr = (boost + 14.7) / 14.7;
+            document.getElementById("results").innerHTML = "Total Airflow: <strong>" + totalAirflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
+        }
+        ["hp", "boost", "bsfc", "turbos"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+        });
+        calcTool();
         
     </script>
 </body>

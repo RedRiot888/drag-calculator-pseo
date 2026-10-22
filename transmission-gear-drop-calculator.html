@@ -280,37 +280,21 @@
             ford_t5: [2.95, 1.94, 1.34, 1.00, 0.73],
             mustang_10r80: [4.70, 2.99, 2.15, 1.77, 1.52, 1.28, 1.00, 0.85, 0.69, 0.64]
         };
-
         function applyTransPreset() {
             let val = document.getElementById("trans").value;
             let customRow = document.getElementById("custom-gears-row");
-            if(customRow) {
-                customRow.style.display = (val === "custom") ? "grid" : "none";
-            }
+            if(customRow) { customRow.style.display = (val === "custom") ? "grid" : "none"; }
             calcTool();
         }
-
         function calcTool() {
             let tKey = document.getElementById("trans").value;
-            let rat = [];
-            if(tKey === "custom") {
-                let customStr = document.getElementById("custom-ratios").value;
-                rat = customStr.split(",").map(function(x) { return parseFloat(x.trim()); }).filter(function(x) { return !isNaN(x) && x > 0; });
-                if(rat.length === 0) rat = [2.48, 1.48, 1.00];
-            } else {
-                rat = ratios[tKey] || [2.48, 1.48, 1.00];
-            }
-
+            let rat = tKey === "custom" ? (document.getElementById("custom-ratios").value.split(",").map(x => parseFloat(x.trim())).filter(x => !isNaN(x) && x > 0) || [2.48, 1.48, 1.00]) : (ratios[tKey] || [2.48, 1.48, 1.00]);
             let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
             let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
             let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
             let rollout = (tire * Math.PI).toFixed(1);
-            
             let resEl = document.getElementById("results");
-            if(resEl) {
-                resEl.innerHTML = "Tire Rollout: " + rollout + " in | 1st Gear Ratio: " + (rat[0] * gear).toFixed(2) + ":1";
-            }
-
+            if(resEl) resEl.innerHTML = "Tire Rollout: " + rollout + " in | 1st Gear Ratio: " + (rat[0] * gear).toFixed(2) + ":1";
             let tbody = document.getElementById("gear-body");
             if(tbody) {
                 tbody.innerHTML = "";
@@ -322,7 +306,7 @@
                 }
             }
         }
-        ["trans", "max-rpm", "tire-dia", "rear-gear", "custom-ratios"].forEach(function(id) {
+        ["trans", "max-rpm", "tire-dia", "rear-gear", "custom-ratios"].forEach(id => {
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcTool);
         });

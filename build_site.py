@@ -11,7 +11,7 @@ utilities_links_html = ""
 for row in pages:
     utilities_links_html += f'<li><a href="{row["slug"]}.html">{row["target_keyword"]}</a></li>\n'
 
-# 1. GENERATE THE MASTER index.html HUB DIRECTLY FROM THE SCRIPT
+# 1. MASTER index.html HUB
 master_index_html = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -468,7 +468,7 @@ master_index_html = master_index_html.replace("REPLACE_UTILITIES", utilities_lin
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
-# 2. GENERATE PSEO SUB-PAGES
+# 2. PSEO SUB-PAGES TEMPLATE WITH FULL CALCULATOR LOGIC
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -765,37 +765,21 @@ for row in pages:
             ford_t5: [2.95, 1.94, 1.34, 1.00, 0.73],
             mustang_10r80: [4.70, 2.99, 2.15, 1.77, 1.52, 1.28, 1.00, 0.85, 0.69, 0.64]
         };
-
         function applyTransPreset() {
             let val = document.getElementById("trans").value;
             let customRow = document.getElementById("custom-gears-row");
-            if(customRow) {
-                customRow.style.display = (val === "custom") ? "grid" : "none";
-            }
+            if(customRow) { customRow.style.display = (val === "custom") ? "grid" : "none"; }
             calcTool();
         }
-
         function calcTool() {
             let tKey = document.getElementById("trans").value;
-            let rat = [];
-            if(tKey === "custom") {
-                let customStr = document.getElementById("custom-ratios").value;
-                rat = customStr.split(",").map(function(x) { return parseFloat(x.trim()); }).filter(function(x) { return !isNaN(x) && x > 0; });
-                if(rat.length === 0) rat = [2.48, 1.48, 1.00];
-            } else {
-                rat = ratios[tKey] || [2.48, 1.48, 1.00];
-            }
-
+            let rat = tKey === "custom" ? (document.getElementById("custom-ratios").value.split(",").map(x => parseFloat(x.trim())).filter(x => !isNaN(x) && x > 0) || [2.48, 1.48, 1.00]) : (ratios[tKey] || [2.48, 1.48, 1.00]);
             let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
             let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
             let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
             let rollout = (tire * Math.PI).toFixed(1);
-            
             let resEl = document.getElementById("results");
-            if(resEl) {
-                resEl.innerHTML = "Tire Rollout: " + rollout + " in | 1st Gear Ratio: " + (rat[0] * gear).toFixed(2) + ":1";
-            }
-
+            if(resEl) resEl.innerHTML = "Tire Rollout: " + rollout + " in | 1st Gear Ratio: " + (rat[0] * gear).toFixed(2) + ":1";
             let tbody = document.getElementById("gear-body");
             if(tbody) {
                 tbody.innerHTML = "";
@@ -807,7 +791,135 @@ for row in pages:
                 }
             }
         }
-        ["trans", "max-rpm", "tire-dia", "rear-gear", "custom-ratios"].forEach(function(id) {
+        ["trans", "max-rpm", "tire-dia", "rear-gear", "custom-ratios"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+        });
+        calcTool();
+        """
+    elif category == "RearGear":
+        primary_title = "Ring and Pinion Rear Gear Quarter-Mile Calculator"
+        formula_text = "Finish Line RPM = (Trap Speed x Rear Gear x 336) / Tire Diameter"
+        faqs = '<div class="faq-item"><h4>How does gear ratio affect finish line RPM?</h4><p>Higher numeric gears increase finish line RPM.</p></div>'
+        primary_tool_html = f"""
+            <div class="grid-2">
+                <div><label>Target Trap Speed (MPH)</label><input type="number" id="trap" value="125" step="1"></div>
+                <div><label>Rear Gear Ratio</label><input type="number" id="gear" value="{gear}" step="0.01"></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Tire Diameter (in)</label><input type="number" id="tire" value="{tire}" step="0.1"></div>
+                <div><label>Trans Final Ratio</label><input type="number" id="trans-final" value="1.00" step="0.01"></div>
+            </div>
+            <div class="results-box" id="results">Adjust parameters above.</div>
+        """
+        tool_script = """
+        function calcTool() {
+            let trap = parseFloat(document.getElementById("trap").value) || 125;
+            let gear = parseFloat(document.getElementById("gear").value) || 4.11;
+            let tire = parseFloat(document.getElementById("tire").value) || 32;
+            let transFinal = parseFloat(document.getElementById("trans-final").value) || 1.00;
+            let overall = gear * transFinal;
+            let finishRpm = (trap * overall * 336) / tire;
+            let rollout = (tire * Math.PI).toFixed(1);
+            document.getElementById("results").innerHTML = "Overall Ratio: <strong>" + overall.toFixed(2) + ":1</strong> | Rollout: <strong>" + rollout + " in</strong> | Finish RPM: <strong>" + Math.round(finishRpm) + " RPM</strong>";
+        }
+        ["trap", "gear", "tire", "trans-final"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+        });
+        calcTool();
+        """
+    elif category == "Turbo":
+        primary_title = "Turbo Sizing & Turbocharger Matching Calculator"
+        formula_text = "Required Airflow (lb/min) = (Target Flywheel HP x BSFC) / 6.0"
+        faqs = '<div class="faq-item"><h4>How do I choose turbo size?</h4><p>Match total required airflow in lb/min to compressor maps.</p></div>'
+        primary_tool_html = """
+            <div class="grid-2">
+                <div><label>Target Flywheel HP</label><input type="number" id="hp" value="1000" step="50"></div>
+                <div><label>Target Boost (PSI)</label><input type="number" id="boost" value="22" step="1"></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Fuel BSFC</label><select id="bsfc"><option value="0.60">Gasoline (0.60)</option><option value="0.85" selected>E85 (0.85)</option></select></div>
+                <div><label>Turbo Count</label><select id="turbos"><option value="1" selected>Single</option><option value="2">Twin</option></select></div>
+            </div>
+            <div class="results-box" id="results">Adjust parameters above.</div>
+        """
+        tool_script = """
+        function calcTool() {
+            let hp = parseFloat(document.getElementById("hp").value) || 1000;
+            let boost = parseFloat(document.getElementById("boost").value) || 22;
+            let bsfc = parseFloat(document.getElementById("bsfc").value) || 0.85;
+            let count = parseInt(document.getElementById("turbos").value) || 1;
+            let totalAirflow = (hp * bsfc) / 6.0;
+            let perTurbo = totalAirflow / count;
+            let pr = (boost + 14.7) / 14.7;
+            document.getElementById("results").innerHTML = "Total Airflow: <strong>" + totalAirflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
+        }
+        ["hp", "boost", "bsfc", "turbos"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+        });
+        calcTool();
+        """
+    elif category == "Supercharger":
+        primary_title = "Supercharger Pulley Ratio & Boost Pressure Calculator"
+        formula_text = "Pulley Ratio = Crank Pulley Diameter / Blower Pulley Diameter"
+        faqs = '<div class="faq-item"><h4>How to increase boost?</h4><p>Install a smaller blower pulley.</p></div>'
+        primary_tool_html = """
+            <div class="grid-2">
+                <div><label>Crank Pulley Dia (in)</label><input type="number" id="crank-dia" value="8.0" step="0.1"></div>
+                <div><label>Blower Pulley Dia (in)</label><input type="number" id="blower-dia" value="3.0" step="0.1"></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Max Crank RPM</label><input type="number" id="crank-rpm" value="6500" step="100"></div>
+                <div><label>Boost Factor</label><input type="number" id="boost-fac" value="1.45" step="0.05"></div>
+            </div>
+            <div class="results-box" id="results">Adjust parameters above.</div>
+        """
+        tool_script = """
+        function calcTool() {
+            let crank = parseFloat(document.getElementById("crank-dia").value) || 8.0;
+            let blower = parseFloat(document.getElementById("blower-dia").value) || 3.0;
+            let rpm = parseFloat(document.getElementById("crank-rpm").value) || 6500;
+            let factor = parseFloat(document.getElementById("boost-fac").value) || 1.45;
+            let ratio = crank / blower;
+            let estBoost = (ratio * 5.2 * factor).toFixed(1);
+            document.getElementById("results").innerHTML = "Pulley Ratio: <strong>" + ratio.toFixed(2) + ":1</strong> | Est. Boost: <strong>" + estBoost + " PSI</strong>";
+        }
+        ["crank-dia", "blower-dia", "crank-rpm", "boost-fac"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+        });
+        calcTool();
+        """
+    elif category == "Tire":
+        primary_title = "Tire Diameter Growth & Rollout Drag Calculator"
+        formula_text = "Dynamic Diameter = Static Diameter x (1 + (Growth % / 100))"
+        faqs = '<div class="faq-item"><h4>Why do tires grow?</h4><p>Centrifugal force expands the tire at speed.</p></div>'
+        primary_tool_html = f"""
+            <div class="grid-2">
+                <div><label>Static Tire Dia (in)</label><input type="number" id="static-dia" value="{tire}" step="0.1"></div>
+                <div><label>Trap Speed (MPH)</label><input type="number" id="trap-speed" value="150" step="1"></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Growth Factor (%)</label><input type="number" id="growth-fac" value="4.5" step="0.1"></div>
+                <div><label>Rear Gear Ratio</label><input type="number" id="rear-gear" value="{gear}" step="0.01"></div>
+            </div>
+            <div class="results-box" id="results">Adjust parameters above.</div>
+        """
+        tool_script = """
+        function calcTool() {
+            let staticDia = parseFloat(document.getElementById("static-dia").value) || 28;
+            let trap = parseFloat(document.getElementById("trap-speed").value) || 150;
+            let growth = parseFloat(document.getElementById("growth-fac").value) || 4.5;
+            let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
+            let dynamicDia = staticDia * (1 + (growth / 100));
+            let staticRollout = (staticDia * Math.PI).toFixed(1);
+            let dynamicRollout = (dynamicDia * Math.PI).toFixed(1);
+            let estFinishRpm = Math.round((trap * gear * 336) / dynamicDia);
+            document.getElementById("results").innerHTML = "Static Rollout: <strong>" + staticRollout + " in</strong> | Dynamic Rollout: <strong>" + dynamicRollout + " in</strong> | Est. Finish RPM: <strong>" + estFinishRpm + " RPM</strong>";
+        }
+        ["static-dia", "trap-speed", "growth-fac", "rear-gear"].forEach(id => {
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcTool);
         });
