@@ -3,7 +3,6 @@ import csv
 
 output_dir = "."
 
-# Ensure pseo_pages_list.csv exists with all 6 tools including Wastegate Sizing
 csv_content = """slug,target_keyword,category,rear_gear,tire_diameter
 transmission-shift-recovery-calculator,Transmission Shift Recovery & Gear Drop Calculator,Transmission,3.42,28.0
 turbo-sizing-calculator,Turbo Sizing & Turbocharger Matching Calculator,Turbo,3.42,28.0
@@ -19,14 +18,12 @@ with open("pseo_pages_list.csv", mode="r", encoding="utf-8") as f:
     reader = csv.DictReader(f)
     pages = list(reader)
 
-# Build a sleek 2-column grid of small calculator cards for the sidebar
 utilities_grid_html = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">\n'
 for row in pages:
     slug = row["slug"]
     keyword = row["target_keyword"]
     cat = row["category"]
     
-    # Assign icons based on category
     icon = "⚙️"
     if "Turbo" in cat: icon = "🌀"
     elif "Supercharger" in cat: icon = "⚡"
@@ -43,7 +40,6 @@ for row in pages:
 '''
 utilities_grid_html += '</div>\n'
 
-# Ad block snippet
 ad_block_html = """
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
                 <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
@@ -53,7 +49,6 @@ ad_block_html = """
             </div>
 """
 
-# Featured partners snippet
 partners_html = """
             <div class="content-box">
                 <h3>Featured Partners</h3>
@@ -65,7 +60,6 @@ partners_html = """
             </div>
 """
 
-# Extended Track-Side Tuning Cheat Sheets HTML
 tuning_guides_html = """
             <div class="content-box">
                 <h3>Track-Side Tuning Cheat Sheets</h3>
@@ -294,7 +288,6 @@ master_index_html = """<!DOCTYPE html>
 </head>
 <body>
     <div class="layout-grid">
-        <!-- Sticky Left Column -->
         <div class="sticky-calculator">
             <div>
                 <div class="master-header">
@@ -452,7 +445,6 @@ master_index_html = """<!DOCTYPE html>
             REPLACE_STICKY_AD
         </div>
 
-        <!-- Right Column -->
         <div class="content-column">
             REPLACE_TOP_AD
             <div class="content-box">
@@ -980,11 +972,15 @@ for row in pages:
         """
     elif category == "Turbo":
         primary_title = "Turbo Sizing & Turbocharger Matching Calculator"
-        formula_text = "Required Airflow (lb/min) = (Target Flywheel HP x BSFC) / 6.0"
-        faqs = '<div class="faq-item"><h4>How do I choose turbo size?</h4><p>Match total required airflow in lb/min to compressor maps.</p></div>'
+        formula_text = "Required Airflow (lb/min) = (Target Flywheel HP x BSFC) / 6.0<br>Pressure Ratio = (Target Boost + 14.7) / 14.7"
+        faqs = '<div class="faq-item"><h4>How do I choose turbo size?</h4><p>Match total required airflow in lb/min and pressure ratio to compressor maps.</p></div>'
         primary_tool_html = """
             <div class="grid-2">
+                <div><label>Engine Displacement (L)</label><input type="number" id="disp" value="5.3" step="0.1"></div>
                 <div><label>Target Flywheel HP</label><input type="number" id="hp" value="1000" step="50"></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Max Boost RPM</label><input type="number" id="rpm" value="7000" step="100"></div>
                 <div><label>Target Boost (PSI)</label><input type="number" id="boost" value="22" step="1"></div>
             </div>
             <div class="grid-2">
@@ -992,22 +988,43 @@ for row in pages:
                 <div><label>Turbo Count</label><select id="turbos"><option value="1" selected>Single</option><option value="2">Twin</option></select></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
+            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin-top: 10px; font-size: 0.78rem;" id="turbo-rec">
+                <strong>Turbo Recommendation:</strong> Loading...
+            </div>
             <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
         """
         tool_script = """
         function calcTool() {
+            let disp = parseFloat(document.getElementById("disp").value) || 5.3;
             let hp = parseFloat(document.getElementById("hp").value) || 1000;
+            let rpm = parseFloat(document.getElementById("rpm").value) || 7000;
             let boost = parseFloat(document.getElementById("boost").value) || 22;
             let bsfc = parseFloat(document.getElementById("bsfc").value) || 0.85;
             let count = parseInt(document.getElementById("turbos").value) || 1;
+            
             let totalAirflow = (hp * bsfc) / 6.0;
             let perTurbo = totalAirflow / count;
             let pr = (boost + 14.7) / 14.7;
-            document.getElementById("results").innerHTML = "Total Airflow: <strong>" + totalAirflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
+            
+            let rec = "Small Frame (T3 / 55-61mm)";
+            let ar = "0.63 - 0.82 A/R";
+            if(perTurbo > 85) {
+                rec = "Large Frame (T6 / Pro Mod 80mm+)";
+                ar = "1.10 - 1.41 A/R";
+            } else if(perTurbo > 50) {
+                rec = "Medium Frame (T4 / 62-76mm)";
+                ar = "0.82 - 1.00 A/R";
+            }
+            
+            document.getElementById("results").innerHTML = "Required Airflow: <strong>" + totalAirflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
+            document.getElementById("turbo-rec").innerHTML = "<strong>Turbo Recommendation:</strong> " + rec + "<br><span style='color: var(--text-muted);'>Suggested Turbine A/R: <strong>" + ar + "</strong></span>";
         }
-        ["hp", "boost", "bsfc", "turbos"].forEach(id => {
+        ["disp", "hp", "rpm", "boost", "bsfc", "turbos"].forEach(id => {
             let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
+            if(el) {
+                el.addEventListener("input", calcTool);
+                el.addEventListener("change", calcTool);
+            }
         });
         calcTool();
         """
@@ -1149,4 +1166,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully generated index.html and {pages_created} PSEO pages with the clean sidebar grid!")
+print(f"Successfully updated all pages with the advanced Turbo Sizing & Matching Calculator!")
