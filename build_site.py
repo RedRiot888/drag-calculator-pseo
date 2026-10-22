@@ -27,7 +27,7 @@ partners_html = """
                 <h3>Featured Partners</h3>
                 <ul class="sponsor-list" style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem; color: var(--text-muted);">
                     <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color);"><a href="#" style="color: var(--text-muted); text-decoration: none;">Pro-Comp Race Transmissions</a></li>
-                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color);"><a href="#" style="color: var(--text-muted); text-decoration: none;">Apex Boost & Turbo Systems</a></li>
+                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color);"><a href="#" style="color: var(--text-muted); text-decoration: none;">Precision Turbo & Engine</a></li>
                     <li style="padding: 8px 0;"><a href="#" style="color: var(--text-muted); text-decoration: none;">DragStrip Tire & Compound Tech</a></li>
                 </ul>
             </div>
@@ -389,7 +389,6 @@ master_index_html = """<!DOCTYPE html>
 
         <!-- Right Column -->
         <div class="content-column">
-            REPLACE_DRAG_TREE
             REPLACE_TOP_AD
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
@@ -522,29 +521,12 @@ master_index_html = (
     .replace("REPLACE_STICKY_AD", ad_block_html)
     .replace("REPLACE_TOP_AD", ad_block_html)
     .replace("REPLACE_BOTTOM_AD", ad_block_html)
-    .replace(
-        "REPLACE_DRAG_TREE",
-        """
-            <div class="content-box" style="text-align: center; background: #121418; padding: 15px;">
-                <svg viewBox="0 0 300 90" width="100%" height="auto" style="max-height: 80px;">
-                    <path d="M 10 45 L 60 45 L 75 20 L 90 70 L 105 45 L 130 45" fill="none" stroke="#ff1e27" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    <rect x="138" y="10" width="24" height="70" rx="4" fill="#181a20" stroke="#2d3139" stroke-width="2"/>
-                    <circle cx="145" cy="18" r="2.5" fill="#fbbf24"/><circle cx="155" cy="18" r="2.5" fill="#fbbf24"/>
-                    <circle cx="145" cy="26" r="2.5" fill="#fbbf24"/><circle cx="155" cy="26" r="2.5" fill="#fbbf24"/>
-                    <circle cx="150" cy="36" r="3.5" fill="#fbbf24"/><circle cx="150" cy="46" r="3.5" fill="#fbbf24"/><circle cx="150" cy="56" r="3.5" fill="#fbbf24"/>
-                    <circle cx="150" cy="66" r="4" fill="#10b981" filter="drop-shadow(0 0 4px #10b981)"/>
-                    <circle cx="150" cy="74" r="3" fill="#ff1e27"/>
-                    <path d="M 170 45 L 195 45 L 210 20 L 225 70 L 240 45 L 290 45" fill="none" stroke="#ff1e27" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-        """,
-    )
     .replace("REPLACE_PARTNERS", partners_html)
 )
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
-# 2. PSEO SUB-PAGES TEMPLATE (Updating transmissions here as well)
+# 2. PSEO SUB-PAGES TEMPLATE
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -742,7 +724,6 @@ base_html_template = """<!DOCTYPE html>
         </div>
 
         <div class="content-column">
-            REPLACE_DRAG_TREE
             REPLACE_TOP_AD
             <div class="content-box">
                 <h3>Formula Breakdown</h3>
@@ -1040,23 +1021,6 @@ for row in pages:
             .replace("REPLACE_STICKY_AD", ad_block_html)
             .replace("REPLACE_TOP_AD", ad_block_html)
             .replace("REPLACE_BOTTOM_AD", ad_block_html)
-            .replace(
-                "REPLACE_DRAG_TREE",
-                """
-                    <div class="content-box" style="text-align: center; background: #121418; padding: 15px;">
-                        <svg viewBox="0 0 300 90" width="100%" height="auto" style="max-height: 80px;">
-                            <path d="M 10 45 L 60 45 L 75 20 L 90 70 L 105 45 L 130 45" fill="none" stroke="#ff1e27" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                            <rect x="138" y="10" width="24" height="70" rx="4" fill="#181a20" stroke="#2d3139" stroke-width="2"/>
-                            <circle cx="145" cy="18" r="2.5" fill="#fbbf24"/><circle cx="155" cy="18" r="2.5" fill="#fbbf24"/>
-                            <circle cx="145" cy="26" r="2.5" fill="#fbbf24"/><circle cx="155" cy="26" r="2.5" fill="#fbbf24"/>
-                            <circle cx="150" cy="36" r="3.5" fill="#fbbf24"/><circle cx="150" cy="46" r="3.5" fill="#fbbf24"/><circle cx="150" cy="56" r="3.5" fill="#fbbf24"/>
-                            <circle cx="150" cy="66" r="4" fill="#10b981" filter="drop-shadow(0 0 4px #10b981)"/>
-                            <circle cx="150" cy="74" r="3" fill="#ff1e27"/>
-                            <path d="M 170 45 L 195 45 L 210 20 L 225 70 L 240 45 L 290 45" fill="none" stroke="#ff1e27" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                """,
-            )
             .replace("FORMULA_TEXT", formula_text)
             .replace("FAQS_HTML", faqs)
             .replace("REPLACE_PARTNERS", partners_html)
@@ -1068,4 +1032,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully generated index.html and {pages_created} PSEO pages with full transmission list and Custom Ratios at top!")
+print(f"Successfully generated index.html and {pages_created} PSEO pages without any banner!")
