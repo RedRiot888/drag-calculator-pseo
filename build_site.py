@@ -3,23 +3,37 @@ import csv
 
 output_dir = "."
 
+# Ensure pseo_pages_list.csv exists with all 6 tools including Wastegate Sizing
+csv_content = """slug,target_keyword,category,rear_gear,tire_diameter
+transmission-shift-recovery-calculator,Transmission Shift Recovery & Gear Drop Calculator,Transmission,3.42,28.0
+turbo-sizing-calculator,Turbo Sizing & Turbocharger Matching Calculator,Turbo,3.42,28.0
+supercharger-pulley-calculator,Supercharger Pulley Ratio & Boost Pressure Calculator,Supercharger,3.42,28.0
+rear-gear-calculator,Ring and Pinion Rear Gear Quarter-Mile Calculator,RearGear,4.11,32.0
+tire-growth-calculator,Tire Diameter Growth & Rollout Drag Calculator,Tire,3.42,28.0
+wastegate-sizing-calculator,Wastegate Sizing & Boost Control Calculator,Wastegate,3.42,28.0
+"""
+with open("pseo_pages_list.csv", "w", encoding="utf-8") as f:
+    f.write(csv_content)
+
 with open("pseo_pages_list.csv", mode="r", encoding="utf-8") as f:
     reader = csv.DictReader(f)
     pages = list(reader)
 
-# Build a sleek grid of small calculator cards for the sidebar
+# Build a sleek 2-column grid of small calculator cards for the sidebar
 utilities_grid_html = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">\n'
 for row in pages:
     slug = row["slug"]
     keyword = row["target_keyword"]
-    # Assign icons based on category
     cat = row["category"]
+    
+    # Assign icons based on category
     icon = "⚙️"
     if "Turbo" in cat: icon = "🌀"
     elif "Supercharger" in cat: icon = "⚡"
     elif "Rear" in cat: icon = "🔧"
     elif "Tire" in cat: icon = "🛞"
     elif "Transmission" in cat: icon = "🏎️"
+    elif "Wastegate" in cat: icon = "🎛️"
     
     utilities_grid_html += f'''
     <a href="{slug}.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
@@ -36,18 +50,6 @@ ad_block_html = """
                 <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">
                     Your Ad Here<br>Contact for Track Sponsor Rates
                 </div>
-            </div>
-"""
-
-# Affiliate / Sponsor Promo Slot
-affiliate_banner_html = """
-            <div class="content-box" style="background: linear-gradient(135deg, #181a20 0%, #21242c 100%); border: 1px solid var(--accent-red);">
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">
-                    <span>Featured Track Affiliate Offer</span>
-                    <span>Sponsored</span>
-                </div>
-                <p style="font-size: 0.85rem; color: var(--text-main); margin: 0 0 10px 0;">Looking for precision control? Save 10% on high-performance wastegates, turbos, and BOVs with our trusted track partners.</p>
-                <a href="#" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.8rem; text-transform: uppercase;">Shop Precision Boost Hardware &rarr;</a>
             </div>
 """
 
@@ -91,7 +93,7 @@ tuning_guides_html = """
             </div>
 """
 
-# 1. MASTER index.html HUB (Focused sticky calculator: Drivetrain & Suspension tabs, with Wastegate as a dedicated utility card or quick calculator)
+# 1. MASTER index.html HUB
 master_index_html = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -453,7 +455,6 @@ master_index_html = """<!DOCTYPE html>
         <!-- Right Column -->
         <div class="content-column">
             REPLACE_TOP_AD
-            REPLACE_AFFILIATE_BANNER
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
                 REPLACE_UTILITIES_GRID
@@ -584,7 +585,6 @@ master_index_html = (
     .replace("REPLACE_STICKY_AD", ad_block_html)
     .replace("REPLACE_TOP_AD", ad_block_html)
     .replace("REPLACE_BOTTOM_AD", ad_block_html)
-    .replace("REPLACE_AFFILIATE_BANNER", affiliate_banner_html)
     .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
     .replace("REPLACE_PARTNERS", partners_html)
 )
@@ -792,7 +792,6 @@ base_html_template = """<!DOCTYPE html>
 
         <div class="content-column">
             REPLACE_TOP_AD
-            REPLACE_AFFILIATE_BANNER
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
                 REPLACE_UTILITIES_GRID
@@ -1078,6 +1077,53 @@ for row in pages:
         });
         calcTool();
         """
+    elif category == "Wastegate":
+        primary_title = "Wastegate Sizing & Boost Control Calculator"
+        formula_text = "Valve Sizing = Determined by Total Airflow (lb/min), Target Boost, and Exhaust Backpressure."
+        faqs = '<div class="faq-item"><h4>What causes boost creep?</h4><p>Wastegate valve is too small to bypass excess exhaust gas at high RPM.</p></div>'
+        primary_tool_html = """
+            <div class="grid-2">
+                <div><label>Target Flywheel HP</label><input type="number" id="wg-hp" value="1000" step="50"></div>
+                <div><label>Target Boost (PSI)</label><input type="number" id="wg-boost" value="22" step="1"></div>
+            </div>
+            <div class="grid-2">
+                <div style="grid-column: span 2;">
+                    <label>Turbo Frame Size / Exhaust Flow</label>
+                    <select id="wg-turbo">
+                        <option value="small">Small Frame (T3, 50-60mm, 400-700 HP)</option>
+                        <option value="medium" selected>Medium Frame (T4, 62-76mm, 700-1200 HP)</option>
+                        <option value="large">Large Frame (T6 / Pro Mod, 80mm+, 1200+ HP)</option>
+                        <option value="twin">Twin Turbo Setup (Divided / Dual Gates)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="results-box" id="wg-results">Adjust parameters above.</div>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
+        """
+        tool_script = """
+        function calcTool() {
+            let hp = parseFloat(document.getElementById("wg-hp").value) || 1000;
+            let boost = parseFloat(document.getElementById("wg-boost").value) || 22;
+            let frame = document.getElementById("wg-turbo").value;
+            let rec = "38mm";
+            if(hp > 1200 || frame === "large") {
+                rec = "60mm+ (or Dual 44mm Gates)";
+            } else if(hp > 800 || boost > 20 || frame === "medium") {
+                rec = "44mm - 50mm";
+            } else if(hp > 500) {
+                rec = "40mm - 44mm";
+            } else {
+                rec = "38mm";
+            }
+            document.getElementById("wg-results").innerHTML = "Recommended Wastegate: <strong>" + rec + "</strong> (Target: " + hp + " HP @ " + boost + " PSI)";
+        }
+        ["wg-hp", "wg-boost", "wg-turbo"].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcTool);
+            if(el) el.addEventListener("change", calcTool);
+        });
+        calcTool();
+        """
     else:
         primary_title = "Drag Racing Calculator Suite"
         formula_text = "Standard Automotive Calculation"
@@ -1093,7 +1139,6 @@ for row in pages:
             .replace("REPLACE_STICKY_AD", ad_block_html)
             .replace("REPLACE_TOP_AD", ad_block_html)
             .replace("REPLACE_BOTTOM_AD", ad_block_html)
-            .replace("REPLACE_AFFILIATE_BANNER", affiliate_banner_html)
             .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
             .replace("REPLACE_PARTNERS", partners_html)
             .replace("TOOL_SCRIPT", tool_script)
@@ -1104,4 +1149,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully updated index.html and {pages_created} PSEO pages with the sleek calculator grid in the sidebar!")
+print(f"Successfully generated index.html and {pages_created} PSEO pages with the clean sidebar grid!")
