@@ -211,18 +211,21 @@
 </head>
 <body>
     <div class="layout-grid">
+        <!-- Sticky Left Calculator -->
         <div class="sticky-calculator">
             <div class="master-header">
                 <h1>Ultimate Drag Racing Suite</h1>
                 <p>Professional Track Tuning Engine</p>
             </div>
 
+            <!-- Tabs -->
             <div class="tab-buttons">
                 <button type="button" class="tab-btn active" id="btn-drivetrain" onclick="switchTab('drivetrain')">Drivetrain & Shift</button>
                 <button type="button" class="tab-btn" id="btn-suspension" onclick="switchTab('suspension')">4-Link Suspension</button>
             </div>
 
-            <div id="pane-drivetrain" class="tab-pane active">
+            <!-- Tab 1: Drivetrain & Shift -->
+            <div id="pane-drivetrain" class="tab-pane active" style="display: block;">
                 <div class="grid-2">
                     <div>
                         <label>Transmission Profile</label>
@@ -297,7 +300,8 @@
                 </table>
             </div>
 
-            <div id="pane-suspension" class="tab-pane">
+            <!-- Tab 2: 4-Link Suspension -->
+            <div id="pane-suspension" class="tab-pane" style="display: none;">
                 <div class="section-title">1. Vehicle Weight & Weight Distribution</div>
                 <div class="grid-2">
                     <div>
@@ -366,6 +370,7 @@
             </div>
         </div>
 
+        <!-- Scrolling Right Column -->
         <div class="content-column">
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
@@ -382,18 +387,22 @@
 
     <script>
         function switchTab(name) {
-            document.querySelectorAll('.tab-pane').forEach(function(pane) {
-                pane.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-btn').forEach(function(btn) {
-                btn.classList.remove('active');
-            });
-            
-            var targetPane = document.getElementById('pane-' + name);
-            var targetBtn = document.getElementById('btn-' + name);
-            
-            if (targetPane) targetPane.classList.add('active');
-            if (targetBtn) targetBtn.classList.add('active');
+            var dtPane = document.getElementById('pane-drivetrain');
+            var suPane = document.getElementById('pane-suspension');
+            var dtBtn = document.getElementById('btn-drivetrain');
+            var suBtn = document.getElementById('btn-suspension');
+
+            if (name === 'drivetrain') {
+                if (dtPane) dtPane.style.display = 'block';
+                if (suPane) suPane.style.display = 'none';
+                if (dtBtn) dtBtn.classList.add('active');
+                if (suBtn) suBtn.classList.remove('active');
+            } else {
+                if (dtPane) dtPane.style.display = 'none';
+                if (suPane) suPane.style.display = 'block';
+                if (dtBtn) dtBtn.classList.remove('active');
+                if (suBtn) suBtn.classList.add('active');
+            }
         }
 
         const ratios = { 
