@@ -11,22 +11,25 @@ utilities_links_html = ""
 for row in pages:
     utilities_links_html += f'<li><a href="{row["slug"]}.html">{row["target_keyword"]}</a></li>\n'
 
-# Standard sponsor/partner links & ad blocks HTML for the sidebar
-sidebar_extras_html = """
-            <div class="content-box" style="margin-top: 20px;">
+# Ad block snippet
+ad_block_html = """
+            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
+                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
+                <div style="padding: 25px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">
+                    Your Ad Here<br>Contact for Track Sponsor Rates
+                </div>
+            </div>
+"""
+
+# Featured partners snippet
+partners_html = """
+            <div class="content-box">
                 <h3>Featured Partners</h3>
                 <ul class="sponsor-list" style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem; color: var(--text-muted);">
                     <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color);"><a href="#" style="color: var(--text-muted); text-decoration: none;">Pro-Comp Race Transmissions</a></li>
                     <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color);"><a href="#" style="color: var(--text-muted); text-decoration: none;">Apex Boost & Turbo Systems</a></li>
                     <li style="padding: 8px 0;"><a href="#" style="color: var(--text-muted); text-decoration: none;">DragStrip Tire & Compound Tech</a></li>
                 </ul>
-            </div>
-
-            <div class="content-box" style="margin-top: 20px; text-align: center; background: #121418; border: 1px dashed var(--border-color);">
-                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 30px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">
-                    Your Ad Here<br>Contact for Track Sponsor Rates
-                </div>
             </div>
 """
 
@@ -75,6 +78,9 @@ master_index_html = """<!DOCTYPE html>
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
         .content-column {
             display: flex;
@@ -116,7 +122,7 @@ master_index_html = """<!DOCTYPE html>
         }
         .master-header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 15px;
         }
@@ -135,7 +141,7 @@ master_index_html = """<!DOCTYPE html>
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .tab-btn {
             background: var(--input-bg);
@@ -225,154 +231,165 @@ master_index_html = """<!DOCTYPE html>
 </head>
 <body>
     <div class="layout-grid">
+        <!-- Sticky Left Column: Calculator + Sticky Ad -->
         <div class="sticky-calculator">
-            <div class="master-header">
-                <h1>Ultimate Drag Racing Suite</h1>
-                <p>Professional Track Tuning Engine</p>
+            <div>
+                <div class="master-header">
+                    <h1>Ultimate Drag Racing Suite</h1>
+                    <p>Professional Track Tuning Engine</p>
+                </div>
+
+                <div class="tab-buttons">
+                    <button type="button" class="tab-btn active" id="btn-drivetrain">Drivetrain & Shift</button>
+                    <button type="button" class="tab-btn" id="btn-suspension">4-Link Suspension</button>
+                </div>
+
+                <div id="pane-drivetrain" class="tab-pane active">
+                    <div class="grid-2">
+                        <div>
+                            <label>Transmission Profile</label>
+                            <select id="trans" onchange="applyTransPreset()">
+                                <optgroup label="GM">
+                                    <option value="powerglide">Powerglide (1.76 / 1.00)</option>
+                                    <option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
+                                    <option value="th400" selected>TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
+                                    <option value="4l60e">4L60e (3.06 / 1.62 / 1.00 / 0.70)</option>
+                                    <option value="6l80">6L80 (4.03 / 2.36 / 1.53 / 1.15 / 0.85 / 0.67)</option>
+                                </optgroup>
+                                <optgroup label="Ford">
+                                    <option value="c4_c6">Ford C4 / C6 (2.46 / 1.46 / 1.00)</option>
+                                    <option value="ford_t5">Ford T-5 (2.95 / 1.94 / 1.34 / 1.00 / 0.73)</option>
+                                    <option value="mustang_10r80">Mustang 10R80 (10-Speed)</option>
+                                </optgroup>
+                                <optgroup label="Custom">
+                                    <option value="custom">Custom Ratios</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Max Shift RPM</label>
+                            <input type="number" id="max-rpm" value="7500" step="100">
+                        </div>
+                    </div>
+                    <div class="grid-2" id="custom-gears-row" style="display: none;">
+                        <div style="grid-column: span 2;">
+                            <label>Custom Ratios (comma-separated)</label>
+                            <input type="text" id="custom-ratios" value="2.48, 1.48, 1.00">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Tire Diameter (in)</label>
+                            <input type="number" id="tire-dia" value="28.0" step="0.1">
+                        </div>
+                        <div>
+                            <label>Rear Gear Ratio</label>
+                            <input type="number" id="rear-gear" value="3.42" step="0.01">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Vehicle Weight (lbs)</label>
+                            <input type="number" id="veh-wt" value="3200" step="50">
+                        </div>
+                        <div>
+                            <label>Flywheel HP</label>
+                            <input type="number" id="veh-hp" value="1100" step="25">
+                        </div>
+                    </div>
+                    <div class="results-box" id="results">Adjust parameters above to view performance.</div>
+                    <table>
+                        <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift Speed</th><th>RPM Drop</th></tr></thead>
+                        <tbody id="gear-body"></tbody>
+                    </table>
+                </div>
+
+                <div id="pane-suspension" class="tab-pane">
+                    <div class="section-title">1. Vehicle Weight & Distribution</div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Total Weight (lbs)</label>
+                            <input type="number" id="susp-wt" value="3200" step="50">
+                        </div>
+                        <div>
+                            <label>Wheelbase (in)</label>
+                            <input type="number" id="susp-wb" value="105.0" step="0.5">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label>CG Height (in)</label>
+                            <input type="number" id="susp-cg" value="20.0" step="0.5">
+                        </div>
+                        <div>
+                            <label>Static Front Weight (%)</label>
+                            <input type="number" id="susp-front-wt" value="52.0" step="0.5">
+                        </div>
+                    </div>
+
+                    <div class="section-title">2. 4-Link Bar Geometry</div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Top Bar Front X (in)</label>
+                            <input type="number" id="tb-fx" value="26.0" step="0.5">
+                        </div>
+                        <div>
+                            <label>Top Bar Front Z (in)</label>
+                            <input type="number" id="tb-fz" value="16.0" step="0.5">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Top Bar Rear X (in)</label>
+                            <input type="number" id="tb-rx" value="0.0" step="0.5">
+                        </div>
+                        <div>
+                            <label>Top Bar Rear Z (in)</label>
+                            <input type="number" id="tb-rz" value="12.0" step="0.5">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Bottom Bar Front X (in)</label>
+                            <input type="number" id="bb-fx" value="32.0" step="0.5">
+                        </div>
+                        <div>
+                            <label>Bottom Bar Front Z (in)</label>
+                            <input type="number" id="bb-fz" value="8.0" step="0.5">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Bottom Bar Rear X (in)</label>
+                            <input type="number" id="bb-rx" value="0.0" step="0.5">
+                        </div>
+                        <div>
+                            <label>Bottom Bar Rear Z (in)</label>
+                            <input type="number" id="bb-rz" value="4.0" step="0.5">
+                        </div>
+                    </div>
+
+                    <div class="results-box" id="susp-results">Adjust suspension geometry above.</div>
+                </div>
             </div>
 
-            <div class="tab-buttons">
-                <button type="button" class="tab-btn active" id="btn-drivetrain">Drivetrain & Shift</button>
-                <button type="button" class="tab-btn" id="btn-suspension">4-Link Suspension</button>
-            </div>
-
-            <div id="pane-drivetrain" class="tab-pane active">
-                <div class="grid-2">
-                    <div>
-                        <label>Transmission Profile</label>
-                        <select id="trans" onchange="applyTransPreset()">
-                            <optgroup label="GM">
-                                <option value="powerglide">Powerglide (1.76 / 1.00)</option>
-                                <option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
-                                <option value="th400" selected>TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
-                                <option value="4l60e">4L60e (3.06 / 1.62 / 1.00 / 0.70)</option>
-                                <option value="6l80">6L80 (4.03 / 2.36 / 1.53 / 1.15 / 0.85 / 0.67)</option>
-                            </optgroup>
-                            <optgroup label="Ford">
-                                <option value="c4_c6">Ford C4 / C6 (2.46 / 1.46 / 1.00)</option>
-                                <option value="ford_t5">Ford T-5 (2.95 / 1.94 / 1.34 / 1.00 / 0.73)</option>
-                                <option value="mustang_10r80">Mustang 10R80 (10-Speed)</option>
-                            </optgroup>
-                            <optgroup label="Custom">
-                                <option value="custom">Custom Ratios</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Max Shift RPM</label>
-                        <input type="number" id="max-rpm" value="7500" step="100">
-                    </div>
-                </div>
-                <div class="grid-2" id="custom-gears-row" style="display: none;">
-                    <div style="grid-column: span 2;">
-                        <label>Custom Ratios (comma-separated)</label>
-                        <input type="text" id="custom-ratios" value="2.48, 1.48, 1.00">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div>
-                        <label>Tire Diameter (in)</label>
-                        <input type="number" id="tire-dia" value="28.0" step="0.1">
-                    </div>
-                    <div>
-                        <label>Rear Gear Ratio</label>
-                        <input type="number" id="rear-gear" value="3.42" step="0.01">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div>
-                        <label>Vehicle Weight (lbs)</label>
-                        <input type="number" id="veh-wt" value="3200" step="50">
-                    </div>
-                    <div>
-                        <label>Flywheel HP</label>
-                        <input type="number" id="veh-hp" value="1100" step="25">
-                    </div>
-                </div>
-                <div class="results-box" id="results">Adjust parameters above to view performance.</div>
-                <table>
-                    <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift Speed</th><th>RPM Drop</th></tr></thead>
-                    <tbody id="gear-body"></tbody>
-                </table>
-            </div>
-
-            <div id="pane-suspension" class="tab-pane">
-                <div class="section-title">1. Vehicle Weight & Distribution</div>
-                <div class="grid-2">
-                    <div>
-                        <label>Total Weight (lbs)</label>
-                        <input type="number" id="susp-wt" value="3200" step="50">
-                    </div>
-                    <div>
-                        <label>Wheelbase (in)</label>
-                        <input type="number" id="susp-wb" value="105.0" step="0.5">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div>
-                        <label>CG Height (in)</label>
-                        <input type="number" id="susp-cg" value="20.0" step="0.5">
-                    </div>
-                    <div>
-                        <label>Static Front Weight (%)</label>
-                        <input type="number" id="susp-front-wt" value="52.0" step="0.5">
-                    </div>
-                </div>
-
-                <div class="section-title">2. 4-Link Bar Geometry</div>
-                <div class="grid-2">
-                    <div>
-                        <label>Top Bar Front X (in)</label>
-                        <input type="number" id="tb-fx" value="26.0" step="0.5">
-                    </div>
-                    <div>
-                        <label>Top Bar Front Z (in)</label>
-                        <input type="number" id="tb-fz" value="16.0" step="0.5">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div>
-                        <label>Top Bar Rear X (in)</label>
-                        <input type="number" id="tb-rx" value="0.0" step="0.5">
-                    </div>
-                    <div>
-                        <label>Top Bar Rear Z (in)</label>
-                        <input type="number" id="tb-rz" value="12.0" step="0.5">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div>
-                        <label>Bottom Bar Front X (in)</label>
-                        <input type="number" id="bb-fx" value="32.0" step="0.5">
-                    </div>
-                    <div>
-                        <label>Bottom Bar Front Z (in)</label>
-                        <input type="number" id="bb-fz" value="8.0" step="0.5">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div>
-                        <label>Bottom Bar Rear X (in)</label>
-                        <input type="number" id="bb-rx" value="0.0" step="0.5">
-                    </div>
-                    <div>
-                        <label>Bottom Bar Rear Z (in)</label>
-                        <input type="number" id="bb-rz" value="4.0" step="0.5">
-                    </div>
-                </div>
-
-                <div class="results-box" id="susp-results">Adjust suspension geometry above.</div>
-            </div>
+            <!-- Sticky Ad Underneath Calculator -->
+            REPLACE_STICKY_AD
         </div>
 
+        <!-- Right Column: Ad -> Formula -> FAQ -> Utilities -> Partners -> Ad -->
         <div class="content-column">
+            REPLACE_TOP_AD
+            REPLACE_FORMULA
+            REPLACE_FAQS
             <div class="content-box">
                 <h3>Other Utilities & Calculators</h3>
                 <ul class="utility-list">
                     REPLACE_UTILITIES
                 </ul>
             </div>
-            REPLACE_EXTRAS
+            REPLACE_PARTNERS
+            REPLACE_BOTTOM_AD
         </div>
     </div>
 
@@ -484,11 +501,19 @@ master_index_html = """<!DOCTYPE html>
 </html>
 """
 
-master_index_html = master_index_html.replace("REPLACE_UTILITIES", utilities_links_html).replace("REPLACE_EXTRAS", sidebar_extras_html)
+master_index_html = (
+    master_index_html.replace("REPLACE_UTILITIES", utilities_links_html)
+    .replace("REPLACE_STICKY_AD", ad_block_html)
+    .replace("REPLACE_TOP_AD", ad_block_html)
+    .replace("REPLACE_BOTTOM_AD", ad_block_html)
+    .replace("REPLACE_FORMULA", "")
+    .replace("REPLACE_FAQS", "")
+    .replace("REPLACE_PARTNERS", partners_html)
+)
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
-# 2. PSEO SUB-PAGES TEMPLATE WITH EXTRAS
+# 2. PSEO SUB-PAGES TEMPLATE
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -533,6 +558,9 @@ base_html_template = """<!DOCTYPE html>
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
         .content-column {
             display: flex;
@@ -574,7 +602,7 @@ base_html_template = """<!DOCTYPE html>
         }
         .master-header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 15px;
         }
@@ -672,21 +700,18 @@ base_html_template = """<!DOCTYPE html>
 
     <div class="layout-grid">
         <div class="sticky-calculator">
-            <div class="master-header">
-                <h1>PRIMARY_TITLE</h1>
-                <p>TARGET_KEYWORD &mdash; Track Tuning Engine</p>
+            <div>
+                <div class="master-header">
+                    <h1>PRIMARY_TITLE</h1>
+                    <p>TARGET_KEYWORD &mdash; Track Tuning Engine</p>
+                </div>
+                PRIMARY_TOOL_HTML
             </div>
-            PRIMARY_TOOL_HTML
+            REPLACE_STICKY_AD
         </div>
 
         <div class="content-column">
-            <div class="content-box">
-                <h3>Other Utilities & Calculators</h3>
-                <ul class="utility-list">
-                    UTILITIES_LINKS_HTML
-                </ul>
-            </div>
-            REPLACE_EXTRAS
+            REPLACE_TOP_AD
             <div class="content-box">
                 <h3>Formula Breakdown</h3>
                 <div class="formula-content">FORMULA_TEXT</div>
@@ -695,6 +720,14 @@ base_html_template = """<!DOCTYPE html>
                 <h3>Frequently Asked Questions</h3>
                 FAQS_HTML
             </div>
+            <div class="content-box">
+                <h3>Other Utilities & Calculators</h3>
+                <ul class="utility-list">
+                    UTILITIES_LINKS_HTML
+                </ul>
+            </div>
+            REPLACE_PARTNERS
+            REPLACE_BOTTOM_AD
         </div>
     </div>
 
@@ -954,9 +987,12 @@ for row in pages:
             .replace("PRIMARY_TITLE", primary_title)
             .replace("PRIMARY_TOOL_HTML", primary_tool_html)
             .replace("UTILITIES_LINKS_HTML", utilities_links_html)
-            .replace("REPLACE_EXTRAS", sidebar_extras_html)
+            .replace("REPLACE_STICKY_AD", ad_block_html)
+            .replace("REPLACE_TOP_AD", ad_block_html)
+            .replace("REPLACE_BOTTOM_AD", ad_block_html)
             .replace("FORMULA_TEXT", formula_text)
             .replace("FAQS_HTML", faqs)
+            .replace("REPLACE_PARTNERS", partners_html)
             .replace("TOOL_SCRIPT", tool_script)
     )
 
@@ -965,4 +1001,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully generated index.html and {pages_created} PSEO pages with full calculators and partner/ad sidebars!")
+print(f"Successfully generated index.html and {pages_created} PSEO pages with 3 ad spaces per page!")
