@@ -11,6 +11,679 @@ utilities_links_html = ""
 for row in pages:
     utilities_links_html += f'<li><a href="{row["slug"]}.html">{row["target_keyword"]}</a></li>\n'
 
+# 1. GENERATE THE MASTER index.html HUB DIRECTLY FROM THE SCRIPT
+master_index_html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Drag Racing Drivetrain & Shift RPM Calculator Suite</title>
+    <style>
+        :root {
+            --bg-dark: #0f1015;
+            --card-bg: #181a20;
+            --accent-red: #ff1e27;
+            --accent-glow: rgba(255, 30, 39, 0.25);
+            --text-main: #f8f9fa;
+            --text-muted: #9ca3af;
+            --border-color: #2d3139;
+            --input-bg: #21242c;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .layout-grid {
+            max-width: 1200px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: 500px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; }
+        }
+        .sticky-calculator {
+            position: sticky;
+            top: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            padding: 30px;
+        }
+        .content-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .content-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+        }
+        .content-box h3 {
+            color: var(--accent-red);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+        .utility-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .utility-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        .utility-list li a {
+            color: var(--text-muted);
+            text-decoration: none;
+            display: block;
+        }
+        .utility-list li a:hover {
+            color: var(--accent-red);
+        }
+        .master-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+        .master-header h1 {
+            color: var(--accent-red);
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            margin: 0 0 5px 0;
+        }
+        .master-header p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        .tab-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 12px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .tab-btn.active {
+            background: var(--accent-red);
+            color: white;
+            border-color: var(--accent-red);
+        }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        input, select {
+            width: 100%;
+            padding: 8px 10px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 0.85rem;
+        }
+        optgroup { color: var(--accent-red); font-weight: bold; }
+        option { color: var(--text-main); background: var(--input-bg); }
+        .results-box {
+            margin-top: 15px;
+            background: #121418;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-red);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+            background: #121418;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 6px 4px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.75rem;
+        }
+        th {
+            background: #1f232b;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            font-size: 0.65rem;
+        }
+        .section-title {
+            color: var(--accent-red);
+            font-size: 0.80rem;
+            text-transform: uppercase;
+            border-bottom: 1px dashed var(--border-color);
+            margin: 15px 0 8px 0;
+            padding-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-grid">
+        <div class="sticky-calculator">
+            <div class="master-header">
+                <h1>Ultimate Drag Racing Suite</h1>
+                <p>Professional Track Tuning Engine</p>
+            </div>
+
+            <div class="tab-buttons">
+                <button type="button" class="tab-btn active" id="btn-drivetrain">Drivetrain & Shift</button>
+                <button type="button" class="tab-btn" id="btn-suspension">4-Link Suspension</button>
+            </div>
+
+            <div id="pane-drivetrain" class="tab-pane active">
+                <div class="grid-2">
+                    <div>
+                        <label>Transmission Profile</label>
+                        <select id="trans" onchange="applyTransPreset()">
+                            <optgroup label="GM">
+                                <option value="powerglide">Powerglide (1.76 / 1.00)</option>
+                                <option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
+                                <option value="th400" selected>TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
+                                <option value="4l60e">4L60e (3.06 / 1.62 / 1.00 / 0.70)</option>
+                                <option value="6l80">6L80 (4.03 / 2.36 / 1.53 / 1.15 / 0.85 / 0.67)</option>
+                            </optgroup>
+                            <optgroup label="Ford">
+                                <option value="c4_c6">Ford C4 / C6 (2.46 / 1.46 / 1.00)</option>
+                                <option value="ford_t5">Ford T-5 (2.95 / 1.94 / 1.34 / 1.00 / 0.73)</option>
+                                <option value="mustang_10r80">Mustang 10R80 (10-Speed)</option>
+                            </optgroup>
+                            <optgroup label="Custom">
+                                <option value="custom">Custom Ratios</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Max Shift RPM</label>
+                        <input type="number" id="max-rpm" value="7500" step="100">
+                    </div>
+                </div>
+                <div class="grid-2" id="custom-gears-row" style="display: none;">
+                    <div style="grid-column: span 2;">
+                        <label>Custom Ratios (comma-separated)</label>
+                        <input type="text" id="custom-ratios" value="2.48, 1.48, 1.00">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Tire Diameter (in)</label>
+                        <input type="number" id="tire-dia" value="28.0" step="0.1">
+                    </div>
+                    <div>
+                        <label>Rear Gear Ratio</label>
+                        <input type="number" id="rear-gear" value="3.42" step="0.01">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Vehicle Weight (lbs)</label>
+                        <input type="number" id="veh-wt" value="3200" step="50">
+                    </div>
+                    <div>
+                        <label>Flywheel HP</label>
+                        <input type="number" id="veh-hp" value="1100" step="25">
+                    </div>
+                </div>
+                <div class="results-box" id="results">Adjust parameters above to view performance.</div>
+                <table>
+                    <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift Speed</th><th>RPM Drop</th></tr></thead>
+                    <tbody id="gear-body"></tbody>
+                </table>
+            </div>
+
+            <div id="pane-suspension" class="tab-pane">
+                <div class="section-title">1. Vehicle Weight & Distribution</div>
+                <div class="grid-2">
+                    <div>
+                        <label>Total Weight (lbs)</label>
+                        <input type="number" id="susp-wt" value="3200" step="50">
+                    </div>
+                    <div>
+                        <label>Wheelbase (in)</label>
+                        <input type="number" id="susp-wb" value="105.0" step="0.5">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>CG Height (in)</label>
+                        <input type="number" id="susp-cg" value="20.0" step="0.5">
+                    </div>
+                    <div>
+                        <label>Static Front Weight (%)</label>
+                        <input type="number" id="susp-front-wt" value="52.0" step="0.5">
+                    </div>
+                </div>
+
+                <div class="section-title">2. 4-Link Bar Geometry</div>
+                <div class="grid-2">
+                    <div>
+                        <label>Top Bar Front X (in)</label>
+                        <input type="number" id="tb-fx" value="26.0" step="0.5">
+                    </div>
+                    <div>
+                        <label>Top Bar Front Z (in)</label>
+                        <input type="number" id="tb-fz" value="16.0" step="0.5">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Top Bar Rear X (in)</label>
+                        <input type="number" id="tb-rx" value="0.0" step="0.5">
+                    </div>
+                    <div>
+                        <label>Top Bar Rear Z (in)</label>
+                        <input type="number" id="tb-rz" value="12.0" step="0.5">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Bottom Bar Front X (in)</label>
+                        <input type="number" id="bb-fx" value="32.0" step="0.5">
+                    </div>
+                    <div>
+                        <label>Bottom Bar Front Z (in)</label>
+                        <input type="number" id="bb-fz" value="8.0" step="0.5">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Bottom Bar Rear X (in)</label>
+                        <input type="number" id="bb-rx" value="0.0" step="0.5">
+                    </div>
+                    <div>
+                        <label>Bottom Bar Rear Z (in)</label>
+                        <input type="number" id="bb-rz" value="4.0" step="0.5">
+                    </div>
+                </div>
+
+                <div class="results-box" id="susp-results">Adjust suspension geometry above.</div>
+            </div>
+        </div>
+
+        <div class="content-column">
+            <div class="content-box">
+                <h3>Other Utilities & Calculators</h3>
+                <ul class="utility-list">
+                    REPLACE_UTILITIES
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('btn-drivetrain').addEventListener('click', function() {
+            document.getElementById('pane-drivetrain').classList.add('active');
+            document.getElementById('pane-suspension').classList.remove('active');
+            document.getElementById('btn-drivetrain').classList.add('active');
+            document.getElementById('btn-suspension').classList.remove('active');
+        });
+
+        document.getElementById('btn-suspension').addEventListener('click', function() {
+            document.getElementById('pane-suspension').classList.add('active');
+            document.getElementById('pane-drivetrain').classList.remove('active');
+            document.getElementById('btn-suspension').classList.add('active');
+            document.getElementById('btn-drivetrain').classList.remove('active');
+        });
+
+        const ratios = { 
+            powerglide: [1.76, 1.00], 
+            th350: [2.52, 1.52, 1.00], 
+            th400: [2.48, 1.48, 1.00],
+            "4l60e": [3.06, 1.62, 1.00, 0.70],
+            "6l80": [4.03, 2.36, 1.53, 1.15, 0.85, 0.67],
+            c4_c6: [2.46, 1.46, 1.00],
+            ford_t5: [2.95, 1.94, 1.34, 1.00, 0.73],
+            mustang_10r80: [4.70, 2.99, 2.15, 1.77, 1.52, 1.28, 1.00, 0.85, 0.69, 0.64]
+        };
+
+        function applyTransPreset() {
+            let val = document.getElementById("trans").value;
+            let customRow = document.getElementById("custom-gears-row");
+            if(customRow) {
+                customRow.style.display = (val === "custom") ? "grid" : "none";
+            }
+            calcAll();
+        }
+
+        function calcAll() {
+            let tKey = document.getElementById("trans").value;
+            let rat = [];
+            if(tKey === "custom") {
+                let customStr = document.getElementById("custom-ratios").value;
+                rat = customStr.split(",").map(function(x) { return parseFloat(x.trim()); }).filter(function(x) { return !isNaN(x) && x > 0; });
+                if(rat.length === 0) rat = [2.48, 1.48, 1.00];
+            } else {
+                rat = ratios[tKey] || [2.48, 1.48, 1.00];
+            }
+
+            let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
+            let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
+            let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
+            let wt = parseFloat(document.getElementById("veh-wt").value) || 3200;
+            let hp = parseFloat(document.getElementById("veh-hp").value) || 1100;
+
+            let rollout = (tire * Math.PI).toFixed(1);
+            let estEt = (5.825 * Math.pow(wt / hp, 0.333)).toFixed(2);
+            let estTrap = (234 * Math.cbrt(hp / wt)).toFixed(1);
+
+            let resEl = document.getElementById("results");
+            if(resEl) {
+                resEl.innerHTML = "Est. 1/4 Mile ET: " + estEt + "s @ " + estTrap + " MPH | Rollout: " + rollout + " in";
+            }
+
+            let tbody = document.getElementById("gear-body");
+            if(tbody) {
+                tbody.innerHTML = "";
+                for(let i = 0; i < rat.length; i++) {
+                    let overall = rat[i] * gear;
+                    let speed = (rpm * tire) / (overall * 336);
+                    let drop = i < rat.length - 1 ? "Drop to " + Math.round(rpm * (rat[i+1] / rat[i])) + " RPM" : "Finish";
+                    tbody.innerHTML += "<tr><td>" + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.toFixed(1) + " MPH</td><td>" + drop + "</td></tr>";
+                }
+            }
+
+            let sWt = parseFloat(document.getElementById("susp-wt").value) || 3200;
+            let sFront = parseFloat(document.getElementById("susp-front-wt").value) || 52;
+            let rearWt = Math.round(sWt * (1 - sFront / 100));
+
+            let tbFx = parseFloat(document.getElementById("tb-fx").value) || 26;
+            let tbFz = parseFloat(document.getElementById("tb-fz").value) || 16;
+            let tbRx = parseFloat(document.getElementById("tb-rx").value) || 0;
+            let tbRz = parseFloat(document.getElementById("tb-rz").value) || 12;
+
+            let bbFx = parseFloat(document.getElementById("bb-fx").value) || 32;
+            let bbFz = parseFloat(document.getElementById("bb-fz").value) || 8;
+            let bbRx = parseFloat(document.getElementById("bb-rx").value) || 0;
+            let bbRz = parseFloat(document.getElementById("bb-rz").value) || 4;
+
+            let topSlope = (tbFz - tbRz) / (tbFx - tbRx || 1);
+            let botSlope = (bbFz - bbRz) / (bbFx - bbRx || 1);
+            let icLength = Math.round(Math.abs((tbFz - bbFz) / (topSlope - botSlope || 0.01)) * 10) / 10;
+            if(isNaN(icLength) || icLength <= 0 || icLength > 150) icLength = 47.3;
+
+            let sRes = document.getElementById("susp-results");
+            if(sRes) {
+                sRes.innerHTML = "Rear Static Weight: " + rearWt + " lbs | IC Length: " + icLength + " in";
+            }
+        }
+
+        ["trans", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "custom-ratios", "susp-wt", "susp-wb", "susp-cg", "susp-front-wt", "tb-fx", "tb-fz", "tb-rx", "tb-rz", "bb-fx", "bb-fz", "bb-rx", "bb-rz"].forEach(function(id) {
+            let el = document.getElementById(id);
+            if(el) el.addEventListener("input", calcAll);
+        });
+
+        calcAll();
+    </script>
+</body>
+</html>
+"""
+
+master_index_html = master_index_html.replace("REPLACE_UTILITIES", utilities_links_html)
+with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
+    f.write(master_index_html)
+
+# 2. GENERATE PSEO SUB-PAGES
+base_html_template = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TARGET_KEYWORD | Ultimate Drag Racing Master Suite</title>
+    <style>
+        :root {
+            --bg-dark: #0f1015;
+            --card-bg: #181a20;
+            --accent-red: #ff1e27;
+            --accent-glow: rgba(255, 30, 39, 0.25);
+            --text-main: #f8f9fa;
+            --text-muted: #9ca3af;
+            --border-color: #2d3139;
+            --input-bg: #21242c;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .layout-grid {
+            max-width: 1200px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: 480px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; }
+        }
+        .sticky-calculator {
+            position: sticky;
+            top: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            padding: 30px;
+        }
+        .content-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .content-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+        }
+        .content-box h3 {
+            color: var(--accent-red);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+        .utility-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .utility-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        .utility-list li a {
+            color: var(--text-muted);
+            text-decoration: none;
+            display: block;
+        }
+        .utility-list li a:hover {
+            color: var(--accent-red);
+        }
+        .master-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+        .master-header h1 {
+            color: var(--accent-red);
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            margin: 0 0 5px 0;
+        }
+        .master-header p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        input, select {
+            width: 100%;
+            padding: 8px 10px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 0.85rem;
+        }
+        optgroup { color: var(--accent-red); font-weight: bold; }
+        option { color: var(--text-main); background: var(--input-bg); }
+        .results-box {
+            margin-top: 15px;
+            background: #121418;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-red);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        .formula-content {
+            font-family: monospace;
+            color: #10b981;
+            font-size: 0.85rem;
+            background: var(--input-bg);
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .faq-item { margin-bottom: 12px; }
+        .faq-item h4 { margin: 0 0 3px 0; font-size: 0.85rem; color: var(--text-main); }
+        .faq-item p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+        table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+            background: #121418;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 6px 4px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.75rem;
+        }
+        th {
+            background: #1f232b;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            font-size: 0.65rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: var(--accent-red);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <a href="index.html" class="back-link">&larr; Back to Master Hub</a>
+    </div>
+
+    <div class="layout-grid">
+        <div class="sticky-calculator">
+            <div class="master-header">
+                <h1>PRIMARY_TITLE</h1>
+                <p>TARGET_KEYWORD &mdash; Track Tuning Engine</p>
+            </div>
+            PRIMARY_TOOL_HTML
+        </div>
+
+        <div class="content-column">
+            <div class="content-box">
+                <h3>Other Utilities & Calculators</h3>
+                <ul class="utility-list">
+                    UTILITIES_LINKS_HTML
+                </ul>
+            </div>
+            <div class="content-box">
+                <h3>Formula Breakdown</h3>
+                <div class="formula-content">FORMULA_TEXT</div>
+            </div>
+            <div class="content-box">
+                <h3>Frequently Asked Questions</h3>
+                FAQS_HTML
+            </div>
+        </div>
+    </div>
+
+    <script>
+        TOOL_SCRIPT
+    </script>
+</body>
+</html>
+"""
+
 pages_created = 0
 for row in pages:
     slug = row["slug"]
@@ -147,224 +820,19 @@ for row in pages:
         primary_tool_html = "<div>Select a tool from the hub.</div>"
         tool_script = ""
 
-    html = """<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{target_keyword} | Ultimate Drag Racing Master Suite</title>
-    <style>
-        :root {{
-            --bg-dark: #0f1015;
-            --card-bg: #181a20;
-            --accent-red: #ff1e27;
-            --accent-glow: rgba(255, 30, 39, 0.25);
-            --text-main: #f8f9fa;
-            --text-muted: #9ca3af;
-            --border-color: #2d3139;
-            --input-bg: #21242c;
-        }}
-        body {{
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.5;
-        }}
-        .layout-grid {{
-            max-width: 1200px;
-            margin: 30px auto;
-            display: grid;
-            grid-template-columns: 480px 1fr;
-            gap: 30px;
-            align-items: start;
-        }}
-        @media (max-width: 900px) {{
-            .layout-grid {{ grid-template-columns: 1fr; }}
-        }}
-        .sticky-calculator {{
-            position: sticky;
-            top: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            padding: 30px;
-        }}
-        .content-column {{
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }}
-        .content-box {{
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 25px;
-        }}
-        .content-box h3 {{
-            color: var(--accent-red);
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            margin-top: 0;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-        }}
-        .utility-list {{
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }}
-        .utility-list li {{
-            padding: 8px 0;
-            border-bottom: 1px dashed var(--border-color);
-        }}
-        .utility-list li a {{
-            color: var(--text-muted);
-            text-decoration: none;
-            display: block;
-        }}
-        .utility-list li a:hover {{
-            color: var(--accent-red);
-        }}
-        .master-header {{
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
-        }}
-        .master-header h1 {{
-            color: var(--accent-red);
-            font-size: 1.4rem;
-            text-transform: uppercase;
-            margin: 0 0 5px 0;
-        }}
-        .master-header p {{
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin: 0;
-        }}
-        .grid-2 {{
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 10px;
-        }}
-        label {{
-            display: block;
-            margin-bottom: 3px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }}
-        input, select {{
-            width: 100%;
-            padding: 8px 10px;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 0.85rem;
-        }}
-        optgroup {{ color: var(--accent-red); font-weight: bold; }}
-        option {{ color: var(--text-main); background: var(--input-bg); }}
-        .results-box {{
-            margin-top: 15px;
-            background: #121418;
-            border: 1px solid var(--border-color);
-            border-left: 4px solid var(--accent-red);
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-        }}
-        .formula-content {{
-            font-family: monospace;
-            color: #10b981;
-            font-size: 0.85rem;
-            background: var(--input-bg);
-            padding: 10px;
-            border-radius: 6px;
-        }}
-        .faq-item {{ margin-bottom: 12px; }}
-        .faq-item h4 {{ margin: 0 0 3px 0; font-size: 0.85rem; color: var(--text-main); }}
-        .faq-item p {{ margin: 0; font-size: 0.8rem; color: var(--text-muted); }}
-        table {{
-            width: 100%;
-            margin-top: 15px;
-            border-collapse: collapse;
-            background: #121418;
-            border-radius: 6px;
-            overflow: hidden;
-        }}
-        th, td {{
-            padding: 6px 4px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-            font-size: 0.75rem;
-        }}
-        th {{
-            background: #1f232b;
-            color: var(--accent-red);
-            text-transform: uppercase;
-            font-size: 0.65rem;
-        }}
-        .back-link {{
-            display: inline-block;
-            margin-bottom: 15px;
-            color: var(--accent-red);
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.85rem;
-        }}
-        .back-link:hover {{ text-decoration: underline; }}
-    </style>
-</head>
-<body>
-    <div style="max-width: 1200px; margin: 0 auto;">
-        <a href="index.html" class="back-link">&larr; Back to Master Hub</a>
-    </div>
-
-    <div class="layout-grid">
-        <div class="sticky-calculator">
-            <div class="master-header">
-                <h1>{primary_title}</h1>
-                <p>{target_keyword} &mdash; Track Tuning Engine</p>
-            </div>
-            {primary_tool_html}
-        </div>
-
-        <div class="content-column">
-            <div class="content-box">
-                <h3>Other Utilities & Calculators</h3>
-                <ul class="utility-list">
-                    {utilities_links_html}
-                </ul>
-            </div>
-            <div class="content-box">
-                <h3>Formula Breakdown</h3>
-                <div class="formula-content">{formula_text}</div>
-            </div>
-            <div class="content-box">
-                <h3>Frequently Asked Questions</h3>
-                {faqs}
-            </div>
-        </div>
-    </div>
-
-    <script>
-        {tool_script}
-    </script>
-</body>
-</html>
-"""
+    page_html = (
+        base_html_template.replace("TARGET_KEYWORD", target_keyword)
+            .replace("PRIMARY_TITLE", primary_title)
+            .replace("PRIMARY_TOOL_HTML", primary_tool_html)
+            .replace("UTILITIES_LINKS_HTML", utilities_links_html)
+            .replace("FORMULA_TEXT", formula_text)
+            .replace("FAQS_HTML", faqs)
+            .replace("TOOL_SCRIPT", tool_script)
+    )
 
     file_path = os.path.join(output_dir, f"{slug}.html")
     with open(file_path, "w", encoding="utf-8") as out_f:
-        out_f.write(html)
+        out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully generated {pages_created} PSEO pages without syntax errors!")
+print(f"Successfully generated index.html and {pages_created} PSEO pages!")
