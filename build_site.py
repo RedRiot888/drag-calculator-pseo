@@ -600,7 +600,7 @@ master_index_html = (
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
-# 2. PSEO SUB-PAGES TEMPLATE (same mobile fix for sticky sidebar)
+# 2. PSEO SUB-PAGES TEMPLATE
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -839,11 +839,15 @@ for row in pages:
 
     if category == "Transmission":
         primary_title = "Transmission Shift Recovery & Gear Drop Calculator"
-        formula_text = "Overall Ratio = Transmission Ratio x Rear Gear Ratio<br>Shift Speed = (Shift RPM x Tire Diameter) / (Overall Ratio x 336)"
+        formula_text = "Overall Ratio = Transmission Ratio x Rear Gear Ratio<br>Shift Speed = (Shift RPM x Tire Diameter) / (Overall Ratio x 336)<br>RPM Drop = Shift RPM x (Next Gear Ratio / Current Gear Ratio)"
         faqs = """
             <div class="faq-item">
                 <h4>How is shift recovery RPM calculated?</h4>
                 <p>Shift recovery is determined by multiplying your shift RPM by the ratio of the upcoming higher gear divided by the current gear.</p>
+            </div>
+            <div class="faq-item" style="margin-top: 10px;">
+                <h4>Why is gear drop critical in drag racing?</h4>
+                <p>Keeping your engine operating inside its peak power band during shifts prevents RPM from falling below torque converter stall or power peak, maximizing acceleration.</p>
             </div>
         """
         primary_tool_html = f"""
@@ -1270,6 +1274,8 @@ for row in pages:
         base_html_template.replace("TARGET_KEYWORD", target_keyword)
             .replace("PRIMARY_TITLE", primary_title)
             .replace("PRIMARY_TOOL_HTML", primary_tool_html)
+            .replace("FORMULA_TEXT", formula_text)
+            .replace("FAQS_HTML", faqs)
             .replace("REPLACE_UTILITIES_GRID", utilities_grid_html)
             .replace("REPLACE_STICKY_AD", ad_block_html)
             .replace("REPLACE_TOP_AD", ad_block_html)
