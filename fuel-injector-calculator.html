@@ -58,11 +58,16 @@
                 <div class="master-header"><h1>Fuel Injector Flow Rate & Sizing Calculator</h1><p>Fuel Injector Flow Rate & Sizing Calculator &mdash; Track Tuning Engine</p></div>
                 
             <div class="grid-2">
-                <div><label>Target HP</label><input type="number" id="inj-hp" value="1200" step="50"></div>
-                <div><label>Injector Count</label><input type="number" id="inj-count" value="8" step="1"></div>
+                <div><label>Target Crank HP</label><input type="number" id="inj-hp" value="1200" step="50"></div>
+                <div><label>Number of Injectors</label><input type="number" id="inj-count" value="8" step="1"></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Fuel Type / BSFC</label><select id="inj-bsfc"><option value="0.50">Gasoline / Pump (BSFC 0.50)</option><option value="0.65" selected>E85 / Ethanol (BSFC 0.65)</option><option value="0.85">Methanol (BSFC 0.85)</option></select></div>
+                <div><label>Max Duty Cycle (%)</label><input type="number" id="inj-dc" value="85" step="1"></div>
             </div>
             <div class="results-box" id="inj-results">Adjust parameters above.</div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
+            <a href=https://www.pjtra.com/t/YOUR_IMPACT_ID_HERE?url=https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">⛽ Shop High-Flow Injectors &rarr;</button></a>
+            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">🖨️ Print / Save Track Sheet</button>
         
             </div>
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="#" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>
@@ -80,11 +85,15 @@
         function calcTool() {
             let hp = parseFloat(document.getElementById("inj-hp").value) || 1200;
             let count = parseInt(document.getElementById("inj-count").value) || 8;
-            let totalLbHr = (hp * 0.65) / 0.85;
-            let perInjCc = (totalLbHr / count) * 10.5;
-            document.getElementById("inj-results").innerHTML = "Per-Injector Flow: <strong>" + Math.round(perInjCc) + " cc/min</strong>";
+            let bsfc = parseFloat(document.getElementById("inj-bsfc").value) || 0.65;
+            let dc = (parseFloat(document.getElementById("inj-dc").value) || 85) / 100.0;
+            let totalLbHr = (hp * bsfc) / dc;
+            let perInjLb = totalLbHr / count;
+            let perInjCc = perInjLb * 10.5;
+            let totalCc = perInjCc * count;
+            document.getElementById("inj-results").innerHTML = "Required Per-Injector Flow: <strong>" + Math.round(perInjCc) + " cc/min (" + perInjLb.toFixed(1) + " lb/hr)</strong> | Total System: <strong>" + Math.round(totalCc) + " cc/min</strong>";
         }
-        ["inj-hp", "inj-count"].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener("input", calcTool); });
+        ["inj-hp", "inj-count", "inj-bsfc", "inj-dc"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
         calcTool();
         </script>
 </body>

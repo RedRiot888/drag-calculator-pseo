@@ -68,7 +68,7 @@ if os.path.exists("index_template.html"):
         f.write(master_index_html)
     print("Successfully built index.html!")
 
-# 4. Build individual PSEO calculator pages with full interactive tools
+# 4. Build individual PSEO calculator pages with full rich interactive tools
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -142,7 +142,7 @@ for row in pages:
     tire = row["tire_diameter"]
 
     if category == "Transmission":
-        primary_title = "Transmission Shift Recovery & Gear Drop Calculator"
+        primary_title = "Transmission Shift Recovery Calculator"
         formula_text = "Overall Ratio = Trans Ratio x Rear Gear | Shift Speed = (RPM * Tire) / (Overall * 336)"
         primary_tool_html = """
             <div class="grid-2">
@@ -154,16 +154,10 @@ for row in pages:
                             <option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
                             <option value="4l60e">4L60e (3.06 / 1.62 / 1.00 / 0.70)</option>
                             <option value="6l80">6L80 (4.03 / 2.36 / 1.53 / 1.15 / 0.85 / 0.67)</option>
-                            <option value="8l90">8L90 (4.56 / 2.97 / 2.08 / 1.69 / 1.27 / 1.00)</option>
                         </optgroup>
                         <optgroup label="Ford Automatic">
                             <option value="c4_c6">Ford C4 / C6 (2.46 / 1.46 / 1.00)</option>
                             <option value="aod">AOD (2.40 / 1.47 / 1.00 / 0.67)</option>
-                            <option value="4r70w">4R70W (2.84 / 1.55 / 1.00 / 0.70)</option>
-                        </optgroup>
-                        <optgroup label="Manuals">
-                            <option value="t56">T56 / TR-6060 (2.66 / 1.78 / 1.30 / 1.00 / 0.74 / 0.50)</option>
-                            <option value="tremec_tkx">Tremec TKX (2.87 / 1.89 / 1.28 / 1.00 / 0.68)</option>
                         </optgroup>
                     </select>
                 </div>
@@ -181,19 +175,7 @@ for row in pages:
             </table>
         """
         tool_script = """
-        const ratios = { 
-            powerglide: [1.76, 1.00], 
-            th350: [2.52, 1.52, 1.00], 
-            th400: [2.48, 1.48, 1.00], 
-            "4l60e": [3.06, 1.62, 1.00, 0.70], 
-            "6l80": [4.03, 2.36, 1.53, 1.15, 0.85, 0.67],
-            "8l90": [4.56, 2.97, 2.08, 1.69, 1.27, 1.00],
-            c4_c6: [2.46, 1.46, 1.00], 
-            aod: [2.40, 1.47, 1.00, 0.67],
-            "4r70w": [2.84, 1.55, 1.00, 0.70],
-            t56: [2.66, 1.78, 1.30, 1.00, 0.74, 0.50],
-            tremec_tkx: [2.87, 1.89, 1.28, 1.00, 0.68]
-        };
+        const ratios = { powerglide: [1.76, 1.00], th350: [2.52, 1.52, 1.00], th400: [2.48, 1.48, 1.00], "4l60e": [3.06, 1.62, 1.00, 0.70], "6l80": [4.03, 2.36, 1.53, 1.15, 0.85, 0.67], c4_c6: [2.46, 1.46, 1.00], aod: [2.40, 1.47, 1.00, 0.67] };
         function calcTool() {
             let tKey = document.getElementById("trans").value;
             let rat = ratios[tKey] || [2.48, 1.48, 1.00];
@@ -222,54 +204,85 @@ for row in pages:
         formula_text = "Required Airflow (lb/min) = (Target HP x BSFC) / 6.0 | Pressure Ratio = (Boost + 14.7) / 14.7"
         primary_tool_html = """
             <div class="grid-2">
-                <div><label>Engine Disp (L)</label><input type="number" id="disp" value="5.3" step="0.1"></div>
+                <div><label>Engine Displacement (L)</label><input type="number" id="disp" value="5.7" step="0.1"></div>
                 <div><label>Target Flywheel HP</label><input type="number" id="hp" value="1000" step="50"></div>
             </div>
             <div class="grid-2">
+                <div><label>Max Boost RPM</label><input type="number" id="rpm" value="7000" step="100"></div>
                 <div><label>Target Boost (PSI)</label><input type="number" id="boost" value="22" step="1"></div>
-                <div><label>Turbo Count</label><select id="turbos"><option value="1">Single Turbo</option><option value="2">Twin Turbo</option></select></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Fuel BSFC</label><select id="bsfc"><option value="0.50">Pump Gas / Methanol (0.50)</option><option value="0.60" selected>Gasoline (0.60)</option><option value="0.70">E85 / Alcohol (0.70)</option></select></div>
+                <div><label>Turbo Count</label><select id="turbos"><option value="1" selected>Single</option><option value="2">Twin</option></select></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
             <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px;">
-                <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Recommended Turbo Match</div>
+                <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Recommended Specific Turbo Match</div>
                 <div id="turbo-rec" style="font-size: 0.78rem; color: var(--text-main); margin-top: 4px;">Calculating...</div>
             </div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
+            <a href=""" + AFFILIATE_TRACKING_URL + """https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">🛒 Buy Now at Summit Racing &rarr;</button></a>
+            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">🖨️ Print / Save Track Sheet</button>
         """
         tool_script = """
         function calcTool() {
             let hp = parseFloat(document.getElementById("hp").value) || 1000;
             let boost = parseFloat(document.getElementById("boost").value) || 22;
+            let bsfc = parseFloat(document.getElementById("bsfc").value) || 0.60;
             let count = parseInt(document.getElementById("turbos").value) || 1;
-            let airflow = (hp * 0.85) / 6.0;
+            let airflow = (hp * bsfc) / 6.0;
             let perTurbo = airflow / count;
             let pr = (boost + 14.7) / 14.7;
-            document.getElementById("results").innerHTML = "Total Airflow: <strong>" + airflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) | PR: <strong>" + pr.toFixed(2) + ":1</strong>";
-            let rec = perTurbo > 75 ? "7675 Gen II Ball Bearing (1.10 A/R T4)" : "67mm High Flow V-Band Turbo";
-            document.getElementById("turbo-rec").innerHTML = "Rec. Unit: <strong>" + rec + "</strong>";
+            document.getElementById("results").innerHTML = "Required Airflow: <strong>" + airflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
+            let rec = perTurbo > 75 ? "Precision Turbo Pro Mod Series &mdash; PM88 / 88mm CEA Turbine | A/R: 1.28 T6" : "7675 Gen II CEA Turbo | A/R: 0.96 T4";
+            document.getElementById("turbo-rec").innerHTML = "<strong>Configuration:</strong> " + (count===1?"Single Turbo Setup":"Twin Turbo Setup") + "<br><strong>Model:</strong> " + rec;
         }
-        ["disp", "hp", "boost", "turbos"].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener("input", calcTool); });
+        ["disp", "hp", "rpm", "boost", "bsfc", "turbos"].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); });
         calcTool();
         """
     elif category == "Exhaust":
         primary_title = "Exhaust Primary & Turbo Downpipe Sizing Calculator"
-        formula_text = "NA Header Primary = (Displacement x RPM) / (Cylinder Count x Constant)"
+        formula_text = "NA Header Primary = (Displacement x RPM) / (Cylinder Count x Constant) | Downpipe Sized by Total HP"
         primary_tool_html = """
             <div class="grid-2">
-                <div><label>Engine Type</label><select id="ex-type"><option value="na">Naturally Aspirated</option><option value="turbo" selected>Turbocharged</option></select></div>
-                <div><label>Target HP</label><input type="number" id="ex-hp" value="850" step="50"></div>
+                <div><label>Engine Induction Type</label><select id="ex-type"><option value="na">Naturally Aspirated (Header Primary)</option><option value="turbo" selected>Turbocharged (Downpipe & Exhaust)</option></select></div>
+                <div><label>Target Flywheel HP</label><input type="number" id="ex-hp" value="850" step="50"></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Displacement (Cubic Inches)</label><input type="number" id="ex-disp" value="427" step="5"></div>
+                <div><label>Peak Horsepower RPM</label><input type="number" id="ex-rpm" value="7200" step="100"></div>
             </div>
             <div class="results-box" id="ex-results">Adjust parameters above.</div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
+            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px;">
+                <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Recommended Fabrication & Tubing Kit</div>
+                <div id="ex-rec" style="font-size: 0.78rem; color: var(--text-main); margin-top: 4px;">Loading specifications...</div>
+            </div>
+            <a href=""" + AFFILIATE_TRACKING_URL + """https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">🔥 Explore Tubing & TIG Weld Supplies &rarr;</button></a>
+            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">🖨️ Print / Save Track Sheet</button>
         """
         tool_script = """
         function calcTool() {
             let hp = parseFloat(document.getElementById("ex-hp").value) || 850;
             let type = document.getElementById("ex-type").value;
-            let dia = type === "na" ? "1-3/4 to 1-7/8 inches Primary OD" : "3.5 to 4.0 inch Downpipe";
-            document.getElementById("ex-results").innerHTML = "Recommended Sizing: <strong>" + dia + "</strong> for " + hp + " HP";
+            let disp = parseFloat(document.getElementById("ex-disp").value) || 427;
+            let rpm = parseFloat(document.getElementById("ex-rpm").value) || 7200;
+            if(type === "na") {
+                let primaryDia = ((disp * rpm) / (8 * 85000)).toFixed(2);
+                document.getElementById("ex-results").innerHTML = "Rec. Header Primary OD: <strong>" + primaryDivVal(primaryDia) + " inches</strong>";
+                document.getElementById("ex-rec").innerHTML = "<strong>Kit Spec:</strong> 304 Stainless Steel U-Bends & Flanges (16-gauge)";
+            } else {
+                let dp = hp > 1000 ? "4.0 to 5.0 inch Turbo Downpipe" : "3.5 to 4.0 inch V-Band Downpipe";
+                document.getElementById("ex-results").innerHTML = "Rec. Turbo Downpipe: <strong>" + dp + "</strong> for " + hp + " HP";
+                document.getElementById("ex-rec").innerHTML = "<strong>Fabrication Kit:</strong> 3.5\"/4.0\" 304SS Mandrel Bends & Stainless V-Band Flange Assembly";
+            }
         }
-        ["ex-type", "ex-hp"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
+        function primaryDivVal(val) {
+            let num = parseFloat(val);
+            if(num < 1.7) return "1-5/8";
+            if(num < 1.85) return "1-3/4";
+            if(num < 2.0) return "1-7/8";
+            return "2-1/8";
+        }
+        ["ex-type", "ex-hp", "ex-disp", "ex-rpm"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
         calcTool();
         """
     elif category == "Fuel":
@@ -277,63 +290,86 @@ for row in pages:
         formula_text = "Required Flow (cc/min) = (Target HP x BSFC) / (# Injectors x Duty Cycle)"
         primary_tool_html = """
             <div class="grid-2">
-                <div><label>Target HP</label><input type="number" id="inj-hp" value="1200" step="50"></div>
-                <div><label>Injector Count</label><input type="number" id="inj-count" value="8" step="1"></div>
+                <div><label>Target Crank HP</label><input type="number" id="inj-hp" value="1200" step="50"></div>
+                <div><label>Number of Injectors</label><input type="number" id="inj-count" value="8" step="1"></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Fuel Type / BSFC</label><select id="inj-bsfc"><option value="0.50">Gasoline / Pump (BSFC 0.50)</option><option value="0.65" selected>E85 / Ethanol (BSFC 0.65)</option><option value="0.85">Methanol (BSFC 0.85)</option></select></div>
+                <div><label>Max Duty Cycle (%)</label><input type="number" id="inj-dc" value="85" step="1"></div>
             </div>
             <div class="results-box" id="inj-results">Adjust parameters above.</div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
+            <a href=""" + AFFILIATE_TRACKING_URL + """https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">⛽ Shop High-Flow Injectors &rarr;</button></a>
+            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">🖨️ Print / Save Track Sheet</button>
         """
         tool_script = """
         function calcTool() {
             let hp = parseFloat(document.getElementById("inj-hp").value) || 1200;
             let count = parseInt(document.getElementById("inj-count").value) || 8;
-            let totalLbHr = (hp * 0.65) / 0.85;
-            let perInjCc = (totalLbHr / count) * 10.5;
-            document.getElementById("inj-results").innerHTML = "Per-Injector Flow: <strong>" + Math.round(perInjCc) + " cc/min</strong>";
+            let bsfc = parseFloat(document.getElementById("inj-bsfc").value) || 0.65;
+            let dc = (parseFloat(document.getElementById("inj-dc").value) || 85) / 100.0;
+            let totalLbHr = (hp * bsfc) / dc;
+            let perInjLb = totalLbHr / count;
+            let perInjCc = perInjLb * 10.5;
+            let totalCc = perInjCc * count;
+            document.getElementById("inj-results").innerHTML = "Required Per-Injector Flow: <strong>" + Math.round(perInjCc) + " cc/min (" + perInjLb.toFixed(1) + " lb/hr)</strong> | Total System: <strong>" + Math.round(totalCc) + " cc/min</strong>";
         }
-        ["inj-hp", "inj-count"].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener("input", calcTool); });
+        ["inj-hp", "inj-count", "inj-bsfc", "inj-dc"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
         calcTool();
         """
     elif category == "Tire":
         primary_title = "Tire Diameter Growth & Rollout Drag Calculator"
-        formula_text = "Dynamic Diameter = Static Diameter x (1 + (Growth % / 100))"
+        formula_text = "Dynamic Rollout = Static Diameter x Pi | Growth Rate = Static Dia * (1 + (Speed Factor))"
         primary_tool_html = """
             <div class="grid-2">
-                <div><label>Static Tire Dia (in)</label><input type="number" id="static-dia" value="28.0" step="0.1"></div>
-                <div><label>Trap Speed (MPH)</label><input type="number" id="trap-speed" value="150" step="1"></div>
+                <div><label>Static Tire Diameter (in)</label><input type="number" id="static-dia" value="28.0" step="0.1"></div>
+                <div><label>Target Trap Speed (MPH)</label><input type="number" id="trap-speed" value="150" step="1"></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
+            <a href=""" + AFFILIATE_TRACKING_URL + """https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">🛞 Shop Mickey Thompson Slicks &rarr;</button></a>
+            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">🖨️ Print / Save Track Sheet</button>
         """
         tool_script = """
         function calcTool() {
             let staticDia = parseFloat(document.getElementById("static-dia").value) || 28;
+            let trap = parseFloat(document.getElementById("trap-speed").value) || 150;
             let rollout = (staticDia * Math.PI).toFixed(1);
-            document.getElementById("results").innerHTML = "Static Rollout: <strong>" + rollout + " inches</strong>";
+            let growth = (staticDia * (1 + (trap / 3000))).toFixed(2);
+            let dynRollout = (growth * Math.PI).toFixed(1);
+            document.getElementById("results").innerHTML = "Static Rollout: <strong>" + rollout + " in</strong> | Dynamic Growth @ " + trap + " MPH: <strong>" + growth + " in (" + dynRollout + " in rollout)</strong>";
         }
-        let el = document.getElementById("static-dia"); if(el) el.addEventListener("input", calcTool);
-        let el2 = document.getElementById("trap-speed"); if(el2) el2.addEventListener("input", calcTool);
+        ["static-dia", "trap-speed"].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener("input", calcTool); });
         calcTool();
         """
     elif category == "Electrical":
         primary_title = "Automotive Relay & Circuit Sizing Calculator"
-        formula_text = "Amps = Watts / Volts | Fuse = Amps x 1.25"
+        formula_text = "Amps = Watts / Volts | Fuse Size = Amps x 1.25 (25% safety margin)"
         primary_tool_html = """
             <div class="grid-2">
-                <div><label>Accessory Draw (Amps)</label><input type="number" id="relay-amps" value="20" step="1"></div>
-                <div><label>Wire Length (ft)</label><input type="number" id="relay-ft" value="10" step="1"></div>
+                <div><label>Accessory Power Draw (Amps)</label><input type="number" id="relay-amps" value="20" step="1"></div>
+                <div><label>System Voltage</label><select id="relay-volts"><option value="12" selected>12V Standard</option><option value="16">16V Race Battery</option></select></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Wire Run Length (One Way, Ft)</label><input type="number" id="relay-ft" value="10" step="1"></div>
+                <div><label>Accessory Type</label><select id="relay-type"><option value="custom">Custom Amperage</option><option value="fuel_pump">Electric Fuel Pump (15A)</option><option value="water_pump">Electric Water Pump (10A)</option><option value="fan">Dual Cooling Fans (30A)</option></select></div>
             </div>
             <div class="results-box" id="relay-results">Adjust parameters above.</div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
+            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px;">
+                <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Recommended Relay & Wiring Kit</div>
+                <div id="relay-kit" style="font-size: 0.78rem; color: var(--text-main); margin-top: 4px;">Loading kit spec...</div>
+            </div>
+            <a href=""" + AFFILIATE_TRACKING_URL + """https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">⚡ Buy Now at Jegs / Summit &rarr;</button></a>
+            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">🖨️ Print / Save Track Sheet</button>
         """
         tool_script = """
         function calcTool() {
             let amps = parseFloat(document.getElementById("relay-amps").value) || 20;
+            let ft = parseFloat(document.getElementById("relay-ft").value) || 10;
             let fuse = Math.ceil(amps * 1.25 / 5) * 5;
-            document.getElementById("relay-results").innerHTML = "Rec. Fuse: <strong>" + fuse + " Amps</strong> | Relay: <strong>Standard 40A Bosch</strong>";
+            let gauge = amps > 30 ? "10 AWG" : (amps > 15 ? "12 AWG" : "14 AWG");
+            document.getElementById("relay-results").innerHTML = "Rec. Fuse Size: <strong>" + fuse + " Amps</strong> | Rec. Wire Gauge: <strong>" + gauge + "</strong><br><span style='font-size:0.7rem; color:var(--text-muted);'>Pinout: Pin 30 (Bat+), Pin 85 (Gnd), Pin 86 (Trigger), Pin 87 (Out)</span>";
+            document.getElementById("relay-kit").innerHTML = "<strong>Relay Needed:</strong> Standard Bosch 40A Weatherproof Relay<br><strong>Wire & Fuse Kit:</strong> " + gauge + " Copper Wire with In-line Waterproof Fuse Holder<br><strong>Kit Price:</strong> $24.99";
         }
-        let el = document.getElementById("relay-amps"); if(el) el.addEventListener("input", calcTool);
-        let el2 = document.getElementById("relay-ft"); if(el2) el2.addEventListener("input", calcTool);
+        ["relay-amps", "relay-volts", "relay-ft", "relay-type"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
         calcTool();
         """
     else:
@@ -344,6 +380,7 @@ for row in pages:
                 <div><label>Parameter Value</label><input type="number" id="val1" value="100" step="1"></div>
             </div>
             <div class="results-box" id="res">Calculated successfully.</div>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Track Sheet</button>
         """
         tool_script = """
         function calcTool() {
@@ -373,4 +410,4 @@ for row in pages:
     with open(os.path.join(output_dir, f"{slug}.html"), "w", encoding="utf-8") as out_f:
         out_f.write(page_html)
 
-print("Successfully built all fully restored pages and verification files!")
+print("Successfully built all fully restored rich pages and verification files!")
