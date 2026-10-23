@@ -391,4 +391,24 @@ for row in pages:
     with open(os.path.join(output_dir, f"{slug}.html"), "w", encoding="utf-8") as out_f:
         out_f.write(page_html)
 
-print("Successfully built turbo calculator with Displacement-per-Cylinder Spool Analysis!")
+print("Successfully built turbo calculator with Displacement-per-Cylinder Spool Analysis!")# 5. Automatically generate sitemap.xml for Google Search Console
+sitemap_content = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://dragcalculators.com/index.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+"""
+for row in pages:
+    sitemap_content += f"""    <url>
+        <loc>https://dragcalculators.com/{row["slug"]}.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+"""
+sitemap_content += "</urlset>"
+
+with open(os.path.join(output_dir, "sitemap.xml"), "w", encoding="utf-8") as f:
+    f.write(sitemap_content)
+print("Successfully generated sitemap.xml!")
