@@ -5,375 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tire Diameter Growth & Rollout Drag Calculator | Ultimate Drag Racing Master Suite</title>
         <meta name='impact-site-verification' value='b2bb3042-cfc7-4ed4-b783-57a9b5a6451f'>
+    <meta name='google-site-verification' content='google9e7c88791a3f2f72'>
     <style>
         :root {
             --bg-dark: #0f1015;
             --card-bg: #181a20;
             --accent-red: #ff1e27;
-            --accent-glow: rgba(255, 30, 39, 0.25);
             --text-main: #f8f9fa;
             --text-muted: #9ca3af;
             --border-color: #2d3139;
             --input-bg: #21242c;
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.5;
-        }
-        .layout-grid {
-            max-width: 1350px;
-            margin: 20px auto;
-            display: grid;
-            grid-template-columns: 240px 480px 1fr;
-            gap: 25px;
-            align-items: start;
-        }
-        .nexus-sidebar {
-            position: sticky;
-            top: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .sticky-calculator {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        @media (max-width: 1100px) {
-            .layout-grid { grid-template-columns: 1fr; }
-            .nexus-sidebar { position: static; max-height: none; }
-        }
-        .content-column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .content-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 25px;
-        }
-        .content-box h3 {
-            color: var(--accent-red);
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            margin-top: 0;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-        }
-        .master-header {
-            text-align: center;
-            margin-bottom: 5px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-        }
-        .master-header h1 {
-            color: var(--accent-red);
-            font-size: 1.3rem;
-            text-transform: uppercase;
-            margin: 0 0 3px 0;
-        }
-        .master-header p {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin: 0;
-        }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-        label {
-            display: block;
-            margin-bottom: 2px;
-            font-weight: 600;
-            font-size: 0.72rem;
-            color: var(--text-muted);
-        }
-        input, select {
-            width: 100%;
-            padding: 7px 9px;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 0.82rem;
-        }
-        optgroup { color: var(--accent-red); font-weight: bold; }
-        option { color: var(--text-main); background: var(--input-bg); }
-        .results-box {
-            margin-top: 10px;
-            background: #121418;
-            border: 1px solid var(--border-color);
-            border-left: 4px solid var(--accent-red);
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.82rem;
-        }
-        .action-btn {
-            width: 100%;
-            margin-top: 10px;
-            background: var(--accent-red);
-            color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.75rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 20px; line-height: 1.5; }
+        .layout-grid { max-width: 1350px; margin: 20px auto; display: grid; grid-template-columns: 240px 480px 1fr; gap: 25px; align-items: start; }
+        .nexus-sidebar { position: sticky; top: 20px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; }
+        .sticky-calculator { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 15px; }
+        .content-column { display: flex; flex-direction: column; gap: 20px; }
+        .content-box { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; }
+        .content-box h3 { color: var(--accent-red); font-size: 0.95rem; text-transform: uppercase; margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+        .master-header { text-align: center; margin-bottom: 5px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+        .master-header h1 { color: var(--accent-red); font-size: 1.3rem; text-transform: uppercase; margin: 0 0 3px 0; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+        label { display: block; margin-bottom: 2px; font-weight: 600; font-size: 0.72rem; color: var(--text-muted); }
+        input, select { width: 100%; padding: 7px 9px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; box-sizing: border-box; font-size: 0.82rem; }
+        .results-box { margin-top: 10px; background: #121418; border: 1px solid var(--border-color); border-left: 4px solid var(--accent-red); padding: 10px; border-radius: 6px; font-size: 0.82rem; }
+        .action-btn { width: 100%; margin-top: 10px; background: var(--accent-red); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
         .action-btn:hover { background: #e0161f; }
-        .formula-content {
-            font-family: monospace;
-            color: #10b981;
-            font-size: 0.85rem;
-            background: var(--input-bg);
-            padding: 10px;
-            border-radius: 6px;
-        }
-        .faq-item { margin-bottom: 12px; }
-        .faq-item h4 { margin: 0 0 3px 0; font-size: 0.85rem; color: var(--text-main); }
-        .faq-item p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
-        table {
-            width: 100%;
-            margin-top: 12px;
-            border-collapse: collapse;
-            background: #121418;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 5px 4px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-            font-size: 0.72rem;
-        }
-        th {
-            background: #1f232b;
-            color: var(--accent-red);
-            text-transform: uppercase;
-            font-size: 0.62rem;
-        }
-        .back-link {
-            display: inline-block;
-            margin-bottom: 15px;
-            color: var(--accent-red);
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.85rem;
-        }
-        .back-link:hover { text-decoration: underline; }
-        .nav-item:hover {
-            background: var(--input-bg) !important;
-            color: var(--text-main) !important;
-            border-left-color: var(--accent-red) !important;
-        }
-        @media print {
-            body { background: white; color: black; padding: 0; }
-            .nexus-sidebar, .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
-            .content-column, .back-link, .action-btn, footer { display: none; }
-            input, select { border: 1px solid #ccc; background: white; color: black; }
-        }
+        table { width: 100%; margin-top: 12px; border-collapse: collapse; background: #121418; border-radius: 6px; overflow: hidden; }
+        th, td { padding: 5px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
+        th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
+        .back-link { display: inline-block; margin-bottom: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
     </style>
 </head>
 <body>
-    <div style="max-width: 1350px; margin: 0 auto;">
-        <a href="index.html" class="back-link">&larr; Back to Master Hub</a>
-    </div>
-
+    <div style="max-width: 1350px; margin: 0 auto;"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
     <div class="layout-grid">
         <div class="nexus-sidebar">
-            
 <div style="display: flex; flex-direction: column; gap: 4px;">
-    <a href="index.html" class="nav-item active" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--input-bg); border-left: 3px solid var(--accent-red); color: var(--text-main); text-decoration: none; border-radius: 4px; font-size: 0.78rem; font-weight: 600;">
-        <span>🏁 Popular / Master Hub</span>
-        <span style="font-size: 0.65rem; color: var(--text-muted);">ALL</span>
-    </a>
-    <a href="transmission-shift-recovery-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
-        <span>🏎️ Transmission & Gearing</span>
-    </a>
-    <a href="turbo-sizing-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
-        <span>🌀 Forced Induction / Turbo</span>
-    </a>
-    <a href="exhaust-header-sizing-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
-        <span>🔥 Exhaust & Airflow</span>
-    </a>
-    <a href="fuel-injector-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
-        <span>⛽ Fueling & EFI</span>
-    </a>
-    <a href="tire-growth-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
-        <span>🛞 Chassis & Tires</span>
-    </a>
-    <a href="automotive-relay-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
-        <span>⚡ Electrical & Wiring</span>
-    </a>
+    <a href="index.html" class="nav-item active" style="padding: 8px 10px; background: var(--input-bg); border-left: 3px solid var(--accent-red); color: var(--text-main); text-decoration: none; border-radius: 4px; font-size: 0.78rem; font-weight: 600;">🏁 Popular / Master Hub</a>
+    <a href="transmission-shift-recovery-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">🏎️ Transmission & Gearing</a>
+    <a href="turbo-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">🌀 Forced Induction / Turbo</a>
+    <a href="exhaust-header-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">🔥 Exhaust & Airflow</a>
+    <a href="fuel-injector-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">⛽ Fueling & EFI</a>
+    <a href="tire-growth-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">🛞 Chassis & Tires</a>
+    <a href="automotive-relay-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">⚡ Electrical & Wiring</a>
 </div>
-
-        </div>
-
+</div>
         <div class="sticky-calculator">
             <div>
-                <div class="master-header">
-                    <h1>Tire Diameter Growth & Rollout Drag Calculator</h1>
-                    <p>Tire Diameter Growth & Rollout Drag Calculator &mdash; Track Tuning Engine</p>
-                </div>
+                <div class="master-header"><h1>Tire Diameter Growth & Rollout Drag Calculator</h1><p>Tire Diameter Growth & Rollout Drag Calculator &mdash; Track Tuning Engine</p></div>
                 
             <div class="grid-2">
-                <div><label>Static Tire Dia (in)</label><input type="number" id="static-dia" value="28.0" step="0.1"></div>
-                <div><label>Trap Speed (MPH)</label><input type="number" id="trap-speed" value="150" step="1"></div>
+                <div><label>Primary Value</label><input type="number" id="val1" value="100" step="1"></div>
             </div>
-            <div class="grid-2">
-                <div><label>Growth Factor (%)</label><input type="number" id="growth-fac" value="4.5" step="0.1"></div>
-                <div><label>Rear Gear Ratio</label><input type="number" id="rear-gear" value="3.42" step="0.01"></div>
-            </div>
-            <div class="results-box" id="results">Adjust parameters above.</div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
+            <div class="results-box" id="res">Calculated successfully.</div>
         
             </div>
-            
-            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
-                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">
-                    Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a>
-                </div>
-            </div>
-
+            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted);">Advertisement Space</h3></div>
         </div>
-
         <div class="content-column">
-            
-            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
-                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">
-                    Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a>
-                </div>
-            </div>
-
-            
-            <div class="content-box">
-                <h3>Track-Side Tuning Cheat Sheets</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Essential round-by-round reference guides for the trailer:</p>
-                
-                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">1. Density Altitude (DA) & Weather</strong>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Every 1,000 ft increase in DA costs naturally aspirated engines ~3% horsepower. Forced induction setups compensate better via wastegate control, but watch inlet air temps.</p>
-                </div>
-
-                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">2. Torque Converter Slip</strong>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Target 5% to 8% slip at the finish line for max efficiency. Excessive slip generates transmission heat and kills trap speed; too tight kills 60-foot times.</p>
-                </div>
-
-                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">3. Boost & Nitro Management</strong>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Read spark plug ground straps for heat mark placement. Back off timing 1 to 2 degrees per additional 3-4 PSI of boost or when stepping up nitrous jetting.</p>
-                </div>
-
-                <div>
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">4. 4-Link Anti-Squat & Launch</strong>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">If the car bounces or unloads the tires immediately on launch, lower the instantaneous center (IC) or soften rear shock extension.</p>
-                </div>
-            </div>
-
-            <div class="content-box">
-                <h3>Formula Breakdown</h3>
-                <div class="formula-content">Dynamic Diameter = Static Diameter x (1 + (Growth % / 100))</div>
-            </div>
-            <div class="content-box">
-                <h3>Frequently Asked Questions</h3>
-                <div class="faq-item"><h4>Why do tires grow?</h4><p>Centrifugal force expands the tire at speed.</p></div>
-            </div>
-            
-            <div class="content-box">
-                <h3 style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>Industry Standard References</span>
-                    <span style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted); text-transform: none;">Gold-Standard Tech</span>
-                </h3>
-                <ul class="sponsor-list" style="list-style: none; padding: 0; margin: 0 0 15px 0; font-size: 0.85rem; color: var(--text-muted);">
-                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                        <span style="color: var(--text-main); font-weight: 600;">Precision Turbo & Engine</span>
-                        <span style="font-size: 0.75rem; color: #10b981;">Verified Match</span>
-                    </li>
-                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                        <span style="color: var(--text-main); font-weight: 600;">Strange Engineering</span>
-                        <span style="font-size: 0.75rem; color: #10b981;">Drivetrain Spec</span>
-                    </li>
-                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                        <span style="color: var(--text-main); font-weight: 600;">ATI Performance Products</span>
-                        <span style="font-size: 0.75rem; color: #10b981;">Transmission Tech</span>
-                    </li>
-                    <li style="padding: 8px 0; display: flex; justify-content: space-between; align-items: center;">
-                        <span style="color: var(--text-main); font-weight: 600;">Mickey Thompson Tires</span>
-                        <span style="font-size: 0.75rem; color: #10b981;">Rollout Standard</span>
-                    </li>
-                </ul>
-                <div style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); margin-bottom: 4px;">Are you a performance manufacturer?</div>
-                    <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0 0 8px 0;">Put your parts and banner in front of thousands of active racers daily.</p>
-                    <a href="contact.html" style="display: inline-block; background: var(--accent-red); color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.72rem; text-transform: uppercase;">Claim Sponsor Space &rarr;</a>
-                </div>
-            </div>
-
-            
-            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
-                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">
-                    Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a>
-                </div>
-            </div>
-
+            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted);">Advertisement Space</h3></div>
+            <div class="content-box"><h3>Track-Side Tuning</h3></div>
+            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Standard Automotive Calculation</div></div>
+            <div class="content-box"><h3>Industry Standards</h3></div>
+            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted);">Advertisement Space</h3></div>
         </div>
     </div>
-
-    
-    <footer style="max-width: 1400px; margin: 40px auto 20px auto; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px; font-size: 0.8rem; color: var(--text-muted);">
-        <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved. Professional Track Tuning & Engineering Tools.</p>
-        <p style="margin-top: 5px;">
-            <a href="contact.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px;">Contact & Sponsorships</a> | 
-            <a href="privacy.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px;">Privacy Policy & Affiliate Disclosure</a>
-        </p>
-        <p style="font-size: 0.72rem; color: #6b7280; margin-top: 8px;">Disclosure: We may earn an affiliate commission from qualifying purchases made through links on this site at no extra cost to you.</p>
-    </footer>
-
-
+    <footer style="text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.8rem;"><p>&copy; 2026 Drag Racing Suite</p></footer>
     <script>
-        
         function calcTool() {
-            let staticDia = parseFloat(document.getElementById("static-dia").value) || 28;
-            let trap = parseFloat(document.getElementById("trap-speed").value) || 150;
-            let growth = parseFloat(document.getElementById("growth-fac").value) || 4.5;
-            let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
-            let dynamicDia = staticDia * (1 + (growth / 100));
-            let staticRollout = (staticDia * Math.PI).toFixed(1);
-            let dynamicRollout = (dynamicDia * Math.PI).toFixed(1);
-            let estFinishRpm = Math.round((trap * gear * 336) / dynamicDia);
-            document.getElementById("results").innerHTML = "Static Rollout: <strong>" + staticRollout + " in</strong> | Dynamic Rollout: <strong>" + dynamicRollout + " in</strong> | Est. Finish RPM: <strong>" + estFinishRpm + " RPM</strong>";
+            let v = parseFloat(document.getElementById("val1").value) || 100;
+            document.getElementById("res").innerHTML = "Calculated Output: <strong>" + (v * 1.5).toFixed(1) + "</strong>";
         }
-        ["static-dia", "trap-speed", "growth-fac", "rear-gear"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
-        });
+        let el = document.getElementById("val1");
+        if(el) el.addEventListener("input", calcTool);
         calcTool();
-        
-    </script>
+        </script>
 </body>
 </html>

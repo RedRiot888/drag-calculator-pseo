@@ -141,6 +141,8 @@
             box-sizing: border-box;
             font-size: 0.82rem;
         }
+        optgroup { color: var(--accent-red); font-weight: bold; }
+        option { color: var(--text-main); background: var(--input-bg); }
         .results-box {
             margin-top: 10px;
             background: #121418;
@@ -221,6 +223,12 @@
                                     <option value="th400" selected>TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
                                     <option value="powerglide">Powerglide (1.76 / 1.00)</option>
                                     <option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
+                                    <option value="4l60e">4L60e (3.06 / 1.62 / 1.00 / 0.70)</option>
+                                    <option value="6l80">6L80 (4.03 / 2.36 / 1.53 / 1.15 / 0.85 / 0.67)</option>
+                                </optgroup>
+                                <optgroup label="Ford Automatic">
+                                    <option value="c4_c6">Ford C4 / C6 (2.46 / 1.46 / 1.00)</option>
+                                    <option value="aod">AOD (2.40 / 1.47 / 1.00 / 0.67)</option>
                                 </optgroup>
                             </select>
                         </div>
@@ -273,17 +281,45 @@
             document.getElementById('btn-suspension').classList.add('active');
             document.getElementById('btn-drivetrain').classList.remove('active');
         });
+
+        const ratios = { 
+            powerglide: [1.76, 1.00], 
+            th350: [2.52, 1.52, 1.00], 
+            th400: [2.48, 1.48, 1.00],
+            "4l60e": [3.06, 1.62, 1.00, 0.70],
+            "6l80": [4.03, 2.36, 1.53, 1.15, 0.85, 0.67],
+            c4_c6: [2.46, 1.46, 1.00],
+            aod: [2.40, 1.47, 1.00, 0.67]
+        };
+
         function calcAll() {
+            let tKey = document.getElementById("trans").value;
+            let rat = ratios[tKey] || [2.48, 1.48, 1.00];
             let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
             let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
             let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
             let wt = parseFloat(document.getElementById("veh-wt").value) || 3200;
             let hp = parseFloat(document.getElementById("veh-hp").value) || 1100;
+
+            let rollout = (tire * Math.PI).toFixed(1);
             let estEt = (5.825 * Math.pow(wt / hp, 0.333)).toFixed(2);
             let estTrap = (234 * Math.cbrt(hp / wt)).toFixed(1);
-            document.getElementById("results").innerHTML = "Est. 1/4 Mile ET: " + estEt + "s @ " + estTrap + " MPH";
+
+            document.getElementById("results").innerHTML = "Est. 1/4 Mile ET: " + estEt + "s @ " + estTrap + " MPH | Rollout: " + rollout + " in | 1st Gear: " + (rat[0]*gear).toFixed(2) + ":1";
+
+            let tbody = document.getElementById("gear-body");
+            if(tbody) {
+                tbody.innerHTML = "";
+                for(let i = 0; i < rat.length; i++) {
+                    let overall = rat[i] * gear;
+                    let speed = (rpm * tire) / (overall * 336);
+                    let trapRpm = Math.round((parseFloat(estTrap) * overall * 336) / tire);
+                    let drop = i < rat.length - 1 ? "Drop to " + Math.round(rpm * (rat[i+1] / rat[i])) + " RPM" : "Finish: " + trapRpm + " RPM";
+                    tbody.innerHTML += "<tr><td>Gear " + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.toFixed(1) + " MPH</td><td>" + drop + "</td></tr>";
+                }
+            }
         }
-        ["max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp"].forEach(id => {
+        ["trans", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp"].forEach(id => {
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcAll);
         });
