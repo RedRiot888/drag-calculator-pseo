@@ -63,8 +63,6 @@
                         <optgroup label="GM Automatic">
                             <option value="th400" selected>TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
                             <option value="powerglide">Powerglide (1.76 / 1.00)</option>
-                            <option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
-                            <option value="4l60e">4L60e (3.06 / 1.62 / 1.00 / 0.70)</option>
                         </optgroup>
                     </select>
                 </div>
@@ -94,7 +92,7 @@
     </div>
     <footer style="text-align: center; margin: 30px auto; color: var(--text-muted); font-size: 0.8rem;"><p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p></footer>
     <script>
-        const ratios = { powerglide: [1.76, 1.00], th350: [2.52, 1.52, 1.00], th400: [2.48, 1.48, 1.00], "4l60e": [3.06, 1.62, 1.00, 0.70] };
+        const ratios = { powerglide: [1.76, 1.00], th400: [2.48, 1.48, 1.00] };
         function calcTool() {
             let tKey = document.getElementById("trans").value;
             let rat = ratios[tKey] || [2.48, 1.48, 1.00];

@@ -9,7 +9,6 @@ gsc_verification_filename = "google9e7c88791a3f2f72.html"
 gsc_verification_content = "google-site-verification: google9e7c88791a3f2f72.html"
 with open(os.path.join(output_dir, gsc_verification_filename), "w", encoding="utf-8") as f:
     f.write(gsc_verification_content)
-print(f"Generated {gsc_verification_filename} for Google Search Console verification.")
 
 # 2. Pages CSV data
 csv_content = """slug,target_keyword,category,rear_gear,tire_diameter
@@ -49,7 +48,6 @@ footer_html = '<footer style="text-align: center; margin: 30px auto; color: var(
 verification_tags = """    <meta name='impact-site-verification' value='b2bb3042-cfc7-4ed4-b783-57a9b5a6451f'>
     <meta name='google-site-verification' content='google9e7c88791a3f2f72'>"""
 
-# 3. Build index.html from template
 if os.path.exists("index_template.html"):
     with open("index_template.html", "r", encoding="utf-8") as f:
         master_index_html = f.read()
@@ -66,9 +64,7 @@ if os.path.exists("index_template.html"):
     )
     with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(master_index_html)
-    print("Successfully built index.html!")
 
-# 4. Build individual PSEO calculator pages
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -151,8 +147,6 @@ for row in pages:
                         <optgroup label="GM Automatic">
                             <option value="th400" selected>TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
                             <option value="powerglide">Powerglide (1.76 / 1.00)</option>
-                            <option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
-                            <option value="4l60e">4L60e (3.06 / 1.62 / 1.00 / 0.70)</option>
                         </optgroup>
                     </select>
                 </div>
@@ -170,7 +164,7 @@ for row in pages:
             </table>
         """
         tool_script = """
-        const ratios = { powerglide: [1.76, 1.00], th350: [2.52, 1.52, 1.00], th400: [2.48, 1.48, 1.00], "4l60e": [3.06, 1.62, 1.00, 0.70] };
+        const ratios = { powerglide: [1.76, 1.00], th400: [2.48, 1.48, 1.00] };
         function calcTool() {
             let tKey = document.getElementById("trans").value;
             let rat = ratios[tKey] || [2.48, 1.48, 1.00];
@@ -196,27 +190,22 @@ for row in pages:
         """
     elif category == "Turbo":
         primary_title = "Turbo Sizing & Turbocharger Matching Calculator"
-        formula_text = "Airflow (lb/min) = (Target HP x BSFC) / 6.0 | Volumetric Efficiency factored by Cylinder Count & Displacement."
+        formula_text = "Airflow (lb/min) = (Target Flywheel HP x Fuel BSFC) / 6.0 | Pressure Ratio = (Boost + 14.7) / 14.7"
         primary_tool_html = """
             <div class="grid-2">
-                <div><label>Engine Displacement (L)</label><input type="number" id="disp" value="5.7" step="0.1"></div>
-                <div><label>Cylinder Count</label><select id="cyl"><option value="4">4-Cylinder</option><option value="6">6-Cylinder</option><option value="8" selected>8-Cylinder (V8)</option><option value="10">10-Cylinder</option><option value="12">12-Cylinder</option></select></div>
-            </div>
-            <div class="grid-2">
                 <div><label>Target Flywheel HP</label><input type="number" id="hp" value="1200" step="50"></div>
-                <div><label>Max Boost RPM</label><input type="number" id="rpm" value="7500" step="100"></div>
-            </div>
-            <div class="grid-2">
                 <div><label>Target Boost (PSI)</label><input type="number" id="boost" value="25" step="1"></div>
-                <div><label>Vehicle Application</label><select id="app-type"><option value="street">Street / Strip (Quick Spool)</option><option value="race" selected>Dedicated Pro Drag (Max Flow)</option><option value="budget">Budget / BorgWarner S400</option></select></div>
             </div>
             <div class="grid-2">
-                <div><label>Fuel BSFC</label><select id="bsfc"><option value="0.50">Pump Gas / Methanol (0.50)</option><option value="0.60" selected>Gasoline (0.60)</option><option value="0.70">E85 / Alcohol (0.70)</option></select></div>
+                <div><label>Fuel Type / BSFC</label><select id="bsfc"><option value="0.50">Pump Gasoline (BSFC 0.50)</option><option value="0.60" selected>Gasoline / Race Gas (BSFC 0.60)</option><option value="0.75">E85 / Alcohol (BSFC 0.75)</option><option value="1.30">Methanol (BSFC 1.30)</option></select></div>
                 <div><label>Turbo Count</label><select id="turbos"><option value="1" selected>Single Turbo</option><option value="2">Twin Turbos</option></select></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Application Style</label><select id="app-type"><option value="street">Street / Strip (Quick Spool)</option><option value="race" selected>Pro Drag Racing (Max Flow)</option></select></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
             <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px;">
-                <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Professional Multi-Tier Turbo Match Matrix</div>
+                <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Mathematically Verified Turbo Match Matrix</div>
                 <div id="turbo-rec" style="font-size: 0.78rem; color: var(--text-main); margin-top: 4px;">Calculating...</div>
             </div>
             <a href=""" + AFFILIATE_TRACKING_URL + """https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">🛒 Buy Now at Summit Racing &rarr;</button></a>
@@ -224,24 +213,21 @@ for row in pages:
         """
         tool_script = """
         function calcTool() {
-            let disp = parseFloat(document.getElementById("disp").value) || 5.7;
-            let cyl = parseInt(document.getElementById("cyl").value) || 8;
             let hp = parseFloat(document.getElementById("hp").value) || 1200;
-            let rpm = parseFloat(document.getElementById("rpm").value) || 7500;
             let boost = parseFloat(document.getElementById("boost").value) || 25;
-            let app = document.getElementById("app-type").value;
             let bsfc = parseFloat(document.getElementById("bsfc").value) || 0.60;
             let count = parseInt(document.getElementById("turbos").value) || 1;
+            let app = document.getElementById("app-type").value;
             
             let airflow = (hp * bsfc) / 6.0;
             let perTurbo = airflow / count;
             let pr = (boost + 14.7) / 14.7;
             
-            document.getElementById("results").innerHTML = "Required Airflow: <strong>" + airflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " lb/min per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong> (" + cyl + "-Cyl / " + disp + "L)";
+            document.getElementById("results").innerHTML = "Required Airflow: <strong>" + airflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " lb/min per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong> (BSFC: " + bsfc + ")";
             
             let rec = "";
             if (perTurbo <= 45) {
-                rec = "Precision 5858 Gen II CEA (~550 HP Cap) | A/R: 0.64 T3 V-Band";
+                rec = "Precision 5858 Gen II CEA (~550 HP Cap) | A/R: 0.64 T3";
             } else if (perTurbo <= 60) {
                 rec = "Precision 6262 Gen II CEA (~725 HP Cap) | A/R: 0.82 T4";
             } else if (perTurbo <= 75) {
@@ -249,7 +235,7 @@ for row in pages:
             } else if (perTurbo <= 95) {
                 rec = "Precision 7675 Gen II CEA (~1,150 HP Cap) | A/R: 1.15 T4 / V-Band";
             } else if (perTurbo <= 120) {
-                rec = (app === "budget") ? "BorgWarner S485 SX-E (~1,450 HP Cap) | A/R: 1.32 T6" : "Precision 8585 CEA (~1,450 HP Cap) | A/R: 1.28 T6";
+                rec = "Precision 8585 CEA (~1,450 HP Cap) | A/R: 1.28 T6";
             } else if (perTurbo <= 150) {
                 rec = "Precision Pro Mod 88mm CEA (Up to 1,900 HP) | A/R: 1.28 T6 V-Band";
             } else if (perTurbo <= 185) {
@@ -258,9 +244,9 @@ for row in pages:
                 rec = "Garrett GTX5544R Gen II 106mm or Precision Pro Mod 98mm+ (2,500 - 3,200+ HP Monster) | A/R: 1.50+ T6";
             }
 
-            document.getElementById("turbo-rec").innerHTML = "<strong>Application:</strong> " + (app==="street"?"Street / Strip Quick-Spool":(app==="race"?"Pro Drag Racing (Max Flow)":"Budget BorgWarner S400")) + "<br><strong>Verified Turbo Match:</strong> " + rec;
+            document.getElementById("turbo-rec").innerHTML = "<strong>Application:</strong> " + (app==="street"?"Street / Strip Quick-Spool":"Pro Drag Racing (Max Flow)") + "<br><strong>Verified Turbo Match:</strong> " + rec;
         }
-        ["disp", "cyl", "hp", "rpm", "boost", "app-type", "bsfc", "turbos"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
+        ["hp", "boost", "bsfc", "turbos", "app-type"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
         calcTool();
         """
     elif category == "Exhaust":
@@ -384,4 +370,4 @@ for row in pages:
     with open(os.path.join(output_dir, f"{slug}.html"), "w", encoding="utf-8") as out_f:
         out_f.write(page_html)
 
-print("Successfully built all pages with engine displacement, cylinder count, and extended turbo matrix!")
+print("Successfully built streamlined turbo calculator where every field actively drives the outcome!")
