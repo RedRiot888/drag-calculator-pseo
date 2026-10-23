@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact & Track Sponsorships | Ultimate Drag Racing Suite</title>
-        <meta name='impact-site-verification' value='b2bb3042-cfc7-4ed4-b783-57a9b5a6451f'>
+    <title>Contact & Track Sponsorships | Ultimate Drag Racing Calculator Suite</title>
     <style>
         :root {
             --bg-dark: #0f1015;
@@ -15,116 +14,46 @@
             --border-color: #2d3139;
             --input-bg: #21242c;
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 800px;
-            margin: 40px auto;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }
-        h1 { color: var(--accent-red); text-transform: uppercase; font-size: 1.5rem; margin-top: 0; }
-        h3 { color: var(--text-main); font-size: 1.05rem; margin-top: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
-        p { color: var(--text-muted); font-size: 0.9rem; }
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: var(--accent-red);
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-        .back-link:hover { text-decoration: underline; }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 0.9rem;
-        }
-        textarea {
-            resize: vertical;
-            height: 120px;
-        }
-        .submit-btn {
-            background: var(--accent-red);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            width: 100%;
-        }
-        .submit-btn:hover { background: #e0161f; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 20px; line-height: 1.5; }
+        .container { max-width: 600px; margin: 40px auto; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; }
+        h1 { color: var(--accent-red); font-size: 1.4rem; text-transform: uppercase; margin-top: 0; text-align: center; }
+        p { color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 25px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.8rem; color: var(--text-muted); }
+        input, select, textarea { width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; margin-bottom: 15px; }
+        textarea { resize: vertical; height: 120px; }
+        .action-btn { width: 100%; background: var(--accent-red); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 0.85rem; cursor: pointer; text-transform: uppercase; }
+        .action-btn:hover { background: #e0161f; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
     </style>
 </head>
 <body>
-    <div style="max-width: 800px; margin: 0 auto;">
-        <a href="index.html" class="back-link">&larr; Back to Master Hub</a>
-    </div>
+    <div style="max-width: 600px; margin: 0 auto;"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
     <div class="container">
         <h1>Contact & Track Sponsorships</h1>
         <p>Get in touch with our team for advertising rates, technical calculator feedback, or partnership inquiries.</p>
-        
-        <h3>Track Sponsor Rates & Advertising</h3>
-        <p>Are you a performance part manufacturer, cylinder head porter, turbo supplier, or track-side vendor? Send us a message below to discuss banner placements and sponsor rates.</p>
-        
-        <!-- FORMSPREE CONTACT FORM -->
-        <form action="https://formspree.io/f/xqppzgab" method="POST" style="margin-top: 20px;">
-            <div class="form-group">
-                <label for="name">Your Name / Company</label>
-                <input type="text" id="name" name="name" required placeholder="e.g. Pro-Comp Transmissions">
+        <form action="https://formspree.io/f/xqppzgab" method="POST">
+            <div>
+                <label>Your Name / Shop Name</label>
+                <input type="text" name="name" required placeholder="e.g. Pro Line Racing">
             </div>
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" required placeholder="name@example.com">
+            <div>
+                <label>Your Email Address</label>
+                <input type="email" name="email" required placeholder="e.g. yourname@domain.com">
             </div>
-            <div class="form-group">
-                <label for="message">Message / Sponsorship Inquiry</label>
-                <textarea id="message" name="message" required placeholder="Tell us about your brand or calculator feedback..."></textarea>
+            <div>
+                <label>Inquiry Type</label>
+                <select name="inquiry_type">
+                    <option value="Sponsorship">Track Sponsor Rates & Advertising</option>
+                    <option value="Bug / Feedback">Calculator Feedback / Bug Report</option>
+                    <option value="Other">General Partnership</option>
+                </select>
             </div>
-            <button type="submit" class="submit-btn">Send Message</button>
+            <div>
+                <label>Message</label>
+                <textarea name="message" required placeholder="Describe your inquiry or sponsorship request here..."></textarea>
+            </div>
+            <button type="submit" class="action-btn">Send Message &rarr;</button>
         </form>
-
-        <h3>Support & Calculator Questions</h3>
-        <p>Found a bug in our gear drop formula or want to request a new calculator? Use the form above and our track engineers will review your request.</p>
     </div>
-    
-    <footer style="max-width: 1200px; margin: 40px auto 20px auto; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px; font-size: 0.8rem; color: var(--text-muted);">
-        <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved. Professional Track Tuning & Engineering Tools.</p>
-        <p style="margin-top: 5px;">
-            <a href="contact.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px;">Contact & Sponsorships</a> | 
-            <a href="privacy.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px;">Privacy Policy & Affiliate Disclosure</a>
-        </p>
-        <p style="font-size: 0.72rem; color: #6b7280; margin-top: 8px;">Disclosure: We may earn an affiliate commission from qualifying purchases made through links on this site at no extra cost to you.</p>
-    </footer>
-
 </body>
 </html>

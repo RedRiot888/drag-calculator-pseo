@@ -10,7 +10,72 @@ gsc_verification_content = "google-site-verification: google9e7c88791a3f2f72.htm
 with open(os.path.join(output_dir, gsc_verification_filename), "w", encoding="utf-8") as f:
     f.write(gsc_verification_content)
 
-# 2. Pages CSV data
+# 2. Automatically create contact.html submission page with active Formspree endpoint
+contact_html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Track Sponsorships | Ultimate Drag Racing Calculator Suite</title>
+    <style>
+        :root {
+            --bg-dark: #0f1015;
+            --card-bg: #181a20;
+            --accent-red: #ff1e27;
+            --text-main: #f8f9fa;
+            --text-muted: #9ca3af;
+            --border-color: #2d3139;
+            --input-bg: #21242c;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 20px; line-height: 1.5; }
+        .container { max-width: 600px; margin: 40px auto; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; }
+        h1 { color: var(--accent-red); font-size: 1.4rem; text-transform: uppercase; margin-top: 0; text-align: center; }
+        p { color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 25px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.8rem; color: var(--text-muted); }
+        input, select, textarea { width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; margin-bottom: 15px; }
+        textarea { resize: vertical; height: 120px; }
+        .action-btn { width: 100%; background: var(--accent-red); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 0.85rem; cursor: pointer; text-transform: uppercase; }
+        .action-btn:hover { background: #e0161f; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div style="max-width: 600px; margin: 0 auto;"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
+    <div class="container">
+        <h1>Contact & Track Sponsorships</h1>
+        <p>Get in touch with our team for advertising rates, technical calculator feedback, or partnership inquiries.</p>
+        <form action="https://formspree.io/f/xqppzgab" method="POST">
+            <div>
+                <label>Your Name / Shop Name</label>
+                <input type="text" name="name" required placeholder="e.g. Pro Line Racing">
+            </div>
+            <div>
+                <label>Your Email Address</label>
+                <input type="email" name="email" required placeholder="e.g. yourname@domain.com">
+            </div>
+            <div>
+                <label>Inquiry Type</label>
+                <select name="inquiry_type">
+                    <option value="Sponsorship">Track Sponsor Rates & Advertising</option>
+                    <option value="Bug / Feedback">Calculator Feedback / Bug Report</option>
+                    <option value="Other">General Partnership</option>
+                </select>
+            </div>
+            <div>
+                <label>Message</label>
+                <textarea name="message" required placeholder="Describe your inquiry or sponsorship request here..."></textarea>
+            </div>
+            <button type="submit" class="action-btn">Send Message &rarr;</button>
+        </form>
+    </div>
+</body>
+</html>
+"""
+with open(os.path.join(output_dir, "contact.html"), "w", encoding="utf-8") as f:
+    f.write(contact_html_content)
+print("Successfully generated contact.html!")
+
+# 3. Pages CSV data
 csv_content = """slug,target_keyword,category,rear_gear,tire_diameter
 transmission-shift-recovery-calculator,Transmission Shift Recovery & Gear Drop Calculator,Transmission,3.42,28.0
 turbo-sizing-calculator,Turbo Sizing & Turbocharger Matching Calculator,Turbo,3.42,28.0
@@ -40,7 +105,7 @@ sidebar_nav_html = """
 </div>
 """
 
-ad_block_html = '<div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="#" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>'
+ad_block_html = '<div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>'
 partners_html = '<div class="content-box"><h3>Industry Standard References</h3><ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: var(--text-muted);"><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Precision Turbo & Engine <span style="float: right; color: #10b981;">Verified Match</span></li><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Strange Engineering <span style="float: right; color: #10b981;">Drivetrain Spec</span></li><li style="padding: 6px 0;">ATI Performance <span style="float: right; color: #10b981;">Transmission Tech</span></li></ul></div>'
 tuning_guides_html = '<div class="content-box"><h3>Track-Side Tuning Cheat Sheets</h3><p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">1. Density Altitude (DA): Every 1,000 ft costs NA engines ~3% HP.<br>2. Torque Converter Slip: Target 5% to 8% slip at finish line.<br>3. Boost Management: Pull 1-2° timing per 3-4 PSI boost.</p></div>'
 
@@ -48,8 +113,8 @@ footer_html = """
 <footer style="text-align: center; margin: 40px auto 20px auto; color: var(--text-muted); font-size: 0.78rem; border-top: 1px solid var(--border-color); padding-top: 20px;">
     <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved. Professional Track Tuning & Engineering Tools.</p>
     <p style="margin: 6px 0;">
-        <a href="mailto:support@dragcalculators.com" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact & Sponsorships</a> &nbsp;|&nbsp; 
-        <a href="#" style="color: var(--text-muted); text-decoration: none;">Privacy Policy & Affiliate Disclosure</a>
+        <a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact & Sponsorships</a> &nbsp;|&nbsp; 
+        <a href="contact.html" style="color: var(--text-muted); text-decoration: none;">Privacy Policy & Affiliate Disclosure</a>
     </p>
     <p style="font-size: 0.7rem; color: #6b7280; max-width: 800px; margin: 8px auto 0 auto;">
         Disclosure: We may earn an affiliate commission from qualifying purchases made through links on this site at no extra cost to you.
@@ -276,7 +341,7 @@ for row in pages:
 
             document.getElementById("turbo-rec").innerHTML = "<strong>Engine Spec:</strong> " + cyl + "-Cyl / " + disp + "L (" + Math.round(ccPerCyl) + " cc/cyl)<br><strong>Engineered Match:</strong> " + rec;
         }
-        ["disp", "cyl", "hp", "boost", "bsfc", "turbos"].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); });
+        ["disp", "cyl", "hp", "boost", "bsfc", "turbos"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
         calcTool();
         """
     elif category == "Exhaust":
@@ -400,15 +465,20 @@ for row in pages:
     with open(os.path.join(output_dir, f"{slug}.html"), "w", encoding="utf-8") as out_f:
         out_f.write(page_html)
 
-print("Successfully built all pages with spool analysis and footer!")
+print("Successfully built all calculator pages with contact.html links!")
 
-# 5. Automatically generate sitemap.xml for Google Search Console
+# 4. Automatically generate sitemap.xml for Google Search Console
 sitemap_content = """<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://dragcalculators.com/index.html</loc>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/contact.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
     </url>
 """
 for row in pages:
@@ -422,4 +492,4 @@ sitemap_content += "</urlset>"
 
 with open(os.path.join(output_dir, "sitemap.xml"), "w", encoding="utf-8") as f:
     f.write(sitemap_content)
-print("Successfully generated sitemap.xml!")
+print("Successfully generated sitemap.xml with contact.html!")
