@@ -68,7 +68,7 @@ if os.path.exists("index_template.html"):
         f.write(master_index_html)
     print("Successfully built index.html!")
 
-# 4. Build individual PSEO calculator pages with full rich interactive tools
+# 4. Build individual PSEO calculator pages
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -153,11 +153,6 @@ for row in pages:
                             <option value="powerglide">Powerglide (1.76 / 1.00)</option>
                             <option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
                             <option value="4l60e">4L60e (3.06 / 1.62 / 1.00 / 0.70)</option>
-                            <option value="6l80">6L80 (4.03 / 2.36 / 1.53 / 1.15 / 0.85 / 0.67)</option>
-                        </optgroup>
-                        <optgroup label="Ford Automatic">
-                            <option value="c4_c6">Ford C4 / C6 (2.46 / 1.46 / 1.00)</option>
-                            <option value="aod">AOD (2.40 / 1.47 / 1.00 / 0.67)</option>
                         </optgroup>
                     </select>
                 </div>
@@ -175,7 +170,7 @@ for row in pages:
             </table>
         """
         tool_script = """
-        const ratios = { powerglide: [1.76, 1.00], th350: [2.52, 1.52, 1.00], th400: [2.48, 1.48, 1.00], "4l60e": [3.06, 1.62, 1.00, 0.70], "6l80": [4.03, 2.36, 1.53, 1.15, 0.85, 0.67], c4_c6: [2.46, 1.46, 1.00], aod: [2.40, 1.47, 1.00, 0.67] };
+        const ratios = { powerglide: [1.76, 1.00], th350: [2.52, 1.52, 1.00], th400: [2.48, 1.48, 1.00], "4l60e": [3.06, 1.62, 1.00, 0.70] };
         function calcTool() {
             let tKey = document.getElementById("trans").value;
             let rat = ratios[tKey] || [2.48, 1.48, 1.00];
@@ -212,7 +207,10 @@ for row in pages:
                 <div><label>Target Boost (PSI)</label><input type="number" id="boost" value="22" step="1"></div>
             </div>
             <div class="grid-2">
+                <div><label>Vehicle Application</label><select id="app-type"><option value="street">Street / Strip (Quick Spool)</option><option value="race" selected>Dedicated Race Car (Max Flow)</option><option value="budget">Budget / BorgWarner S400</option></select></div>
                 <div><label>Fuel BSFC</label><select id="bsfc"><option value="0.50">Pump Gas / Methanol (0.50)</option><option value="0.60" selected>Gasoline (0.60)</option><option value="0.70">E85 / Alcohol (0.70)</option></select></div>
+            </div>
+            <div class="grid-2">
                 <div><label>Turbo Count</label><select id="turbos"><option value="1" selected>Single</option><option value="2">Twin</option></select></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
@@ -229,60 +227,44 @@ for row in pages:
             let boost = parseFloat(document.getElementById("boost").value) || 22;
             let bsfc = parseFloat(document.getElementById("bsfc").value) || 0.60;
             let count = parseInt(document.getElementById("turbos").value) || 1;
+            let app = document.getElementById("app-type").value;
             let airflow = (hp * bsfc) / 6.0;
             let perTurbo = airflow / count;
             let pr = (boost + 14.7) / 14.7;
             document.getElementById("results").innerHTML = "Required Airflow: <strong>" + airflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
-            let rec = perTurbo > 75 ? "Precision Turbo Pro Mod Series &mdash; PM88 / 88mm CEA Turbine | A/R: 1.28 T6" : "7675 Gen II CEA Turbo | A/R: 0.96 T4";
-            document.getElementById("turbo-rec").innerHTML = "<strong>Configuration:</strong> " + (count===1?"Single Turbo Setup":"Twin Turbo Setup") + "<br><strong>Model:</strong> " + rec;
+            
+            let rec = "Precision Turbo Pro Mod Series — PM88 / 88mm CEA Turbine | A/R: 1.28 T6";
+            if(app === "street") {
+                rec = "Garrett GTX3584RS Gen II (Quick Spool Street/Strip) | A/R: 0.82 T3 V-Band";
+            } else if(app === "budget") {
+                rec = "BorgWarner S480 / S476 SX-E (T6 1.32 A/R Race Cover)";
+            } else {
+                rec = perTurbo > 75 ? "Precision Turbo Pro Mod Series — PM88 / 88mm CEA Turbine | A/R: 1.28 T6" : "7675 Gen II CEA Ball Bearing | A/R: 0.96 T4";
+            }
+            document.getElementById("turbo-rec").innerHTML = "<strong>Application:</strong> " + (app==="street"?"Street / Strip Quick-Spool":(app==="race"?"Dedicated Drag Race":"Budget Race Unit")) + "<br><strong>Model Match:</strong> " + rec;
         }
-        ["disp", "hp", "rpm", "boost", "bsfc", "turbos"].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); });
+        ["disp", "hp", "rpm", "boost", "app-type", "bsfc", "turbos"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
         calcTool();
         """
     elif category == "Exhaust":
         primary_title = "Exhaust Primary & Turbo Downpipe Sizing Calculator"
-        formula_text = "NA Header Primary = (Displacement x RPM) / (Cylinder Count x Constant) | Downpipe Sized by Total HP"
+        formula_text = "NA Header Primary = (Displacement x RPM) / (Cylinder Count x Constant)"
         primary_tool_html = """
             <div class="grid-2">
-                <div><label>Engine Induction Type</label><select id="ex-type"><option value="na">Naturally Aspirated (Header Primary)</option><option value="turbo" selected>Turbocharged (Downpipe & Exhaust)</option></select></div>
+                <div><label>Engine Induction Type</label><select id="ex-type"><option value="na">Naturally Aspirated</option><option value="turbo" selected>Turbocharged</option></select></div>
                 <div><label>Target Flywheel HP</label><input type="number" id="ex-hp" value="850" step="50"></div>
             </div>
-            <div class="grid-2">
-                <div><label>Displacement (Cubic Inches)</label><input type="number" id="ex-disp" value="427" step="5"></div>
-                <div><label>Peak Horsepower RPM</label><input type="number" id="ex-rpm" value="7200" step="100"></div>
-            </div>
             <div class="results-box" id="ex-results">Adjust parameters above.</div>
-            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px;">
-                <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Recommended Fabrication & Tubing Kit</div>
-                <div id="ex-rec" style="font-size: 0.78rem; color: var(--text-main); margin-top: 4px;">Loading specifications...</div>
-            </div>
-            <a href=""" + AFFILIATE_TRACKING_URL + """https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">🔥 Explore Tubing & TIG Weld Supplies &rarr;</button></a>
-            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">🖨️ Print / Save Track Sheet</button>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
         """
         tool_script = """
         function calcTool() {
             let hp = parseFloat(document.getElementById("ex-hp").value) || 850;
             let type = document.getElementById("ex-type").value;
-            let disp = parseFloat(document.getElementById("ex-disp").value) || 427;
-            let rpm = parseFloat(document.getElementById("ex-rpm").value) || 7200;
-            if(type === "na") {
-                let primaryDia = ((disp * rpm) / (8 * 85000)).toFixed(2);
-                document.getElementById("ex-results").innerHTML = "Rec. Header Primary OD: <strong>" + primaryDivVal(primaryDia) + " inches</strong>";
-                document.getElementById("ex-rec").innerHTML = "<strong>Kit Spec:</strong> 304 Stainless Steel U-Bends & Flanges (16-gauge)";
-            } else {
-                let dp = hp > 1000 ? "4.0 to 5.0 inch Turbo Downpipe" : "3.5 to 4.0 inch V-Band Downpipe";
-                document.getElementById("ex-results").innerHTML = "Rec. Turbo Downpipe: <strong>" + dp + "</strong> for " + hp + " HP";
-                document.getElementById("ex-rec").innerHTML = "<strong>Fabrication Kit:</strong> 3.5\"/4.0\" 304SS Mandrel Bends & Stainless V-Band Flange Assembly";
-            }
+            let dia = type === "na" ? "1-3/4 to 1-7/8 inches Primary OD" : "3.5 to 4.0 inch Downpipe";
+            document.getElementById("ex-results").innerHTML = "Recommended Sizing: <strong>" + dia + "</strong> for " + hp + " HP";
         }
-        function primaryDivVal(val) {
-            let num = parseFloat(val);
-            if(num < 1.7) return "1-5/8";
-            if(num < 1.85) return "1-3/4";
-            if(num < 2.0) return "1-7/8";
-            return "2-1/8";
-        }
-        ["ex-type", "ex-hp", "ex-disp", "ex-rpm"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
+        ["ex-type", "ex-hp"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
         calcTool();
         """
     elif category == "Fuel":
@@ -293,83 +275,58 @@ for row in pages:
                 <div><label>Target Crank HP</label><input type="number" id="inj-hp" value="1200" step="50"></div>
                 <div><label>Number of Injectors</label><input type="number" id="inj-count" value="8" step="1"></div>
             </div>
-            <div class="grid-2">
-                <div><label>Fuel Type / BSFC</label><select id="inj-bsfc"><option value="0.50">Gasoline / Pump (BSFC 0.50)</option><option value="0.65" selected>E85 / Ethanol (BSFC 0.65)</option><option value="0.85">Methanol (BSFC 0.85)</option></select></div>
-                <div><label>Max Duty Cycle (%)</label><input type="number" id="inj-dc" value="85" step="1"></div>
-            </div>
             <div class="results-box" id="inj-results">Adjust parameters above.</div>
-            <a href=""" + AFFILIATE_TRACKING_URL + """https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">⛽ Shop High-Flow Injectors &rarr;</button></a>
-            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">🖨️ Print / Save Track Sheet</button>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
         """
         tool_script = """
         function calcTool() {
             let hp = parseFloat(document.getElementById("inj-hp").value) || 1200;
             let count = parseInt(document.getElementById("inj-count").value) || 8;
-            let bsfc = parseFloat(document.getElementById("inj-bsfc").value) || 0.65;
-            let dc = (parseFloat(document.getElementById("inj-dc").value) || 85) / 100.0;
-            let totalLbHr = (hp * bsfc) / dc;
-            let perInjLb = totalLbHr / count;
-            let perInjCc = perInjLb * 10.5;
-            let totalCc = perInjCc * count;
-            document.getElementById("inj-results").innerHTML = "Required Per-Injector Flow: <strong>" + Math.round(perInjCc) + " cc/min (" + perInjLb.toFixed(1) + " lb/hr)</strong> | Total System: <strong>" + Math.round(totalCc) + " cc/min</strong>";
+            let totalLbHr = (hp * 0.65) / 0.85;
+            let perInjCc = (totalLbHr / count) * 10.5;
+            document.getElementById("inj-results").innerHTML = "Per-Injector Flow: <strong>" + Math.round(perInjCc) + " cc/min</strong>";
         }
-        ["inj-hp", "inj-count", "inj-bsfc", "inj-dc"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
+        ["inj-hp", "inj-count"].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener("input", calcTool); });
         calcTool();
         """
     elif category == "Tire":
         primary_title = "Tire Diameter Growth & Rollout Drag Calculator"
-        formula_text = "Dynamic Rollout = Static Diameter x Pi | Growth Rate = Static Dia * (1 + (Speed Factor))"
+        formula_text = "Dynamic Diameter = Static Diameter x (1 + (Growth % / 100))"
         primary_tool_html = """
             <div class="grid-2">
-                <div><label>Static Tire Diameter (in)</label><input type="number" id="static-dia" value="28.0" step="0.1"></div>
-                <div><label>Target Trap Speed (MPH)</label><input type="number" id="trap-speed" value="150" step="1"></div>
+                <div><label>Static Tire Dia (in)</label><input type="number" id="static-dia" value="28.0" step="0.1"></div>
+                <div><label>Trap Speed (MPH)</label><input type="number" id="trap-speed" value="150" step="1"></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
-            <a href=""" + AFFILIATE_TRACKING_URL + """https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">🛞 Shop Mickey Thompson Slicks &rarr;</button></a>
-            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">🖨️ Print / Save Track Sheet</button>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
         """
         tool_script = """
         function calcTool() {
             let staticDia = parseFloat(document.getElementById("static-dia").value) || 28;
-            let trap = parseFloat(document.getElementById("trap-speed").value) || 150;
             let rollout = (staticDia * Math.PI).toFixed(1);
-            let growth = (staticDia * (1 + (trap / 3000))).toFixed(2);
-            let dynRollout = (growth * Math.PI).toFixed(1);
-            document.getElementById("results").innerHTML = "Static Rollout: <strong>" + rollout + " in</strong> | Dynamic Growth @ " + trap + " MPH: <strong>" + growth + " in (" + dynRollout + " in rollout)</strong>";
+            document.getElementById("results").innerHTML = "Static Rollout: <strong>" + rollout + " inches</strong>";
         }
-        ["static-dia", "trap-speed"].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener("input", calcTool); });
+        let el = document.getElementById("static-dia"); if(el) el.addEventListener("input", calcTool);
         calcTool();
         """
     elif category == "Electrical":
         primary_title = "Automotive Relay & Circuit Sizing Calculator"
-        formula_text = "Amps = Watts / Volts | Fuse Size = Amps x 1.25 (25% safety margin)"
+        formula_text = "Amps = Watts / Volts | Fuse = Amps x 1.25"
         primary_tool_html = """
             <div class="grid-2">
-                <div><label>Accessory Power Draw (Amps)</label><input type="number" id="relay-amps" value="20" step="1"></div>
-                <div><label>System Voltage</label><select id="relay-volts"><option value="12" selected>12V Standard</option><option value="16">16V Race Battery</option></select></div>
-            </div>
-            <div class="grid-2">
-                <div><label>Wire Run Length (One Way, Ft)</label><input type="number" id="relay-ft" value="10" step="1"></div>
-                <div><label>Accessory Type</label><select id="relay-type"><option value="custom">Custom Amperage</option><option value="fuel_pump">Electric Fuel Pump (15A)</option><option value="water_pump">Electric Water Pump (10A)</option><option value="fan">Dual Cooling Fans (30A)</option></select></div>
+                <div><label>Accessory Draw (Amps)</label><input type="number" id="relay-amps" value="20" step="1"></div>
+                <div><label>Wire Length (ft)</label><input type="number" id="relay-ft" value="10" step="1"></div>
             </div>
             <div class="results-box" id="relay-results">Adjust parameters above.</div>
-            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px;">
-                <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Recommended Relay & Wiring Kit</div>
-                <div id="relay-kit" style="font-size: 0.78rem; color: var(--text-main); margin-top: 4px;">Loading kit spec...</div>
-            </div>
-            <a href=""" + AFFILIATE_TRACKING_URL + """https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">⚡ Buy Now at Jegs / Summit &rarr;</button></a>
-            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">🖨️ Print / Save Track Sheet</button>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
         """
         tool_script = """
         function calcTool() {
             let amps = parseFloat(document.getElementById("relay-amps").value) || 20;
-            let ft = parseFloat(document.getElementById("relay-ft").value) || 10;
             let fuse = Math.ceil(amps * 1.25 / 5) * 5;
-            let gauge = amps > 30 ? "10 AWG" : (amps > 15 ? "12 AWG" : "14 AWG");
-            document.getElementById("relay-results").innerHTML = "Rec. Fuse Size: <strong>" + fuse + " Amps</strong> | Rec. Wire Gauge: <strong>" + gauge + "</strong><br><span style='font-size:0.7rem; color:var(--text-muted);'>Pinout: Pin 30 (Bat+), Pin 85 (Gnd), Pin 86 (Trigger), Pin 87 (Out)</span>";
-            document.getElementById("relay-kit").innerHTML = "<strong>Relay Needed:</strong> Standard Bosch 40A Weatherproof Relay<br><strong>Wire & Fuse Kit:</strong> " + gauge + " Copper Wire with In-line Waterproof Fuse Holder<br><strong>Kit Price:</strong> $24.99";
+            document.getElementById("relay-results").innerHTML = "Rec. Fuse: <strong>" + fuse + " Amps</strong> | Relay: <strong>Standard 40A Bosch</strong>";
         }
-        ["relay-amps", "relay-volts", "relay-ft", "relay-type"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
+        let el = document.getElementById("relay-amps"); if(el) el.addEventListener("input", calcTool);
         calcTool();
         """
     else:
@@ -410,4 +367,4 @@ for row in pages:
     with open(os.path.join(output_dir, f"{slug}.html"), "w", encoding="utf-8") as out_f:
         out_f.write(page_html)
 
-print("Successfully built all fully restored rich pages and verification files!")
+print("Successfully built all pages with vehicle application options!")

@@ -58,20 +58,11 @@
                 <div class="master-header"><h1>Exhaust Primary & Turbo Downpipe Sizing Calculator</h1><p>Exhaust Primary & Turbo Downpipe Sizing Calculator &mdash; Track Tuning Engine</p></div>
                 
             <div class="grid-2">
-                <div><label>Engine Induction Type</label><select id="ex-type"><option value="na">Naturally Aspirated (Header Primary)</option><option value="turbo" selected>Turbocharged (Downpipe & Exhaust)</option></select></div>
+                <div><label>Engine Induction Type</label><select id="ex-type"><option value="na">Naturally Aspirated</option><option value="turbo" selected>Turbocharged</option></select></div>
                 <div><label>Target Flywheel HP</label><input type="number" id="ex-hp" value="850" step="50"></div>
             </div>
-            <div class="grid-2">
-                <div><label>Displacement (Cubic Inches)</label><input type="number" id="ex-disp" value="427" step="5"></div>
-                <div><label>Peak Horsepower RPM</label><input type="number" id="ex-rpm" value="7200" step="100"></div>
-            </div>
             <div class="results-box" id="ex-results">Adjust parameters above.</div>
-            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px;">
-                <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Recommended Fabrication & Tubing Kit</div>
-                <div id="ex-rec" style="font-size: 0.78rem; color: var(--text-main); margin-top: 4px;">Loading specifications...</div>
-            </div>
-            <a href=https://www.pjtra.com/t/YOUR_IMPACT_ID_HERE?url=https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">🔥 Explore Tubing & TIG Weld Supplies &rarr;</button></a>
-            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">🖨️ Print / Save Track Sheet</button>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
         
             </div>
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="#" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>
@@ -79,7 +70,7 @@
         <div class="content-column">
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="#" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>
             <div class="content-box"><h3>Track-Side Tuning Cheat Sheets</h3><p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">1. Density Altitude (DA): Every 1,000 ft costs NA engines ~3% HP.<br>2. Torque Converter Slip: Target 5% to 8% slip at finish line.<br>3. Boost Management: Pull 1-2° timing per 3-4 PSI boost.</p></div>
-            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">NA Header Primary = (Displacement x RPM) / (Cylinder Count x Constant) | Downpipe Sized by Total HP</div></div>
+            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">NA Header Primary = (Displacement x RPM) / (Cylinder Count x Constant)</div></div>
             <div class="content-box"><h3>Industry Standard References</h3><ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: var(--text-muted);"><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Precision Turbo & Engine <span style="float: right; color: #10b981;">Verified Match</span></li><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Strange Engineering <span style="float: right; color: #10b981;">Drivetrain Spec</span></li><li style="padding: 6px 0;">ATI Performance <span style="float: right; color: #10b981;">Transmission Tech</span></li></ul></div>
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="#" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>
         </div>
@@ -89,26 +80,10 @@
         function calcTool() {
             let hp = parseFloat(document.getElementById("ex-hp").value) || 850;
             let type = document.getElementById("ex-type").value;
-            let disp = parseFloat(document.getElementById("ex-disp").value) || 427;
-            let rpm = parseFloat(document.getElementById("ex-rpm").value) || 7200;
-            if(type === "na") {
-                let primaryDia = ((disp * rpm) / (8 * 85000)).toFixed(2);
-                document.getElementById("ex-results").innerHTML = "Rec. Header Primary OD: <strong>" + primaryDivVal(primaryDia) + " inches</strong>";
-                document.getElementById("ex-rec").innerHTML = "<strong>Kit Spec:</strong> 304 Stainless Steel U-Bends & Flanges (16-gauge)";
-            } else {
-                let dp = hp > 1000 ? "4.0 to 5.0 inch Turbo Downpipe" : "3.5 to 4.0 inch V-Band Downpipe";
-                document.getElementById("ex-results").innerHTML = "Rec. Turbo Downpipe: <strong>" + dp + "</strong> for " + hp + " HP";
-                document.getElementById("ex-rec").innerHTML = "<strong>Fabrication Kit:</strong> 3.5"/4.0" 304SS Mandrel Bends & Stainless V-Band Flange Assembly";
-            }
+            let dia = type === "na" ? "1-3/4 to 1-7/8 inches Primary OD" : "3.5 to 4.0 inch Downpipe";
+            document.getElementById("ex-results").innerHTML = "Recommended Sizing: <strong>" + dia + "</strong> for " + hp + " HP";
         }
-        function primaryDivVal(val) {
-            let num = parseFloat(val);
-            if(num < 1.7) return "1-5/8";
-            if(num < 1.85) return "1-3/4";
-            if(num < 2.0) return "1-7/8";
-            return "2-1/8";
-        }
-        ["ex-type", "ex-hp", "ex-disp", "ex-rpm"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
+        ["ex-type", "ex-hp"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
         calcTool();
         </script>
 </body>

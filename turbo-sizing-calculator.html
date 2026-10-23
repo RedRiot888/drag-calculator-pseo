@@ -66,7 +66,10 @@
                 <div><label>Target Boost (PSI)</label><input type="number" id="boost" value="22" step="1"></div>
             </div>
             <div class="grid-2">
+                <div><label>Vehicle Application</label><select id="app-type"><option value="street">Street / Strip (Quick Spool)</option><option value="race" selected>Dedicated Race Car (Max Flow)</option><option value="budget">Budget / BorgWarner S400</option></select></div>
                 <div><label>Fuel BSFC</label><select id="bsfc"><option value="0.50">Pump Gas / Methanol (0.50)</option><option value="0.60" selected>Gasoline (0.60)</option><option value="0.70">E85 / Alcohol (0.70)</option></select></div>
+            </div>
+            <div class="grid-2">
                 <div><label>Turbo Count</label><select id="turbos"><option value="1" selected>Single</option><option value="2">Twin</option></select></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
@@ -95,14 +98,23 @@
             let boost = parseFloat(document.getElementById("boost").value) || 22;
             let bsfc = parseFloat(document.getElementById("bsfc").value) || 0.60;
             let count = parseInt(document.getElementById("turbos").value) || 1;
+            let app = document.getElementById("app-type").value;
             let airflow = (hp * bsfc) / 6.0;
             let perTurbo = airflow / count;
             let pr = (boost + 14.7) / 14.7;
             document.getElementById("results").innerHTML = "Required Airflow: <strong>" + airflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
-            let rec = perTurbo > 75 ? "Precision Turbo Pro Mod Series &mdash; PM88 / 88mm CEA Turbine | A/R: 1.28 T6" : "7675 Gen II CEA Turbo | A/R: 0.96 T4";
-            document.getElementById("turbo-rec").innerHTML = "<strong>Configuration:</strong> " + (count===1?"Single Turbo Setup":"Twin Turbo Setup") + "<br><strong>Model:</strong> " + rec;
+            
+            let rec = "Precision Turbo Pro Mod Series — PM88 / 88mm CEA Turbine | A/R: 1.28 T6";
+            if(app === "street") {
+                rec = "Garrett GTX3584RS Gen II (Quick Spool Street/Strip) | A/R: 0.82 T3 V-Band";
+            } else if(app === "budget") {
+                rec = "BorgWarner S480 / S476 SX-E (T6 1.32 A/R Race Cover)";
+            } else {
+                rec = perTurbo > 75 ? "Precision Turbo Pro Mod Series — PM88 / 88mm CEA Turbine | A/R: 1.28 T6" : "7675 Gen II CEA Ball Bearing | A/R: 0.96 T4";
+            }
+            document.getElementById("turbo-rec").innerHTML = "<strong>Application:</strong> " + (app==="street"?"Street / Strip Quick-Spool":(app==="race"?"Dedicated Drag Race":"Budget Race Unit")) + "<br><strong>Model Match:</strong> " + rec;
         }
-        ["disp", "hp", "rpm", "boost", "bsfc", "turbos"].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); });
+        ["disp", "hp", "rpm", "boost", "app-type", "bsfc", "turbos"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
         calcTool();
         </script>
 </body>

@@ -58,20 +58,11 @@
                 <div class="master-header"><h1>Automotive Relay & Circuit Sizing Calculator</h1><p>Automotive Relay & Circuit Sizing Calculator &mdash; Track Tuning Engine</p></div>
                 
             <div class="grid-2">
-                <div><label>Accessory Power Draw (Amps)</label><input type="number" id="relay-amps" value="20" step="1"></div>
-                <div><label>System Voltage</label><select id="relay-volts"><option value="12" selected>12V Standard</option><option value="16">16V Race Battery</option></select></div>
-            </div>
-            <div class="grid-2">
-                <div><label>Wire Run Length (One Way, Ft)</label><input type="number" id="relay-ft" value="10" step="1"></div>
-                <div><label>Accessory Type</label><select id="relay-type"><option value="custom">Custom Amperage</option><option value="fuel_pump">Electric Fuel Pump (15A)</option><option value="water_pump">Electric Water Pump (10A)</option><option value="fan">Dual Cooling Fans (30A)</option></select></div>
+                <div><label>Accessory Draw (Amps)</label><input type="number" id="relay-amps" value="20" step="1"></div>
+                <div><label>Wire Length (ft)</label><input type="number" id="relay-ft" value="10" step="1"></div>
             </div>
             <div class="results-box" id="relay-results">Adjust parameters above.</div>
-            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px;">
-                <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Recommended Relay & Wiring Kit</div>
-                <div id="relay-kit" style="font-size: 0.78rem; color: var(--text-main); margin-top: 4px;">Loading kit spec...</div>
-            </div>
-            <a href=https://www.pjtra.com/t/YOUR_IMPACT_ID_HERE?url=https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">⚡ Buy Now at Jegs / Summit &rarr;</button></a>
-            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">🖨️ Print / Save Track Sheet</button>
+            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
         
             </div>
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="#" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>
@@ -79,7 +70,7 @@
         <div class="content-column">
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="#" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>
             <div class="content-box"><h3>Track-Side Tuning Cheat Sheets</h3><p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">1. Density Altitude (DA): Every 1,000 ft costs NA engines ~3% HP.<br>2. Torque Converter Slip: Target 5% to 8% slip at finish line.<br>3. Boost Management: Pull 1-2° timing per 3-4 PSI boost.</p></div>
-            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Amps = Watts / Volts | Fuse Size = Amps x 1.25 (25% safety margin)</div></div>
+            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Amps = Watts / Volts | Fuse = Amps x 1.25</div></div>
             <div class="content-box"><h3>Industry Standard References</h3><ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: var(--text-muted);"><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Precision Turbo & Engine <span style="float: right; color: #10b981;">Verified Match</span></li><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Strange Engineering <span style="float: right; color: #10b981;">Drivetrain Spec</span></li><li style="padding: 6px 0;">ATI Performance <span style="float: right; color: #10b981;">Transmission Tech</span></li></ul></div>
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="#" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>
         </div>
@@ -88,13 +79,10 @@
     <script>
         function calcTool() {
             let amps = parseFloat(document.getElementById("relay-amps").value) || 20;
-            let ft = parseFloat(document.getElementById("relay-ft").value) || 10;
             let fuse = Math.ceil(amps * 1.25 / 5) * 5;
-            let gauge = amps > 30 ? "10 AWG" : (amps > 15 ? "12 AWG" : "14 AWG");
-            document.getElementById("relay-results").innerHTML = "Rec. Fuse Size: <strong>" + fuse + " Amps</strong> | Rec. Wire Gauge: <strong>" + gauge + "</strong><br><span style='font-size:0.7rem; color:var(--text-muted);'>Pinout: Pin 30 (Bat+), Pin 85 (Gnd), Pin 86 (Trigger), Pin 87 (Out)</span>";
-            document.getElementById("relay-kit").innerHTML = "<strong>Relay Needed:</strong> Standard Bosch 40A Weatherproof Relay<br><strong>Wire & Fuse Kit:</strong> " + gauge + " Copper Wire with In-line Waterproof Fuse Holder<br><strong>Kit Price:</strong> $24.99";
+            document.getElementById("relay-results").innerHTML = "Rec. Fuse: <strong>" + fuse + " Amps</strong> | Relay: <strong>Standard 40A Bosch</strong>";
         }
-        ["relay-amps", "relay-volts", "relay-ft", "relay-type"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
+        let el = document.getElementById("relay-amps"); if(el) el.addEventListener("input", calcTool);
         calcTool();
         </script>
 </body>
