@@ -23,30 +23,88 @@ with open("pseo_pages_list.csv", mode="r", encoding="utf-8") as f:
     reader = csv.DictReader(f)
     pages = list(reader)
 
-utilities_grid_html = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">\n'
-for row in pages:
-    slug = row["slug"]
-    keyword = row["target_keyword"]
-    cat = row["category"]
-    
-    icon = "⚙️"
-    if "Turbo" in cat: icon = "🌀"
-    elif "Exhaust" in cat: icon = "🔥"
-    elif "Supercharger" in cat: icon = "⚡"
-    elif "Rear" in cat: icon = "🔧"
-    elif "Tire" in cat: icon = "🛞"
-    elif "Transmission" in cat: icon = "🏎️"
-    elif "Wastegate" in cat: icon = "🎛️"
-    elif "Fuel" in cat: icon = "⛽"
-    elif "Electrical" in cat: icon = "⚡"
+# Define categories and map sub-categories
+categories_map = [
+    ("Transmission & Gearing", ["Transmission", "RearGear"], "🏎️"),
+    ("Forced Induction", ["Turbo", "Supercharger", "Wastegate"], "🌀"),
+    ("Exhaust & Airflow", ["Exhaust"], "🔥"),
+    ("Fuel & Ignition", ["Fuel"], "⛽"),
+    ("Chassis & Tires", ["Tire"], "🛞"),
+    ("Electrical & Wiring", ["Electrical"], "⚡")
+]
+
+utilities_grid_html = '''
+<div style="margin-bottom: 15px;">
+    <input type="text" id="util-search" placeholder="🔍 Search calculators (e.g. turbo, gear, fuel)..." onkeyup="filterUtils()" style="width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 8px; font-size: 0.82rem; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--accent-red)'" onblur="this.style.borderColor='var(--border-color)'">
+</div>
+<div id="utilities-container" style="display: flex; flex-direction: column; gap: 14px; max-height: 520px; overflow-y: auto; padding-right: 4px;">
+'''
+
+for cat_name, cat_cats, default_icon in categories_map:
+    cat_pages = [p for p in pages if p["category"] in cat_cats]
+    if not cat_pages:
+        continue
     
     utilities_grid_html += f'''
-    <a href="{slug}.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">{icon}</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">{keyword}</span>
-    </a>
-'''
+    <div class="util-category-group" data-category-name="{cat_name.lower()}">
+        <div style="font-size: 0.72rem; font-weight: bold; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <span>{default_icon}</span> {cat_name}
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+    '''
+    
+    for row in cat_pages:
+        slug = row["slug"]
+        keyword = row["target_keyword"]
+        cat = row["category"]
+        
+        icon = default_icon
+        if "Turbo" in cat: icon = "🌀"
+        elif "Exhaust" in cat: icon = "🔥"
+        elif "Supercharger" in cat: icon = "⚡"
+        elif "Rear" in cat: icon = "🔧"
+        elif "Tire" in cat: icon = "🛞"
+        elif "Transmission" in cat: icon = "🏎️"
+        elif "Wastegate" in cat: icon = "🎛️"
+        elif "Fuel" in cat: icon = "⛽"
+        elif "Electrical" in cat: icon = "⚡"
+        
+        utilities_grid_html += f'''
+        <a href="{slug}.html" class="util-card" data-keyword="{keyword.lower()}" style="background: linear-gradient(135deg, var(--input-bg) 0%, var(--card-bg) 100%); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-red); padding: 10px 12px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            <span style="font-size: 1.1rem; flex-shrink: 0;">{icon}</span>
+            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-main); line-height: 1.2;">{keyword}</span>
+        </a>
+        '''
+    utilities_grid_html += '</div></div>'
+
 utilities_grid_html += '</div>\n'
+
+# Add instant search JS function
+search_script = """
+<script>
+    function filterUtils() {
+        let input = document.getElementById('util-search').value.toLowerCase();
+        let groups = document.querySelectorAll('.util-category-group');
+        
+        groups.forEach(group => {
+            let cards = group.querySelectorAll('.util-card');
+            let groupHasVisible = false;
+            
+            cards.forEach(card => {
+                let kw = card.getAttribute('data-keyword');
+                if(kw.includes(input)) {
+                    card.style.display = 'flex';
+                    groupHasVisible = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            group.style.display = groupHasVisible ? 'block' : 'none';
+        });
+    }
+</script>
+"""
 
 ad_block_html = """
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
@@ -321,6 +379,11 @@ master_index_html = """<!DOCTYPE html>
             margin: 12px 0 6px 0;
             padding-bottom: 3px;
         }
+        .util-card:hover {
+            border-color: var(--accent-red) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--accent-glow) !important;
+        }
         @media print {
             body { background: white; color: black; padding: 0; }
             .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
@@ -491,7 +554,10 @@ master_index_html = """<!DOCTYPE html>
         <div class="content-column">
             REPLACE_TOP_AD
             <div class="content-box">
-                <h3>Other Utilities & Calculators</h3>
+                <h3 style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Other Utilities & Calculators</span>
+                    <span style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted); text-transform: none;">Catalog</span>
+                </h3>
                 REPLACE_UTILITIES_GRID
             </div>
             REPLACE_TUNING_GUIDES
@@ -501,6 +567,7 @@ master_index_html = """<!DOCTYPE html>
     </div>
 
     REPLACE_FOOTER
+    REPLACE_SEARCH_SCRIPT
 
     <script>
         document.getElementById('btn-drivetrain').addEventListener('click', function() {
@@ -626,11 +693,12 @@ master_index_html = (
     .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
     .replace("REPLACE_PARTNERS", partners_html)
     .replace("REPLACE_FOOTER", footer_html)
+    .replace("REPLACE_SEARCH_SCRIPT", search_script)
 )
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
-# 2. PSEO SUB-PAGES TEMPLATE
+# 2. PSEO SUB-PAGES TEMPLATE (Same updates applied to sub-pages)
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -806,6 +874,11 @@ base_html_template = """<!DOCTYPE html>
             font-size: 0.85rem;
         }
         .back-link:hover { text-decoration: underline; }
+        .util-card:hover {
+            border-color: var(--accent-red) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--accent-glow) !important;
+        }
         @media print {
             body { background: white; color: black; padding: 0; }
             .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
@@ -834,7 +907,10 @@ base_html_template = """<!DOCTYPE html>
         <div class="content-column">
             REPLACE_TOP_AD
             <div class="content-box">
-                <h3>Other Utilities & Calculators</h3>
+                <h3 style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Other Utilities & Calculators</span>
+                    <span style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted); text-transform: none;">Catalog</span>
+                </h3>
                 REPLACE_UTILITIES_GRID
             </div>
             REPLACE_TUNING_GUIDES
@@ -852,6 +928,7 @@ base_html_template = """<!DOCTYPE html>
     </div>
 
     REPLACE_FOOTER
+    REPLACE_SEARCH_SCRIPT
 
     <script>
         TOOL_SCRIPT
@@ -1629,6 +1706,7 @@ for row in pages:
             .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
             .replace("REPLACE_PARTNERS", partners_html)
             .replace("REPLACE_FOOTER", footer_html)
+            .replace("REPLACE_SEARCH_SCRIPT", search_script)
             .replace("TOOL_SCRIPT", tool_script)
     )
 
@@ -1637,4 +1715,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully updated build script and generated {pages_created} pages with polished industry authority partners!")
+print(f"Successfully updated build script with categories and live search, generating {pages_created} pages!")

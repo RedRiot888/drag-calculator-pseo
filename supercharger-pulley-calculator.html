@@ -173,6 +173,11 @@
             font-size: 0.85rem;
         }
         .back-link:hover { text-decoration: underline; }
+        .util-card:hover {
+            border-color: var(--accent-red) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--accent-glow) !important;
+        }
         @media print {
             body { background: white; color: black; padding: 0; }
             .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
@@ -226,54 +231,97 @@
             </div>
 
             <div class="content-box">
-                <h3>Other Utilities & Calculators</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-
-    <a href="transmission-shift-recovery-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">🏎️</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Transmission Shift Recovery & Gear Drop Calculator</span>
-    </a>
-
-    <a href="turbo-sizing-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">🌀</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Turbo Sizing & Turbocharger Matching Calculator</span>
-    </a>
-
-    <a href="exhaust-header-sizing-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">🔥</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Exhaust Primary & Turbo Downpipe Sizing Calculator</span>
-    </a>
-
-    <a href="supercharger-pulley-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">⚡</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Supercharger Pulley Ratio & Boost Pressure Calculator</span>
-    </a>
-
-    <a href="rear-gear-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">🔧</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Ring and Pinion Rear Gear Quarter-Mile Calculator</span>
-    </a>
-
-    <a href="tire-growth-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">🛞</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Tire Diameter Growth & Rollout Drag Calculator</span>
-    </a>
-
-    <a href="wastegate-sizing-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">🎛️</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Wastegate Sizing & Boost Control Calculator</span>
-    </a>
-
-    <a href="fuel-injector-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">⛽</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Fuel Injector Flow Rate & Sizing Calculator</span>
-    </a>
-
-    <a href="automotive-relay-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">⚡</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Automotive Relay & Circuit Sizing Calculator</span>
-    </a>
+                <h3 style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Other Utilities & Calculators</span>
+                    <span style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted); text-transform: none;">Catalog</span>
+                </h3>
+                
+<div style="margin-bottom: 15px;">
+    <input type="text" id="util-search" placeholder="🔍 Search calculators (e.g. turbo, gear, fuel)..." onkeyup="filterUtils()" style="width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 8px; font-size: 0.82rem; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--accent-red)'" onblur="this.style.borderColor='var(--border-color)'">
 </div>
+<div id="utilities-container" style="display: flex; flex-direction: column; gap: 14px; max-height: 520px; overflow-y: auto; padding-right: 4px;">
+
+    <div class="util-category-group" data-category-name="transmission & gearing">
+        <div style="font-size: 0.72rem; font-weight: bold; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <span>🏎️</span> Transmission & Gearing
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+    
+        <a href="transmission-shift-recovery-calculator.html" class="util-card" data-keyword="transmission shift recovery & gear drop calculator" style="background: linear-gradient(135deg, var(--input-bg) 0%, var(--card-bg) 100%); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-red); padding: 10px 12px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            <span style="font-size: 1.1rem; flex-shrink: 0;">🏎️</span>
+            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-main); line-height: 1.2;">Transmission Shift Recovery & Gear Drop Calculator</span>
+        </a>
+        
+        <a href="rear-gear-calculator.html" class="util-card" data-keyword="ring and pinion rear gear quarter-mile calculator" style="background: linear-gradient(135deg, var(--input-bg) 0%, var(--card-bg) 100%); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-red); padding: 10px 12px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            <span style="font-size: 1.1rem; flex-shrink: 0;">🔧</span>
+            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-main); line-height: 1.2;">Ring and Pinion Rear Gear Quarter-Mile Calculator</span>
+        </a>
+        </div></div>
+    <div class="util-category-group" data-category-name="forced induction">
+        <div style="font-size: 0.72rem; font-weight: bold; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <span>🌀</span> Forced Induction
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+    
+        <a href="turbo-sizing-calculator.html" class="util-card" data-keyword="turbo sizing & turbocharger matching calculator" style="background: linear-gradient(135deg, var(--input-bg) 0%, var(--card-bg) 100%); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-red); padding: 10px 12px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            <span style="font-size: 1.1rem; flex-shrink: 0;">🌀</span>
+            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-main); line-height: 1.2;">Turbo Sizing & Turbocharger Matching Calculator</span>
+        </a>
+        
+        <a href="supercharger-pulley-calculator.html" class="util-card" data-keyword="supercharger pulley ratio & boost pressure calculator" style="background: linear-gradient(135deg, var(--input-bg) 0%, var(--card-bg) 100%); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-red); padding: 10px 12px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            <span style="font-size: 1.1rem; flex-shrink: 0;">⚡</span>
+            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-main); line-height: 1.2;">Supercharger Pulley Ratio & Boost Pressure Calculator</span>
+        </a>
+        
+        <a href="wastegate-sizing-calculator.html" class="util-card" data-keyword="wastegate sizing & boost control calculator" style="background: linear-gradient(135deg, var(--input-bg) 0%, var(--card-bg) 100%); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-red); padding: 10px 12px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            <span style="font-size: 1.1rem; flex-shrink: 0;">🎛️</span>
+            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-main); line-height: 1.2;">Wastegate Sizing & Boost Control Calculator</span>
+        </a>
+        </div></div>
+    <div class="util-category-group" data-category-name="exhaust & airflow">
+        <div style="font-size: 0.72rem; font-weight: bold; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <span>🔥</span> Exhaust & Airflow
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+    
+        <a href="exhaust-header-sizing-calculator.html" class="util-card" data-keyword="exhaust primary & turbo downpipe sizing calculator" style="background: linear-gradient(135deg, var(--input-bg) 0%, var(--card-bg) 100%); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-red); padding: 10px 12px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            <span style="font-size: 1.1rem; flex-shrink: 0;">🔥</span>
+            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-main); line-height: 1.2;">Exhaust Primary & Turbo Downpipe Sizing Calculator</span>
+        </a>
+        </div></div>
+    <div class="util-category-group" data-category-name="fuel & ignition">
+        <div style="font-size: 0.72rem; font-weight: bold; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <span>⛽</span> Fuel & Ignition
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+    
+        <a href="fuel-injector-calculator.html" class="util-card" data-keyword="fuel injector flow rate & sizing calculator" style="background: linear-gradient(135deg, var(--input-bg) 0%, var(--card-bg) 100%); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-red); padding: 10px 12px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            <span style="font-size: 1.1rem; flex-shrink: 0;">⛽</span>
+            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-main); line-height: 1.2;">Fuel Injector Flow Rate & Sizing Calculator</span>
+        </a>
+        </div></div>
+    <div class="util-category-group" data-category-name="chassis & tires">
+        <div style="font-size: 0.72rem; font-weight: bold; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <span>🛞</span> Chassis & Tires
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+    
+        <a href="tire-growth-calculator.html" class="util-card" data-keyword="tire diameter growth & rollout drag calculator" style="background: linear-gradient(135deg, var(--input-bg) 0%, var(--card-bg) 100%); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-red); padding: 10px 12px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            <span style="font-size: 1.1rem; flex-shrink: 0;">🛞</span>
+            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-main); line-height: 1.2;">Tire Diameter Growth & Rollout Drag Calculator</span>
+        </a>
+        </div></div>
+    <div class="util-category-group" data-category-name="electrical & wiring">
+        <div style="font-size: 0.72rem; font-weight: bold; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <span>⚡</span> Electrical & Wiring
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+    
+        <a href="automotive-relay-calculator.html" class="util-card" data-keyword="automotive relay & circuit sizing calculator" style="background: linear-gradient(135deg, var(--input-bg) 0%, var(--card-bg) 100%); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-red); padding: 10px 12px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            <span style="font-size: 1.1rem; flex-shrink: 0;">⚡</span>
+            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-main); line-height: 1.2;">Automotive Relay & Circuit Sizing Calculator</span>
+        </a>
+        </div></div></div>
 
             </div>
             
@@ -361,6 +409,31 @@
         </p>
         <p style="font-size: 0.72rem; color: #6b7280; margin-top: 8px;">Disclosure: We may earn an affiliate commission from qualifying purchases made through links on this site at no extra cost to you.</p>
     </footer>
+
+    
+<script>
+    function filterUtils() {
+        let input = document.getElementById('util-search').value.toLowerCase();
+        let groups = document.querySelectorAll('.util-category-group');
+        
+        groups.forEach(group => {
+            let cards = group.querySelectorAll('.util-card');
+            let groupHasVisible = false;
+            
+            cards.forEach(card => {
+                let kw = card.getAttribute('data-keyword');
+                if(kw.includes(input)) {
+                    card.style.display = 'flex';
+                    groupHasVisible = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            group.style.display = groupHasVisible ? 'block' : 'none';
+        });
+    }
+</script>
 
 
     <script>
