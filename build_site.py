@@ -23,79 +23,36 @@ with open("pseo_pages_list.csv", mode="r", encoding="utf-8") as f:
     reader = csv.DictReader(f)
     pages = list(reader)
 
-utilities_grid_html = '''
-<div style="display: flex; gap: 8px; margin-bottom: 12px;">
-    <input type="text" id="util-search" placeholder="🔍 Search tools..." onkeyup="filterUtils()" style="flex: 1; padding: 8px 10px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; font-size: 0.8rem; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--accent-red)'" onblur="this.style.borderColor='var(--border-color)'">
-    <select id="util-cat-filter" onchange="filterUtils()" style="width: 140px; padding: 8px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; font-size: 0.8rem; outline: none;">
-        <option value="all">All Systems</option>
-        <option value="transmission">Transmission</option>
-        <option value="forced-induction">Forced Induction</option>
-        <option value="exhaust">Exhaust</option>
-        <option value="fuel">Fuel & EFI</option>
-        <option value="chassis">Chassis & Tires</option>
-        <option value="electrical">Electrical</option>
-    </select>
+# Nexus-grade Left Rail Navigation Menu
+sidebar_nav_html = '''
+<div style="font-size: 0.68rem; font-weight: bold; color: var(--accent-red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">
+    Nexus Suite &bull; 9 Active
 </div>
-<div id="utilities-container" style="display: grid; grid-template-columns: 1fr; gap: 8px; max-height: 440px; overflow-y: auto; padding-right: 4px;">
-'''
-
-for row in pages:
-    slug = row["slug"]
-    keyword = row["target_keyword"]
-    cat = row["category"]
-    
-    filter_group = "transmission"
-    if cat in ["Turbo", "Supercharger", "Wastegate"]: filter_group = "forced-induction"
-    elif cat == "Exhaust": filter_group = "exhaust"
-    elif cat == "Fuel": filter_group = "fuel"
-    elif cat in ["RearGear", "Tire"]: filter_group = "chassis"
-    elif cat == "Electrical": filter_group = "electrical"
-    
-    icon = "⚙️"
-    if "Turbo" in cat: icon = "🌀"
-    elif "Exhaust" in cat: icon = "🔥"
-    elif "Supercharger" in cat: icon = "⚡"
-    elif "Rear" in cat: icon = "🔧"
-    elif "Tire" in cat: icon = "🛞"
-    elif "Transmission" in cat: icon = "🏎️"
-    elif "Wastegate" in cat: icon = "🎛️"
-    elif "Fuel" in cat: icon = "⛽"
-    elif "Electrical" in cat: icon = "⚡"
-    
-    utilities_grid_html += f'''
-    <a href="{slug}.html" class="util-card" data-keyword="{keyword.lower()}" data-group="{filter_group}" style="background: linear-gradient(135deg, var(--input-bg) 0%, var(--card-bg) 100%); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-red); padding: 10px 12px; border-radius: 6px; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-        <span style="font-size: 1.1rem; flex-shrink: 0;">{icon}</span>
-        <div style="display: flex; flex-direction: column;">
-            <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-main); line-height: 1.2;">{keyword}</span>
-            <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; margin-top: 2px;">{cat}</span>
-        </div>
+<div style="display: flex; flex-direction: column; gap: 4px;">
+    <a href="index.html" class="nav-item active" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--input-bg); border-left: 3px solid var(--accent-red); color: var(--text-main); text-decoration: none; border-radius: 4px; font-size: 0.78rem; font-weight: 600;">
+        <span>🔥 Popular / Master Hub</span>
+        <span style="font-size: 0.65rem; color: var(--text-muted);">ALL</span>
     </a>
-    '''
-
-utilities_grid_html += '</div>\n'
-
-search_script = """
-<script>
-    function filterUtils() {
-        let input = document.getElementById('util-search').value.toLowerCase();
-        let selectedCat = document.getElementById('util-cat-filter').value;
-        let cards = document.querySelectorAll('.util-card');
-        
-        cards.forEach(card => {
-            let kw = card.getAttribute('data-keyword');
-            let group = card.getAttribute('data-group');
-            let matchesSearch = kw.includes(input);
-            let matchesCat = (selectedCat === 'all' || group === selectedCat);
-            
-            if(matchesSearch && matchesCat) {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }
-</script>
-"""
+    <a href="transmission-shift-recovery-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
+        <span>🏎️ Transmission & Gearing</span>
+    </a>
+    <a href="turbo-sizing-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
+        <span>🌀 Forced Induction / Turbo</span>
+    </a>
+    <a href="exhaust-header-sizing-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
+        <span>🔥 Exhaust & Airflow</span>
+    </a>
+    <a href="fuel-injector-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
+        <span>⛽ Fueling & EFI</span>
+    </a>
+    <a href="tire-growth-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
+        <span>🛞 Chassis & Tires</span>
+    </a>
+    <a href="automotive-relay-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
+        <span>⚡ Electrical & Wiring</span>
+    </a>
+</div>
+'''
 
 ad_block_html = """
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
@@ -166,7 +123,7 @@ tuning_guides_html = """
 """
 
 footer_html = """
-    <footer style="max-width: 1200px; margin: 40px auto 20px auto; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px; font-size: 0.8rem; color: var(--text-muted);">
+    <footer style="max-width: 1400px; margin: 40px auto 20px auto; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px; font-size: 0.8rem; color: var(--text-muted);">
         <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved. Professional Track Tuning & Engineering Tools.</p>
         <p style="margin-top: 5px;">
             <a href="contact.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px;">Contact & Sponsorships</a> | 
@@ -205,16 +162,25 @@ master_index_html = """<!DOCTYPE html>
             line-height: 1.5;
         }
         .layout-grid {
-            max-width: 1200px;
-            margin: 30px auto;
+            max-width: 1350px;
+            margin: 20px auto;
             display: grid;
-            grid-template-columns: 500px 1fr;
-            gap: 30px;
+            grid-template-columns: 240px 480px 1fr;
+            gap: 25px;
             align-items: start;
         }
-        .sticky-calculator {
+        .nexus-sidebar {
             position: sticky;
             top: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .sticky-calculator {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
@@ -224,9 +190,9 @@ master_index_html = """<!DOCTYPE html>
             flex-direction: column;
             gap: 15px;
         }
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .layout-grid { grid-template-columns: 1fr; }
-            .sticky-calculator { position: static; top: auto; box-shadow: none; }
+            .nexus-sidebar { position: static; max-height: none; }
         }
         .content-column {
             display: flex;
@@ -370,14 +336,14 @@ master_index_html = """<!DOCTYPE html>
             margin: 12px 0 6px 0;
             padding-bottom: 3px;
         }
-        .util-card:hover {
-            border-color: var(--accent-red) !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px var(--accent-glow) !important;
+        .nav-item:hover {
+            background: var(--input-bg) !important;
+            color: var(--text-main) !important;
+            border-left-color: var(--accent-red) !important;
         }
         @media print {
             body { background: white; color: black; padding: 0; }
-            .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
+            .nexus-sidebar, .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
             .content-column, .tab-buttons, .action-btn, footer { display: none; }
             input, select { border: 1px solid #ccc; background: white; color: black; }
         }
@@ -385,6 +351,10 @@ master_index_html = """<!DOCTYPE html>
 </head>
 <body>
     <div class="layout-grid">
+        <div class="nexus-sidebar">
+            REPLACE_SIDEBAR_NAV
+        </div>
+
         <div class="sticky-calculator">
             <div>
                 <div class="master-header">
@@ -544,13 +514,6 @@ master_index_html = """<!DOCTYPE html>
 
         <div class="content-column">
             REPLACE_TOP_AD
-            <div class="content-box">
-                <h3 style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>Other Utilities & Calculators</span>
-                    <span style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted); text-transform: none;">Catalog</span>
-                </h3>
-                REPLACE_UTILITIES_GRID
-            </div>
             REPLACE_TUNING_GUIDES
             REPLACE_PARTNERS
             REPLACE_BOTTOM_AD
@@ -558,7 +521,6 @@ master_index_html = """<!DOCTYPE html>
     </div>
 
     REPLACE_FOOTER
-    REPLACE_SEARCH_SCRIPT
 
     <script>
         document.getElementById('btn-drivetrain').addEventListener('click', function() {
@@ -677,18 +639,18 @@ master_index_html = """<!DOCTYPE html>
 
 master_index_html = (
     master_index_html.replace("IMPACT_META_PLACEHOLDER", impact_meta_tag)
-    .replace("REPLACE_UTILITIES_GRID", utilities_grid_html)
+    .replace("REPLACE_SIDEBAR_NAV", sidebar_nav_html)
     .replace("REPLACE_STICKY_AD", ad_block_html)
     .replace("REPLACE_TOP_AD", ad_block_html)
     .replace("REPLACE_BOTTOM_AD", ad_block_html)
     .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
     .replace("REPLACE_PARTNERS", partners_html)
     .replace("REPLACE_FOOTER", footer_html)
-    .replace("REPLACE_SEARCH_SCRIPT", search_script)
 )
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
+# PSEO Sub-Pages Template with Nexus Sidebar
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -716,16 +678,25 @@ base_html_template = """<!DOCTYPE html>
             line-height: 1.5;
         }
         .layout-grid {
-            max-width: 1200px;
-            margin: 30px auto;
+            max-width: 1350px;
+            margin: 20px auto;
             display: grid;
-            grid-template-columns: 480px 1fr;
-            gap: 30px;
+            grid-template-columns: 240px 480px 1fr;
+            gap: 25px;
             align-items: start;
         }
-        .sticky-calculator {
+        .nexus-sidebar {
             position: sticky;
             top: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .sticky-calculator {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
@@ -735,9 +706,9 @@ base_html_template = """<!DOCTYPE html>
             flex-direction: column;
             gap: 15px;
         }
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .layout-grid { grid-template-columns: 1fr; }
-            .sticky-calculator { position: static; top: auto; box-shadow: none; }
+            .nexus-sidebar { position: static; max-height: none; }
         }
         .content-column {
             display: flex;
@@ -864,25 +835,29 @@ base_html_template = """<!DOCTYPE html>
             font-size: 0.85rem;
         }
         .back-link:hover { text-decoration: underline; }
-        .util-card:hover {
-            border-color: var(--accent-red) !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px var(--accent-glow) !important;
+        .nav-item:hover {
+            background: var(--input-bg) !important;
+            color: var(--text-main) !important;
+            border-left-color: var(--accent-red) !important;
         }
         @media print {
             body { background: white; color: black; padding: 0; }
-            .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
+            .nexus-sidebar, .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
             .content-column, .back-link, .action-btn, footer { display: none; }
             input, select { border: 1px solid #ccc; background: white; color: black; }
         }
     </style>
 </head>
 <body>
-    <div style="max-width: 1200px; margin: 0 auto;">
+    <div style="max-width: 1350px; margin: 0 auto;">
         <a href="index.html" class="back-link">&larr; Back to Master Hub</a>
     </div>
 
     <div class="layout-grid">
+        <div class="nexus-sidebar">
+            REPLACE_SIDEBAR_NAV
+        </div>
+
         <div class="sticky-calculator">
             <div>
                 <div class="master-header">
@@ -896,13 +871,6 @@ base_html_template = """<!DOCTYPE html>
 
         <div class="content-column">
             REPLACE_TOP_AD
-            <div class="content-box">
-                <h3 style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>Other Utilities & Calculators</span>
-                    <span style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted); text-transform: none;">Catalog</span>
-                </h3>
-                REPLACE_UTILITIES_GRID
-            </div>
             REPLACE_TUNING_GUIDES
             <div class="content-box">
                 <h3>Formula Breakdown</h3>
@@ -918,7 +886,6 @@ base_html_template = """<!DOCTYPE html>
     </div>
 
     REPLACE_FOOTER
-    REPLACE_SEARCH_SCRIPT
 
     <script>
         TOOL_SCRIPT
@@ -1689,14 +1656,13 @@ for row in pages:
             .replace("PRIMARY_TOOL_HTML", primary_tool_html)
             .replace("FORMULA_TEXT", formula_text)
             .replace("FAQS_HTML", faqs)
-            .replace("REPLACE_UTILITIES_GRID", utilities_grid_html)
+            .replace("REPLACE_SIDEBAR_NAV", sidebar_nav_html)
             .replace("REPLACE_STICKY_AD", ad_block_html)
             .replace("REPLACE_TOP_AD", ad_block_html)
             .replace("REPLACE_BOTTOM_AD", ad_block_html)
             .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
             .replace("REPLACE_PARTNERS", partners_html)
             .replace("REPLACE_FOOTER", footer_html)
-            .replace("REPLACE_SEARCH_SCRIPT", search_script)
             .replace("TOOL_SCRIPT", tool_script)
     )
 
@@ -1705,4 +1671,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully updated build script and generated {pages_created} pages!")
+print(f"Successfully generated Nexus-style layout for {pages_created} pages!")
