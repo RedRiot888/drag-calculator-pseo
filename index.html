@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Drag Racing Drivetrain & Shift RPM Calculator Suite</title>
         <meta name='impact-site-verification' value='b2bb3042-cfc7-4ed4-b783-57a9b5a6451f'>
+    <meta name='google-site-verification' content='google9e7c88791a3f2f72'>
     <style>
         :root {
             --bg-dark: #0f1015;
@@ -116,12 +117,8 @@
             color: white;
             border-color: var(--accent-red);
         }
-        .tab-pane {
-            display: none;
-        }
-        .tab-pane.active {
-            display: block;
-        }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -145,8 +142,6 @@
             box-sizing: border-box;
             font-size: 0.82rem;
         }
-        optgroup { color: var(--accent-red); font-weight: bold; }
-        option { color: var(--text-main); background: var(--input-bg); }
         .results-box {
             margin-top: 10px;
             background: #121418;
@@ -168,7 +163,6 @@
             font-size: 0.75rem;
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         .action-btn:hover { background: #e0161f; }
         table {
@@ -204,297 +198,79 @@
             color: var(--text-main) !important;
             border-left-color: var(--accent-red) !important;
         }
-        @media print {
-            body { background: white; color: black; padding: 0; }
-            .nexus-sidebar, .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
-            .content-column, .tab-buttons, .action-btn, footer { display: none; }
-            input, select { border: 1px solid #ccc; background: white; color: black; }
-        }
     </style>
 </head>
 <body>
     <div class="layout-grid">
         <div class="nexus-sidebar">
-            
 <div style="display: flex; flex-direction: column; gap: 4px;">
-    <a href="index.html" class="nav-item active" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--input-bg); border-left: 3px solid var(--accent-red); color: var(--text-main); text-decoration: none; border-radius: 4px; font-size: 0.78rem; font-weight: 600;">
-        <span>🏁 Popular / Master Hub</span>
-        <span style="font-size: 0.65rem; color: var(--text-muted);">ALL</span>
-    </a>
-    <a href="transmission-shift-recovery-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
-        <span>🏎️ Transmission & Gearing</span>
-    </a>
-    <a href="turbo-sizing-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
-        <span>🌀 Forced Induction / Turbo</span>
-    </a>
-    <a href="exhaust-header-sizing-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
-        <span>🔥 Exhaust & Airflow</span>
-    </a>
-    <a href="fuel-injector-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
-        <span>⛽ Fueling & EFI</span>
-    </a>
-    <a href="tire-growth-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
-        <span>🛞 Chassis & Tires</span>
-    </a>
-    <a href="automotive-relay-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
-        <span>⚡ Electrical & Wiring</span>
-    </a>
+    <a href="index.html" class="nav-item active" style="padding: 8px 10px; background: var(--input-bg); border-left: 3px solid var(--accent-red); color: var(--text-main); text-decoration: none; border-radius: 4px; font-size: 0.78rem; font-weight: 600;">🏁 Popular / Master Hub</a>
+    <a href="transmission-shift-recovery-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">🏎️ Transmission & Gearing</a>
+    <a href="turbo-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">🌀 Forced Induction / Turbo</a>
+    <a href="exhaust-header-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">🔥 Exhaust & Airflow</a>
+    <a href="fuel-injector-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">⛽ Fueling & EFI</a>
+    <a href="tire-growth-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">🛞 Chassis & Tires</a>
+    <a href="automotive-relay-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">⚡ Electrical & Wiring</a>
 </div>
-
-        </div>
-
+</div>
         <div class="sticky-calculator">
             <div>
                 <div class="master-header">
                     <h1>Ultimate Drag Racing Suite</h1>
                     <p>Professional Track Tuning Engine</p>
                 </div>
-
                 <div class="tab-buttons">
                     <button type="button" class="tab-btn active" id="btn-drivetrain">Drivetrain & Shift</button>
                     <button type="button" class="tab-btn" id="btn-suspension">4-Link Suspension</button>
                 </div>
-
                 <div id="pane-drivetrain" class="tab-pane active">
                     <div class="grid-2">
                         <div>
                             <label>Transmission Profile</label>
                             <select id="trans" onchange="applyTransPreset()">
-                                <optgroup label="Custom">
-                                    <option value="custom">Custom Ratios</option>
-                                </optgroup>
                                 <optgroup label="GM Automatic">
+                                    <option value="th400" selected>TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
                                     <option value="powerglide">Powerglide (1.76 / 1.00)</option>
                                     <option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
-                                    <option value="th400" selected>TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
-                                    <option value="4l60e">4L60e (3.06 / 1.62 / 1.00 / 0.70)</option>
-                                    <option value="6l80">6L80 (4.03 / 2.36 / 1.53 / 1.15 / 0.85 / 0.67)</option>
-                                    <option value="8l90">8L90 (4.56 / 2.97 / 2.08 / 1.69 / 1.27 / 1.00 / 0.85 / 0.65)</option>
-                                    <option value="10l90">10L90 (4.70 / 2.98 / 2.14 / 1.77 / 1.52 / 1.27 / 1.00 / 0.85 / 0.69 / 0.64)</option>
-                                </optgroup>
-                                <optgroup label="Ford Automatic">
-                                    <option value="c4_c6">Ford C4 / C6 (2.46 / 1.46 / 1.00)</option>
-                                    <option value="aod">AOD (2.40 / 1.47 / 1.00 / 0.67)</option>
-                                    <option value="4r70w">4R70W (2.84 / 1.55 / 1.00 / 0.70)</option>
-                                    <option value="mustang_10r80">Mustang 10R80 (4.70 / 2.99 / 2.15 / 1.77 / 1.52 / 1.28 / 1.00 / 0.85 / 0.69 / 0.64)</option>
-                                </optgroup>
-                                <optgroup label="Mopar Automatic">
-                                    <option value="torque_727">Torqueflite 727 (2.45 / 1.45 / 1.00)</option>
-                                </optgroup>
-                                <optgroup label="Manuals">
-                                    <option value="ford_t5">Ford T-5 (2.95 / 1.94 / 1.34 / 1.00 / 0.73)</option>
-                                    <option value="t56">T56 / TR-6060 (2.66 / 1.78 / 1.30 / 1.00 / 0.74 / 0.50)</option>
-                                    <option value="tremec_tkx">Tremec TKX (2.87 / 1.89 / 1.28 / 1.00 / 0.68)</option>
                                 </optgroup>
                             </select>
                         </div>
-                        <div>
-                            <label>Max Shift RPM</label>
-                            <input type="number" id="max-rpm" value="7500" step="100">
-                        </div>
-                    </div>
-                    <div class="grid-2" id="custom-gears-row" style="display: none;">
-                        <div style="grid-column: span 2;">
-                            <label>Custom Ratios (comma-separated)</label>
-                            <input type="text" id="custom-ratios" value="2.48, 1.48, 1.00">
-                        </div>
+                        <div><label>Max Shift RPM</label><input type="number" id="max-rpm" value="7500" step="100"></div>
                     </div>
                     <div class="grid-2">
-                        <div>
-                            <label>Tire Diameter (in)</label>
-                            <input type="number" id="tire-dia" value="28.0" step="0.1">
-                        </div>
-                        <div>
-                            <label>Rear Gear Ratio</label>
-                            <input type="number" id="rear-gear" value="3.42" step="0.01">
-                        </div>
+                        <div><label>Tire Diameter (in)</label><input type="number" id="tire-dia" value="28.0" step="0.1"></div>
+                        <div><label>Rear Gear Ratio</label><input type="number" id="rear-gear" value="3.42" step="0.01"></div>
                     </div>
                     <div class="grid-2">
-                        <div>
-                            <label>Vehicle Weight (lbs)</label>
-                            <input type="number" id="veh-wt" value="3200" step="50">
-                        </div>
-                        <div>
-                            <label>Flywheel HP</label>
-                            <input type="number" id="veh-hp" value="1100" step="25">
-                        </div>
+                        <div><label>Vehicle Weight (lbs)</label><input type="number" id="veh-wt" value="3200" step="50"></div>
+                        <div><label>Flywheel HP</label><input type="number" id="veh-hp" value="1100" step="25"></div>
                     </div>
-                    <div class="results-box" id="results">Adjust parameters above to view performance.</div>
+                    <div class="results-box" id="results">Adjust parameters above.</div>
                     <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
                     <table>
                         <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift Speed</th><th>RPM Drop</th></tr></thead>
                         <tbody id="gear-body"></tbody>
                     </table>
                 </div>
-
                 <div id="pane-suspension" class="tab-pane">
-                    <div class="section-title">1. Vehicle Weight & Distribution</div>
+                    <div class="section-title">Weight & Distribution</div>
                     <div class="grid-2">
-                        <div>
-                            <label>Total Weight (lbs)</label>
-                            <input type="number" id="susp-wt" value="3200" step="50">
-                        </div>
-                        <div>
-                            <label>Wheelbase (in)</label>
-                            <input type="number" id="susp-wb" value="105.0" step="0.5">
-                        </div>
+                        <div><label>Total Weight (lbs)</label><input type="number" id="susp-wt" value="3200" step="50"></div>
+                        <div><label>Front Weight (%)</label><input type="number" id="susp-front-wt" value="52.0" step="0.5"></div>
                     </div>
-                    <div class="grid-2">
-                        <div>
-                            <label>CG Height (in)</label>
-                            <input type="number" id="susp-cg" value="20.0" step="0.5">
-                        </div>
-                        <div>
-                            <label>Static Front Weight (%)</label>
-                            <input type="number" id="susp-front-wt" value="52.0" step="0.5">
-                        </div>
-                    </div>
-
-                    <div class="section-title">2. 4-Link Bar Geometry</div>
-                    <div class="grid-2">
-                        <div>
-                            <label>Top Bar Front X (in)</label>
-                            <input type="number" id="tb-fx" value="26.0" step="0.5">
-                        </div>
-                        <div>
-                            <label>Top Bar Front Z (in)</label>
-                            <input type="number" id="tb-fz" value="16.0" step="0.5">
-                        </div>
-                    </div>
-                    <div class="grid-2">
-                        <div>
-                            <label>Top Bar Rear X (in)</label>
-                            <input type="number" id="tb-rx" value="0.0" step="0.5">
-                        </div>
-                        <div>
-                            <label>Top Bar Rear Z (in)</label>
-                            <input type="number" id="tb-rz" value="12.0" step="0.5">
-                        </div>
-                    </div>
-                    <div class="grid-2">
-                        <div>
-                            <label>Bottom Bar Front X (in)</label>
-                            <input type="number" id="bb-fx" value="32.0" step="0.5">
-                        </div>
-                        <div>
-                            <label>Bottom Bar Front Z (in)</label>
-                            <input type="number" id="bb-fz" value="8.0" step="0.5">
-                        </div>
-                    </div>
-                    <div class="grid-2">
-                        <div>
-                            <label>Bottom Bar Rear X (in)</label>
-                            <input type="number" id="bb-rx" value="0.0" step="0.5">
-                        </div>
-                        <div>
-                            <label>Bottom Bar Rear Z (in)</label>
-                            <input type="number" id="bb-rz" value="4.0" step="0.5">
-                        </div>
-                    </div>
-
-                    <div class="results-box" id="susp-results">Adjust suspension geometry above.</div>
-                    <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Suspension Sheet</button>
+                    <div class="results-box" id="susp-results">Adjust suspension geometry.</div>
                 </div>
             </div>
-
-            
-            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
-                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">
-                    Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a>
-                </div>
-            </div>
-
+            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted);">Advertisement Space</h3></div>
         </div>
-
         <div class="content-column">
-            
-            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
-                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">
-                    Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a>
-                </div>
-            </div>
-
-            
-            <div class="content-box">
-                <h3>Track-Side Tuning Cheat Sheets</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Essential round-by-round reference guides for the trailer:</p>
-                
-                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">1. Density Altitude (DA) & Weather</strong>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Every 1,000 ft increase in DA costs naturally aspirated engines ~3% horsepower. Forced induction setups compensate better via wastegate control, but watch inlet air temps.</p>
-                </div>
-
-                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">2. Torque Converter Slip</strong>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Target 5% to 8% slip at the finish line for max efficiency. Excessive slip generates transmission heat and kills trap speed; too tight kills 60-foot times.</p>
-                </div>
-
-                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">3. Boost & Nitro Management</strong>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Read spark plug ground straps for heat mark placement. Back off timing 1 to 2 degrees per additional 3-4 PSI of boost or when stepping up nitrous jetting.</p>
-                </div>
-
-                <div>
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">4. 4-Link Anti-Squat & Launch</strong>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">If the car bounces or unloads the tires immediately on launch, lower the instantaneous center (IC) or soften rear shock extension.</p>
-                </div>
-            </div>
-
-            
-            <div class="content-box">
-                <h3 style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>Industry Standard References</span>
-                    <span style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted); text-transform: none;">Gold-Standard Tech</span>
-                </h3>
-                <ul class="sponsor-list" style="list-style: none; padding: 0; margin: 0 0 15px 0; font-size: 0.85rem; color: var(--text-muted);">
-                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                        <span style="color: var(--text-main); font-weight: 600;">Precision Turbo & Engine</span>
-                        <span style="font-size: 0.75rem; color: #10b981;">Verified Match</span>
-                    </li>
-                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                        <span style="color: var(--text-main); font-weight: 600;">Strange Engineering</span>
-                        <span style="font-size: 0.75rem; color: #10b981;">Drivetrain Spec</span>
-                    </li>
-                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                        <span style="color: var(--text-main); font-weight: 600;">ATI Performance Products</span>
-                        <span style="font-size: 0.75rem; color: #10b981;">Transmission Tech</span>
-                    </li>
-                    <li style="padding: 8px 0; display: flex; justify-content: space-between; align-items: center;">
-                        <span style="color: var(--text-main); font-weight: 600;">Mickey Thompson Tires</span>
-                        <span style="font-size: 0.75rem; color: #10b981;">Rollout Standard</span>
-                    </li>
-                </ul>
-                <div style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); margin-bottom: 4px;">Are you a performance manufacturer?</div>
-                    <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0 0 8px 0;">Put your parts and banner in front of thousands of active racers daily.</p>
-                    <a href="contact.html" style="display: inline-block; background: var(--accent-red); color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.72rem; text-transform: uppercase;">Claim Sponsor Space &rarr;</a>
-                </div>
-            </div>
-
-            
-            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
-                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">
-                    Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a>
-                </div>
-            </div>
-
+            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted);">Advertisement Space</h3></div>
+            <div class="content-box"><h3>Track-Side Tuning</h3></div>
+            <div class="content-box"><h3>Industry Standards</h3></div>
+            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted);">Advertisement Space</h3></div>
         </div>
     </div>
-
-    
-    <footer style="max-width: 1400px; margin: 40px auto 20px auto; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px; font-size: 0.8rem; color: var(--text-muted);">
-        <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved. Professional Track Tuning & Engineering Tools.</p>
-        <p style="margin-top: 5px;">
-            <a href="contact.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px;">Contact & Sponsorships</a> | 
-            <a href="privacy.html" style="color: var(--text-muted); text-decoration: none; margin: 0 10px;">Privacy Policy & Affiliate Disclosure</a>
-        </p>
-        <p style="font-size: 0.72rem; color: #6b7280; margin-top: 8px;">Disclosure: We may earn an affiliate commission from qualifying purchases made through links on this site at no extra cost to you.</p>
-    </footer>
-
-
+    <footer style="text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.8rem;"><p>&copy; 2026 Drag Racing Suite</p></footer>
     <script>
         document.getElementById('btn-drivetrain').addEventListener('click', function() {
             document.getElementById('pane-drivetrain').classList.add('active');
@@ -502,108 +278,26 @@
             document.getElementById('btn-drivetrain').classList.add('active');
             document.getElementById('btn-suspension').classList.remove('active');
         });
-
         document.getElementById('btn-suspension').addEventListener('click', function() {
             document.getElementById('pane-suspension').classList.add('active');
             document.getElementById('pane-drivetrain').classList.remove('active');
             document.getElementById('btn-suspension').classList.add('active');
             document.getElementById('btn-drivetrain').classList.remove('active');
         });
-
-        const ratios = { 
-            powerglide: [1.76, 1.00], 
-            th350: [2.52, 1.52, 1.00], 
-            th400: [2.48, 1.48, 1.00],
-            "4l60e": [3.06, 1.62, 1.00, 0.70],
-            "6l80": [4.03, 2.36, 1.53, 1.15, 0.85, 0.67],
-            "8l90": [4.56, 2.97, 2.08, 1.69, 1.27, 1.00, 0.85, 0.65],
-            "10l90": [4.70, 2.98, 2.14, 1.77, 1.52, 1.27, 1.00, 0.85, 0.69, 0.64],
-            c4_c6: [2.46, 1.46, 1.00],
-            aod: [2.40, 1.47, 1.00, 0.67],
-            "4r70w": [2.84, 1.55, 1.00, 0.70],
-            mustang_10r80: [4.70, 2.99, 2.15, 1.77, 1.52, 1.28, 1.00, 0.85, 0.69, 0.64],
-            torque_727: [2.45, 1.45, 1.00],
-            ford_t5: [2.95, 1.94, 1.34, 1.00, 0.73],
-            t56: [2.66, 1.78, 1.30, 1.00, 0.74, 0.50],
-            tremec_tkx: [2.87, 1.89, 1.28, 1.00, 0.68]
-        };
-
-        function applyTransPreset() {
-            let val = document.getElementById("trans").value;
-            let customRow = document.getElementById("custom-gears-row");
-            if(customRow) {
-                customRow.style.display = (val === "custom") ? "grid" : "none";
-            }
-            calcAll();
-        }
-
         function calcAll() {
-            let tKey = document.getElementById("trans").value;
-            let rat = [];
-            if(tKey === "custom") {
-                let customStr = document.getElementById("custom-ratios").value;
-                rat = customStr.split(",").map(function(x) { return parseFloat(x.trim()); }).filter(function(x) { return !isNaN(x) && x > 0; });
-                if(rat.length === 0) rat = [2.48, 1.48, 1.00];
-            } else {
-                rat = ratios[tKey] || [2.48, 1.48, 1.00];
-            }
-
             let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
             let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
             let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
             let wt = parseFloat(document.getElementById("veh-wt").value) || 3200;
             let hp = parseFloat(document.getElementById("veh-hp").value) || 1100;
-
-            let rollout = (tire * Math.PI).toFixed(1);
             let estEt = (5.825 * Math.pow(wt / hp, 0.333)).toFixed(2);
             let estTrap = (234 * Math.cbrt(hp / wt)).toFixed(1);
-
-            let resEl = document.getElementById("results");
-            if(resEl) {
-                resEl.innerHTML = "Est. 1/4 Mile ET: " + estEt + "s @ " + estTrap + " MPH | Rollout: " + rollout + " in";
-            }
-
-            let tbody = document.getElementById("gear-body");
-            if(tbody) {
-                tbody.innerHTML = "";
-                for(let i = 0; i < rat.length; i++) {
-                    let overall = rat[i] * gear;
-                    let speed = (rpm * tire) / (overall * 336);
-                    let drop = i < rat.length - 1 ? "Drop to " + Math.round(rpm * (rat[i+1] / rat[i])) + " RPM" : "Finish";
-                    tbody.innerHTML += "<tr><td>" + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.toFixed(1) + " MPH</td><td>" + drop + "</td></tr>";
-                }
-            }
-
-            let sWt = parseFloat(document.getElementById("susp-wt").value) || 3200;
-            let sFront = parseFloat(document.getElementById("susp-front-wt").value) || 52;
-            let rearWt = Math.round(sWt * (1 - sFront / 100));
-
-            let tbFx = parseFloat(document.getElementById("tb-fx").value) || 26;
-            let tbFz = parseFloat(document.getElementById("tb-fz").value) || 16;
-            let tbRx = parseFloat(document.getElementById("tb-rx").value) || 0;
-            let tbRz = parseFloat(document.getElementById("tb-rz").value) || 12;
-
-            let bbFx = parseFloat(document.getElementById("bb-fx").value) || 32;
-            let bbFz = parseFloat(document.getElementById("bb-fz").value) || 8;
-            let bbRx = parseFloat(document.getElementById("bb-rx").value) || 0;
-            let bbRz = parseFloat(document.getElementById("bb-rz").value) || 4;
-
-            let topSlope = (tbFz - tbRz) / (tbFx - tbRx || 1);
-            let botSlope = (bbFz - bbRz) / (bbFx - bbRx || 1);
-            let icLength = Math.round(Math.abs((tbFz - bbFz) / (topSlope - botSlope || 0.01)) * 10) / 10;
-            if(isNaN(icLength) || icLength <= 0 || icLength > 150) icLength = 47.3;
-
-            let sRes = document.getElementById("susp-results");
-            if(sRes) {
-                sRes.innerHTML = "Rear Static Weight: " + rearWt + " lbs | IC Length: " + icLength + " in";
-            }
+            document.getElementById("results").innerHTML = "Est. 1/4 Mile ET: " + estEt + "s @ " + estTrap + " MPH";
         }
-
-        ["trans", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "custom-ratios", "susp-wt", "susp-wb", "susp-cg", "susp-front-wt", "tb-fx", "tb-fz", "tb-rx", "tb-rz", "bb-fx", "bb-fz", "bb-rx", "bb-rz"].forEach(function(id) {
+        ["max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp"].forEach(id => {
             let el = document.getElementById(id);
             if(el) el.addEventListener("input", calcAll);
         });
-
         calcAll();
     </script>
 </body>
