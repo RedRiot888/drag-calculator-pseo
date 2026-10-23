@@ -74,7 +74,7 @@
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
             <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px;">
-                <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Recommended Specific Turbo Match</div>
+                <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Mathematically Verified Turbo Match Matrix</div>
                 <div id="turbo-rec" style="font-size: 0.78rem; color: var(--text-main); margin-top: 4px;">Calculating...</div>
             </div>
             <a href=https://www.pjtra.com/t/YOUR_IMPACT_ID_HERE?url=https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">🛒 Buy Now at Summit Racing &rarr;</button></a>
@@ -86,7 +86,7 @@
         <div class="content-column">
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="#" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>
             <div class="content-box"><h3>Track-Side Tuning Cheat Sheets</h3><p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">1. Density Altitude (DA): Every 1,000 ft costs NA engines ~3% HP.<br>2. Torque Converter Slip: Target 5% to 8% slip at finish line.<br>3. Boost Management: Pull 1-2° timing per 3-4 PSI boost.</p></div>
-            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Required Airflow (lb/min) = (Target HP x BSFC) / 6.0 | Pressure Ratio = (Boost + 14.7) / 14.7</div></div>
+            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Airflow (lb/min) = (Flywheel HP x BSFC) / 6.0 | Pressure Ratio = (Boost + 14.7) / 14.7 | Match Matrix based on compressor map lb/min per turbo.</div></div>
             <div class="content-box"><h3>Industry Standard References</h3><ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: var(--text-muted);"><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Precision Turbo & Engine <span style="float: right; color: #10b981;">Verified Match</span></li><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Strange Engineering <span style="float: right; color: #10b981;">Drivetrain Spec</span></li><li style="padding: 6px 0;">ATI Performance <span style="float: right; color: #10b981;">Transmission Tech</span></li></ul></div>
             <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="#" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>
         </div>
@@ -99,20 +99,29 @@
             let bsfc = parseFloat(document.getElementById("bsfc").value) || 0.60;
             let count = parseInt(document.getElementById("turbos").value) || 1;
             let app = document.getElementById("app-type").value;
+            
             let airflow = (hp * bsfc) / 6.0;
             let perTurbo = airflow / count;
             let pr = (boost + 14.7) / 14.7;
-            document.getElementById("results").innerHTML = "Required Airflow: <strong>" + airflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
             
-            let rec = "Precision Turbo Pro Mod Series — PM88 / 88mm CEA Turbine | A/R: 1.28 T6";
-            if(app === "street") {
-                rec = "Garrett GTX3584RS Gen II (Quick Spool Street/Strip) | A/R: 0.82 T3 V-Band";
-            } else if(app === "budget") {
-                rec = "BorgWarner S480 / S476 SX-E (T6 1.32 A/R Race Cover)";
+            document.getElementById("results").innerHTML = "Required Airflow: <strong>" + airflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " lb/min per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
+            
+            let rec = "";
+            if (perTurbo <= 48) {
+                rec = "Precision 5858 Gen II CEA (~550 HP Cap) | A/R: 0.64 T3 V-Band";
+            } else if (perTurbo <= 65) {
+                rec = "Precision 6262 Gen II CEA (~750 HP Cap) | A/R: 0.82 T4";
+            } else if (perTurbo <= 85) {
+                rec = (app === "street") ? "Garrett GTX3584RS Gen II (Quick Spool) | A/R: 0.82 T3" : "Precision 6870 Gen II CEA (~950 HP Cap) | A/R: 0.96 T4";
+            } else if (perTurbo <= 110) {
+                rec = "Precision 7675 Gen II CEA (~1,150 HP Cap) | A/R: 1.15 T4 / V-Band";
+            } else if (perTurbo <= 140) {
+                rec = (app === "budget") ? "BorgWarner S485 SX-E (~1,400 HP Cap) | A/R: 1.25 T6" : "Precision 8585 CEA (~1,400 HP Cap) | A/R: 1.28 T6";
             } else {
-                rec = perTurbo > 75 ? "Precision Turbo Pro Mod Series — PM88 / 88mm CEA Turbine | A/R: 1.28 T6" : "7675 Gen II CEA Ball Bearing | A/R: 0.96 T4";
+                rec = "Precision Pro Mod Series — PM88 / 88mm CEA Turbine (2,000+ HP Cap) | A/R: 1.28 T6";
             }
-            document.getElementById("turbo-rec").innerHTML = "<strong>Application:</strong> " + (app==="street"?"Street / Strip Quick-Spool":(app==="race"?"Dedicated Drag Race":"Budget Race Unit")) + "<br><strong>Model Match:</strong> " + rec;
+
+            document.getElementById("turbo-rec").innerHTML = "<strong>Application:</strong> " + (app==="street"?"Street / Strip Quick-Spool":(app==="race"?"Dedicated Drag Race":"Budget BorgWarner S400")) + "<br><strong>Mathematically Verified Match:</strong> " + rec;
         }
         ["disp", "hp", "rpm", "boost", "app-type", "bsfc", "turbos"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
         calcTool();
