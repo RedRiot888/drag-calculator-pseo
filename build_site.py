@@ -40,10 +40,22 @@ sidebar_nav_html = """
 </div>
 """
 
-ad_block_html = '<div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="#" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>'
+ad_block_html = '<div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="#" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>'
 partners_html = '<div class="content-box"><h3>Industry Standard References</h3><ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: var(--text-muted);"><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Precision Turbo & Engine <span style="float: right; color: #10b981;">Verified Match</span></li><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Strange Engineering <span style="float: right; color: #10b981;">Drivetrain Spec</span></li><li style="padding: 6px 0;">ATI Performance <span style="float: right; color: #10b981;">Transmission Tech</span></li></ul></div>'
 tuning_guides_html = '<div class="content-box"><h3>Track-Side Tuning Cheat Sheets</h3><p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">1. Density Altitude (DA): Every 1,000 ft costs NA engines ~3% HP.<br>2. Torque Converter Slip: Target 5% to 8% slip at finish line.<br>3. Boost Management: Pull 1-2° timing per 3-4 PSI boost.</p></div>'
-footer_html = '<footer style="text-align: center; margin: 30px auto; color: var(--text-muted); font-size: 0.8rem;"><p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p></footer>'
+
+footer_html = """
+<footer style="text-align: center; margin: 40px auto 20px auto; color: var(--text-muted); font-size: 0.78rem; border-top: 1px solid var(--border-color); padding-top: 20px;">
+    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved. Professional Track Tuning & Engineering Tools.</p>
+    <p style="margin: 6px 0;">
+        <a href="mailto:support@dragcalculators.com" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact & Sponsorships</a> &nbsp;|&nbsp; 
+        <a href="#" style="color: var(--text-muted); text-decoration: none;">Privacy Policy & Affiliate Disclosure</a>
+    </p>
+    <p style="font-size: 0.7rem; color: #6b7280; max-width: 800px; margin: 8px auto 0 auto;">
+        Disclosure: We may earn an affiliate commission from qualifying purchases made through links on this site at no extra cost to you.
+    </p>
+</footer>
+"""
 
 verification_tags = """    <meta name='impact-site-verification' value='b2bb3042-cfc7-4ed4-b783-57a9b5a6451f'>
     <meta name='google-site-verification' content='google9e7c88791a3f2f72'>"""
@@ -168,7 +180,7 @@ for row in pages:
         function calcTool() {
             let tKey = document.getElementById("trans").value;
             let rat = ratios[tKey] || [2.48, 1.48, 1.00];
-            let rpm = parseFloat(document.getElementById("max-rpm").value) & 7500;
+            let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
             let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
             let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
             let rollout = (tire * Math.PI).toFixed(1);
@@ -229,12 +241,10 @@ for row in pages:
             let perTurbo = airflow / count;
             let pr = (boost + 14.7) / 14.7;
             
-            // Displacement per cylinder in cc
             let ccPerCyl = (disp * 1000) / cyl;
             
             document.getElementById("results").innerHTML = "Required Airflow: <strong>" + airflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " lb/min per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
             
-            // Spool Analysis based on cc per cylinder & turbo size
             let spoolText = "";
             if (ccPerCyl < 350 && perTurbo > 70) {
                 spoolText = "⚠️ <strong>Extreme Lag Warning:</strong> " + Math.round(ccPerCyl) + " cc/cyl is very low for a " + Math.round(perTurbo) + " lb/min turbo. High RPM threshold; twin turbos or tighter A/R strongly recommended.";
@@ -245,7 +255,6 @@ for row in pages:
             }
             document.getElementById("spool-analysis").innerHTML = spoolText;
             
-            // Turbo Match Matrix
             let rec = "";
             if (perTurbo <= 45) {
                 rec = "Precision 5858 Gen II CEA (~550 HP Cap) | A/R: 0.64 T3 V-Band";
@@ -391,7 +400,9 @@ for row in pages:
     with open(os.path.join(output_dir, f"{slug}.html"), "w", encoding="utf-8") as out_f:
         out_f.write(page_html)
 
-print("Successfully built turbo calculator with Displacement-per-Cylinder Spool Analysis!")# 5. Automatically generate sitemap.xml for Google Search Console
+print("Successfully built all pages with spool analysis and footer!")
+
+# 5. Automatically generate sitemap.xml for Google Search Console
 sitemap_content = """<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
