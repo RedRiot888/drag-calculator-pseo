@@ -96,7 +96,7 @@
         function calcTool() {
             let tKey = document.getElementById("trans").value;
             let rat = ratios[tKey] || [2.48, 1.48, 1.00];
-            let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
+            let rpm = parseFloat(document.getElementById("max-rpm").value) & 7500;
             let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
             let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
             let rollout = (tire * Math.PI).toFixed(1);
