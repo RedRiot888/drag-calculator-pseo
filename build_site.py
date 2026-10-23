@@ -23,14 +23,29 @@ with open("pseo_pages_list.csv", mode="r", encoding="utf-8") as f:
     reader = csv.DictReader(f)
     pages = list(reader)
 
-# Nexus-grade Left Rail Navigation Menu
+# Drag Racing Christmas Tree Sidebar Header
 sidebar_nav_html = '''
-<div style="font-size: 0.68rem; font-weight: bold; color: var(--accent-red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">
-    Nexus Suite &bull; 9 Active
+<div style="display: flex; flex-direction: column; align-items: center; background: #121418; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-bottom: 12px;">
+    <div style="font-size: 0.62rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Tree Status &bull; 9 Active</div>
+    <!-- Mini Christmas Tree LEDs -->
+    <div style="display: flex; gap: 4px; margin-bottom: 6px;">
+        <div style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; box-shadow: 0 0 6px #3b82f6;" title="Pre-Stage"></div>
+        <div style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; box-shadow: 0 0 6px #3b82f6;" title="Stage"></div>
+    </div>
+    <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+        <div style="width: 10px; height: 10px; background: #f59e0b; border-radius: 50%; box-shadow: 0 0 8px #f59e0b;"></div>
+        <div style="width: 10px; height: 10px; background: #f59e0b; border-radius: 50%; box-shadow: 0 0 8px #f59e0b;"></div>
+        <div style="width: 10px; height: 10px; background: #f59e0b; border-radius: 50%; box-shadow: 0 0 8px #f59e0b;"></div>
+    </div>
+    <div style="display: flex; gap: 8px; margin-bottom: 4px;">
+        <div style="width: 12px; height: 12px; background: #10b981; border-radius: 50%; box-shadow: 0 0 10px #10b981;" title="GREEN GO!"></div>
+    </div>
+    <div style="font-size: 0.72rem; font-weight: bold; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px;">Drag Suite Hub</div>
 </div>
+
 <div style="display: flex; flex-direction: column; gap: 4px;">
     <a href="index.html" class="nav-item active" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--input-bg); border-left: 3px solid var(--accent-red); color: var(--text-main); text-decoration: none; border-radius: 4px; font-size: 0.78rem; font-weight: 600;">
-        <span>🔥 Popular / Master Hub</span>
+        <span>🏁 Popular / Master Hub</span>
         <span style="font-size: 0.65rem; color: var(--text-muted);">ALL</span>
     </a>
     <a href="transmission-shift-recovery-calculator.html" class="nav-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: transparent; border-left: 3px solid transparent; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 0.78rem; transition: all 0.2s;">
@@ -650,7 +665,7 @@ master_index_html = (
 with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
     f.write(master_index_html)
 
-# PSEO Sub-Pages Template with Nexus Sidebar
+# PSEO Sub-Pages Template with Christmas Tree Sidebar
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1671,4 +1686,4 @@ for row in pages:
         out_f.write(page_html)
     pages_created += 1
 
-print(f"Successfully generated Nexus-style layout for {pages_created} pages!")
+print(f"Successfully generated Christmas Tree layout for {pages_created} pages!")
