@@ -1020,8 +1020,10 @@ for row in pages:
         tool_script = """
         function toggleExhaustMode() {
             let mode = document.getElementById("ex-type").value;
-            document.getElementById("na-fields").style.display = (mode === "na") ? "grid" : "none";
-            document.getElementById("turbo-fields").style.display = (mode === "turbo") ? "grid" : "none";
+            let naFields = document.getElementById("na-fields");
+            let turboFields = document.getElementById("turbo-fields");
+            if(naFields) naFields.style.display = (mode === "na") ? "grid" : "none";
+            if(turboFields) turboFields.style.display = (mode === "turbo") ? "grid" : "none";
             calcTool();
         }
 
@@ -1050,15 +1052,15 @@ for row in pages:
                     collectorDia = "3.0 inches";
                 }
                 
-                document.getElementById("ex-results").innerHTML = 
-                    "Rec. Header Primary OD: <strong>" + primaryDia + "</strong> | Collector Diameter: <strong>" + collectorDia + "</strong><br>" +
-                    "Est. Airflow Demand: <strong>" + Math.round(cfmEst) + " CFM</strong>";
-                    
-                document.getElementById("ex-part-details").innerHTML = 
-                    "<strong>Material Spec:</strong> " + tubingSpec + "<br>" +
-                    "<strong>Flange & Collector:</strong> Heavy-Duty Laser Cut Flanges & Merge Collector<br>" +
-                    "<strong>Fabrication Tools:</strong> " + weldingReq + "<br>" +
-                    "<span style='color: var(--text-muted); font-size: 0.75rem;'><strong>Tuning Note:</strong> Maintain constant primary length (+/- 0.5 in) for even scavenging.</span>";
+                let resEl = document.getElementById("ex-results");
+                if(resEl) {
+                    resEl.innerHTML = "Rec. Header Primary OD: <strong>" + primaryDia + "</strong> | Collector Diameter: <strong>" + collectorDia + "</strong><br>Est. Airflow Demand: <strong>" + Math.round(cfmEst) + " CFM</strong>";
+                }
+                
+                let partEl = document.getElementById("ex-part-details");
+                if(partEl) {
+                    partEl.innerHTML = "<strong>Material Spec:</strong> " + tubingSpec + "<br><strong>Flange & Collector:</strong> Heavy-Duty Laser Cut Flanges & Merge Collector<br><strong>Fabrication Tools:</strong> " + weldingReq + "<br><span style='color: var(--text-muted); font-size: 0.75rem;'><strong>Tuning Note:</strong> Maintain constant primary length (+/- 0.5 in) for even scavenging.</span>";
+                }
             } else {
                 let boost = parseFloat(document.getElementById("ex-boost").value) || 20;
                 let routing = document.getElementById("ex-routing").value;
@@ -1066,7 +1068,7 @@ for row in pages:
                 let downpipeDia = "3.5 inches";
                 let material = "304 Stainless Steel Tubing";
                 let flangeSpec = "V-Band Flange Assembly & Clamp";
-                let weldSupplies = "Back-Purging Argon Setup, 1/16\" ER308L Rod";
+                let weldSupplies = "Back-Purging Argon Setup, 1/16\\" ER308L Rod";
                 
                 if(hp > 1200 || boost > 25) {
                     downpipeDia = "4.5 to 5.0 inches";
@@ -1080,14 +1082,15 @@ for row in pages:
                     downpipeDia += " (Short Fender Exit)";
                 }
                 
-                document.getElementById("ex-results").innerHTML = 
-                    "Rec. Turbo Downpipe OD: <strong>" + downpipeDia + "</strong> (Target: " + hp + " HP @ " + boost + " PSI)";
-                    
-                document.getElementById("ex-part-details").innerHTML = 
-                    "<strong>Downpipe Material:</strong> " + material + " (" + downpipeDia + ")<br>" +
-                    "<strong>Hardware:</strong> " + flangeSpec + " & Thermal Blanket<br>" +
-                    "<strong>Welding Gear:</strong> " + weldSupplies + "<br>" +
-                    "<span style='color: var(--text-muted); font-size: 0.75rem;'><strong>Backpressure Warning:</strong> Ensure smooth radius bends within 12 inches of turbine exit.</span>";
+                let resEl = document.getElementById("ex-results");
+                if(resEl) {
+                    resEl.innerHTML = "Rec. Turbo Downpipe OD: <strong>" + downpipeDia + "</strong> (Target: " + hp + " HP @ " + boost + " PSI)";
+                }
+                
+                let partEl = document.getElementById("ex-part-details");
+                if(partEl) {
+                    partEl.innerHTML = "<strong>Downpipe Material:</strong> " + material + " (" + downpipeDia + ")<br><strong>Hardware:</strong> " + flangeSpec + " & Thermal Blanket<br><strong>Welding Gear:</strong> " + weldSupplies + "<br><span style='color: var(--text-muted); font-size: 0.75rem;'><strong>Backpressure Warning:</strong> Ensure smooth radius bends within 12 inches of turbine exit.</span>";
+                }
             }
         }
 
@@ -1814,4 +1817,4 @@ privacy_html = privacy_html.replace("IMPACT_META_PLACEHOLDER", impact_meta_tag).
 with open(os.path.join(output_dir, "privacy.html"), "w", encoding="utf-8") as f:
     f.write(privacy_html)
 
-print("Successfully generated all site pages including the new Exhaust & Header Sizing Calculator!")
+print("Successfully generated all site pages with fixed exhaust calculator toggle script!")
