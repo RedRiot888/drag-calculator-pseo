@@ -4,7 +4,7 @@ import csv
 output_dir = "."
 AFFILIATE_TRACKING_URL = "https://www.pjtra.com/t/YOUR_IMPACT_ID_HERE?url="
 
-# 1. Automatically generate Google Search Console verification file
+# 1. Automatically create Google Search Console verification file
 gsc_verification_filename = "google9e7c88791a3f2f72.html"
 gsc_verification_content = "google-site-verification: google9e7c88791a3f2f72.html"
 with open(os.path.join(output_dir, gsc_verification_filename), "w", encoding="utf-8") as f:
@@ -49,7 +49,7 @@ footer_html = '<footer style="text-align: center; margin: 30px auto; color: var(
 verification_tags = """    <meta name='impact-site-verification' value='b2bb3042-cfc7-4ed4-b783-57a9b5a6451f'>
     <meta name='google-site-verification' content='google9e7c88791a3f2f72'>"""
 
-# 3. Build index.html from template if available, else standard
+# 3. Build index.html from template
 if os.path.exists("index_template.html"):
     with open("index_template.html", "r", encoding="utf-8") as f:
         master_index_html = f.read()
@@ -68,7 +68,7 @@ if os.path.exists("index_template.html"):
         f.write(master_index_html)
     print("Successfully built index.html!")
 
-# 4. Build individual PSEO calculator pages with fully restored interactive tools
+# 4. Build individual PSEO calculator pages with full interactive tools
 base_html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -154,10 +154,16 @@ for row in pages:
                             <option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
                             <option value="4l60e">4L60e (3.06 / 1.62 / 1.00 / 0.70)</option>
                             <option value="6l80">6L80 (4.03 / 2.36 / 1.53 / 1.15 / 0.85 / 0.67)</option>
+                            <option value="8l90">8L90 (4.56 / 2.97 / 2.08 / 1.69 / 1.27 / 1.00)</option>
                         </optgroup>
                         <optgroup label="Ford Automatic">
                             <option value="c4_c6">Ford C4 / C6 (2.46 / 1.46 / 1.00)</option>
                             <option value="aod">AOD (2.40 / 1.47 / 1.00 / 0.67)</option>
+                            <option value="4r70w">4R70W (2.84 / 1.55 / 1.00 / 0.70)</option>
+                        </optgroup>
+                        <optgroup label="Manuals">
+                            <option value="t56">T56 / TR-6060 (2.66 / 1.78 / 1.30 / 1.00 / 0.74 / 0.50)</option>
+                            <option value="tremec_tkx">Tremec TKX (2.87 / 1.89 / 1.28 / 1.00 / 0.68)</option>
                         </optgroup>
                     </select>
                 </div>
@@ -175,7 +181,19 @@ for row in pages:
             </table>
         """
         tool_script = """
-        const ratios = { powerglide: [1.76, 1.00], th350: [2.52, 1.52, 1.00], th400: [2.48, 1.48, 1.00], "4l60e": [3.06, 1.62, 1.00, 0.70], "6l80": [4.03, 2.36, 1.53, 1.15, 0.85, 0.67], c4_c6: [2.46, 1.46, 1.00], aod: [2.40, 1.47, 1.00, 0.67] };
+        const ratios = { 
+            powerglide: [1.76, 1.00], 
+            th350: [2.52, 1.52, 1.00], 
+            th400: [2.48, 1.48, 1.00], 
+            "4l60e": [3.06, 1.62, 1.00, 0.70], 
+            "6l80": [4.03, 2.36, 1.53, 1.15, 0.85, 0.67],
+            "8l90": [4.56, 2.97, 2.08, 1.69, 1.27, 1.00],
+            c4_c6: [2.46, 1.46, 1.00], 
+            aod: [2.40, 1.47, 1.00, 0.67],
+            "4r70w": [2.84, 1.55, 1.00, 0.70],
+            t56: [2.66, 1.78, 1.30, 1.00, 0.74, 0.50],
+            tremec_tkx: [2.87, 1.89, 1.28, 1.00, 0.68]
+        };
         function calcTool() {
             let tKey = document.getElementById("trans").value;
             let rat = ratios[tKey] || [2.48, 1.48, 1.00];
@@ -200,8 +218,8 @@ for row in pages:
         calcTool();
         """
     elif category == "Turbo":
-        primary_title = "Turbo Sizing & Turbocharger Matching"
-        formula_text = "Required Airflow (lb/min) = (Target HP x BSFC) / 6.0"
+        primary_title = "Turbo Sizing & Turbocharger Matching Calculator"
+        formula_text = "Required Airflow (lb/min) = (Target HP x BSFC) / 6.0 | Pressure Ratio = (Boost + 14.7) / 14.7"
         primary_tool_html = """
             <div class="grid-2">
                 <div><label>Engine Disp (L)</label><input type="number" id="disp" value="5.3" step="0.1"></div>
@@ -212,6 +230,10 @@ for row in pages:
                 <div><label>Turbo Count</label><select id="turbos"><option value="1">Single Turbo</option><option value="2">Twin Turbo</option></select></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
+            <div style="background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px;">
+                <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Recommended Turbo Match</div>
+                <div id="turbo-rec" style="font-size: 0.78rem; color: var(--text-main); margin-top: 4px;">Calculating...</div>
+            </div>
             <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
         """
         tool_script = """
@@ -221,13 +243,16 @@ for row in pages:
             let count = parseInt(document.getElementById("turbos").value) || 1;
             let airflow = (hp * 0.85) / 6.0;
             let perTurbo = airflow / count;
-            document.getElementById("results").innerHTML = "Total Airflow: <strong>" + airflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) @ " + boost + " PSI";
+            let pr = (boost + 14.7) / 14.7;
+            document.getElementById("results").innerHTML = "Total Airflow: <strong>" + airflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) | PR: <strong>" + pr.toFixed(2) + ":1</strong>";
+            let rec = perTurbo > 75 ? "7675 Gen II Ball Bearing (1.10 A/R T4)" : "67mm High Flow V-Band Turbo";
+            document.getElementById("turbo-rec").innerHTML = "Rec. Unit: <strong>" + rec + "</strong>";
         }
         ["disp", "hp", "boost", "turbos"].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener("input", calcTool); });
         calcTool();
         """
     elif category == "Exhaust":
-        primary_title = "Exhaust Primary & Turbo Downpipe Sizing"
+        primary_title = "Exhaust Primary & Turbo Downpipe Sizing Calculator"
         formula_text = "NA Header Primary = (Displacement x RPM) / (Cylinder Count x Constant)"
         primary_tool_html = """
             <div class="grid-2">
@@ -248,7 +273,7 @@ for row in pages:
         calcTool();
         """
     elif category == "Fuel":
-        primary_title = "Fuel Injector Flow Rate & Sizing"
+        primary_title = "Fuel Injector Flow Rate & Sizing Calculator"
         formula_text = "Required Flow (cc/min) = (Target HP x BSFC) / (# Injectors x Duty Cycle)"
         primary_tool_html = """
             <div class="grid-2">
@@ -270,7 +295,7 @@ for row in pages:
         calcTool();
         """
     elif category == "Tire":
-        primary_title = "Tire Diameter Growth & Rollout"
+        primary_title = "Tire Diameter Growth & Rollout Drag Calculator"
         formula_text = "Dynamic Diameter = Static Diameter x (1 + (Growth % / 100))"
         primary_tool_html = """
             <div class="grid-2">
@@ -291,7 +316,7 @@ for row in pages:
         calcTool();
         """
     elif category == "Electrical":
-        primary_title = "Automotive Relay & Circuit Sizing"
+        primary_title = "Automotive Relay & Circuit Sizing Calculator"
         formula_text = "Amps = Watts / Volts | Fuse = Amps x 1.25"
         primary_tool_html = """
             <div class="grid-2">
@@ -348,4 +373,4 @@ for row in pages:
     with open(os.path.join(output_dir, f"{slug}.html"), "w", encoding="utf-8") as out_f:
         out_f.write(page_html)
 
-print("Successfully built all PSEO pages and verified files!")
+print("Successfully built all fully restored pages and verification files!")
