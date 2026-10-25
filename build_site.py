@@ -1,58 +1,98 @@
-# Fuel Injector tool HTML & Script
-fuel_injector_tool_html = """
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Fuel Injector Flow Rate & Sizing Engine</div>
-    <div class="grid-2">
-        <div><label>Target Crank HP</label><input type="number" id="fi-hp" value="1000" step="50"></div>
-        <div><label>Number of Injectors</label><input type="number" id="fi-inj" value="8" step="1"></div>
+import os
+import csv
+
+output_dir = "."
+
+# 1. Google Search Console verification file
+with open(os.path.join(output_dir, "google9e7c88791a3f2f72.html"), "w", encoding="utf-8") as f:
+    f.write("google-site-verification: google9e7c88791a3f2f72.html")
+
+# 2. Contact page
+contact_html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Track Sponsorships | Ultimate Drag Racing Calculator Suite</title>
+    <style>
+        :root {
+            --bg-dark: #0f1015;
+            --card-bg: #181a20;
+            --accent-red: #ff1e27;
+            --text-main: #f8f9fa;
+            --text-muted: #9ca3af;
+            --border-color: #2d3139;
+            --input-bg: #21242c;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 20px; line-height: 1.5; }
+        .container { max-width: 600px; margin: 40px auto; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; }
+        h1 { color: var(--accent-red); font-size: 1.4rem; text-transform: uppercase; margin-top: 0; text-align: center; }
+        p { color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 25px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.8rem; color: var(--text-muted); }
+        input, select, textarea { width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; margin-bottom: 15px; }
+        textarea { resize: vertical; height: 120px; }
+        .action-btn { width: 100%; background: var(--accent-red); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 0.85rem; cursor: pointer; text-transform: uppercase; }
+        .action-btn:hover { background: #e0161f; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div style="max-width: 600px; margin: 0 auto;"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
+    <div class="container">
+        <h1>Contact & Track Sponsorships</h1>
+        <p>Get in touch with our team for advertising rates, technical calculator feedback, or partnership inquiries.</p>
+        <form action="https://formspree.io/f/xqppzgab" method="POST">
+            <div><label>Your Name / Shop Name</label><input type="text" name="name" required placeholder="e.g. Pro Line Racing"></div>
+            <div><label>Your Email Address</label><input type="email" name="email" required placeholder="e.g. yourname@domain.com"></div>
+            <div><label>Inquiry Type</label>
+                <select name="inquiry_type">
+                    <option value="Sponsorship">Track Sponsor Rates & Advertising</option>
+                    <option value="Bug / Feedback">Calculator Feedback / Bug Report</option>
+                    <option value="Other">General Partnership</option>
+                </select>
+            </div>
+            <div><label>Message</label><textarea name="message" required placeholder="Describe your inquiry or sponsorship request here..."></textarea></div>
+            <button type="submit" class="action-btn">Send Message &rarr;</button>
+        </form>
     </div>
-    <div class="grid-2">
-        <div><label>Induction Type</label>
-            <select id="fi-ind">
-                <option value="0.50">Naturally Aspirated</option>
-                <option value="0.65" selected>Turbocharged / Supercharged</option>
-            </select>
-        </div>
-        <div><label>Fuel Type</label>
-            <select id="fi-fuel">
-                <option value="0.65" selected>Gasoline (BSFC ~0.65)</option>
-                <option value="1.10">E85 Ethanol (BSFC ~1.10)</option>
-                <option value="0.55">Methanol (BSFC ~1.50)</option>
-            </select>
-        </div>
-    </div>
-    <div class="grid-2">
-        <div><label>Max Duty Cycle (%)</label><input type="number" id="fi-dc" value="80" step="5"></div>
-        <div><label>Pressure Offset</label><input type="text" value="Standard (43.5 PSI)" disabled style="opacity: 0.7;"></div>
-    </div>
-    <div class="results-box" id="results" style="background: #121418; border-left: 4px solid var(--accent-red); padding: 12px; border-radius: 6px; margin-top: 10px; text-align: center;">
-        <div style="font-size: 0.95rem; font-weight: bold; color: var(--text-main);">Required Flow Rate per Injector:</div>
-        <div style="font-size: 1.3rem; font-weight: bold; color: var(--accent-red); margin-top: 4px;"><span id="fi-cc">0.00</span> cc/min</div>
-        <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;"><span id="fi-lbs">0.00</span> lb/hr</div>
-    </div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Injector Spec Sheet</button>
+</body>
+</html>
+"""
+with open(os.path.join(output_dir, "contact.html"), "w", encoding="utf-8") as f:
+    f.write(contact_html)
+
+# 3. CSV data & Layout components
+csv_content = """slug,target_keyword,category,rear_gear,tire_diameter
+transmission-shift-recovery-calculator,Transmission Shift Recovery & Gear Drop Calculator,Transmission,3.42,28.0
+turbo-sizing-calculator,Turbo Sizing & Turbocharger Matching Calculator,Turbo,3.42,28.0
+four-link-suspension-calculator,Four Link Suspension & Instant Center Drag Calculator,Suspension,4.11,32.0
+exhaust-header-sizing-calculator,Exhaust Primary & Turbo Downpipe Sizing Calculator,Exhaust,3.42,28.0
+supercharger-pulley-calculator,Supercharger Pulley Ratio & Boost Pressure Calculator,Supercharger,3.42,28.0
+rear-gear-calculator,Ring and Pinion Rear Gear Quarter-Mile Calculator,RearGear,4.11,32.0
+tire-growth-calculator,Tire Diameter Growth & Rollout Drag Calculator,Tire,3.42,28.0
+wastegate-sizing-calculator,Wastegate Sizing & Boost Control Calculator,Wastegate,3.42,28.0
+fuel-injector-calculator,Fuel Injector Flow Rate & Sizing Calculator,Fuel,3.42,28.0
+automotive-relay-calculator,Automotive Relay & Circuit Sizing Calculator,Electrical,3.42,28.0
+"""
+with open("pseo_pages_list.csv", "w", encoding="utf-8") as f:
+    f.write(csv_content)
+
+with open("pseo_pages_list.csv", mode="r", encoding="utf-8") as f:
+    pages = list(csv.DictReader(f))
+
+sidebar_nav_html = """
+<div style="display: flex; flex-direction: column; gap: 4px;">
+    <a href="index.html" class="nav-item active" style="padding: 8px 10px; background: var(--input-bg); border-left: 3px solid var(--accent-red); color: var(--text-main); text-decoration: none; border-radius: 4px; font-size: 0.78rem; font-weight: 600;">Popular / Master Hub</a>
+    <a href="transmission-shift-recovery-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Transmission & Gearing</a>
+    <a href="turbo-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Forced Induction / Turbo</a>
+    <a href="four-link-suspension-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Suspension & 4-Link</a>
+    <a href="exhaust-header-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Exhaust & Airflow</a>
+    <a href="fuel-injector-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Fueling & EFI</a>
+    <a href="tire-growth-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Chassis & Tires</a>
+    <a href="automotive-relay-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Electrical & Wiring</a>
+</div>
 """
 
-fuel_injector_script = """
-function calcInjector() {
-    let hp = parseFloat(document.getElementById("fi-hp").value) || 1000;
-    let count = parseFloat(document.getElementById("fi-inj").value) || 8;
-    let bsfc = parseFloat(document.getElementById("fi-ind").value) || 0.65;
-    let dc = (parseFloat(document.getElementById("fi-dc").value) || 80) / 100;
-    
-    // Total fuel flow in lbs/hr = (HP * BSFC) / DutyCycle
-    let totalLbHr = (hp * bsfc) / dc;
-    let perInjectorLbHr = totalLbHr / count;
-    let perInjectorCcMin = perInjectorLbHr * 10.5; // conversion factor roughly 1 lb/hr = 10.5 cc/min
-    
-    let ccEl = document.getElementById("fi-cc");
-    let lbsEl = document.getElementById("fi-lbs");
-    
-    if(ccEl) ccEl.innerText = perInjectorCcMin.toFixed(1);
-    if(lbsEl) lbsEl.innerText = perInjectorLbHr.toFixed(1) + " lb/hr";
-}
-["fi-hp", "fi-inj", "fi-ind", "fi-fuel", "fi-dc"].forEach(id => {
-    let el = document.getElementById(id);
-    if(el) { el.addEventListener("input", calcInjector); el.addEventListener("change", calcInjector); }
-});
-calcInjector();
-"""
+ad_block_html = '<div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>'
+partners_html = '<div class="content-box"><h3>Industry Standard References</h3><ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: var(--text-muted);"><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Precision Turbo & Engine <span style="float: right; color: #10b981;">Verified Match</span></li><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Strange Engineering <span style="float: right; color: #10b981;">Drivetrain Spec</span></li><li style="padding: 6px 0;">ATI Performance <span style="float: right; color: #10b981;">Transmission Tech</span></li></ul></div>'
+tuning_guides_html = '<div class="content-box"><h3>Track-Side Tuning Cheat Sheets</h3><p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">1. Density Altitude (DA): Every 1,000 ft costs NA engines ~3% HP.<br>2. Torque Converter Slip: Target 5% to 8% slip at finish line.<br>
