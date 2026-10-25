@@ -95,19 +95,19 @@ with open("pseo_pages_list.csv", mode="r", encoding="utf-8") as f:
 
 sidebar_nav_html = """
 <div style="display: flex; flex-direction: column; gap: 4px;">
-    <a href="index.html" class="nav-item active" style="padding: 8px 10px; background: var(--input-bg); border-left: 3px solid var(--accent-red); color: var(--text-main); text-decoration: none; border-radius: 4px; font-size: 0.78rem; font-weight: 600;">🏁 Popular / Master Hub</a>
-    <a href="transmission-shift-recovery-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">🏎️ Transmission & Gearing</a>
-    <a href="turbo-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">🌀 Forced Induction / Turbo</a>
-    <a href="exhaust-header-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">🔥 Exhaust & Airflow</a>
-    <a href="fuel-injector-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">⛽ Fueling & EFI</a>
-    <a href="tire-growth-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">🛞 Chassis & Tires</a>
-    <a href="automotive-relay-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">⚡ Electrical & Wiring</a>
+    <a href="index.html" class="nav-item active" style="padding: 8px 10px; background: var(--input-bg); border-left: 3px solid var(--accent-red); color: var(--text-main); text-decoration: none; border-radius: 4px; font-size: 0.78rem; font-weight: 600;">Popular / Master Hub</a>
+    <a href="transmission-shift-recovery-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Transmission & Gearing</a>
+    <a href="turbo-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Forced Induction / Turbo</a>
+    <a href="exhaust-header-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Exhaust & Airflow</a>
+    <a href="fuel-injector-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Fueling & EFI</a>
+    <a href="tire-growth-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Chassis & Tires</a>
+    <a href="automotive-relay-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Electrical & Wiring</a>
 </div>
 """
 
 ad_block_html = '<div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>'
 partners_html = '<div class="content-box"><h3>Industry Standard References</h3><ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: var(--text-muted);"><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Precision Turbo & Engine <span style="float: right; color: #10b981;">Verified Match</span></li><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Strange Engineering <span style="float: right; color: #10b981;">Drivetrain Spec</span></li><li style="padding: 6px 0;">ATI Performance <span style="float: right; color: #10b981;">Transmission Tech</span></li></ul></div>'
-tuning_guides_html = '<div class="content-box"><h3>Track-Side Tuning Cheat Sheets</h3><p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">1. Density Altitude (DA): Every 1,000 ft costs NA engines ~3% HP.<br>2. Torque Converter Slip: Target 5% to 8% slip at finish line.<br>3. Boost Management: Pull 1-2° timing per 3-4 PSI boost.</p></div>'
+tuning_guides_html = '<div class="content-box"><h3>Track-Side Tuning Cheat Sheets</h3><p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">1. Density Altitude (DA): Every 1,000 ft costs NA engines ~3% HP.<br>2. Torque Converter Slip: Target 5% to 8% slip at finish line.<br>3. Boost Management: Pull 1-2 timing per 3-4 PSI boost.</p></div>'
 
 footer_html = """
 <footer style="text-align: center; margin: 40px auto 20px auto; color: var(--text-muted); font-size: 0.78rem; border-top: 1px solid var(--border-color); padding-top: 20px;">
@@ -248,7 +248,7 @@ for row in pages:
                 <div><label>Rear Gear Ratio</label><input type="number" id="rear-gear" value="3.42" step="0.01"></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Track Sheet</button>
+            <button type="button" class="action-btn" onclick="window.print()">Print Track Sheet</button>
             <table>
                 <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift Speed</th><th>RPM Drop / Finish</th></tr></thead>
                 <tbody id="gear-body"></tbody>
@@ -304,8 +304,8 @@ for row in pages:
                 <div style="font-size: 0.72rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase;">Engineered Turbo & A/R Match</div>
                 <div id="turbo-rec" style="font-size: 0.78rem; color: var(--text-main); margin-top: 4px;">Calculating...</div>
             </div>
-            <a href=""" + AFFILIATE_TRACKING_URL + """https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">🛒 Buy Now at Summit Racing &rarr;</button></a>
-            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">🖨️ Print / Save Track Sheet</button>
+            <a href=""" + AFFILIATE_TRACKING_URL + """https://www.summitracing.com" target="_blank" style="text-decoration: none;"><button type="button" class="action-btn" style="background: #e0161f; margin-top: 8px;">Buy Now at Summit Racing &rarr;</button></a>
+            <button type="button" class="action-btn" onclick="window.print()" style="margin-top: 6px;">Print / Save Track Sheet</button>
         """
         tool_script = """
         function calcTool() {
@@ -326,11 +326,11 @@ for row in pages:
             
             let spoolText = "";
             if (ccPerCyl < 350 && perTurbo > 70) {
-                spoolText = "⚠️ <strong>Extreme Lag Warning:</strong> " + Math.round(ccPerCyl) + " cc/cyl is very low for a " + Math.round(perTurbo) + " lb/min turbo. High RPM threshold; twin turbos or tighter A/R strongly recommended.";
+                spoolText = "<strong>Extreme Lag Warning:</strong> " + Math.round(ccPerCyl) + " cc/cyl is very low for a " + Math.round(perTurbo) + " lb/min turbo. High RPM threshold; twin turbos or tighter A/R strongly recommended.";
             } else if (ccPerCyl < 500) {
-                spoolText = "⚡ <strong>Moderate Spool:</strong> " + Math.round(ccPerCyl) + " cc/cyl. Will require proper converter flashing, anti-lag, or twin-scroll housing to spool quickly.";
+                spoolText = "<strong>Moderate Spool:</strong> " + Math.round(ccPerCyl) + " cc/cyl. Will require proper converter flashing, anti-lag, or twin-scroll housing to spool quickly.";
             } else {
-                spoolText = "🚀 <strong>Optimal Spool Energy:</strong> " + Math.round(ccPerCyl) + " cc/cyl provides heavy exhaust pulse energy for rapid turbine spool.";
+                spoolText = "<strong>Optimal Spool Energy:</strong> " + Math.round(ccPerCyl) + " cc/cyl provides heavy exhaust pulse energy for rapid turbine spool.";
             }
             document.getElementById("spool-analysis").innerHTML = spoolText;
             
@@ -367,7 +367,7 @@ for row in pages:
                 <div><label>Target Flywheel HP</label><input type="number" id="ex-hp" value="850" step="50"></div>
             </div>
             <div class="results-box" id="ex-results">Adjust parameters above.</div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
+            <button type="button" class="action-btn" onclick="window.print()">Print Sheet</button>
         """
         tool_script = """
         function calcTool() {
@@ -388,7 +388,7 @@ for row in pages:
                 <div><label>Number of Injectors</label><input type="number" id="inj-count" value="8" step="1"></div>
             </div>
             <div class="results-box" id="inj-results">Adjust parameters above.</div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
+            <button type="button" class="action-btn" onclick="window.print()">Print Sheet</button>
         """
         tool_script = """
         function calcTool() {
@@ -410,7 +410,7 @@ for row in pages:
                 <div><label>Trap Speed (MPH)</label><input type="number" id="trap-speed" value="150" step="1"></div>
             </div>
             <div class="results-box" id="results">Adjust parameters above.</div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
+            <button type="button" class="action-btn" onclick="window.print()">Print Sheet</button>
         """
         tool_script = """
         function calcTool() {
@@ -430,7 +430,7 @@ for row in pages:
                 <div><label>Wire Length (ft)</label><input type="number" id="relay-ft" value="10" step="1"></div>
             </div>
             <div class="results-box" id="relay-results">Adjust parameters above.</div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Sheet</button>
+            <button type="button" class="action-btn" onclick="window.print()">Print Sheet</button>
         """
         tool_script = """
         function calcTool() {
@@ -449,7 +449,7 @@ for row in pages:
                 <div><label>Parameter Value</label><input type="number" id="val1" value="100" step="1"></div>
             </div>
             <div class="results-box" id="res">Calculated successfully.</div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print Track Sheet</button>
+            <button type="button" class="action-btn" onclick="window.print()">Print Track Sheet</button>
         """
         tool_script = """
         function calcTool() {
