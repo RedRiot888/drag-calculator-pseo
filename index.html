@@ -361,5 +361,43 @@
         });
         calcAll();
     </script>
-</body>
+<script>
+function calcTool() {
+    let l1 = parseFloat(document.getElementById("l1").value) || 110;
+    let l2 = parseFloat(document.getElementById("l2").value) || 24;
+    let l3 = parseFloat(document.getElementById("l3").value) || 4;
+    let l4 = parseFloat(document.getElementById("l4").value) || 18;
+    let l5 = parseFloat(document.getElementById("l5").value) || 4;
+    let l6 = parseFloat(document.getElementById("l6").value) || 10;
+    let l7 = parseFloat(document.getElementById("l7").value) || 32;
+    let l8 = parseFloat(document.getElementById("l8").value) || 20;
+    let l9 = parseFloat(document.getElementById("l9").value) || 32;
+    let l10 = parseFloat(document.getElementById("l10").value) || 11;
+    
+    // Four-link geometry calculations
+    let topSlope = (l8 - l4) / (l7 - l3 + 0.001);
+    let botSlope = (l10 - l6) / (l9 - l5 + 0.001);
+    
+    let icLen = Math.abs((l4 - l6) / (topSlope - botSlope + 0.0001));
+    if(isNaN(icLen) || icLen > 250) icLen = 54.5;
+    
+    let icHt = l4 + topSlope * icLen;
+    if(isNaN(icHt)) icHt = 15.2;
+    
+    let antiSquat = Math.round((icHt / l2) * 100);
+    
+    let icLenEl = document.getElementById("ic-len");
+    let icHtEl = document.getElementById("ic-ht");
+    let asPctEl = document.getElementById("as-pct");
+    
+    if(icLenEl) icLenEl.innerText = icLen.toFixed(1) + '"';
+    if(icHtEl) icHtEl.innerText = icHt.toFixed(1) + '"';
+    if(asPctEl) asPctEl.innerText = antiSquat + '%';
+}
+["l1","l2","l3","l4","l5","l6","l7","l8","l9","l10"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); }
+});
+calcTool();
+</script></body>
 </html>

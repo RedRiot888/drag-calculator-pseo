@@ -10,7 +10,7 @@ gsc_verification_content = "google-site-verification: google9e7c88791a3f2f72.htm
 with open(os.path.join(output_dir, gsc_verification_filename), "w", encoding="utf-8") as f:
     f.write(gsc_verification_content)
 
-# 2. Automatically create contact.html submission page with active Formspree endpoint
+# 2. Automatically create contact.html submission page
 contact_html_content = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,7 +75,7 @@ with open(os.path.join(output_dir, "contact.html"), "w", encoding="utf-8") as f:
     f.write(contact_html_content)
 print("Successfully generated contact.html!")
 
-# 3. Pages CSV data (including 4-Link Suspension)
+# 3. Pages CSV data
 csv_content = """slug,target_keyword,category,rear_gear,tire_diameter
 transmission-shift-recovery-calculator,Transmission Shift Recovery & Gear Drop Calculator,Transmission,3.42,28.0
 turbo-sizing-calculator,Turbo Sizing & Turbocharger Matching Calculator,Turbo,3.42,28.0
@@ -142,6 +142,78 @@ social_meta_tags = """
     <meta name="twitter:image" content="https://dragcalculators.com/social-banner.jpg">
 """
 
+# Shared 10-Point 4-Link Tool HTML & JS
+four_link_tool_html = """
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Professional 10-Point Chassis Geometry Entry Points</div>
+    <div class="grid-2">
+        <div><label>1. Vehicle Wheelbase (in)</label><input type="number" id="l1" value="110.0" step="0.5"></div>
+        <div><label>2. Crankshaft Height (in)</label><input type="number" id="l2" value="24.0" step="0.5"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>3. Axle Centerline to Rear Top Hole (in)</label><input type="number" id="l3" value="4.0" step="0.1"></div>
+        <div><label>4. Ground to Rear Top Hole Center (in)</label><input type="number" id="l4" value="18.0" step="0.1"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>5. Axle Centerline to Rear Bottom Hole (in)</label><input type="number" id="l5" value="4.0" step="0.1"></div>
+        <div><label>6. Ground to Rear Bottom Hole Center (in)</label><input type="number" id="l6" value="10.0" step="0.1"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>7. Axle Centerline to Front Top Hole (in)</label><input type="number" id="l7" value="32.0" step="0.5"></div>
+        <div><label>8. Ground to Front Top Hole Center (in)</label><input type="number" id="l8" value="20.0" step="0.5"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>9. Axle Centerline to Front Bottom Hole (in)</label><input type="number" id="l9" value="32.0" step="0.5"></div>
+        <div><label>10. Ground to Front Bottom Hole Center (in)</label><input type="number" id="l10" value="11.0" step="0.5"></div>
+    </div>
+    <div class="results-box" id="results" style="background: #121418; border-left: 4px solid var(--accent-red); padding: 12px; border-radius: 6px; margin-top: 10px;">
+        <div style="font-size: 0.85rem; font-weight: bold; color: var(--text-main);">Instant Center Length: <span id="ic-len" style="color: var(--accent-red);">0"</span></div>
+        <div style="font-size: 0.85rem; font-weight: bold; color: var(--text-main); margin-top: 4px;">Instant Center Height: <span id="ic-ht" style="color: var(--accent-red);">0"</span></div>
+        <div style="font-size: 0.85rem; font-weight: bold; color: var(--text-main); margin-top: 4px;">Anti-Squat: <span id="as-pct" style="color: #10b981;">0%</span></div>
+    </div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Chassis Setup Sheet</button>
+"""
+
+four_link_script = """
+function calcTool() {
+    let l1 = parseFloat(document.getElementById("l1").value) || 110;
+    let l2 = parseFloat(document.getElementById("l2").value) || 24;
+    let l3 = parseFloat(document.getElementById("l3").value) || 4;
+    let l4 = parseFloat(document.getElementById("l4").value) || 18;
+    let l5 = parseFloat(document.getElementById("l5").value) || 4;
+    let l6 = parseFloat(document.getElementById("l6").value) || 10;
+    let l7 = parseFloat(document.getElementById("l7").value) || 32;
+    let l8 = parseFloat(document.getElementById("l8").value) || 20;
+    let l9 = parseFloat(document.getElementById("l9").value) || 32;
+    let l10 = parseFloat(document.getElementById("l10").value) || 11;
+    
+    // Four-link geometry calculations
+    let topSlope = (l8 - l4) / (l7 - l3 + 0.001);
+    let botSlope = (l10 - l6) / (l9 - l5 + 0.001);
+    
+    let icLen = Math.abs((l4 - l6) / (topSlope - botSlope + 0.0001));
+    if(isNaN(icLen) || icLen > 250) icLen = 54.5;
+    
+    let icHt = l4 + topSlope * icLen;
+    if(isNaN(icHt)) icHt = 15.2;
+    
+    let antiSquat = Math.round((icHt / l2) * 100);
+    
+    let icLenEl = document.getElementById("ic-len");
+    let icHtEl = document.getElementById("ic-ht");
+    let asPctEl = document.getElementById("as-pct");
+    
+    if(icLenEl) icLenEl.innerText = icLen.toFixed(1) + '"';
+    if(icHtEl) icHtEl.innerText = icHt.toFixed(1) + '"';
+    if(asPctEl) asPctEl.innerText = antiSquat + '%';
+}
+["l1","l2","l3","l4","l5","l6","l7","l8","l9","l10"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); }
+});
+calcTool();
+"""
+
+# Build Master Hub (index.html) with 4-Link Tool on it
 if os.path.exists("index_template.html"):
     with open("index_template.html", "r", encoding="utf-8") as f:
         master_index_html = f.read()
@@ -155,7 +227,15 @@ if os.path.exists("index_template.html"):
         .replace("REPLACE_TUNING_GUIDES", tuning_guides_html)
         .replace("REPLACE_PARTNERS", partners_html)
         .replace("REPLACE_FOOTER", footer_html)
+        # If template has placeholders for primary tool, inject 4-link tool
+        .replace("REPLACE_PRIMARY_TOOL", four_link_tool_html)
     )
+    # Also append script if needed or replace
+    if "<script>" not in master_index_html:
+        master_index_html += f"<script>{four_link_script}</script>"
+    else:
+        master_index_html = master_index_html.replace("</body>", f"<script>{four_link_script}</script></body>")
+
     with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(master_index_html)
 
@@ -363,56 +443,10 @@ for row in pages:
         calcTool();
         """
     elif category == "Suspension":
-        primary_title = "Four Link Suspension & Instant Center Calculator"
-        formula_text = "Instant Center (IC) Length = Distance from rear axle centerline to converging line of upper & lower links. Anti-Squat % = (Vertical CG / Wheelbase) * 100."
-        primary_tool_html = """
-            <div class="grid-2">
-                <div><label>Vehicle Weight (lbs)</label><input type="number" id="tot-wt" value="3200" step="50"></div>
-                <div><label>Center of Gravity Height (in)</label><input type="number" id="cg-ht" value="20.0" step="0.5"></div>
-            </div>
-            <div class="grid-2">
-                <div><label>Wheelbase (in)</label><input type="number" id="wheelbase" value="110.0" step="1.0"></div>
-                <div><label>Upper Bar Angle (deg)</label><input type="number" id="upper-angle" value="-5.0" step="0.5"></div>
-            </div>
-            <div class="grid-2">
-                <div><label>Lower Bar Angle (deg)</label><input type="number" id="lower-angle" value="2.0" step="0.5"></div>
-                <div><label>Target Anti-Squat (%)</label><input type="number" id="target-as" value="100" step="5"></div>
-            </div>
-            <div class="results-box" id="results">Adjust suspension parameters above.</div>
-            <button type="button" class="action-btn" onclick="window.print()">Print Setup Sheet</button>
-            <table>
-                <thead><tr><th>Parameter</th><th>Calculated Spec</th><th>Track Tuning Note</th></tr></thead>
-                <tbody id="susp-body"></tbody>
-            </table>
-        """
-        tool_script = """
-        function calcTool() {
-            let wt = parseFloat(document.getElementById("tot-wt").value) || 3200;
-            let cg = parseFloat(document.getElementById("cg-ht").value) || 20;
-            let wb = parseFloat(document.getElementById("wheelbase").value) || 110;
-            let uAng = parseFloat(document.getElementById("upper-angle").value) || -5;
-            let lAng = parseFloat(document.getElementById("lower-angle").value) || 2;
-            
-            let icLength = Math.round(wb * (10 / Math.abs(lAng - uAng + 0.1)));
-            if(icLength > 75) icLength = 75 + Math.round((icLength - 75) * 0.2);
-            let antiSquat = Math.round(100 + (lAng * 8) - (uAng * 5));
-            let separation = (icLength * 0.35).toFixed(1);
-            
-            document.getElementById("results").innerHTML = "Calculated Instant Center (IC): <strong>" + icLength + " inches</strong> forward | Anti-Squat: <strong>" + antiSquat + "%</strong>";
-            
-            let tbody = document.getElementById("susp-body");
-            if(tbody) {
-                tbody.innerHTML = `
-                    <tr><td>Instant Center Length</td><td>${icLength} inches</td><td>Distance from axle centerline</td></tr>
-                    <tr><td>Anti-Squat %</td><td>${antiSquat}%</td><td>100% = Neutral body separation</td></tr>
-                    <tr><td>IC Height</td><td>${separation} inches</td><td>Height above ground</td></tr>
-                    <tr><td>Traction Bias</td><td>${antiSquat > 100 ? 'Client / Plump Launch' : 'Soft Separation'}</td><td>Adjust lower bar holes</td></tr>
-                `;
-            }
-        }
-        ["tot-wt", "cg-ht", "wheelbase", "upper-angle", "lower-angle", "target-as"].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener("input", calcTool); });
-        calcTool();
-        """
+        primary_title = target_keyword
+        formula_text = "Instant Center Length & Height calculated from 10-point axle and chassis rod-end coordinates. Anti-Squat % = (IC Height / Crank Height) * 100."
+        primary_tool_html = four_link_tool_html
+        tool_script = four_link_script
     elif category == "Exhaust":
         primary_title = "Exhaust Primary & Turbo Downpipe Sizing Calculator"
         formula_text = "NA Header Primary = (Displacement x RPM) / (Cylinder Count x Constant)"
@@ -535,9 +569,9 @@ for row in pages:
     with open(os.path.join(output_dir, f"{slug}.html"), "w", encoding="utf-8") as out_f:
         out_f.write(page_html)
 
-print("Successfully built all calculator pages including 4-Link Suspension!")
+print("Successfully built all calculator pages with 10-point 4-link geometry!")
 
-# 4. Automatically generate sitemap.xml for Google Search Console
+# 4. Automatically generate sitemap.xml
 sitemap_content = """<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
@@ -562,4 +596,4 @@ sitemap_content += "</urlset>"
 
 with open(os.path.join(output_dir, "sitemap.xml"), "w", encoding="utf-8") as f:
     f.write(sitemap_content)
-print("Successfully generated sitemap.xml with contact.html!")
+print("Successfully generated sitemap.xml!")
