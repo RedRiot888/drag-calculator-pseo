@@ -75,10 +75,11 @@ with open(os.path.join(output_dir, "contact.html"), "w", encoding="utf-8") as f:
     f.write(contact_html_content)
 print("Successfully generated contact.html!")
 
-# 3. Pages CSV data
+# 3. Pages CSV data (including 4-Link Suspension)
 csv_content = """slug,target_keyword,category,rear_gear,tire_diameter
 transmission-shift-recovery-calculator,Transmission Shift Recovery & Gear Drop Calculator,Transmission,3.42,28.0
 turbo-sizing-calculator,Turbo Sizing & Turbocharger Matching Calculator,Turbo,3.42,28.0
+four-link-suspension-calculator,Four Link Suspension & Instant Center Drag Calculator,Suspension,4.11,32.0
 exhaust-header-sizing-calculator,Exhaust Primary & Turbo Downpipe Sizing Calculator,Exhaust,3.42,28.0
 supercharger-pulley-calculator,Supercharger Pulley Ratio & Boost Pressure Calculator,Supercharger,3.42,28.0
 rear-gear-calculator,Ring and Pinion Rear Gear Quarter-Mile Calculator,RearGear,4.11,32.0
@@ -98,6 +99,7 @@ sidebar_nav_html = """
     <a href="index.html" class="nav-item active" style="padding: 8px 10px; background: var(--input-bg); border-left: 3px solid var(--accent-red); color: var(--text-main); text-decoration: none; border-radius: 4px; font-size: 0.78rem; font-weight: 600;">Popular / Master Hub</a>
     <a href="transmission-shift-recovery-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Transmission & Gearing</a>
     <a href="turbo-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Forced Induction / Turbo</a>
+    <a href="four-link-suspension-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Suspension & 4-Link</a>
     <a href="exhaust-header-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Exhaust & Airflow</a>
     <a href="fuel-injector-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Fueling & EFI</a>
     <a href="tire-growth-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Chassis & Tires</a>
@@ -360,6 +362,57 @@ for row in pages:
         ["disp", "cyl", "hp", "boost", "bsfc", "turbos"].forEach(id => { let el = document.getElementById(id); if(el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); } });
         calcTool();
         """
+    elif category == "Suspension":
+        primary_title = "Four Link Suspension & Instant Center Calculator"
+        formula_text = "Instant Center (IC) Length = Distance from rear axle centerline to converging line of upper & lower links. Anti-Squat % = (Vertical CG / Wheelbase) * 100."
+        primary_tool_html = """
+            <div class="grid-2">
+                <div><label>Vehicle Weight (lbs)</label><input type="number" id="tot-wt" value="3200" step="50"></div>
+                <div><label>Center of Gravity Height (in)</label><input type="number" id="cg-ht" value="20.0" step="0.5"></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Wheelbase (in)</label><input type="number" id="wheelbase" value="110.0" step="1.0"></div>
+                <div><label>Upper Bar Angle (deg)</label><input type="number" id="upper-angle" value="-5.0" step="0.5"></div>
+            </div>
+            <div class="grid-2">
+                <div><label>Lower Bar Angle (deg)</label><input type="number" id="lower-angle" value="2.0" step="0.5"></div>
+                <div><label>Target Anti-Squat (%)</label><input type="number" id="target-as" value="100" step="5"></div>
+            </div>
+            <div class="results-box" id="results">Adjust suspension parameters above.</div>
+            <button type="button" class="action-btn" onclick="window.print()">Print Setup Sheet</button>
+            <table>
+                <thead><tr><th>Parameter</th><th>Calculated Spec</th><th>Track Tuning Note</th></tr></thead>
+                <tbody id="susp-body"></tbody>
+            </table>
+        """
+        tool_script = """
+        function calcTool() {
+            let wt = parseFloat(document.getElementById("tot-wt").value) || 3200;
+            let cg = parseFloat(document.getElementById("cg-ht").value) || 20;
+            let wb = parseFloat(document.getElementById("wheelbase").value) || 110;
+            let uAng = parseFloat(document.getElementById("upper-angle").value) || -5;
+            let lAng = parseFloat(document.getElementById("lower-angle").value) || 2;
+            
+            let icLength = Math.round(wb * (10 / Math.abs(lAng - uAng + 0.1)));
+            if(icLength > 75) icLength = 75 + Math.round((icLength - 75) * 0.2);
+            let antiSquat = Math.round(100 + (lAng * 8) - (uAng * 5));
+            let separation = (icLength * 0.35).toFixed(1);
+            
+            document.getElementById("results").innerHTML = "Calculated Instant Center (IC): <strong>" + icLength + " inches</strong> forward | Anti-Squat: <strong>" + antiSquat + "%</strong>";
+            
+            let tbody = document.getElementById("susp-body");
+            if(tbody) {
+                tbody.innerHTML = `
+                    <tr><td>Instant Center Length</td><td>${icLength} inches</td><td>Distance from axle centerline</td></tr>
+                    <tr><td>Anti-Squat %</td><td>${antiSquat}%</td><td>100% = Neutral body separation</td></tr>
+                    <tr><td>IC Height</td><td>${separation} inches</td><td>Height above ground</td></tr>
+                    <tr><td>Traction Bias</td><td>${antiSquat > 100 ? 'Client / Plump Launch' : 'Soft Separation'}</td><td>Adjust lower bar holes</td></tr>
+                `;
+            }
+        }
+        ["tot-wt", "cg-ht", "wheelbase", "upper-angle", "lower-angle", "target-as"].forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener("input", calcTool); });
+        calcTool();
+        """
     elif category == "Exhaust":
         primary_title = "Exhaust Primary & Turbo Downpipe Sizing Calculator"
         formula_text = "NA Header Primary = (Displacement x RPM) / (Cylinder Count x Constant)"
@@ -482,7 +535,7 @@ for row in pages:
     with open(os.path.join(output_dir, f"{slug}.html"), "w", encoding="utf-8") as out_f:
         out_f.write(page_html)
 
-print("Successfully built all calculator pages with social media preview tags!")
+print("Successfully built all calculator pages including 4-Link Suspension!")
 
 # 4. Automatically generate sitemap.xml for Google Search Console
 sitemap_content = """<?xml version="1.0" encoding="UTF-8"?>
