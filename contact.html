@@ -3,47 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact & Track Sponsorships | Ultimate Drag Racing Calculator Suite</title>
-    <style>
-        :root {
-            --bg-dark: #0f1015;
-            --card-bg: #181a20;
-            --accent-red: #ff1e27;
-            --text-main: #f8f9fa;
-            --text-muted: #9ca3af;
-            --border-color: #2d3139;
-            --input-bg: #21242c;
-        }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 20px; line-height: 1.5; }
-        .container { max-width: 600px; margin: 40px auto; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; }
-        h1 { color: var(--accent-red); font-size: 1.4rem; text-transform: uppercase; margin-top: 0; text-align: center; }
-        p { color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 25px; }
-        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.8rem; color: var(--text-muted); }
-        input, select, textarea { width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; margin-bottom: 15px; }
-        textarea { resize: vertical; height: 120px; }
-        .action-btn { width: 100%; background: var(--accent-red); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 0.85rem; cursor: pointer; text-transform: uppercase; }
-        .action-btn:hover { background: #e0161f; }
-        .back-link { display: inline-block; margin-bottom: 20px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
-    </style>
+    <title>Contact &amp; Track Sponsorships | DragCalculators.com</title>
+    <meta name="description" content="Contact the drag racing calculator suite about sponsorships, feedback, or partnerships.">
+    <link rel="canonical" href="https://dragcalculators.com/contact.html">
+    <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
+    <meta name="google-site-verification" content="google9e7c88791a3f2f72">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dragcalculators.com/contact.html">
+    <meta property="og:title" content="Contact &amp; Track Sponsorships | DragCalculators.com">
+    <meta property="og:description" content="Contact the drag racing calculator suite about sponsorships, feedback, or partnerships.">
+    <meta property="og:image" content="https://dragcalculators.com/social-banner.jpg">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div style="max-width: 600px; margin: 0 auto;"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
-    <div class="container">
-        <h1>Contact & Track Sponsorships</h1>
-        <p>Get in touch with our team for advertising rates, technical calculator feedback, or partnership inquiries.</p>
-        <form action="https://formspree.io/f/xqppzgab" method="POST">
-            <div><label>Your Name / Shop Name</label><input type="text" name="name" required placeholder="e.g. Pro Line Racing"></div>
-            <div><label>Your Email Address</label><input type="email" name="email" required placeholder="e.g. yourname@domain.com"></div>
-            <div><label>Inquiry Type</label>
-                <select name="inquiry_type">
-                    <option value="Sponsorship">Track Sponsor Rates & Advertising</option>
-                    <option value="Bug / Feedback">Calculator Feedback / Bug Report</option>
-                    <option value="Other">General Partnership</option>
-                </select>
-            </div>
-            <div><label>Message</label><textarea name="message" required placeholder="Describe your inquiry or sponsorship request here..."></textarea></div>
-            <button type="submit" class="action-btn">Send Message &rarr;</button>
-        </form>
+    <div class="narrow">
+        <a href="index.html" class="back-link">&larr; Back to Master Hub</a>
+        <article class="narrow-card">
+            
+<h1>Contact &amp; Track Sponsorships</h1>
+<p>Advertising rates, calculator feedback, and partnership inquiries.</p>
+<form action="https://formspree.io/f/xqppzgab" method="POST">
+    <div><label for="name">Your Name / Shop Name</label><input id="name" type="text" name="name" required placeholder="e.g. Pro Line Racing"></div>
+    <div><label for="email">Your Email Address</label><input id="email" type="email" name="email" required placeholder="e.g. yourname@domain.com"></div>
+    <div><label for="inquiry_type">Inquiry Type</label>
+        <select id="inquiry_type" name="inquiry_type">
+            <option value="Sponsorship">Track Sponsor Rates &amp; Advertising</option>
+            <option value="Bug / Feedback">Calculator Feedback / Bug Report</option>
+            <option value="Other">General Partnership</option>
+        </select>
     </div>
+    <div><label for="message">Message</label><textarea id="message" name="message" required placeholder="Describe your inquiry or sponsorship request here..."></textarea></div>
+    <button type="submit" class="action-btn">Send Message</button>
+</form>
+
+        </article>
+    </div>
+    
+<footer class="site-footer">
+    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
+    <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
+</footer>
+
 </body>
 </html>

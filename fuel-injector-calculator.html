@@ -3,106 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fuel Injector Flow Rate & Sizing Calculator | Ultimate Drag Racing Master Suite</title>
-        <meta name='impact-site-verification' value='b2bb3042-cfc7-4ed4-b783-57a9b5a6451f'>
-    <meta name='google-site-verification' content='google9e7c88791a3f2f72'>
-    
+    <title>Fuel Injector Flow Rate &amp; Sizing Calculator | DragCalculators.com</title>
+    <meta name="description" content="Fuel Injector Flow Rate &amp; Sizing Calculator. Loaded defaults: 1000 HP, gasoline.">
+    <link rel="canonical" href="https://dragcalculators.com/fuel-injector-calculator.html">
+    <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
+    <meta name="google-site-verification" content="google9e7c88791a3f2f72">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://dragcalculators.com/">
-    <meta property="og:title" content="Ultimate Drag Racing Master Suite | Ultimate Drag Racing Calculator Suite">
-    <meta property="og:description" content="Professional drag racing calculators for gear ratios, turbo sizing, shift recovery, and track tuning.">
+    <meta property="og:url" content="https://dragcalculators.com/fuel-injector-calculator.html">
+    <meta property="og:title" content="Fuel Injector Flow Rate &amp; Sizing Calculator | DragCalculators.com">
+    <meta property="og:description" content="Fuel Injector Flow Rate &amp; Sizing Calculator. Loaded defaults: 1000 HP, gasoline.">
     <meta property="og:image" content="https://dragcalculators.com/social-banner.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Ultimate Drag Racing Master Suite">
-    <meta name="twitter:description" content="Professional drag racing calculators for gear ratios, turbo sizing, shift recovery, and track tuning.">
+    <meta name="twitter:title" content="Fuel Injector Flow Rate &amp; Sizing Calculator | DragCalculators.com">
+    <meta name="twitter:description" content="Fuel Injector Flow Rate &amp; Sizing Calculator. Loaded defaults: 1000 HP, gasoline.">
     <meta name="twitter:image" content="https://dragcalculators.com/social-banner.jpg">
-
-    <style>
-        :root {
-            --bg-dark: #0f1015;
-            --card-bg: #181a20;
-            --accent-red: #ff1e27;
-            --text-main: #f8f9fa;
-            --text-muted: #9ca3af;
-            --border-color: #2d3139;
-            --input-bg: #21242c;
-        }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 20px; line-height: 1.5; }
-        .layout-grid { max-width: 1350px; margin: 20px auto; display: grid; grid-template-columns: 240px 480px 1fr; gap: 25px; align-items: start; }
-        .nexus-sidebar { position: sticky; top: 20px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; }
-        .sticky-calculator { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 15px; }
-        .content-column { display: flex; flex-direction: column; gap: 20px; }
-        .content-box { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; }
-        .content-box h3 { color: var(--accent-red); font-size: 0.95rem; text-transform: uppercase; margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
-        .master-header { text-align: center; margin-bottom: 5px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
-        .master-header h1 { color: var(--accent-red); font-size: 1.2rem; text-transform: uppercase; margin: 0 0 3px 0; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
-        label { display: block; margin-bottom: 2px; font-weight: 600; font-size: 0.72rem; color: var(--text-muted); }
-        input, select { width: 100%; padding: 7px 9px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; box-sizing: border-box; font-size: 0.82rem; }
-        .results-box { margin-top: 10px; background: #121418; border: 1px solid var(--border-color); border-left: 4px solid var(--accent-red); padding: 10px; border-radius: 6px; font-size: 0.82rem; }
-        .action-btn { width: 100%; margin-top: 10px; background: var(--accent-red); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
-        .action-btn:hover { background: #e0161f; }
-        table { width: 100%; margin-top: 12px; border-collapse: collapse; background: #121418; border-radius: 6px; overflow: hidden; }
-        th, td { padding: 5px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
-        th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
-        .back-link { display: inline-block; margin-bottom: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div style="max-width: 1350px; margin: 0 auto;"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
+    <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
     <div class="layout-grid">
-        <div class="nexus-sidebar"><div style="display: flex; flex-direction: column; gap: 4px;">
-    <a href="index.html" class="nav-item active" style="padding: 8px 10px; background: var(--input-bg); border-left: 3px solid var(--accent-red); color: var(--text-main); text-decoration: none; border-radius: 4px; font-size: 0.78rem; font-weight: 600;">Popular / Master Hub</a>
-    <a href="transmission-shift-recovery-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Transmission & Gearing</a>
-    <a href="turbo-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Forced Induction / Turbo</a>
-    <a href="four-link-suspension-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Suspension & 4-Link</a>
-    <a href="exhaust-header-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Exhaust & Airflow</a>
-    <a href="fuel-injector-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Fueling & EFI</a>
-    <a href="tire-growth-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Chassis & Tires</a>
-    <a href="automotive-relay-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Electrical & Wiring</a>
-</div></div>
-        <div class="sticky-calculator">
-            <div>
-                <div class="master-header"><h1>Fuel Injector Flow Rate & Sizing Calculator</h1><p>Fuel Injector Flow Rate & Sizing Calculator &mdash; Track Tuning Engine</p></div>
-                
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Fuel Injector Flow Rate & Sizing Engine</div>
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item active" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
+        <section class="sticky-calculator">
+            <header class="master-header">
+                <h1>Fuel Injector Flow Rate &amp; Sizing Calculator</h1>
+                <p class="spec">Loaded defaults: 1000 HP, gasoline.</p>
+            </header>
+            
+    <p class="tool-note">Injector flow rate at the target horsepower</p>
     <div class="grid-2">
-        <div><label>Target Crank HP</label><input type="number" id="fi-hp" value="1000" step="50"></div>
-        <div><label>Number of Injectors</label><input type="number" id="fi-inj" value="8" step="1"></div>
+        <div><label for="fi-hp">Target Crank HP</label><input type="number" id="fi-hp" value="1000" step="50"></div>
+        <div><label for="fi-inj">Number of Injectors</label><input type="number" id="fi-inj" value="8" step="1"></div>
     </div>
     <div class="grid-2">
-        <div><label>Induction Type</label>
+        <div><label for="fi-ind">Induction Type</label>
             <select id="fi-ind">
                 <option value="0.50">Naturally Aspirated</option>
                 <option value="0.65" selected>Turbocharged / Supercharged</option>
             </select>
         </div>
-        <div><label>Fuel Type</label>
-            <select id="fi-fuel">
-                <option value="0.65" selected>Gasoline (BSFC ~0.65)</option>
-                <option value="1.10">E85 Ethanol (BSFC ~1.10)</option>
-                <option value="1.50">Methanol (BSFC ~1.50)</option>
-            </select>
-        </div>
+        <div><label for="fi-fuel">Fuel Type</label><select id="fi-fuel"><option value="0.65" selected>Gasoline (BSFC ~0.65)</option>
+<option value="1.10">E85 Ethanol (BSFC ~1.10)</option>
+<option value="1.50">Methanol (BSFC ~1.50)</option></select></div>
     </div>
     <div class="grid-2">
-        <div><label>Max Duty Cycle (%)</label><input type="number" id="fi-dc" value="80" step="5"></div>
-        <div><label>Pressure Offset</label><input type="text" value="Standard (43.5 PSI)" disabled style="opacity: 0.7;"></div>
+        <div><label for="fi-dc">Max Duty Cycle (%)</label><input type="number" id="fi-dc" value="80" step="5"></div>
+        <div><label for="fi-pressure">Pressure Offset</label><input id="fi-pressure" type="text" value="Standard (43.5 PSI)" disabled></div>
     </div>
-    <div class="results-box" id="results" style="background: #121418; border-left: 4px solid var(--accent-red); padding: 12px; border-radius: 6px; margin-top: 10px; text-align: center;">
-        <div style="font-size: 0.85rem; font-weight: bold; color: var(--text-main);">Required Flow Rate per Injector:</div>
-        <div style="font-size: 1.2rem; font-weight: bold; color: var(--accent-red); margin-top: 4px;"><span id="fi-cc">0.00</span> cc/min</div>
-        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;"><span id="fi-lbs">0.00</span></div>
+    <div class="results-box" id="results">
+        <div>Required flow rate per injector</div>
+        <div><span id="fi-cc">0.0</span> cc/min</div>
+        <div><span id="fi-lbs">0.0 lb/hr</span></div>
     </div>
     <button type="button" class="action-btn" onclick="window.print()">Print Injector Spec Sheet</button>
 
-            </div>
-        </div>
+        </section>
         <div class="content-column">
-            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Injector Flow (lb/hr) = (Flywheel HP * BSFC) / (Max Duty Cycle * Number of Injectors). CC/Min = lb/hr * 10.5. BSFC scales with fuel type and induction.</div></div>
+            <section class="content-box"><h2>Formula</h2><p class="formula">Injector lb/hr = (Flywheel HP x BSFC) / (Max Duty Cycle x Injector Count). cc/min = lb/hr x 10.5.</p></section><section class="content-box"><h2>Configurations</h2><p>26 saved combinations for this calculator.</p><ul class="variant-list"><li><a href="fuel-calculator-1000hp-e85.html">1000 HP E85 Fuel Injector Calculator</a></li><li><a href="fuel-calculator-1000hp-gasoline.html">1000 HP Gasoline Fuel Injector Calculator</a></li><li><a href="fuel-calculator-1100hp-e85.html">1100 HP E85 Fuel Injector Calculator</a></li><li><a href="fuel-calculator-1100hp-gasoline.html">1100 HP Gasoline Fuel Injector Calculator</a></li><li><a href="fuel-calculator-1200hp-e85.html">1200 HP E85 Fuel Injector Calculator</a></li><li><a href="fuel-calculator-1200hp-gasoline.html">1200 HP Gasoline Fuel Injector Calculator</a></li><li><a href="fuel-calculator-1300hp-e85.html">1300 HP E85 Fuel Injector Calculator</a></li><li><a href="fuel-calculator-1300hp-gasoline.html">1300 HP Gasoline Fuel Injector Calculator</a></li><li><a href="fuel-calculator-1400hp-e85.html">1400 HP E85 Fuel Injector Calculator</a></li><li><a href="fuel-calculator-1400hp-gasoline.html">1400 HP Gasoline Fuel Injector Calculator</a></li><li><a href="fuel-calculator-1500hp-e85.html">1500 HP E85 Fuel Injector Calculator</a></li><li><a href="fuel-calculator-1500hp-gasoline.html">1500 HP Gasoline Fuel Injector Calculator</a></li><li><a href="fuel-calculator-1600hp-e85.html">1600 HP E85 Fuel Injector Calculator</a></li><li><a href="fuel-calculator-1600hp-gasoline.html">1600 HP Gasoline Fuel Injector Calculator</a></li><li><a href="fuel-calculator-400hp-e85.html">400 HP E85 Fuel Injector Calculator</a></li><li><a href="fuel-calculator-400hp-gasoline.html">400 HP Gasoline Fuel Injector Calculator</a></li><li><a href="fuel-calculator-500hp-e85.html">500 HP E85 Fuel Injector Calculator</a></li><li><a href="fuel-calculator-500hp-gasoline.html">500 HP Gasoline Fuel Injector Calculator</a></li><li><a href="fuel-calculator-600hp-e85.html">600 HP E85 Fuel Injector Calculator</a></li><li><a href="fuel-calculator-600hp-gasoline.html">600 HP Gasoline Fuel Injector Calculator</a></li><li><a href="fuel-calculator-700hp-e85.html">700 HP E85 Fuel Injector Calculator</a></li><li><a href="fuel-calculator-700hp-gasoline.html">700 HP Gasoline Fuel Injector Calculator</a></li><li><a href="fuel-calculator-800hp-e85.html">800 HP E85 Fuel Injector Calculator</a></li><li><a href="fuel-calculator-800hp-gasoline.html">800 HP Gasoline Fuel Injector Calculator</a></li><li><a href="fuel-calculator-900hp-e85.html">900 HP E85 Fuel Injector Calculator</a></li><li><a href="fuel-calculator-900hp-gasoline.html">900 HP Gasoline Fuel Injector Calculator</a></li></ul></section>
         </div>
     </div>
+    
+<footer class="site-footer">
+    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
+    <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
+</footer>
+
     <script>
+
 function calcInjector() {
     let hp = parseFloat(document.getElementById("fi-hp").value) || 1000;
     let count = parseFloat(document.getElementById("fi-inj").value) || 8;
@@ -110,22 +76,20 @@ function calcInjector() {
     let fuel = parseFloat(document.getElementById("fi-fuel").value) || 0.65;
     let bsfc = fuel * (ind / 0.65);
     let dc = (parseFloat(document.getElementById("fi-dc").value) || 80) / 100;
-    
     let totalLbHr = (hp * bsfc) / dc;
     let perInjectorLbHr = totalLbHr / count;
     let perInjectorCcMin = perInjectorLbHr * 10.5;
-    
     let ccEl = document.getElementById("fi-cc");
     let lbsEl = document.getElementById("fi-lbs");
-    
-    if(ccEl) ccEl.innerText = perInjectorCcMin.toFixed(1);
-    if(lbsEl) lbsEl.innerText = perInjectorLbHr.toFixed(1) + " lb/hr";
+    if (ccEl) ccEl.textContent = perInjectorCcMin.toFixed(1);
+    if (lbsEl) lbsEl.textContent = perInjectorLbHr.toFixed(1) + " lb/hr";
 }
 ["fi-hp", "fi-inj", "fi-ind", "fi-fuel", "fi-dc"].forEach(id => {
     let el = document.getElementById(id);
-    if(el) { el.addEventListener("input", calcInjector); el.addEventListener("change", calcInjector); }
+    if (el) { el.addEventListener("input", calcInjector); el.addEventListener("change", calcInjector); }
 });
 calcInjector();
-</script>
+
+    </script>
 </body>
 </html>

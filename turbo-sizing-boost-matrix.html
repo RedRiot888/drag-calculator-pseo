@@ -3,340 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turbo Sizing & Turbocharger Matching Calculator | Ultimate Drag Racing Master Suite</title>
-    <style>
-        :root {
-            --bg-dark: #0f1015;
-            --card-bg: #181a20;
-            --accent-red: #ff1e27;
-            --accent-glow: rgba(255, 30, 39, 0.25);
-            --text-main: #f8f9fa;
-            --text-muted: #9ca3af;
-            --border-color: #2d3139;
-            --input-bg: #21242c;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.5;
-        }
-        .layout-grid {
-            max-width: 1200px;
-            margin: 30px auto;
-            display: grid;
-            grid-template-columns: 480px 1fr;
-            gap: 30px;
-            align-items: start;
-        }
-        @media (max-width: 900px) {
-            .layout-grid { grid-template-columns: 1fr; }
-        }
-        .sticky-calculator {
-            position: sticky;
-            top: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .content-column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .content-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 25px;
-        }
-        .content-box h3 {
-            color: var(--accent-red);
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            margin-top: 0;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-        }
-        .master-header {
-            text-align: center;
-            margin-bottom: 5px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-        }
-        .master-header h1 {
-            color: var(--accent-red);
-            font-size: 1.3rem;
-            text-transform: uppercase;
-            margin: 0 0 3px 0;
-        }
-        .master-header p {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin: 0;
-        }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-        label {
-            display: block;
-            margin-bottom: 2px;
-            font-weight: 600;
-            font-size: 0.72rem;
-            color: var(--text-muted);
-        }
-        input, select {
-            width: 100%;
-            padding: 7px 9px;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 0.82rem;
-        }
-        optgroup { color: var(--accent-red); font-weight: bold; }
-        option { color: var(--text-main); background: var(--input-bg); }
-        .results-box {
-            margin-top: 10px;
-            background: #121418;
-            border: 1px solid var(--border-color);
-            border-left: 4px solid var(--accent-red);
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.82rem;
-        }
-        .action-btn {
-            width: 100%;
-            margin-top: 10px;
-            background: var(--accent-red);
-            color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.75rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .action-btn:hover { background: #e0161f; }
-        .formula-content {
-            font-family: monospace;
-            color: #10b981;
-            font-size: 0.85rem;
-            background: var(--input-bg);
-            padding: 10px;
-            border-radius: 6px;
-        }
-        .faq-item { margin-bottom: 12px; }
-        .faq-item h4 { margin: 0 0 3px 0; font-size: 0.85rem; color: var(--text-main); }
-        .faq-item p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
-        table {
-            width: 100%;
-            margin-top: 12px;
-            border-collapse: collapse;
-            background: #121418;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 5px 4px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-            font-size: 0.72rem;
-        }
-        th {
-            background: #1f232b;
-            color: var(--accent-red);
-            text-transform: uppercase;
-            font-size: 0.62rem;
-        }
-        .back-link {
-            display: inline-block;
-            margin-bottom: 15px;
-            color: var(--accent-red);
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.85rem;
-        }
-        .back-link:hover { text-decoration: underline; }
-        @media print {
-            body { background: white; color: black; padding: 0; }
-            .sticky-calculator { border: none; box-shadow: none; background: white; padding: 0; position: static; }
-            .content-column, .back-link, .action-btn { display: none; }
-            input, select { border: 1px solid #ccc; background: white; color: black; }
-        }
-    </style>
+    <title>Turbo Sizing Boost Matrix | DragCalculators.com</title>
+    <meta name="description" content="Turbo Sizing Boost Matrix. Loaded defaults: 1000 HP, 22 PSI boost, E85, single turbo.">
+    <link rel="canonical" href="https://dragcalculators.com/turbo-sizing-boost-matrix.html">
+    <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
+    <meta name="google-site-verification" content="google9e7c88791a3f2f72">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dragcalculators.com/turbo-sizing-boost-matrix.html">
+    <meta property="og:title" content="Turbo Sizing Boost Matrix | DragCalculators.com">
+    <meta property="og:description" content="Turbo Sizing Boost Matrix. Loaded defaults: 1000 HP, 22 PSI boost, E85, single turbo.">
+    <meta property="og:image" content="https://dragcalculators.com/social-banner.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Turbo Sizing Boost Matrix | DragCalculators.com">
+    <meta name="twitter:description" content="Turbo Sizing Boost Matrix. Loaded defaults: 1000 HP, 22 PSI boost, E85, single turbo.">
+    <meta name="twitter:image" content="https://dragcalculators.com/social-banner.jpg">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div style="max-width: 1200px; margin: 0 auto;">
-        <a href="index.html" class="back-link">&larr; Back to Master Hub</a>
-    </div>
-
+    <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
     <div class="layout-grid">
-        <div class="sticky-calculator">
-            <div>
-                <div class="master-header">
-                    <h1>Turbo Sizing & Turbocharger Matching Calculator</h1>
-                    <p>Turbo Sizing & Turbocharger Matching Calculator &mdash; Track Tuning Engine</p>
-                </div>
-                
-            <div class="grid-2">
-                <div><label>Target Flywheel HP</label><input type="number" id="hp" value="1000" step="50"></div>
-                <div><label>Target Boost (PSI)</label><input type="number" id="boost" value="22" step="1"></div>
-            </div>
-            <div class="grid-2">
-                <div><label>Fuel BSFC</label><select id="bsfc"><option value="0.60">Gasoline (0.60)</option><option value="0.85" selected>E85 (0.85)</option></select></div>
-                <div><label>Turbo Count</label><select id="turbos"><option value="1" selected>Single</option><option value="2">Twin</option></select></div>
-            </div>
-            <div class="results-box" id="results">Adjust parameters above.</div>
-            <button type="button" class="action-btn" onclick="window.print()">🖨️ Print / Save Track Sheet</button>
-        
-            </div>
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item active" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
+        <section class="sticky-calculator">
+            <header class="master-header">
+                <h1>Turbo Sizing Boost Matrix</h1>
+                <p class="spec">Loaded defaults: 1000 HP, 22 PSI boost, E85, single turbo.</p>
+            </header>
             
-            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
-                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">
-                    Your Ad Here<br>Contact for Track Sponsor Rates
-                </div>
-            </div>
+    <p class="tool-note">Turbocharger airflow and pressure-ratio matching</p>
+    <div class="grid-2">
+        <div><label for="tu-hp">Target Flywheel HP</label><input type="number" id="tu-hp" value="1000" step="50"></div>
+        <div><label for="tu-boost">Target Boost (PSI)</label><input type="number" id="tu-boost" value="22" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div><label for="tu-bsfc">Fuel BSFC</label><select id="tu-bsfc"><option value="0.60">Gasoline (0.60)</option>
+<option value="0.85" selected>E85 (0.85)</option>
+<option value="1.50">Methanol (1.50)</option></select></div>
+        <div><label for="tu-count">Turbo Count</label><select id="tu-count"><option value="1" selected>Single</option>
+<option value="2">Twin</option></select></div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Turbo Match Sheet</button>
 
-        </div>
-
+        </section>
         <div class="content-column">
-            
-            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
-                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">
-                    Your Ad Here<br>Contact for Track Sponsor Rates
-                </div>
-            </div>
-
-            
-            <div class="content-box" style="background: linear-gradient(135deg, #181a20 0%, #21242c 100%); border: 1px solid var(--accent-red);">
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--accent-red); font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">
-                    <span>Featured Track Affiliate Offer</span>
-                    <span>Sponsored</span>
-                </div>
-                <p style="font-size: 0.85rem; color: var(--text-main); margin: 0 0 10px 0;">Looking for precision control? Save 10% on high-performance wastegates, turbos, and BOVs with our trusted track partners.</p>
-                <a href="#" style="display: block; text-align: center; background: var(--accent-red); color: white; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.8rem; text-transform: uppercase;">Shop Precision Boost Hardware &rarr;</a>
-            </div>
-
-            <div class="content-box">
-                <h3>Other Utilities & Calculators</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-
-    <a href="transmission-gear-drop-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">🏎️</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Transmission Shift Recovery & Gear Drop Calculator</span>
-    </a>
-
-    <a href="turbo-sizing-boost-matrix.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">🌀</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Turbo Sizing & Turbocharger Matching Calculator</span>
-    </a>
-
-    <a href="supercharger-pulley-boost-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">⚡</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Supercharger Pulley Ratio & Boost Pressure Calculator</span>
-    </a>
-
-    <a href="rear-gear-ratio-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">🔧</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Ring and Pinion Rear Gear Quarter-Mile Calculator</span>
-    </a>
-
-    <a href="tire-diameter-growth-calculator.html" style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px 10px; border-radius: 8px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: all 0.2s ease;">
-        <span style="font-size: 1.1rem;">🛞</span>
-        <span style="font-size: 0.78rem; font-weight: bold; color: var(--text-main); line-height: 1.2;">Tire Diameter Growth & Rollout Drag Calculator</span>
-    </a>
-</div>
-
-            </div>
-            
-            <div class="content-box">
-                <h3>Track-Side Tuning Cheat Sheets</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Essential round-by-round reference guides for the trailer:</p>
-                
-                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">1. Density Altitude (DA) & Weather</strong>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Every 1,000 ft increase in DA costs naturally aspirated engines ~3% horsepower. Forced induction setups compensate better via wastegate control, but watch inlet air temps.</p>
-                </div>
-
-                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">2. Torque Converter Slip</strong>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Target 5% to 8% slip at the finish line for max efficiency. Excessive slip generates transmission heat and kills trap speed; too tight kills 60-foot times.</p>
-                </div>
-
-                <div style="margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">3. Boost & Nitro Management</strong>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">Read spark plug ground straps for heat mark placement. Back off timing 1 to 2 degrees per additional 3–4 PSI of boost or when stepping up nitrous jetting.</p>
-                </div>
-
-                <div>
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">4. 4-Link Anti-Squat & Launch</strong>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0 0;">If the car bounces or unloads the tires immediately on launch, lower the instantaneous center (IC) or soften rear shock extension.</p>
-                </div>
-            </div>
-
-            <div class="content-box">
-                <h3>Formula Breakdown</h3>
-                <div class="formula-content">FORMULA_TEXT</div>
-            </div>
-            <div class="content-box">
-                <h3>Frequently Asked Questions</h3>
-                FAQS_HTML
-            </div>
-            
-            <div class="content-box">
-                <h3>Featured Partners</h3>
-                <ul class="sponsor-list" style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem; color: var(--text-muted);">
-                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color);"><a href="#" style="color: var(--text-muted); text-decoration: none;">Pro-Comp Race Transmissions</a></li>
-                    <li style="padding: 8px 0; border-bottom: 1px dashed var(--border-color);"><a href="#" style="color: var(--text-muted); text-decoration: none;">Precision Turbo & Engine</a></li>
-                    <li style="padding: 8px 0;"><a href="#" style="color: var(--text-muted); text-decoration: none;">DragStrip Tire & Compound Tech</a></li>
-                </ul>
-            </div>
-
-            
-            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);">
-                <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3>
-                <div style="padding: 20px 10px; color: var(--text-muted); font-size: 0.8rem; background: var(--input-bg); border-radius: 6px;">
-                    Your Ad Here<br>Contact for Track Sponsor Rates
-                </div>
-            </div>
-
+            <section class="content-box"><h2>Formula</h2><p class="formula">Airflow (lb/min) = (HP x BSFC) / 6 | Pressure Ratio = (Boost PSI + 14.7) / 14.7</p></section><section class="content-box"><h2>Related calculators</h2><ul class="variant-list"><li><a href="turbo-sizing-calculator.html">Turbo Sizing &amp; Turbocharger Matching Calculator</a></li><li><a href="turbo-sizing-single-1000hp-calculator.html">Single Turbo 1000 HP Sizing Calculator</a></li><li><a href="turbo-sizing-single-1250hp-calculator.html">Single Turbo 1250 HP Sizing Calculator</a></li><li><a href="turbo-sizing-single-1500hp-calculator.html">Single Turbo 1500 HP Sizing Calculator</a></li><li><a href="turbo-sizing-single-2000hp-calculator.html">Single Turbo 2000 HP Sizing Calculator</a></li><li><a href="turbo-sizing-single-500hp-calculator.html">Single Turbo 500 HP Sizing Calculator</a></li><li><a href="turbo-sizing-single-600hp-calculator.html">Single Turbo 600 HP Sizing Calculator</a></li></ul></section>
         </div>
     </div>
+    
+<footer class="site-footer">
+    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
+    <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
+</footer>
 
     <script>
-        
-        function calcTool() {
-            let hp = parseFloat(document.getElementById("hp").value) || 1000;
-            let boost = parseFloat(document.getElementById("boost").value) || 22;
-            let bsfc = parseFloat(document.getElementById("bsfc").value) || 0.85;
-            let count = parseInt(document.getElementById("turbos").value) || 1;
-            let totalAirflow = (hp * bsfc) / 6.0;
-            let perTurbo = totalAirflow / count;
-            let pr = (boost + 14.7) / 14.7;
-            document.getElementById("results").innerHTML = "Total Airflow: <strong>" + totalAirflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo) | Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
-        }
-        ["hp", "boost", "bsfc", "turbos"].forEach(id => {
-            let el = document.getElementById(id);
-            if(el) el.addEventListener("input", calcTool);
-        });
-        calcTool();
-        
+
+function calcTurbo() {
+    let hp = parseFloat(document.getElementById("tu-hp").value) || 1000;
+    let boost = parseFloat(document.getElementById("tu-boost").value) || 22;
+    let bsfc = parseFloat(document.getElementById("tu-bsfc").value) || 0.85;
+    let count = parseInt(document.getElementById("tu-count").value, 10) || 1;
+    let totalAirflow = (hp * bsfc) / 6.0;
+    let perTurbo = totalAirflow / count;
+    let pr = (boost + 14.7) / 14.7;
+    let rec = perTurbo < 45 ? "T4 62-67mm class" : (perTurbo < 75 ? "T4 76-83mm class" : "T6 88-94mm+ class");
+    document.getElementById("results").innerHTML = "Total Airflow: <strong>" + totalAirflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo)<br>Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong> | Match: <strong>" + rec + "</strong>";
+}
+["tu-hp", "tu-boost", "tu-bsfc", "tu-count"].forEach(id => {
+    let el = document.getElementById(id);
+    if (el) { el.addEventListener("input", calcTurbo); el.addEventListener("change", calcTurbo); }
+});
+calcTurbo();
+
     </script>
 </body>
 </html>

@@ -3,87 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tire Diameter Growth & Rollout Drag Calculator | Ultimate Drag Racing Master Suite</title>
-        <meta name='impact-site-verification' value='b2bb3042-cfc7-4ed4-b783-57a9b5a6451f'>
-    <meta name='google-site-verification' content='google9e7c88791a3f2f72'>
-    
+    <title>Tire Diameter Growth &amp; Rollout Drag Calculator | DragCalculators.com</title>
+    <meta name="description" content="Tire Diameter Growth &amp; Rollout Drag Calculator. Loaded defaults: 28.0 inch tire, 3.42 rear gear.">
+    <link rel="canonical" href="https://dragcalculators.com/tire-growth-calculator.html">
+    <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
+    <meta name="google-site-verification" content="google9e7c88791a3f2f72">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://dragcalculators.com/">
-    <meta property="og:title" content="Ultimate Drag Racing Master Suite | Ultimate Drag Racing Calculator Suite">
-    <meta property="og:description" content="Professional drag racing calculators for gear ratios, turbo sizing, shift recovery, and track tuning.">
+    <meta property="og:url" content="https://dragcalculators.com/tire-growth-calculator.html">
+    <meta property="og:title" content="Tire Diameter Growth &amp; Rollout Drag Calculator | DragCalculators.com">
+    <meta property="og:description" content="Tire Diameter Growth &amp; Rollout Drag Calculator. Loaded defaults: 28.0 inch tire, 3.42 rear gear.">
     <meta property="og:image" content="https://dragcalculators.com/social-banner.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Ultimate Drag Racing Master Suite">
-    <meta name="twitter:description" content="Professional drag racing calculators for gear ratios, turbo sizing, shift recovery, and track tuning.">
+    <meta name="twitter:title" content="Tire Diameter Growth &amp; Rollout Drag Calculator | DragCalculators.com">
+    <meta name="twitter:description" content="Tire Diameter Growth &amp; Rollout Drag Calculator. Loaded defaults: 28.0 inch tire, 3.42 rear gear.">
     <meta name="twitter:image" content="https://dragcalculators.com/social-banner.jpg">
-
-    <style>
-        :root {
-            --bg-dark: #0f1015;
-            --card-bg: #181a20;
-            --accent-red: #ff1e27;
-            --text-main: #f8f9fa;
-            --text-muted: #9ca3af;
-            --border-color: #2d3139;
-            --input-bg: #21242c;
-        }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 20px; line-height: 1.5; }
-        .layout-grid { max-width: 1350px; margin: 20px auto; display: grid; grid-template-columns: 240px 480px 1fr; gap: 25px; align-items: start; }
-        .nexus-sidebar { position: sticky; top: 20px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; }
-        .sticky-calculator { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 15px; }
-        .content-column { display: flex; flex-direction: column; gap: 20px; }
-        .content-box { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; }
-        .content-box h3 { color: var(--accent-red); font-size: 0.95rem; text-transform: uppercase; margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
-        .master-header { text-align: center; margin-bottom: 5px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
-        .master-header h1 { color: var(--accent-red); font-size: 1.2rem; text-transform: uppercase; margin: 0 0 3px 0; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
-        label { display: block; margin-bottom: 2px; font-weight: 600; font-size: 0.72rem; color: var(--text-muted); }
-        input, select { width: 100%; padding: 7px 9px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; box-sizing: border-box; font-size: 0.82rem; }
-        .results-box { margin-top: 10px; background: #121418; border: 1px solid var(--border-color); border-left: 4px solid var(--accent-red); padding: 10px; border-radius: 6px; font-size: 0.82rem; }
-        .action-btn { width: 100%; margin-top: 10px; background: var(--accent-red); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
-        .action-btn:hover { background: #e0161f; }
-        table { width: 100%; margin-top: 12px; border-collapse: collapse; background: #121418; border-radius: 6px; overflow: hidden; }
-        th, td { padding: 5px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
-        th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
-        .back-link { display: inline-block; margin-bottom: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div style="max-width: 1350px; margin: 0 auto;"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
+    <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
     <div class="layout-grid">
-        <div class="nexus-sidebar"><div style="display: flex; flex-direction: column; gap: 4px;">
-    <a href="index.html" class="nav-item active" style="padding: 8px 10px; background: var(--input-bg); border-left: 3px solid var(--accent-red); color: var(--text-main); text-decoration: none; border-radius: 4px; font-size: 0.78rem; font-weight: 600;">Popular / Master Hub</a>
-    <a href="transmission-shift-recovery-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Transmission & Gearing</a>
-    <a href="turbo-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Forced Induction / Turbo</a>
-    <a href="four-link-suspension-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Suspension & 4-Link</a>
-    <a href="exhaust-header-sizing-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Exhaust & Airflow</a>
-    <a href="fuel-injector-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Fueling & EFI</a>
-    <a href="tire-growth-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Chassis & Tires</a>
-    <a href="automotive-relay-calculator.html" class="nav-item" style="padding: 8px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.78rem;">Electrical & Wiring</a>
-</div></div>
-        <div class="sticky-calculator">
-            <div>
-                <div class="master-header"><h1>Tire Diameter Growth & Rollout Drag Calculator</h1><p>Tire Diameter Growth & Rollout Drag Calculator &mdash; Track Tuning Engine</p></div>
-                
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Slick Growth, Dynamic Diameter & Finish RPM</div>
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item active" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
+        <section class="sticky-calculator">
+            <header class="master-header">
+                <h1>Tire Diameter Growth &amp; Rollout Drag Calculator</h1>
+                <p class="spec">Loaded defaults: 28.0 inch tire, 3.42 rear gear.</p>
+            </header>
+            
+    <p class="tool-note">Slick growth, dynamic diameter, and finish RPM</p>
     <div class="grid-2">
-        <div><label>Static Tire Dia (in)</label><input type="number" id="tg-dia" value="28.0" step="0.1"></div>
-        <div><label>Trap Speed (MPH)</label><input type="number" id="tg-trap" value="150" step="1"></div>
+        <div><label for="tg-dia">Static Tire Dia (in)</label><input type="number" id="tg-dia" value="28.0" step="0.1"></div>
+        <div><label for="tg-trap">Trap Speed (MPH)</label><input type="number" id="tg-trap" value="150" step="1"></div>
     </div>
     <div class="grid-2">
-        <div><label>Growth Factor (%)</label><input type="number" id="tg-growth" value="4.5" step="0.1"></div>
-        <div><label>Rear Gear Ratio</label><input type="number" id="tg-gear" value="3.42" step="0.01"></div>
+        <div><label for="tg-growth">Growth Factor (%)</label><input type="number" id="tg-growth" value="4.5" step="0.1"></div>
+        <div><label for="tg-gear">Rear Gear Ratio</label><input type="number" id="tg-gear" value="3.42" step="0.01"></div>
     </div>
     <div class="results-box" id="results">Adjust parameters above.</div>
     <button type="button" class="action-btn" onclick="window.print()">Print Tire Growth Sheet</button>
 
-            </div>
-        </div>
+        </section>
         <div class="content-column">
-            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Dynamic Diameter = Static Dia * (1 + Growth%/100) | Rollout = Diameter * PI | Finish RPM = (Trap * Gear * 336) / Dynamic Dia</div></div>
+            <section class="content-box"><h2>Formula</h2><p class="formula">Dynamic Diameter = Static Dia x (1 + Growth% / 100) | Rollout = Diameter x PI | Finish RPM = (Trap x Gear x 336) / Dynamic Dia</p></section><section class="content-box"><h2>Configurations</h2><p>3 saved combinations for this calculator.</p><ul class="variant-list"><li><a href="tire-diameter-growth-28-radial.html">28 Inch Radial Tire Growth Calculator</a></li><li><a href="tire-diameter-growth-33-slick.html">33 Inch Slick Tire Growth Calculator</a></li><li><a href="tire-diameter-growth-calculator.html">Tire Diameter Growth Calculator</a></li></ul></section>
         </div>
     </div>
+    
+<footer class="site-footer">
+    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
+    <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
+</footer>
+
     <script>
+
 function calcTireGrowth() {
     let staticDia = parseFloat(document.getElementById("tg-dia").value) || 28;
     let trap = parseFloat(document.getElementById("tg-trap").value) || 150;
@@ -97,9 +67,10 @@ function calcTireGrowth() {
 }
 ["tg-dia", "tg-trap", "tg-growth", "tg-gear"].forEach(id => {
     let el = document.getElementById(id);
-    if(el) { el.addEventListener("input", calcTireGrowth); el.addEventListener("change", calcTireGrowth); }
+    if (el) { el.addEventListener("input", calcTireGrowth); el.addEventListener("change", calcTireGrowth); }
 });
 calcTireGrowth();
-</script>
+
+    </script>
 </body>
 </html>
