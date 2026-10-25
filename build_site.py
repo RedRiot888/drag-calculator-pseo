@@ -125,12 +125,25 @@ footer_html = """
 verification_tags = """    <meta name='impact-site-verification' value='b2bb3042-cfc7-4ed4-b783-57a9b5a6451f'>
     <meta name='google-site-verification' content='google9e7c88791a3f2f72'>"""
 
+social_meta_tags = """
+    <!-- Open Graph / Social Media Preview Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dragcalculators.com/">
+    <meta property="og:title" content="TARGET_KEYWORD | Ultimate Drag Racing Calculator Suite">
+    <meta property="og:description" content="Professional drag racing calculators for gear ratios, turbo sizing, shift recovery, and track tuning.">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TARGET_KEYWORD | Ultimate Drag Racing Master Suite">
+    <meta name="twitter:description" content="Professional drag racing calculators for gear ratios, turbo sizing, shift recovery, and track tuning.">
+"""
+
 if os.path.exists("index_template.html"):
     with open("index_template.html", "r", encoding="utf-8") as f:
         master_index_html = f.read()
     
     master_index_html = (
-        master_index_html.replace("VERIFICATION_TAGS_PLACEHOLDER", verification_tags)
+        master_index_html.replace("VERIFICATION_TAGS_PLACEHOLDER", verification_tags + social_meta_tags.replace("TARGET_KEYWORD", "Ultimate Drag Racing Master Suite"))
         .replace("REPLACE_SIDEBAR_NAV", sidebar_nav_html)
         .replace("REPLACE_STICKY_AD", ad_block_html)
         .replace("REPLACE_TOP_AD", ad_block_html)
@@ -149,6 +162,7 @@ base_html_template = """<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TARGET_KEYWORD | Ultimate Drag Racing Master Suite</title>
     VERIFICATION_TAGS_PLACEHOLDER
+    SOCIAL_TAGS_PLACEHOLDER
     <style>
         :root {
             --bg-dark: #0f1015;
@@ -448,6 +462,7 @@ for row in pages:
 
     page_html = (
         base_html_template.replace("VERIFICATION_TAGS_PLACEHOLDER", verification_tags)
+            .replace("SOCIAL_TAGS_PLACEHOLDER", social_meta_tags.replace("TARGET_KEYWORD", target_keyword))
             .replace("TARGET_KEYWORD", target_keyword)
             .replace("PRIMARY_TITLE", primary_title)
             .replace("PRIMARY_TOOL_HTML", primary_tool_html)
@@ -465,7 +480,7 @@ for row in pages:
     with open(os.path.join(output_dir, f"{slug}.html"), "w", encoding="utf-8") as out_f:
         out_f.write(page_html)
 
-print("Successfully built all calculator pages with contact.html links!")
+print("Successfully built all calculator pages with social media preview tags!")
 
 # 4. Automatically generate sitemap.xml for Google Search Console
 sitemap_content = """<?xml version="1.0" encoding="UTF-8"?>
