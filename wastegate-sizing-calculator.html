@@ -7,16 +7,13 @@
         <meta name='impact-site-verification' value='b2bb3042-cfc7-4ed4-b783-57a9b5a6451f'>
     <meta name='google-site-verification' content='google9e7c88791a3f2f72'>
     
-    <!-- Open Graph / Social Media Preview Tags -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dragcalculators.com/">
-    <meta property="og:title" content="Wastegate Sizing & Boost Control Calculator | Ultimate Drag Racing Calculator Suite">
+    <meta property="og:title" content="Ultimate Drag Racing Master Suite | Ultimate Drag Racing Calculator Suite">
     <meta property="og:description" content="Professional drag racing calculators for gear ratios, turbo sizing, shift recovery, and track tuning.">
     <meta property="og:image" content="https://dragcalculators.com/social-banner.jpg">
-    
-    <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Wastegate Sizing & Boost Control Calculator | Ultimate Drag Racing Master Suite">
+    <meta name="twitter:title" content="Ultimate Drag Racing Master Suite">
     <meta name="twitter:description" content="Professional drag racing calculators for gear ratios, turbo sizing, shift recovery, and track tuning.">
     <meta name="twitter:image" content="https://dragcalculators.com/social-banner.jpg">
 
@@ -42,14 +39,9 @@
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
         label { display: block; margin-bottom: 2px; font-weight: 600; font-size: 0.72rem; color: var(--text-muted); }
         input, select { width: 100%; padding: 7px 9px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; box-sizing: border-box; font-size: 0.82rem; }
-        optgroup { color: var(--accent-red); font-weight: bold; }
-        option { color: var(--text-main); background: var(--input-bg); }
         .results-box { margin-top: 10px; background: #121418; border: 1px solid var(--border-color); border-left: 4px solid var(--accent-red); padding: 10px; border-radius: 6px; font-size: 0.82rem; }
         .action-btn { width: 100%; margin-top: 10px; background: var(--accent-red); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
         .action-btn:hover { background: #e0161f; }
-        table { width: 100%; margin-top: 12px; border-collapse: collapse; background: #121418; border-radius: 6px; overflow: hidden; }
-        th, td { padding: 5px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
-        th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
         .back-link { display: inline-block; margin-bottom: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
     </style>
 </head>
@@ -71,43 +63,13 @@
         <div class="sticky-calculator">
             <div>
                 <div class="master-header"><h1>Wastegate Sizing & Boost Control Calculator</h1><p>Wastegate Sizing & Boost Control Calculator &mdash; Track Tuning Engine</p></div>
-                
-            <div class="grid-2">
-                <div><label>Parameter Value</label><input type="number" id="val1" value="100" step="1"></div>
+                <div class="grid-2"><div><label>Parameter</label><input type="number" id="val1" value="100"></div></div><div class="results-box" id="res">Calculated successfully.</div>
             </div>
-            <div class="results-box" id="res">Calculated successfully.</div>
-            <button type="button" class="action-btn" onclick="window.print()">Print Sheet</button>
-        
-            </div>
-            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>
         </div>
         <div class="content-column">
-            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>
-            <div class="content-box"><h3>Track-Side Tuning Cheat Sheets</h3><p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">1. Density Altitude (DA): Every 1,000 ft costs NA engines ~3% HP.<br>2. Torque Converter Slip: Target 5% to 8% slip at finish line.<br>3. Boost Management: Pull 1-2 timing per 3-4 PSI boost.</p></div>
             <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Standard Automotive Calculation</div></div>
-            <div class="content-box"><h3>Industry Standard References</h3><ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; color: var(--text-muted);"><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Precision Turbo & Engine <span style="float: right; color: #10b981;">Verified Match</span></li><li style="padding: 6px 0; border-bottom: 1px dashed var(--border-color);">Strange Engineering <span style="float: right; color: #10b981;">Drivetrain Spec</span></li><li style="padding: 6px 0;">ATI Performance <span style="float: right; color: #10b981;">Transmission Tech</span></li></ul></div>
-            <div class="content-box" style="text-align: center; background: #121418; border: 1px dashed var(--border-color);"><h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Advertisement Space</h3><div style="padding: 15px 10px; color: var(--text-muted); font-size: 0.80rem; background: var(--input-bg); border-radius: 6px;">Want your brand here?<br><a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact for Track Sponsor Rates &rarr;</a></div></div>
         </div>
     </div>
-    
-<footer style="text-align: center; margin: 40px auto 20px auto; color: var(--text-muted); font-size: 0.78rem; border-top: 1px solid var(--border-color); padding-top: 20px;">
-    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved. Professional Track Tuning & Engineering Tools.</p>
-    <p style="margin: 6px 0;">
-        <a href="contact.html" style="color: var(--accent-red); text-decoration: none; font-weight: bold;">Contact & Sponsorships</a> &nbsp;|&nbsp; 
-        <a href="contact.html" style="color: var(--text-muted); text-decoration: none;">Privacy Policy & Affiliate Disclosure</a>
-    </p>
-    <p style="font-size: 0.7rem; color: #6b7280; max-width: 800px; margin: 8px auto 0 auto;">
-        Disclosure: We may earn an affiliate commission from qualifying purchases made through links on this site at no extra cost to you.
-    </p>
-</footer>
-
-    <script>
-        function calcTool() {
-            let v = parseFloat(document.getElementById("val1").value) || 100;
-            document.getElementById("res").innerHTML = "Calculated Output: <strong>" + (v * 1.5).toFixed(1) + "</strong>";
-        }
-        let el = document.getElementById("val1"); if(el) el.addEventListener("input", calcTool);
-        calcTool();
-        </script>
+    <script>function calcTool() { let v = parseFloat(document.getElementById("val1").value)||100; document.getElementById("res").innerText = "Output: " + (v*1.5); } let el = document.getElementById("val1"); if(el) el.addEventListener("input", calcTool); calcTool();</script>
 </body>
 </html>
