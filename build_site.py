@@ -293,6 +293,9 @@ base_html_template = """<!DOCTYPE html>
         .results-box { margin-top: 10px; background: #121418; border: 1px solid var(--border-color); border-left: 4px solid var(--accent-red); padding: 10px; border-radius: 6px; font-size: 0.82rem; }
         .action-btn { width: 100%; margin-top: 10px; background: var(--accent-red); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
         .action-btn:hover { background: #e0161f; }
+        table { width: 100%; margin-top: 12px; border-collapse: collapse; background: #121418; border-radius: 6px; overflow: hidden; }
+        th, td { padding: 5px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
+        th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
         .back-link { display: inline-block; margin-bottom: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
     </style>
 </head>
@@ -401,7 +404,7 @@ fuel_injector_tool_html = """
             <select id="fi-fuel">
                 <option value="0.65" selected>Gasoline (BSFC ~0.65)</option>
                 <option value="1.10">E85 Ethanol (BSFC ~1.10)</option>
-                <option value="0.55">Methanol (BSFC ~1.50)</option>
+                <option value="1.50">Methanol (BSFC ~1.50)</option>
             </select>
         </div>
     </div>
@@ -421,7 +424,9 @@ fuel_injector_script = """
 function calcInjector() {
     let hp = parseFloat(document.getElementById("fi-hp").value) || 1000;
     let count = parseFloat(document.getElementById("fi-inj").value) || 8;
-    let bsfc = parseFloat(document.getElementById("fi-ind").value) || 0.65;
+    let ind = parseFloat(document.getElementById("fi-ind").value) || 0.65;
+    let fuel = parseFloat(document.getElementById("fi-fuel").value) || 0.65;
+    let bsfc = fuel * (ind / 0.65);
     let dc = (parseFloat(document.getElementById("fi-dc").value) || 80) / 100;
     
     let totalLbHr = (hp * bsfc) / dc;
@@ -441,26 +446,366 @@ function calcInjector() {
 calcInjector();
 """
 
+turbo_tool_html = """
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Turbocharger Airflow & Pressure Ratio Matching</div>
+    <div class="grid-2">
+        <div><label>Target Flywheel HP</label><input type="number" id="tu-hp" value="1000" step="50"></div>
+        <div><label>Target Boost (PSI)</label><input type="number" id="tu-boost" value="22" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>Fuel BSFC</label>
+            <select id="tu-bsfc">
+                <option value="0.60">Gasoline (0.60)</option>
+                <option value="0.85" selected>E85 (0.85)</option>
+                <option value="1.50">Methanol (1.50)</option>
+            </select>
+        </div>
+        <div><label>Turbo Count</label>
+            <select id="tu-count">
+                <option value="1" selected>Single</option>
+                <option value="2">Twin</option>
+            </select>
+        </div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Turbo Match Sheet</button>
+"""
+
+turbo_script = """
+function calcTurbo() {
+    let hp = parseFloat(document.getElementById("tu-hp").value) || 1000;
+    let boost = parseFloat(document.getElementById("tu-boost").value) || 22;
+    let bsfc = parseFloat(document.getElementById("tu-bsfc").value) || 0.85;
+    let count = parseInt(document.getElementById("tu-count").value) || 1;
+    let totalAirflow = (hp * bsfc) / 6.0;
+    let perTurbo = totalAirflow / count;
+    let pr = (boost + 14.7) / 14.7;
+    let rec = perTurbo < 45 ? "T4 62-67mm class" : (perTurbo < 75 ? "T4 76-83mm class" : "T6 88-94mm+ class");
+    document.getElementById("results").innerHTML = "Total Airflow: <strong>" + totalAirflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo)<br>Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong> | Match: <strong>" + rec + "</strong>";
+}
+["tu-hp", "tu-boost", "tu-bsfc", "tu-count"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcTurbo); el.addEventListener("change", calcTurbo); }
+});
+calcTurbo();
+"""
+
+exhaust_tool_html = """
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Header Primary Tube & Turbo Downpipe Sizing</div>
+    <div class="grid-2">
+        <div><label>Engine Displacement (CID)</label><input type="number" id="ex-cid" value="400" step="5"></div>
+        <div><label>Cylinders</label><input type="number" id="ex-cyl" value="8" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>Peak RPM</label><input type="number" id="ex-rpm" value="6500" step="100"></div>
+        <div><label>Exhaust Duration (deg)</label><input type="number" id="ex-dur" value="240" step="5"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>Layout</label>
+            <select id="ex-layout">
+                <option value="na">Naturally Aspirated Headers</option>
+                <option value="turbo" selected>Turbo Manifold / Downpipe</option>
+            </select>
+        </div>
+        <div><label>Target HP (turbo pipe)</label><input type="number" id="ex-hp" value="1000" step="50"></div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Exhaust Spec Sheet</button>
+"""
+
+exhaust_script = """
+function calcExhaust() {
+    let cid = parseFloat(document.getElementById("ex-cid").value) || 400;
+    let cyl = parseFloat(document.getElementById("ex-cyl").value) || 8;
+    let rpm = parseFloat(document.getElementById("ex-rpm").value) || 6500;
+    let dur = parseFloat(document.getElementById("ex-dur").value) || 240;
+    let layout = document.getElementById("ex-layout").value;
+    let hp = parseFloat(document.getElementById("ex-hp").value) || 1000;
+    let primaryId = Math.sqrt((cid / cyl) * rpm / 88200);
+    let primaryLen = (dur * 850 / rpm) - 3;
+    let collector = layout === "turbo" ? Math.sqrt(hp / 220) : primaryId * 1.75;
+    let label = layout === "turbo" ? "Turbo Downpipe ID" : "Collector ID";
+    document.getElementById("results").innerHTML = "Primary ID: <strong>" + primaryId.toFixed(2) + " in</strong> | Primary Length: <strong>" + primaryLen.toFixed(1) + " in</strong><br>" + label + ": <strong>" + collector.toFixed(2) + " in</strong>";
+}
+["ex-cid", "ex-cyl", "ex-rpm", "ex-dur", "ex-layout", "ex-hp"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcExhaust); el.addEventListener("change", calcExhaust); }
+});
+calcExhaust();
+"""
+
+supercharger_tool_html = """
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Supercharger Pulley Ratio & Estimated Boost</div>
+    <div class="grid-2">
+        <div><label>Crank Pulley Dia (in)</label><input type="number" id="sc-crank" value="8.0" step="0.1"></div>
+        <div><label>Blower Pulley Dia (in)</label><input type="number" id="sc-blower" value="3.0" step="0.1"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>Max Crank RPM</label><input type="number" id="sc-rpm" value="6500" step="100"></div>
+        <div><label>Blower Type Factor</label>
+            <select id="sc-fac">
+                <option value="1.20">Roots (~1.20)</option>
+                <option value="1.45" selected>Twin-Screw (~1.45)</option>
+                <option value="1.65">Centrifugal (~1.65)</option>
+            </select>
+        </div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Pulley Spec Sheet</button>
+"""
+
+supercharger_script = """
+function calcSupercharger() {
+    let crank = parseFloat(document.getElementById("sc-crank").value) || 8.0;
+    let blower = parseFloat(document.getElementById("sc-blower").value) || 3.0;
+    let rpm = parseFloat(document.getElementById("sc-rpm").value) || 6500;
+    let factor = parseFloat(document.getElementById("sc-fac").value) || 1.45;
+    let ratio = crank / Math.max(blower, 0.1);
+    let impellerRpm = Math.round(rpm * ratio);
+    let estBoost = ratio * 5.2 * factor;
+    document.getElementById("results").innerHTML = "Pulley Ratio: <strong>" + ratio.toFixed(2) + ":1</strong> | Impeller RPM: <strong>" + impellerRpm.toLocaleString() + "</strong><br>Est. Boost: <strong>" + estBoost.toFixed(1) + " PSI</strong>";
+}
+["sc-crank", "sc-blower", "sc-rpm", "sc-fac"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcSupercharger); el.addEventListener("change", calcSupercharger); }
+});
+calcSupercharger();
+"""
+
+rear_gear_tool_html = """
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Ring & Pinion Finish RPM / Trap Speed Engine</div>
+    <div class="grid-2">
+        <div><label>Target Trap Speed (MPH)</label><input type="number" id="rg-trap" value="125" step="1"></div>
+        <div><label>Rear Gear Ratio</label><input type="number" id="rg-gear" value="4.11" step="0.01"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>Tire Diameter (in)</label><input type="number" id="rg-tire" value="32.0" step="0.1"></div>
+        <div><label>Trans Final Ratio</label><input type="number" id="rg-final" value="1.00" step="0.01"></div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Rear Gear Sheet</button>
+"""
+
+rear_gear_script = """
+function calcRearGear() {
+    let trap = parseFloat(document.getElementById("rg-trap").value) || 125;
+    let gear = parseFloat(document.getElementById("rg-gear").value) || 4.11;
+    let tire = parseFloat(document.getElementById("rg-tire").value) || 32;
+    let transFinal = parseFloat(document.getElementById("rg-final").value) || 1.00;
+    let overall = gear * transFinal;
+    let finishRpm = (trap * overall * 336) / Math.max(tire, 0.1);
+    let rollout = (tire * Math.PI).toFixed(1);
+    let mphAt7500 = (7500 * tire) / (overall * 336);
+    document.getElementById("results").innerHTML = "Overall Ratio: <strong>" + overall.toFixed(2) + ":1</strong> | Rollout: <strong>" + rollout + " in</strong><br>Finish RPM: <strong>" + Math.round(finishRpm) + " RPM</strong> | 7500 RPM Trap: <strong>" + mphAt7500.toFixed(1) + " MPH</strong>";
+}
+["rg-trap", "rg-gear", "rg-tire", "rg-final"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcRearGear); el.addEventListener("change", calcRearGear); }
+});
+calcRearGear();
+"""
+
+tire_growth_tool_html = """
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Slick Growth, Dynamic Diameter & Finish RPM</div>
+    <div class="grid-2">
+        <div><label>Static Tire Dia (in)</label><input type="number" id="tg-dia" value="28.0" step="0.1"></div>
+        <div><label>Trap Speed (MPH)</label><input type="number" id="tg-trap" value="150" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>Growth Factor (%)</label><input type="number" id="tg-growth" value="4.5" step="0.1"></div>
+        <div><label>Rear Gear Ratio</label><input type="number" id="tg-gear" value="3.42" step="0.01"></div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Tire Growth Sheet</button>
+"""
+
+tire_growth_script = """
+function calcTireGrowth() {
+    let staticDia = parseFloat(document.getElementById("tg-dia").value) || 28;
+    let trap = parseFloat(document.getElementById("tg-trap").value) || 150;
+    let growth = parseFloat(document.getElementById("tg-growth").value) || 4.5;
+    let gear = parseFloat(document.getElementById("tg-gear").value) || 3.42;
+    let dynamicDia = staticDia * (1 + (growth / 100));
+    let staticRollout = (staticDia * Math.PI).toFixed(1);
+    let dynamicRollout = (dynamicDia * Math.PI).toFixed(1);
+    let estFinishRpm = Math.round((trap * gear * 336) / dynamicDia);
+    document.getElementById("results").innerHTML = "Static Rollout: <strong>" + staticRollout + " in</strong> | Dynamic Dia: <strong>" + dynamicDia.toFixed(2) + " in</strong><br>Dynamic Rollout: <strong>" + dynamicRollout + " in</strong> | Est. Finish RPM: <strong>" + estFinishRpm + " RPM</strong>";
+}
+["tg-dia", "tg-trap", "tg-growth", "tg-gear"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcTireGrowth); el.addEventListener("change", calcTireGrowth); }
+});
+calcTireGrowth();
+"""
+
+wastegate_tool_html = """
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">External Wastegate Diameter & Bypass Flow</div>
+    <div class="grid-2">
+        <div><label>Target Flywheel HP</label><input type="number" id="wg-hp" value="1000" step="50"></div>
+        <div><label>Target Boost (PSI)</label><input type="number" id="wg-boost" value="22" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>Number of Gates</label>
+            <select id="wg-count">
+                <option value="1" selected>Single Gate</option>
+                <option value="2">Twin Gates</option>
+            </select>
+        </div>
+        <div><label>Gate Style</label>
+            <select id="wg-style">
+                <option value="1.00">Internal WG (restricted)</option>
+                <option value="1.25" selected>External WG</option>
+            </select>
+        </div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Wastegate Spec Sheet</button>
+"""
+
+wastegate_script = """
+function calcWastegate() {
+    let hp = parseFloat(document.getElementById("wg-hp").value) || 1000;
+    let boost = parseFloat(document.getElementById("wg-boost").value) || 22;
+    let count = parseInt(document.getElementById("wg-count").value) || 1;
+    let style = parseFloat(document.getElementById("wg-style").value) || 1.25;
+    let bypassFrac = boost / (boost + 14.7);
+    let exhaustLbMin = (hp * 0.12);
+    let wgFlow = (exhaustLbMin * bypassFrac) / count / style;
+    let diaMm = 10 * Math.sqrt(Math.max(wgFlow, 1));
+    let rec = 38;
+    if (diaMm > 42) rec = 44;
+    if (diaMm > 48) rec = 50;
+    if (diaMm > 56) rec = 60;
+    document.getElementById("results").innerHTML = "Bypass Fraction: <strong>" + (bypassFrac * 100).toFixed(0) + "%</strong> | Flow per Gate: <strong>" + wgFlow.toFixed(1) + " lb/min</strong><br>Recommended Gate: <strong>" + rec + " mm</strong> (" + count + " x " + rec + " mm)";
+}
+["wg-hp", "wg-boost", "wg-count", "wg-style"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcWastegate); el.addEventListener("change", calcWastegate); }
+});
+calcWastegate();
+"""
+
+relay_tool_html = """
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Relay, Fuse, and Chassis Wire Gauge Sizing</div>
+    <div class="grid-2">
+        <div><label>Load Power (Watts)</label><input type="number" id="rl-watts" value="240" step="10"></div>
+        <div><label>System Voltage</label>
+            <select id="rl-volts">
+                <option value="12" selected>12V Chassis</option>
+                <option value="13.8">13.8V Running</option>
+                <option value="16">16V Race</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div><label>Duty</label>
+            <select id="rl-duty">
+                <option value="1.25" selected>Continuous (1.25x)</option>
+                <option value="1.10">Intermittent (1.10x)</option>
+            </select>
+        </div>
+        <div><label>One-Way Wire Length (ft)</label><input type="number" id="rl-len" value="12" step="1"></div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Wiring Spec Sheet</button>
+"""
+
+relay_script = """
+function calcRelay() {
+    let watts = parseFloat(document.getElementById("rl-watts").value) || 240;
+    let volts = parseFloat(document.getElementById("rl-volts").value) || 12;
+    let duty = parseFloat(document.getElementById("rl-duty").value) || 1.25;
+    let len = parseFloat(document.getElementById("rl-len").value) || 12;
+    let amps = watts / Math.max(volts, 1);
+    let designAmps = amps * duty;
+    let relaySizes = [20, 30, 40, 70, 80, 100, 120];
+    let relay = relaySizes.find(s => s >= designAmps) || 150;
+    let fuse = Math.ceil(designAmps / 5) * 5;
+    let awg = "16";
+    if (designAmps > 15) awg = "14";
+    if (designAmps > 24) awg = "12";
+    if (designAmps > 32) awg = "10";
+    if (designAmps > 45) awg = "8";
+    if (designAmps > 65) awg = "6";
+    if (designAmps > 95) awg = "4";
+    if (len > 15) {
+        let n = parseInt(awg, 10);
+        if (n >= 8) awg = String(n - 2);
+    }
+    document.getElementById("results").innerHTML = "Load Current: <strong>" + amps.toFixed(1) + " A</strong> | Design Current: <strong>" + designAmps.toFixed(1) + " A</strong><br>Relay: <strong>" + relay + " A</strong> | Fuse: <strong>" + fuse + " A</strong> | Wire: <strong>" + awg + " AWG</strong>";
+}
+["rl-watts", "rl-volts", "rl-duty", "rl-len"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcRelay); el.addEventListener("change", calcRelay); }
+});
+calcRelay();
+"""
+
+calculator_widgets = {
+    "Transmission": {
+        "formula": "Overall Ratio = Trans Ratio x Rear Gear | Shift Speed (MPH) = (RPM * Tire) / (Overall * 336)",
+        "html": drivetrain_tool_html,
+        "script": drivetrain_script,
+    },
+    "Turbo": {
+        "formula": "Airflow (lb/min) = (HP * BSFC) / 6 | Pressure Ratio = (Boost PSI + 14.7) / 14.7",
+        "html": turbo_tool_html,
+        "script": turbo_script,
+    },
+    "Suspension": {
+        "formula": "Instant Center Length & Height calculated from 10-point axle and chassis rod-end coordinates. Anti-Squat % = (IC Height / Crank Height) * 100.",
+        "html": four_link_tool_html,
+        "script": four_link_script,
+    },
+    "Exhaust": {
+        "formula": "Primary ID = sqrt((CID / Cylinders) * RPM / 88200) | Primary Length = (Duration * 850 / RPM) - 3 | Turbo Downpipe ID = sqrt(HP / 220)",
+        "html": exhaust_tool_html,
+        "script": exhaust_script,
+    },
+    "Supercharger": {
+        "formula": "Pulley Ratio = Crank Dia / Blower Dia | Impeller RPM = Crank RPM * Ratio | Est. Boost = Ratio * 5.2 * Blower Factor",
+        "html": supercharger_tool_html,
+        "script": supercharger_script,
+    },
+    "RearGear": {
+        "formula": "Finish RPM = (Trap MPH * Overall Ratio * 336) / Tire Diameter | Overall Ratio = Rear Gear * Trans Final",
+        "html": rear_gear_tool_html,
+        "script": rear_gear_script,
+    },
+    "Tire": {
+        "formula": "Dynamic Diameter = Static Dia * (1 + Growth%/100) | Rollout = Diameter * PI | Finish RPM = (Trap * Gear * 336) / Dynamic Dia",
+        "html": tire_growth_tool_html,
+        "script": tire_growth_script,
+    },
+    "Wastegate": {
+        "formula": "Bypass Fraction = Boost / (Boost + 14.7) | Gate Flow = (HP * 0.12 * Bypass) / Gate Count | Recommend 38/44/50/60 mm class",
+        "html": wastegate_tool_html,
+        "script": wastegate_script,
+    },
+    "Fuel": {
+        "formula": "Injector Flow (lb/hr) = (Flywheel HP * BSFC) / (Max Duty Cycle * Number of Injectors). CC/Min = lb/hr * 10.5. BSFC scales with fuel type and induction.",
+        "html": fuel_injector_tool_html,
+        "script": fuel_injector_script,
+    },
+    "Electrical": {
+        "formula": "Load Amps = Watts / Voltage | Design Amps = Load * Duty Factor | Size relay/fuse above design current and pick AWG for ampacity + wire length.",
+        "html": relay_tool_html,
+        "script": relay_script,
+    },
+}
+
 for row in pages:
     slug = row["slug"]
     target_keyword = row["target_keyword"]
     category = row["category"]
+    widget = calculator_widgets.get(category)
+    if widget is None:
+        raise SystemExit(f"No dedicated calculator widget for category {category!r} (slug {slug})")
 
-    if category == "Suspension":
-        primary_title = target_keyword
-        formula_text = "Instant Center Length & Height calculated from 10-point axle and chassis rod-end coordinates."
-        primary_tool_html = four_link_tool_html
-        tool_script = four_link_script
-    elif slug == "fuel-injector-calculator":
-        primary_title = target_keyword
-        formula_text = "Injector Flow (lb/hr) = (Flywheel HP * BSFC) / (Max Duty Cycle * Number of Injectors). CC/Min = lb/hr * 10.5."
-        primary_tool_html = fuel_injector_tool_html
-        tool_script = fuel_injector_script
-    else:
-        primary_title = target_keyword
-        formula_text = "Standard Automotive Calculation"
-        primary_tool_html = '<div class="grid-2"><div><label>Parameter</label><input type="number" id="val1" value="100"></div></div><div class="results-box" id="res">Calculated successfully.</div>'
-        tool_script = 'function calcTool() { let v = parseFloat(document.getElementById("val1").value)||100; document.getElementById("res").innerText = "Output: " + (v*1.5); } let el = document.getElementById("val1"); if(el) el.addEventListener("input", calcTool); calcTool();'
+    primary_title = target_keyword
+    formula_text = widget["formula"]
+    primary_tool_html = widget["html"]
+    tool_script = widget["script"]
 
     page_html = (
         base_html_template.replace("VERIFICATION_TAGS_PLACEHOLDER", verification_tags)

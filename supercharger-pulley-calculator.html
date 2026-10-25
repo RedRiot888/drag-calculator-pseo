@@ -42,6 +42,9 @@
         .results-box { margin-top: 10px; background: #121418; border: 1px solid var(--border-color); border-left: 4px solid var(--accent-red); padding: 10px; border-radius: 6px; font-size: 0.82rem; }
         .action-btn { width: 100%; margin-top: 10px; background: var(--accent-red); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
         .action-btn:hover { background: #e0161f; }
+        table { width: 100%; margin-top: 12px; border-collapse: collapse; background: #121418; border-radius: 6px; overflow: hidden; }
+        th, td { padding: 5px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
+        th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
         .back-link { display: inline-block; margin-bottom: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
     </style>
 </head>
@@ -61,13 +64,47 @@
         <div class="sticky-calculator">
             <div>
                 <div class="master-header"><h1>Supercharger Pulley Ratio & Boost Pressure Calculator</h1><p>Supercharger Pulley Ratio & Boost Pressure Calculator &mdash; Track Tuning Engine</p></div>
-                <div class="grid-2"><div><label>Parameter</label><input type="number" id="val1" value="100"></div></div><div class="results-box" id="res">Calculated successfully.</div>
+                
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Supercharger Pulley Ratio & Estimated Boost</div>
+    <div class="grid-2">
+        <div><label>Crank Pulley Dia (in)</label><input type="number" id="sc-crank" value="8.0" step="0.1"></div>
+        <div><label>Blower Pulley Dia (in)</label><input type="number" id="sc-blower" value="3.0" step="0.1"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>Max Crank RPM</label><input type="number" id="sc-rpm" value="6500" step="100"></div>
+        <div><label>Blower Type Factor</label>
+            <select id="sc-fac">
+                <option value="1.20">Roots (~1.20)</option>
+                <option value="1.45" selected>Twin-Screw (~1.45)</option>
+                <option value="1.65">Centrifugal (~1.65)</option>
+            </select>
+        </div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Pulley Spec Sheet</button>
+
             </div>
         </div>
         <div class="content-column">
-            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Standard Automotive Calculation</div></div>
+            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Pulley Ratio = Crank Dia / Blower Dia | Impeller RPM = Crank RPM * Ratio | Est. Boost = Ratio * 5.2 * Blower Factor</div></div>
         </div>
     </div>
-    <script>function calcTool() { let v = parseFloat(document.getElementById("val1").value)||100; document.getElementById("res").innerText = "Output: " + (v*1.5); } let el = document.getElementById("val1"); if(el) el.addEventListener("input", calcTool); calcTool();</script>
+    <script>
+function calcSupercharger() {
+    let crank = parseFloat(document.getElementById("sc-crank").value) || 8.0;
+    let blower = parseFloat(document.getElementById("sc-blower").value) || 3.0;
+    let rpm = parseFloat(document.getElementById("sc-rpm").value) || 6500;
+    let factor = parseFloat(document.getElementById("sc-fac").value) || 1.45;
+    let ratio = crank / Math.max(blower, 0.1);
+    let impellerRpm = Math.round(rpm * ratio);
+    let estBoost = ratio * 5.2 * factor;
+    document.getElementById("results").innerHTML = "Pulley Ratio: <strong>" + ratio.toFixed(2) + ":1</strong> | Impeller RPM: <strong>" + impellerRpm.toLocaleString() + "</strong><br>Est. Boost: <strong>" + estBoost.toFixed(1) + " PSI</strong>";
+}
+["sc-crank", "sc-blower", "sc-rpm", "sc-fac"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcSupercharger); el.addEventListener("change", calcSupercharger); }
+});
+calcSupercharger();
+</script>
 </body>
 </html>

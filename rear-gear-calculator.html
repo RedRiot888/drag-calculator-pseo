@@ -42,6 +42,9 @@
         .results-box { margin-top: 10px; background: #121418; border: 1px solid var(--border-color); border-left: 4px solid var(--accent-red); padding: 10px; border-radius: 6px; font-size: 0.82rem; }
         .action-btn { width: 100%; margin-top: 10px; background: var(--accent-red); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
         .action-btn:hover { background: #e0161f; }
+        table { width: 100%; margin-top: 12px; border-collapse: collapse; background: #121418; border-radius: 6px; overflow: hidden; }
+        th, td { padding: 5px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
+        th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
         .back-link { display: inline-block; margin-bottom: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
     </style>
 </head>
@@ -61,13 +64,42 @@
         <div class="sticky-calculator">
             <div>
                 <div class="master-header"><h1>Ring and Pinion Rear Gear Quarter-Mile Calculator</h1><p>Ring and Pinion Rear Gear Quarter-Mile Calculator &mdash; Track Tuning Engine</p></div>
-                <div class="grid-2"><div><label>Parameter</label><input type="number" id="val1" value="100"></div></div><div class="results-box" id="res">Calculated successfully.</div>
+                
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Ring & Pinion Finish RPM / Trap Speed Engine</div>
+    <div class="grid-2">
+        <div><label>Target Trap Speed (MPH)</label><input type="number" id="rg-trap" value="125" step="1"></div>
+        <div><label>Rear Gear Ratio</label><input type="number" id="rg-gear" value="4.11" step="0.01"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>Tire Diameter (in)</label><input type="number" id="rg-tire" value="32.0" step="0.1"></div>
+        <div><label>Trans Final Ratio</label><input type="number" id="rg-final" value="1.00" step="0.01"></div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Rear Gear Sheet</button>
+
             </div>
         </div>
         <div class="content-column">
-            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Standard Automotive Calculation</div></div>
+            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Finish RPM = (Trap MPH * Overall Ratio * 336) / Tire Diameter | Overall Ratio = Rear Gear * Trans Final</div></div>
         </div>
     </div>
-    <script>function calcTool() { let v = parseFloat(document.getElementById("val1").value)||100; document.getElementById("res").innerText = "Output: " + (v*1.5); } let el = document.getElementById("val1"); if(el) el.addEventListener("input", calcTool); calcTool();</script>
+    <script>
+function calcRearGear() {
+    let trap = parseFloat(document.getElementById("rg-trap").value) || 125;
+    let gear = parseFloat(document.getElementById("rg-gear").value) || 4.11;
+    let tire = parseFloat(document.getElementById("rg-tire").value) || 32;
+    let transFinal = parseFloat(document.getElementById("rg-final").value) || 1.00;
+    let overall = gear * transFinal;
+    let finishRpm = (trap * overall * 336) / Math.max(tire, 0.1);
+    let rollout = (tire * Math.PI).toFixed(1);
+    let mphAt7500 = (7500 * tire) / (overall * 336);
+    document.getElementById("results").innerHTML = "Overall Ratio: <strong>" + overall.toFixed(2) + ":1</strong> | Rollout: <strong>" + rollout + " in</strong><br>Finish RPM: <strong>" + Math.round(finishRpm) + " RPM</strong> | 7500 RPM Trap: <strong>" + mphAt7500.toFixed(1) + " MPH</strong>";
+}
+["rg-trap", "rg-gear", "rg-tire", "rg-final"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcRearGear); el.addEventListener("change", calcRearGear); }
+});
+calcRearGear();
+</script>
 </body>
 </html>

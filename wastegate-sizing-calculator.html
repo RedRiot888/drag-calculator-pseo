@@ -42,6 +42,9 @@
         .results-box { margin-top: 10px; background: #121418; border: 1px solid var(--border-color); border-left: 4px solid var(--accent-red); padding: 10px; border-radius: 6px; font-size: 0.82rem; }
         .action-btn { width: 100%; margin-top: 10px; background: var(--accent-red); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
         .action-btn:hover { background: #e0161f; }
+        table { width: 100%; margin-top: 12px; border-collapse: collapse; background: #121418; border-radius: 6px; overflow: hidden; }
+        th, td { padding: 5px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
+        th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
         .back-link { display: inline-block; margin-bottom: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
     </style>
 </head>
@@ -61,13 +64,56 @@
         <div class="sticky-calculator">
             <div>
                 <div class="master-header"><h1>Wastegate Sizing & Boost Control Calculator</h1><p>Wastegate Sizing & Boost Control Calculator &mdash; Track Tuning Engine</p></div>
-                <div class="grid-2"><div><label>Parameter</label><input type="number" id="val1" value="100"></div></div><div class="results-box" id="res">Calculated successfully.</div>
+                
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">External Wastegate Diameter & Bypass Flow</div>
+    <div class="grid-2">
+        <div><label>Target Flywheel HP</label><input type="number" id="wg-hp" value="1000" step="50"></div>
+        <div><label>Target Boost (PSI)</label><input type="number" id="wg-boost" value="22" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>Number of Gates</label>
+            <select id="wg-count">
+                <option value="1" selected>Single Gate</option>
+                <option value="2">Twin Gates</option>
+            </select>
+        </div>
+        <div><label>Gate Style</label>
+            <select id="wg-style">
+                <option value="1.00">Internal WG (restricted)</option>
+                <option value="1.25" selected>External WG</option>
+            </select>
+        </div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Wastegate Spec Sheet</button>
+
             </div>
         </div>
         <div class="content-column">
-            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Standard Automotive Calculation</div></div>
+            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Bypass Fraction = Boost / (Boost + 14.7) | Gate Flow = (HP * 0.12 * Bypass) / Gate Count | Recommend 38/44/50/60 mm class</div></div>
         </div>
     </div>
-    <script>function calcTool() { let v = parseFloat(document.getElementById("val1").value)||100; document.getElementById("res").innerText = "Output: " + (v*1.5); } let el = document.getElementById("val1"); if(el) el.addEventListener("input", calcTool); calcTool();</script>
+    <script>
+function calcWastegate() {
+    let hp = parseFloat(document.getElementById("wg-hp").value) || 1000;
+    let boost = parseFloat(document.getElementById("wg-boost").value) || 22;
+    let count = parseInt(document.getElementById("wg-count").value) || 1;
+    let style = parseFloat(document.getElementById("wg-style").value) || 1.25;
+    let bypassFrac = boost / (boost + 14.7);
+    let exhaustLbMin = (hp * 0.12);
+    let wgFlow = (exhaustLbMin * bypassFrac) / count / style;
+    let diaMm = 10 * Math.sqrt(Math.max(wgFlow, 1));
+    let rec = 38;
+    if (diaMm > 42) rec = 44;
+    if (diaMm > 48) rec = 50;
+    if (diaMm > 56) rec = 60;
+    document.getElementById("results").innerHTML = "Bypass Fraction: <strong>" + (bypassFrac * 100).toFixed(0) + "%</strong> | Flow per Gate: <strong>" + wgFlow.toFixed(1) + " lb/min</strong><br>Recommended Gate: <strong>" + rec + " mm</strong> (" + count + " x " + rec + " mm)";
+}
+["wg-hp", "wg-boost", "wg-count", "wg-style"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcWastegate); el.addEventListener("change", calcWastegate); }
+});
+calcWastegate();
+</script>
 </body>
 </html>

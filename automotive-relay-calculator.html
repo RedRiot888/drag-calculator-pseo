@@ -42,6 +42,9 @@
         .results-box { margin-top: 10px; background: #121418; border: 1px solid var(--border-color); border-left: 4px solid var(--accent-red); padding: 10px; border-radius: 6px; font-size: 0.82rem; }
         .action-btn { width: 100%; margin-top: 10px; background: var(--accent-red); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
         .action-btn:hover { background: #e0161f; }
+        table { width: 100%; margin-top: 12px; border-collapse: collapse; background: #121418; border-radius: 6px; overflow: hidden; }
+        th, td { padding: 5px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
+        th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
         .back-link { display: inline-block; margin-bottom: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
     </style>
 </head>
@@ -61,13 +64,65 @@
         <div class="sticky-calculator">
             <div>
                 <div class="master-header"><h1>Automotive Relay & Circuit Sizing Calculator</h1><p>Automotive Relay & Circuit Sizing Calculator &mdash; Track Tuning Engine</p></div>
-                <div class="grid-2"><div><label>Parameter</label><input type="number" id="val1" value="100"></div></div><div class="results-box" id="res">Calculated successfully.</div>
+                
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Relay, Fuse, and Chassis Wire Gauge Sizing</div>
+    <div class="grid-2">
+        <div><label>Load Power (Watts)</label><input type="number" id="rl-watts" value="240" step="10"></div>
+        <div><label>System Voltage</label>
+            <select id="rl-volts">
+                <option value="12" selected>12V Chassis</option>
+                <option value="13.8">13.8V Running</option>
+                <option value="16">16V Race</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div><label>Duty</label>
+            <select id="rl-duty">
+                <option value="1.25" selected>Continuous (1.25x)</option>
+                <option value="1.10">Intermittent (1.10x)</option>
+            </select>
+        </div>
+        <div><label>One-Way Wire Length (ft)</label><input type="number" id="rl-len" value="12" step="1"></div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Wiring Spec Sheet</button>
+
             </div>
         </div>
         <div class="content-column">
-            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Standard Automotive Calculation</div></div>
+            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Load Amps = Watts / Voltage | Design Amps = Load * Duty Factor | Size relay/fuse above design current and pick AWG for ampacity + wire length.</div></div>
         </div>
     </div>
-    <script>function calcTool() { let v = parseFloat(document.getElementById("val1").value)||100; document.getElementById("res").innerText = "Output: " + (v*1.5); } let el = document.getElementById("val1"); if(el) el.addEventListener("input", calcTool); calcTool();</script>
+    <script>
+function calcRelay() {
+    let watts = parseFloat(document.getElementById("rl-watts").value) || 240;
+    let volts = parseFloat(document.getElementById("rl-volts").value) || 12;
+    let duty = parseFloat(document.getElementById("rl-duty").value) || 1.25;
+    let len = parseFloat(document.getElementById("rl-len").value) || 12;
+    let amps = watts / Math.max(volts, 1);
+    let designAmps = amps * duty;
+    let relaySizes = [20, 30, 40, 70, 80, 100, 120];
+    let relay = relaySizes.find(s => s >= designAmps) || 150;
+    let fuse = Math.ceil(designAmps / 5) * 5;
+    let awg = "16";
+    if (designAmps > 15) awg = "14";
+    if (designAmps > 24) awg = "12";
+    if (designAmps > 32) awg = "10";
+    if (designAmps > 45) awg = "8";
+    if (designAmps > 65) awg = "6";
+    if (designAmps > 95) awg = "4";
+    if (len > 15) {
+        let n = parseInt(awg, 10);
+        if (n >= 8) awg = String(n - 2);
+    }
+    document.getElementById("results").innerHTML = "Load Current: <strong>" + amps.toFixed(1) + " A</strong> | Design Current: <strong>" + designAmps.toFixed(1) + " A</strong><br>Relay: <strong>" + relay + " A</strong> | Fuse: <strong>" + fuse + " A</strong> | Wire: <strong>" + awg + " AWG</strong>";
+}
+["rl-watts", "rl-volts", "rl-duty", "rl-len"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcRelay); el.addEventListener("change", calcRelay); }
+});
+calcRelay();
+</script>
 </body>
 </html>

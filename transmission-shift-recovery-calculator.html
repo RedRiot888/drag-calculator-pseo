@@ -42,6 +42,9 @@
         .results-box { margin-top: 10px; background: #121418; border: 1px solid var(--border-color); border-left: 4px solid var(--accent-red); padding: 10px; border-radius: 6px; font-size: 0.82rem; }
         .action-btn { width: 100%; margin-top: 10px; background: var(--accent-red); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
         .action-btn:hover { background: #e0161f; }
+        table { width: 100%; margin-top: 12px; border-collapse: collapse; background: #121418; border-radius: 6px; overflow: hidden; }
+        th, td { padding: 5px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
+        th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
         .back-link { display: inline-block; margin-bottom: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
     </style>
 </head>
@@ -61,13 +64,86 @@
         <div class="sticky-calculator">
             <div>
                 <div class="master-header"><h1>Transmission Shift Recovery & Gear Drop Calculator</h1><p>Transmission Shift Recovery & Gear Drop Calculator &mdash; Track Tuning Engine</p></div>
-                <div class="grid-2"><div><label>Parameter</label><input type="number" id="val1" value="100"></div></div><div class="results-box" id="res">Calculated successfully.</div>
+                
+    <div class="grid-2">
+        <div><label>Transmission Profile</label>
+            <select id="trans">
+                <optgroup label="GM Automatic">
+                    <option value="th400" selected>TH400 / 4L80e (2.48 / 1.48 / 1.00)</option>
+                    <option value="powerglide">Powerglide (1.76 / 1.00)</option>
+                    <option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
+                    <option value="4l60e">4L60e (3.06 / 1.62 / 1.00 / 0.70)</option>
+                </optgroup>
+                <optgroup label="Ford Automatic">
+                    <option value="c4_c6">Ford C4 / C6 (2.46 / 1.46 / 1.00)</option>
+                    <option value="aod">AOD (2.40 / 1.47 / 1.00 / 0.67)</option>
+                </optgroup>
+            </select>
+        </div>
+        <div><label>Max Shift RPM</label><input type="number" id="max-rpm" value="7500" step="100"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>Tire Diameter (in)</label><input type="number" id="tire-dia" value="28.0" step="0.1"></div>
+        <div><label>Rear Gear Ratio</label><input type="number" id="rear-gear" value="3.42" step="0.01"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>Vehicle Weight (lbs)</label><input type="number" id="veh-wt" value="3200" step="50"></div>
+        <div><label>Flywheel HP</label><input type="number" id="veh-hp" value="1100" step="25"></div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Track Sheet</button>
+    <table>
+        <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift Speed</th><th>RPM Drop</th></tr></thead>
+        <tbody id="gear-body"></tbody>
+    </table>
+
             </div>
         </div>
         <div class="content-column">
-            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Standard Automotive Calculation</div></div>
+            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Overall Ratio = Trans Ratio x Rear Gear | Shift Speed (MPH) = (RPM * Tire) / (Overall * 336)</div></div>
         </div>
     </div>
-    <script>function calcTool() { let v = parseFloat(document.getElementById("val1").value)||100; document.getElementById("res").innerText = "Output: " + (v*1.5); } let el = document.getElementById("val1"); if(el) el.addEventListener("input", calcTool); calcTool();</script>
+    <script>
+const ratios = { 
+    powerglide: [1.76, 1.00], 
+    th350: [2.52, 1.52, 1.00], 
+    th400: [2.48, 1.48, 1.00],
+    "4l60e": [3.06, 1.62, 1.00, 0.70],
+    c4_c6: [2.46, 1.46, 1.00],
+    aod: [2.40, 1.47, 1.00, 0.67]
+};
+function calcAll() {
+    let tKey = document.getElementById("trans").value;
+    let rat = ratios[tKey] || [2.48, 1.48, 1.00];
+    let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
+    let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
+    let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
+    let wt = parseFloat(document.getElementById("veh-wt").value) || 3200;
+    let hp = parseFloat(document.getElementById("veh-hp").value) || 1100;
+
+    let rollout = (tire * Math.PI).toFixed(1);
+    let estEt = (5.825 * Math.pow(wt / hp, 0.333)).toFixed(2);
+    let estTrap = (234 * Math.cbrt(hp / wt)).toFixed(1);
+
+    document.getElementById("results").innerHTML = "Est. 1/4 Mile ET: " + estEt + "s @ " + estTrap + " MPH | Rollout: " + rollout + " in | 1st Gear: " + (rat[0]*gear).toFixed(2) + ":1";
+
+    let tbody = document.getElementById("gear-body");
+    if(tbody) {
+        tbody.innerHTML = "";
+        for(let i = 0; i < rat.length; i++) {
+            let overall = rat[i] * gear;
+            let speed = (rpm * tire) / (overall * 336);
+            let trapRpm = Math.round((parseFloat(estTrap) * overall * 336) / tire);
+            let drop = i < rat.length - 1 ? "Drop to " + Math.round(rpm * (rat[i+1] / rat[i])) + " RPM" : "Finish: " + trapRpm + " RPM";
+            tbody.innerHTML += "<tr><td>Gear " + (i+1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.toFixed(1) + " MPH</td><td>" + drop + "</td></tr>";
+        }
+    }
+}
+["trans", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) el.addEventListener("input", calcAll);
+});
+calcAll();
+</script>
 </body>
 </html>

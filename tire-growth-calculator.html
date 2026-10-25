@@ -42,6 +42,9 @@
         .results-box { margin-top: 10px; background: #121418; border: 1px solid var(--border-color); border-left: 4px solid var(--accent-red); padding: 10px; border-radius: 6px; font-size: 0.82rem; }
         .action-btn { width: 100%; margin-top: 10px; background: var(--accent-red); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
         .action-btn:hover { background: #e0161f; }
+        table { width: 100%; margin-top: 12px; border-collapse: collapse; background: #121418; border-radius: 6px; overflow: hidden; }
+        th, td { padding: 5px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
+        th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
         .back-link { display: inline-block; margin-bottom: 15px; color: var(--accent-red); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
     </style>
 </head>
@@ -61,13 +64,42 @@
         <div class="sticky-calculator">
             <div>
                 <div class="master-header"><h1>Tire Diameter Growth & Rollout Drag Calculator</h1><p>Tire Diameter Growth & Rollout Drag Calculator &mdash; Track Tuning Engine</p></div>
-                <div class="grid-2"><div><label>Parameter</label><input type="number" id="val1" value="100"></div></div><div class="results-box" id="res">Calculated successfully.</div>
+                
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Slick Growth, Dynamic Diameter & Finish RPM</div>
+    <div class="grid-2">
+        <div><label>Static Tire Dia (in)</label><input type="number" id="tg-dia" value="28.0" step="0.1"></div>
+        <div><label>Trap Speed (MPH)</label><input type="number" id="tg-trap" value="150" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div><label>Growth Factor (%)</label><input type="number" id="tg-growth" value="4.5" step="0.1"></div>
+        <div><label>Rear Gear Ratio</label><input type="number" id="tg-gear" value="3.42" step="0.01"></div>
+    </div>
+    <div class="results-box" id="results">Adjust parameters above.</div>
+    <button type="button" class="action-btn" onclick="window.print()">Print Tire Growth Sheet</button>
+
             </div>
         </div>
         <div class="content-column">
-            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Standard Automotive Calculation</div></div>
+            <div class="content-box"><h3>Formula Breakdown</h3><div style="font-family: monospace; color: #10b981; font-size: 0.85rem; background: var(--input-bg); padding: 10px; border-radius: 6px;">Dynamic Diameter = Static Dia * (1 + Growth%/100) | Rollout = Diameter * PI | Finish RPM = (Trap * Gear * 336) / Dynamic Dia</div></div>
         </div>
     </div>
-    <script>function calcTool() { let v = parseFloat(document.getElementById("val1").value)||100; document.getElementById("res").innerText = "Output: " + (v*1.5); } let el = document.getElementById("val1"); if(el) el.addEventListener("input", calcTool); calcTool();</script>
+    <script>
+function calcTireGrowth() {
+    let staticDia = parseFloat(document.getElementById("tg-dia").value) || 28;
+    let trap = parseFloat(document.getElementById("tg-trap").value) || 150;
+    let growth = parseFloat(document.getElementById("tg-growth").value) || 4.5;
+    let gear = parseFloat(document.getElementById("tg-gear").value) || 3.42;
+    let dynamicDia = staticDia * (1 + (growth / 100));
+    let staticRollout = (staticDia * Math.PI).toFixed(1);
+    let dynamicRollout = (dynamicDia * Math.PI).toFixed(1);
+    let estFinishRpm = Math.round((trap * gear * 336) / dynamicDia);
+    document.getElementById("results").innerHTML = "Static Rollout: <strong>" + staticRollout + " in</strong> | Dynamic Dia: <strong>" + dynamicDia.toFixed(2) + " in</strong><br>Dynamic Rollout: <strong>" + dynamicRollout + " in</strong> | Est. Finish RPM: <strong>" + estFinishRpm + " RPM</strong>";
+}
+["tg-dia", "tg-trap", "tg-growth", "tg-gear"].forEach(id => {
+    let el = document.getElementById(id);
+    if(el) { el.addEventListener("input", calcTireGrowth); el.addEventListener("change", calcTireGrowth); }
+});
+calcTireGrowth();
+</script>
 </body>
 </html>
