@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Pump Flow &amp; Pressure Calculator | DragCalculators.com</title>
+    <meta name="description" content="Fuel Pump Flow &amp; Pressure Calculator. Loaded defaults: 1000 HP, 20 PSI boost, gasoline.">
+    <link rel="canonical" href="https://dragcalculators.com/fuel-pump-calculator.html">
+    <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
+    <meta name="google-site-verification" content="google9e7c88791a3f2f72">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dragcalculators.com/fuel-pump-calculator.html">
+    <meta property="og:title" content="Fuel Pump Flow &amp; Pressure Calculator | DragCalculators.com">
+    <meta property="og:description" content="Fuel Pump Flow &amp; Pressure Calculator. Loaded defaults: 1000 HP, 20 PSI boost, gasoline.">
+    <meta property="og:image" content="https://dragcalculators.com/social-banner.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Fuel Pump Flow &amp; Pressure Calculator | DragCalculators.com">
+    <meta name="twitter:description" content="Fuel Pump Flow &amp; Pressure Calculator. Loaded defaults: 1000 HP, 20 PSI boost, gasoline.">
+    <meta name="twitter:image" content="https://dragcalculators.com/social-banner.jpg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
+    <div class="layout-grid">
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item active" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
+        <section class="sticky-calculator">
+            <header class="master-header">
+                <h1>Fuel Pump Flow &amp; Pressure Calculator</h1>
+                <p class="spec">Loaded defaults: 1000 HP, 20 PSI boost, gasoline.</p>
+            </header>
+            
+    <div class="field-stack">
+    <div class="grid-2">
+        <div class="field"><label for="fp-hp">Target power</label><input type="number" id="fp-hp" value="1000" min="50" step="25"></div>
+        <div class="field"><label for="fp-ind">Induction</label>
+            <select id="fp-ind">
+                <option value="na">Naturally aspirated</option>
+                <option value="turbo" selected>Turbocharged</option>
+                <option value="supercharged">Supercharged</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="fp-fuel">Fuel</label><select id="fp-fuel"><option value="gasoline" selected>Gasoline (91/93)</option>
+<option value="e85">E85</option>
+<option value="e98">E98</option>
+<option value="methanol">Methanol</option>
+<option value="race">Race gas</option>
+<option value="diesel">Diesel</option></select></div>
+        <div class="field"><label for="fp-system">Fuel system</label>
+            <select id="fp-system">
+                <option value="return" selected>Return, 1:1 regulator</option>
+                <option value="returnless">Returnless, fixed pressure</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="fp-base">Base fuel pressure (PSI)</label><input type="number" id="fp-base" value="43.5" min="20" max="120" step="0.5"></div>
+        <div class="field"><label for="fp-boost">Boost (PSI)</label><input type="number" id="fp-boost" value="20" min="0" max="80" step="0.5"></div>
+    </div>
+    <p class="field-hint">A return system with a 1:1 regulator makes the pump hold base pressure plus boost. A returnless system holds the base pressure unless the controller raises it with boost.</p>
+    </div>
+    <details class="accordion">
+        <summary>Advanced / Conditions</summary>
+        <div class="accordion-body field-stack">
+    <div class="grid-2">
+        <div class="field"><label for="fp-bsfc">Custom BSFC</label><input type="number" id="fp-bsfc" placeholder="Auto" min="0.2" max="2" step="0.01"></div>
+        <div class="field"><label for="fp-margin">Pump margin (%)</label><input type="number" id="fp-margin" value="25" min="0" max="60" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="fp-rated-lph">Your pump, catalog flow (L/h)</label><input type="number" id="fp-rated-lph" placeholder="e.g. 450" min="0" step="5"></div>
+        <div class="field"><label for="fp-rated-psi">That flow is rated at (PSI)</label><input type="number" id="fp-rated-psi" value="40" min="0" max="150" step="1"></div>
+    </div>
+    <div class="field"><label for="fp-deadhead">Deadhead pressure (PSI)</label><input type="number" id="fp-deadhead" value="120" min="60" max="200" step="5"></div>
+    <p class="field-hint">Leave the pump flow blank to size from horsepower only. Catalog flows are usually taken near 40 PSI. Above that, flow is estimated on a straight line from the rating down to the deadhead.</p>
+    
+<p class="field-hint">BHP uses the power entry as flywheel power. WHP treats it as wheel power and converts with this drivetrain loss.</p>
+<div class="grid-2">
+    <div class="field"><label for="dt-loss">Drivetrain loss (%)</label><input type="number" id="dt-loss" value="15" min="0" max="40" step="1"></div>
+</div>
+</div>
+    </details>
+    <div class="readout" id="results">
+        <div class="readout-top">
+            <span class="readout-kicker">Result</span>
+            <div class="pill-row">
+                <div class="pill-group" role="group" aria-label="Power unit">
+                    <button type="button" class="pill" data-unit-group="power" data-unit="whp">WHP</button>
+                    <button type="button" class="pill active" data-unit-group="power" data-unit="bhp">BHP</button>
+                </div>
+                <div class="pill-group" role="group" aria-label="Units">
+                    <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
+                    <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+                </div>
+            </div>
+        </div>
+        <div id="readout-body"></div>
+    </div>
+    
+    <p class="assess" id="fp-assess"></p>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>Pump class</th><th>At your pressure</th><th>Vs target</th><th>Status</th></tr></thead>
+            <tbody id="fp-pumps"></tbody>
+        </table>
+        <p class="field-hint">Classes are common catalog ratings at 40 PSI, not a brand chart. Dual and triple rows assume the pumps share the rail and the voltage stays up.</p>
+    </div>
+    
+    <button type="button" class="action-btn" onclick="window.print()">Print pump spec sheet</button>
+    
+
+        </section>
+        <div class="content-column">
+            <section class="content-box"><h2>Formula</h2><p class="formula">Engine gal/hr = (Flywheel HP x BSFC) / Fuel density. A 1:1 return regulator makes the pump hold base pressure plus boost. Shop the flow that remains at that pressure after the margin.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Fuel Pump Flow &amp; Pressure Calculator. Loaded defaults: 1000 HP, 20 PSI boost, gasoline.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>Why does boost change the pump and not just the injector?</h3><p>A 1:1 regulator raises rail pressure with manifold pressure, so the pump outlet is base pressure plus boost. The injector differential stays near the base, which is why injector size uses base pressure and the pump uses the higher number.</p></div><div class="faq-item"><h3>Why is the shopping flow bigger than engine demand?</h3><p>Voltage drop, a dirty filter, and hot fuel all steal flow. The margin, 25% unless you change it, is the flow the pump still needs to make at the working pressure.</p></div><div class="faq-item"><h3>Why does a 40 PSI catalog number shrink?</h3><p>Most in-tank pumps are rated near 40 PSI and fall off toward their deadhead. The table draws a straight line between those two points. Raise the deadhead if the pump&#x27;s own curve holds pressure longer.</p></div></section>
+        </div>
+    </div>
+    
+<footer class="site-footer">
+    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
+    <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
+</footer>
+
+    <script>
+
+const unitState = { power: "bhp", system: "imperial" };
+let lastReadout = [];
+
+function crankHorsepower(raw) {
+    const hp = parseFloat(raw);
+    const entered = Number.isFinite(hp) ? hp : 0;
+    if (unitState.power !== "whp") return entered;
+    const lossInput = document.getElementById("dt-loss");
+    const lossPct = lossInput ? parseFloat(lossInput.value) : 15;
+    const loss = Math.min(0.4, Math.max(0, (Number.isFinite(lossPct) ? lossPct : 15) / 100));
+    return entered / Math.max(0.05, 1 - loss);
+}
+
+function formatUnit(value, unit) {
+    const metric = unitState.system === "metric";
+    const n = Number(value);
+    if (unit === "text") return { text: String(value), suffix: "" };
+    if (!Number.isFinite(n)) return { text: "—", suffix: "" };
+    switch (unit) {
+        case "mph":
+            return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
+        case "in":
+            return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "psi":
+            return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
+        case "lbmin":
+            return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "cfm":
+            return metric ? { text: (n * 0.0283168).toFixed(2), suffix: "m3/min" } : { text: Math.round(n).toLocaleString("en-US"), suffix: "CFM" };
+        case "tempf":
+            return metric ? { text: ((n - 32) * 5 / 9).toFixed(0), suffix: "C" } : { text: Math.round(n).toString(), suffix: "F" };
+        case "lbhr":
+            return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
+        case "ft":
+            return metric ? { text: (n * 0.3048).toFixed(2), suffix: "m" } : { text: n.toFixed(1), suffix: "ft" };
+        case "rpm":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "RPM" };
+        case "ratio":
+            return { text: n.toFixed(2), suffix: ":1" };
+        case "sec":
+            return { text: n.toFixed(2), suffix: "s" };
+        case "pct":
+            return { text: Math.round(n).toString(), suffix: "%" };
+        case "pct1":
+            return { text: n.toFixed(1), suffix: "%" };
+        case "cc":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "cc/min" };
+        case "gph":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/h" } : { text: n.toFixed(1), suffix: "gal/hr" };
+        case "amp":
+            return { text: n.toFixed(1), suffix: "A" };
+        case "mm":
+            return { text: String(Math.round(n)), suffix: "mm" };
+        case "awg":
+            return { text: String(value), suffix: "AWG" };
+        default:
+            return { text: String(value), suffix: unit || "" };
+    }
+}
+
+function joinReading(shown) {
+    if (!shown.suffix) return shown.text;
+    if (shown.suffix.charAt(0) === ":") return shown.text + shown.suffix;
+    return shown.text + " " + shown.suffix;
+}
+
+function reading(value, unit) {
+    return joinReading(formatUnit(value, unit));
+}
+
+function publishReadout(items) {
+    lastReadout = items;
+    const body = document.getElementById("readout-body");
+    if (!body || !items.length) return;
+    const primary = items.find(item => item.primary) || items[0];
+    const rest = items.filter(item => item !== primary);
+    const main = formatUnit(primary.value, primary.unit);
+    const extras = rest.map(item => {
+        return '<div class="readout-extra"><span>' + item.label + '</span><strong>' + reading(item.value, item.unit) + '</strong></div>';
+    }).join("");
+    body.innerHTML = '<div class="readout-label">' + primary.label + '</div>'
+        + '<div class="readout-value">' + main.text + (main.suffix ? '<span class="readout-suffix">' + main.suffix + '</span>' : '') + '</div>'
+        + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
+}
+
+function bindCalc(fn, ids) {
+    window.refreshCalc = fn;
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", fn);
+        el.addEventListener("change", fn);
+    });
+    fn();
+}
+
+document.querySelectorAll(".pill").forEach(button => {
+    button.addEventListener("click", () => {
+        if (!button.dataset.unitGroup) return;
+        unitState[button.dataset.unitGroup] = button.dataset.unit;
+        button.parentElement.querySelectorAll(".pill").forEach(pill => {
+            pill.classList.toggle("active", pill === button);
+        });
+        if (typeof window.refreshCalc === "function") window.refreshCalc();
+        else if (lastReadout.length) publishReadout(lastReadout);
+    });
+});
+
+
+const PUMP_BSFC = {
+    gasoline: { turbo: 0.65, supercharged: 0.65, na: 0.50 },
+    e85: { turbo: 0.95, supercharged: 0.95, na: 0.75 },
+    e98: { turbo: 1.02, supercharged: 1.02, na: 0.82 },
+    methanol: { turbo: 1.20, supercharged: 1.20, na: 0.95 },
+    race: { turbo: 0.70, supercharged: 0.70, na: 0.55 },
+    diesel: { turbo: 0.40, supercharged: 0.40, na: 0.37 }
+};
+const PUMP_DENSITY = { gasoline: 6.17, e85: 6.55, e98: 6.59, methanol: 6.63, race: 6.20, diesel: 7.05 };
+const PUMP_SHELF = [
+    { label: "255 L/h", lph: 255 },
+    { label: "340 L/h", lph: 340 },
+    { label: "450 L/h", lph: 450 },
+    { label: "525 L/h", lph: 525 },
+    { label: "Dual 340", lph: 680 },
+    { label: "Dual 450", lph: 900 },
+    { label: "Triple 450", lph: 1350 }
+];
+const LITER_PER_GALLON = 3.78541;
+const SHELF_RATED_PSI = 40;
+
+function flowAtPressure(catalogLph, ratedPsi, workPsi, deadhead) {
+    if (!(catalogLph > 0)) return 0;
+    if (workPsi <= ratedPsi) return catalogLph;
+    if (deadhead <= workPsi || deadhead <= ratedPsi) return 0;
+    return catalogLph * (deadhead - workPsi) / (deadhead - ratedPsi);
+}
+
+function calcFuelPump() {
+    const hp = crankHorsepower(document.getElementById("fp-hp").value || 1000);
+    const induction = document.getElementById("fp-ind").value || "turbo";
+    const fuelKey = document.getElementById("fp-fuel").value || "gasoline";
+    const system = document.getElementById("fp-system").value || "return";
+    const custom = parseFloat(document.getElementById("fp-bsfc").value);
+    const table = PUMP_BSFC[fuelKey] || PUMP_BSFC.gasoline;
+    const bsfc = Number.isFinite(custom) && custom > 0 ? custom : (table[induction] || table.turbo);
+    const density = PUMP_DENSITY[fuelKey] || 6.17;
+    let base = parseFloat(document.getElementById("fp-base").value);
+    if (!Number.isFinite(base) || base < 20) base = 43.5;
+    let boost = parseFloat(document.getElementById("fp-boost").value);
+    if (!Number.isFinite(boost) || boost < 0) boost = 0;
+    const boostInput = document.getElementById("fp-boost");
+    if (boostInput) boostInput.disabled = induction === "na";
+    const addedBoost = induction === "na" || system === "returnless" ? 0 : boost;
+    const workPsi = base + addedBoost;
+    let marginPct = parseFloat(document.getElementById("fp-margin").value);
+    if (!Number.isFinite(marginPct)) marginPct = 25;
+    marginPct = Math.min(60, Math.max(0, marginPct));
+    let deadhead = parseFloat(document.getElementById("fp-deadhead").value);
+    if (!Number.isFinite(deadhead) || deadhead < 60) deadhead = 120;
+    const demandLbHr = hp * bsfc;
+    const demandGph = demandLbHr / density;
+    const shopGph = demandGph * (1 + marginPct / 100);
+    const shopLph = shopGph * LITER_PER_GALLON;
+    let ratedLph = parseFloat(document.getElementById("fp-rated-lph").value);
+    let ratedPsi = parseFloat(document.getElementById("fp-rated-psi").value);
+    if (!Number.isFinite(ratedPsi) || ratedPsi < 0) ratedPsi = SHELF_RATED_PSI;
+    const hasPump = Number.isFinite(ratedLph) && ratedLph > 0;
+    const pumpLph = hasPump ? flowAtPressure(ratedLph, ratedPsi, workPsi, deadhead) : 0;
+    const pumpGph = pumpLph / LITER_PER_GALLON;
+    const rows = [
+        { label: "Pump to buy", value: shopGph, unit: "gph", primary: true },
+        { label: "Engine demand", value: demandGph, unit: "gph" },
+        { label: "Working pressure", value: workPsi, unit: "psi" },
+        { label: "Fuel mass", value: demandLbHr, unit: "lbhr" },
+        { label: "BSFC used", value: bsfc.toFixed(2), unit: "text" },
+        { label: "Margin", value: marginPct, unit: "pct" }
+    ];
+    if (hasPump) {
+        rows.push({ label: "Your pump at pressure", value: pumpGph, unit: "gph" });
+        rows.push({ label: "Pump vs target", value: shopLph > 0 ? (pumpLph / shopLph) * 100 : 0, unit: "pct" });
+    }
+    publishReadout(rows);
+
+    const assess = document.getElementById("fp-assess");
+    if (assess) {
+        const pressureNote = system === "returnless"
+            ? "Returnless holds " + base.toFixed(1) + " PSI, so boost is not added to the pump."
+            : (induction === "na"
+                ? "Naturally aspirated, so the pump only has to hold the " + base.toFixed(1) + " PSI base."
+                : "The 1:1 regulator puts the pump at " + base.toFixed(1) + " + " + boost.toFixed(1) + " = " + workPsi.toFixed(1) + " PSI.");
+        let pumpNote = "";
+        if (hasPump) {
+            if (workPsi > deadhead) {
+                pumpNote = " Working pressure is past the deadhead, so this estimate says the pump is stalled.";
+            } else if (pumpLph + 0.5 >= shopLph) {
+                pumpNote = " The entered pump still has about " + Math.round(pumpLph) + " L/h at that pressure, which covers the shopping target.";
+            } else {
+                pumpNote = " The entered pump estimates about " + Math.round(pumpLph) + " L/h at that pressure, short of the " + Math.round(shopLph) + " L/h shopping target.";
+            }
+        }
+        assess.textContent = "The engine wants " + demandLbHr.toFixed(0) + " lb/hr. Buy a pump that still moves about " + Math.round(shopLph) + " L/h at " + workPsi.toFixed(1) + " PSI after the " + Math.round(marginPct) + "% margin. " + pressureNote + pumpNote;
+    }
+
+    const body = document.getElementById("fp-pumps");
+    if (body) {
+        body.replaceChildren();
+        let recommended = null;
+        PUMP_SHELF.forEach(pump => {
+            const atPressure = flowAtPressure(pump.lph, SHELF_RATED_PSI, workPsi, deadhead);
+            if (recommended === null && atPressure + 0.5 >= shopLph) recommended = pump.label;
+        });
+        PUMP_SHELF.forEach(pump => {
+            const atPressure = flowAtPressure(pump.lph, SHELF_RATED_PSI, workPsi, deadhead);
+            const covers = atPressure + 0.5 >= shopLph;
+            const tr = document.createElement("tr");
+            let status = "Short";
+            let badge = "badge-no";
+            if (pump.label === recommended) {
+                tr.className = "is-rec";
+                status = "Recommended";
+                badge = "badge-rec";
+            } else if (covers) {
+                status = "Covers";
+                badge = "badge-ok";
+            } else {
+                tr.className = "is-small";
+            }
+            const nameCell = document.createElement("td");
+            nameCell.textContent = pump.label;
+            const sub = document.createElement("div");
+            sub.className = "size-sub";
+            sub.textContent = pump.lph + " L/h at " + SHELF_RATED_PSI + " PSI";
+            nameCell.appendChild(sub);
+            const flowCell = document.createElement("td");
+            flowCell.textContent = Math.round(atPressure).toLocaleString("en-US") + " L/h";
+            const versus = shopLph > 0 ? (atPressure / shopLph) * 100 : 0;
+            const versusCell = document.createElement("td");
+            versusCell.textContent = Math.round(versus) + "%";
+            versusCell.className = covers ? "tone-ok" : "tone-over";
+            const statusCell = document.createElement("td");
+            const pill = document.createElement("span");
+            pill.className = "badge " + badge;
+            pill.textContent = status;
+            statusCell.appendChild(pill);
+            tr.append(nameCell, flowCell, versusCell, statusCell);
+            body.appendChild(tr);
+        });
+    }
+}
+bindCalc(calcFuelPump, ["fp-hp", "fp-ind", "fp-fuel", "fp-system", "fp-base", "fp-boost", "fp-bsfc", "fp-margin", "fp-rated-lph", "fp-rated-psi", "fp-deadhead", "dt-loss"]);
+
+    </script>
+</body>
+</html>
