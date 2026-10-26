@@ -2245,10 +2245,10 @@ def fuel_pump_html(row):
         </div>
     </div>
     <div class="grid-2">
-        <div class="field"><label for="fp-base">Base fuel pressure (PSI)</label><input type="number" id="fp-base" value="43.5" min="20" max="120" step="0.5"></div>
+        <div class="field"><label for="fp-base">Base fuel pressure (PSI)</label><input type="number" id="fp-base" value="43.5" min="4" max="120" step="0.5"></div>
         <div class="field"><label for="fp-boost">Boost (PSI)</label><input type="number" id="fp-boost" value="{esc(boost)}" min="0" max="80" step="0.5"></div>
     </div>
-    <p class="field-hint">A return system with a 1:1 regulator makes the pump hold base pressure plus boost. A returnless system holds the base pressure unless the controller raises it with boost.</p>
+    <p class="field-hint">A return system with a 1:1 regulator makes the pump hold base pressure plus boost. A returnless system holds the base pressure unless the controller raises it with boost. A carburetor is usually about 6 to 8 PSI with the induction set to naturally aspirated.</p>
     """
     advanced = """
     <div class="grid-2">
@@ -2269,7 +2269,14 @@ def fuel_pump_html(row):
             <thead><tr><th>Pump class</th><th>At your pressure</th><th>Vs target</th><th>Status</th></tr></thead>
             <tbody id="fp-pumps"></tbody>
         </table>
-        <p class="field-hint">Classes are common catalog ratings at 40 PSI, not a brand chart. Multiple-pump rows assume the pumps share the rail and the voltage stays up. The 1400 L/h rows are large external pumps, sized so a 2500 HP combination still has a class that covers.</p>
+        <p class="field-hint">Classes are common catalog ratings at 40 PSI, not a brand chart. Multiple-pump rows assume the pumps share the rail and the voltage stays up. The 1400 L/h rows are large external electric pumps.</p>
+    </div>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>Mechanical pump</th><th>Rating</th><th>On this job</th><th>Status</th></tr></thead>
+            <tbody id="fp-mech"></tbody>
+        </table>
+        <p class="field-hint">Cam rows are diaphragm pumps. The GPH number is free flow, and the shutoff is the pressure where they stop. Belt rows are gear or gerotor pumps: 6 and 12 GPM follow the Aeromotive belt-drive classes, and 6.8 and 12.5 GPM follow Weldon 34706 and 34712, which publish a boosted EFI rating at 80 PSI. A belt pump's flow follows its rpm. The Weldon gear pumps are rated near 4,000 pump rpm.</p>
     </div>
     """
     return calculator_shell(primary, advanced, "Print pump spec sheet", power_toggle=True, results_extra=results)
@@ -2302,12 +2309,69 @@ const PUMP_SHELF = [
 ];
 const LITER_PER_GALLON = 3.78541;
 const SHELF_RATED_PSI = 40;
+const MECH_PUMPS = [
+    { label: "Cam 80 GPH", detail: "Street diaphragm", gph: 80, shutoff: 7.5, kind: "cam" },
+    { label: "Cam 110 GPH", detail: "Performance diaphragm", gph: 110, shutoff: 8, kind: "cam" },
+    { label: "Cam 130 GPH", detail: "Race diaphragm", gph: 130, shutoff: 9, kind: "cam" },
+    { label: "Cam 170 GPH", detail: "HP billet diaphragm", gph: 170, shutoff: 11, kind: "cam" },
+    { label: "Cam 225 GPH", detail: "Alcohol diaphragm", gph: 225, shutoff: 17, kind: "cam" },
+    { label: "Belt 6 GPM", detail: "Gerotor, Aeromotive 6 GPM class", gph: 360, shutoff: 80, kind: "belt" },
+    { label: "Belt 6.8 GPM", detail: "Gear, Weldon 34706 class", gph: 408, shutoff: 80, kind: "belt" },
+    { label: "Belt 12 GPM", detail: "Gerotor, Aeromotive 12 GPM class", gph: 720, shutoff: 80, kind: "belt" },
+    { label: "Belt 12.5 GPM", detail: "Gear, Weldon 34712 class", gph: 750, shutoff: 80, kind: "belt" }
+];
 
 function flowAtPressure(catalogLph, ratedPsi, workPsi, deadhead) {
     if (!(catalogLph > 0)) return 0;
     if (workPsi <= ratedPsi) return catalogLph;
     if (deadhead <= workPsi || deadhead <= ratedPsi) return 0;
     return catalogLph * (deadhead - workPsi) / (deadhead - ratedPsi);
+}
+
+function fpVolume(gph) {
+    if (unitState.system === "metric") return Math.round(gph * LITER_PER_GALLON).toLocaleString("en-US") + " L/h";
+    return Math.round(gph).toLocaleString("en-US") + " GPH";
+}
+
+function mechJob(pump, workPsi, shopGph) {
+    if (pump.kind === "cam" && workPsi >= pump.shutoff - 0.2) {
+        return {
+            flow: 0,
+            status: "No",
+            result: "Shutoff is " + pump.shutoff + " PSI, so it cannot hold this pressure."
+        };
+    }
+    if (pump.kind === "belt" && workPsi > pump.shutoff) {
+        return {
+            flow: 0,
+            status: "No",
+            result: "The published boosted window stops at " + pump.shutoff + " PSI."
+        };
+    }
+    const covers = pump.gph + 0.5 >= shopGph;
+    if (pump.kind === "cam") {
+        if (!covers) {
+            return { flow: pump.gph, status: "Short", result: "Free flow is short of the shopping target." };
+        }
+        if (workPsi > 12) {
+            return {
+                flow: pump.gph,
+                status: "Watch",
+                result: "Free flow covers the volume, and the shutoff is only " + pump.shutoff + " PSI."
+            };
+        }
+        return {
+            flow: pump.gph,
+            status: "Good",
+            result: "Free flow covers a carb at this pressure. Regulated flow is below the free-flow number."
+        };
+    }
+    if (!covers) return { flow: pump.gph, status: "Short", result: "Rated flow is short of the shopping target." };
+    return {
+        flow: pump.gph,
+        status: "Good",
+        result: "Rated flow covers this job through " + pump.shutoff + " PSI. Pulley ratio sets the pump rpm."
+    };
 }
 
 function calcFuelPump() {
@@ -2320,7 +2384,8 @@ function calcFuelPump() {
     const bsfc = Number.isFinite(custom) && custom > 0 ? custom : (table[induction] || table.turbo);
     const density = PUMP_DENSITY[fuelKey] || 6.17;
     let base = parseFloat(document.getElementById("fp-base").value);
-    if (!Number.isFinite(base) || base < 20) base = 43.5;
+    if (!Number.isFinite(base) || base < 4) base = 43.5;
+    base = Math.min(120, base);
     let boost = parseFloat(document.getElementById("fp-boost").value);
     if (!Number.isFinite(boost) || boost < 0) boost = 0;
     const boostInput = document.getElementById("fp-boost");
@@ -2376,6 +2441,21 @@ function calcFuelPump() {
         assess.textContent = "The engine wants " + demandLbHr.toFixed(0) + " lb/hr. Buy a pump that still moves about " + Math.round(shopLph) + " L/h at " + workPsi.toFixed(1) + " PSI after the " + Math.round(marginPct) + "% margin. " + pressureNote + pumpNote;
     }
 
+    const mechBody = document.getElementById("fp-mech");
+    let mechPick = null;
+    const mechRows = MECH_PUMPS.map(pump => {
+        const job = mechJob(pump, workPsi, shopGph);
+        return { pump: pump, job: job };
+    });
+    mechRows.forEach(row => {
+        if (mechPick === null && row.job.status === "Good") mechPick = row.pump.label;
+    });
+    if (assess && mechPick) {
+        assess.textContent += " The smallest mechanical pump that covers it is the " + mechPick + ".";
+    } else if (assess) {
+        assess.textContent += " None of the mechanical pumps cover this pressure and volume together.";
+    }
+
     const body = document.getElementById("fp-pumps");
     if (body) {
         body.replaceChildren();
@@ -2419,6 +2499,47 @@ function calcFuelPump() {
             statusCell.appendChild(pill);
             tr.append(nameCell, flowCell, versusCell, statusCell);
             body.appendChild(tr);
+        });
+    }
+    if (mechBody) {
+        mechBody.replaceChildren();
+        mechRows.forEach(row => {
+            const job = row.job;
+            const pump = row.pump;
+            const tr = document.createElement("tr");
+            let status = job.status === "Short" ? "Short" : job.status;
+            let badge = "badge-no";
+            if (pump.label === mechPick) {
+                tr.className = "is-rec";
+                status = "Recommended";
+                badge = "badge-rec";
+            } else if (job.status === "Good") {
+                status = "Covers";
+                badge = "badge-ok";
+            } else if (job.status === "Watch") {
+                badge = "badge-tight";
+            } else {
+                tr.className = "is-small";
+            }
+            const nameCell = document.createElement("td");
+            nameCell.textContent = pump.label;
+            const sub = document.createElement("div");
+            sub.className = "size-sub";
+            sub.textContent = pump.detail;
+            nameCell.appendChild(sub);
+            const ratingCell = document.createElement("td");
+            ratingCell.textContent = pump.kind === "cam"
+                ? fpVolume(pump.gph) + " free, " + pump.shutoff + " PSI shutoff"
+                : fpVolume(pump.gph) + " through " + pump.shutoff + " PSI";
+            const resultCell = document.createElement("td");
+            resultCell.textContent = job.result;
+            const statusCell = document.createElement("td");
+            const pill = document.createElement("span");
+            pill.className = "badge " + badge;
+            pill.textContent = status;
+            statusCell.appendChild(pill);
+            tr.append(nameCell, ratingCell, resultCell, statusCell);
+            mechBody.appendChild(tr);
         });
     }
 }
@@ -3415,6 +3536,7 @@ TRACKSIDE_NOTES = {
         ("Why does boost change the pump and not just the injector?", "A 1:1 regulator raises rail pressure with manifold pressure, so the pump outlet is base pressure plus boost. The injector differential stays near the base, which is why injector size uses base pressure and the pump uses the higher number."),
         ("Why is the shopping flow bigger than engine demand?", "Voltage drop, a dirty filter, and hot fuel all steal flow. The margin, 25% unless you change it, is the flow the pump still needs to make at the working pressure."),
         ("Why does a 40 PSI catalog number shrink?", "Most in-tank pumps are rated near 40 PSI and fall off toward their deadhead. The table draws a straight line between those two points. Raise the deadhead if the pump's own curve holds pressure longer."),
+        ("When does a mechanical pump belong on the car?", "A cam-driven diaphragm pump feeds a carburetor and shuts off around 7 to 17 PSI. A belt-driven gear or gerotor pump is the mechanical pump that holds EFI pressure. Its flow follows pump rpm, so the pulley ratio is part of the setup."),
     ),
     "Nitrous": (
         ("Why does bottle pressure change the jet?", "A nitrous jet is a liquid orifice. More bottle pressure pushes more nitrous through the same hole, so the hit gets richer on nitrous and the fuel jet is suddenly small. Hold the bottle near 900 to 950 PSI."),
