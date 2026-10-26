@@ -11,6 +11,107 @@ import re
 ROOT = os.path.dirname(os.path.abspath(__file__))
 CSV_PATH = os.path.join(ROOT, "pseo_pages_list.csv")
 ORIGIN = "https://dragcalculators.com"
+# Paste a measurement ID here when analytics is ready. Empty stays off the pages.
+ANALYTICS_ID = ""
+# One line on the printed setup sheet. Empty keeps the sheet as a planning printout.
+SPONSOR_LINE = ""
+# Merchant URLs by category, filled in after an affiliate program approves the site.
+# Example: "FuelPump": (("Dual 450 class", "https://example.com/pump"),)
+AFFILIATE_LINKS = {}
+PRINT_LINE = SPONSOR_LINE or "Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order."
+NEXT_STEPS = {
+    "Fuel": (("fuel-pump-calculator", "Size the pump for this power"),),
+    "FuelPump": (
+        ("fuel-injector-calculator", "Size the injectors this pump has to feed"),
+        ("automotive-relay-calculator", "Size the relay and the wire for the pump"),
+    ),
+    "Nitrous": (
+        ("fuel-injector-calculator", "Check the injectors when the shot is dry"),
+        ("fuel-pump-calculator", "Size the pump for the engine plus the shot"),
+    ),
+    "Shock": (("four-link-suspension-calculator", "Set the 4-link this shock has to control"),),
+    "Suspension": (("drag-shock-calculator", "Choose the shock for this rear suspension"),),
+    "Converter": (("transmission-shift-recovery-calculator", "Put this slip into the gear calculator"),),
+    "Transmission": (("torque-converter-calculator", "Pick the converter stall, then come back to the slip"),),
+    "Turbo": (
+        ("fuel-pump-calculator", "Size the pump for this boost"),
+        ("wastegate-sizing-calculator", "Size the wastegate for this power"),
+    ),
+}
+# Catalog ring-and-pinion sets. The ratio list is what that housing is actually sold in.
+# bands are (max ratio, carrier note). deep is an extra note at and above that ratio.
+GEAR_HOUSINGS = (
+    {
+        "id": "ford9",
+        "label": "Ford 9-inch",
+        "search": "Ford 9 inch",
+        "ratios": [3.00, 3.25, 3.40, 3.50, 3.55, 3.70, 3.73, 3.89, 4.00, 4.11, 4.30, 4.56, 4.71, 4.86, 5.00, 5.14, 5.43, 5.67, 5.83, 6.00],
+        "bands": [(99, "A Ford 9-inch has no carrier break. The set bolts into the third member. Axle spline does not change the ring and pinion.")],
+    },
+    {
+        "id": "ford88",
+        "label": "Ford 8.8",
+        "search": "Ford 8.8",
+        "ratios": [3.08, 3.31, 3.55, 3.73, 3.90, 4.10, 4.30, 4.56, 4.88, 5.13, 5.71],
+        "bands": [(99, "A Ford 8.8 has no carrier break. A 28-spline axle and a 31-spline axle take the same ring and pinion.")],
+        "deep": (4.56, "A 4.56 and deeper can hit a stock cover. A deep cover clears the ring gear."),
+    },
+    {
+        "id": "gm12car",
+        "label": "GM 12-bolt car",
+        "search": "GM 12 bolt car",
+        "ratios": [3.08, 3.31, 3.42, 3.55, 3.73, 3.90, 4.10, 4.56, 4.88, 5.14],
+        "bands": [
+            (3.73, "This set uses the 3.07 to 3.73 carrier."),
+            (3.90, "A 3.90 sits on the carrier break. Match the carrier to the set."),
+            (99, "This set uses the 4.10-and-up carrier."),
+        ],
+    },
+    {
+        "id": "gm12truck",
+        "label": "GM 12-bolt truck",
+        "search": "GM 12 bolt truck",
+        "ratios": [3.08, 3.42, 3.73, 4.10, 4.56],
+        "bands": [
+            (3.42, "This set uses the 2.76 to 3.42 carrier."),
+            (99, "This set uses the 3.73-and-up carrier."),
+        ],
+    },
+    {
+        "id": "gm85",
+        "label": "GM 8.5-inch 10-bolt",
+        "search": "GM 8.5 10 bolt",
+        "ratios": [3.08, 3.42, 3.73, 4.10, 4.56, 4.88, 5.13],
+        "bands": [(99, "This set uses the 2.73-and-up carrier. A 2.56 carrier will not take it.")],
+    },
+    {
+        "id": "dana60",
+        "label": "Dana 60",
+        "search": "Dana 60",
+        "ratios": [3.54, 3.73, 4.10, 4.56, 4.88, 5.13, 5.38],
+        "bands": [
+            (4.10, "This set uses the 4.10-and-down carrier."),
+            (99, "This set uses the 4.56-and-up carrier."),
+        ],
+    },
+    {
+        "id": "dana44",
+        "label": "Dana 44",
+        "search": "Dana 44",
+        "ratios": [3.54, 3.73, 4.09, 4.56, 4.88, 5.13],
+        "bands": [
+            (3.73, "This set uses the 3.73-and-down carrier."),
+            (99, "This set uses the 3.92-and-up carrier."),
+        ],
+    },
+    {
+        "id": "mopar875",
+        "label": "Mopar 8.75",
+        "search": "Mopar 8.75",
+        "ratios": [3.55, 3.73, 3.91, 4.10, 4.30, 4.56, 4.86, 5.13],
+        "bands": [(99, "Match the set to the case number cast in the center. 489 is the drag case. 741 is the weak case.")],
+    },
+)
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9.]+)*$")
 NUMBER_RE = re.compile(r"\d+(?:\.\d+)?")
 TOKEN_RE = re.compile(r"\{\{([A-Z0-9_]+)\}\}")
@@ -382,6 +483,24 @@ tr.is-small td { color: #8d8d8d; }
     text-transform: uppercase;
 }
 .action-btn:hover { background: #c40812; }
+.action-row { display: flex; flex-direction: column; gap: 8px; }
+.action-secondary { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+.action-secondary:hover { background: #242424; }
+.next-steps { display: flex; flex-direction: column; gap: 8px; }
+.next-steps a { color: var(--text-main); font-weight: 650; text-decoration: none; }
+.next-steps a:hover { color: var(--accent-red); }
+.gear-shop { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.gear-shop p { margin: 0; }
+.gear-shop a { color: var(--text-main); font-weight: 650; text-decoration: none; }
+.gear-shop a:hover { color: var(--accent-red); }
+.shop-note { color: var(--text-muted); font-size: 0.78rem; }
+.print-sheet { display: none; }
+@media print {
+    .nexus-sidebar, .content-column, .back-row, .site-footer, .action-row, .pill-row, .next-steps, .accordion { display: none !important; }
+    .gear-shop, .gear-shop a, .gear-shop .shop-note { color: #111 !important; }
+    .print-sheet { display: block; margin-top: 18px; color: #111; font-size: 0.85rem; }
+    body, .sticky-calculator, .readout, .table-scroll, .assess, th, td { background: #fff !important; color: #111 !important; }
+}
 table { width: 100%; margin-top: 4px; border-collapse: collapse; background: #161616; }
 th, td { padding: 7px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
 th { background: #202020; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
@@ -757,15 +876,48 @@ function publishReadout(items) {
         + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
 }
 
+function applySharedState(ids) {
+    const params = new URLSearchParams(location.search);
+    if (!params.toString()) return;
+    ids.forEach(id => {
+        if (!params.has(id)) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = params.get(id);
+    });
+    ["power", "system"].forEach(group => {
+        if (!params.has(group)) return;
+        unitState[group] = params.get(group);
+        document.querySelectorAll('[data-unit-group="' + group + '"]').forEach(pill => {
+            pill.classList.toggle("active", pill.dataset.unit === unitState[group]);
+        });
+    });
+}
+
+function setupSearch() {
+    const params = new URLSearchParams();
+    (window.shareIds || []).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.value === "") return;
+        params.set(id, el.value);
+    });
+    if (unitState.power !== "bhp") params.set("power", unitState.power);
+    if (unitState.system !== "imperial") params.set("system", unitState.system);
+    return params.toString();
+}
+
 function bindCalc(fn, ids) {
-    window.refreshCalc = fn;
+    window.shareIds = ids;
+    applySharedState(ids);
+    const run = () => fn();
+    window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.addEventListener("input", fn);
-        el.addEventListener("change", fn);
+        el.addEventListener("input", run);
+        el.addEventListener("change", run);
     });
-    fn();
+    run();
 }
 
 document.querySelectorAll(".pill").forEach(button => {
@@ -779,6 +931,45 @@ document.querySelectorAll(".pill").forEach(button => {
         else if (lastReadout.length) publishReadout(lastReadout);
     });
 });
+
+function copyText(text) {
+    const legacy = () => {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "0";
+        area.style.left = "0";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+        area.remove();
+        return ok;
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(() => (legacy() ? undefined : Promise.reject()));
+    }
+    return legacy() ? Promise.resolve() : Promise.reject();
+}
+
+const copySetup = document.getElementById("copy-setup");
+if (copySetup) {
+    copySetup.addEventListener("click", () => {
+        const search = setupSearch();
+        const url = location.origin + location.pathname + (search ? "?" + search : "");
+        const done = (label) => {
+            copySetup.textContent = label;
+            setTimeout(() => { copySetup.textContent = "Copy link to this setup"; }, 1600);
+        };
+        copyText(url).then(() => done("Link copied")).catch(() => {
+            window.prompt("Copy this setup link", url);
+            done("Link ready");
+        });
+    });
+}
 """
 
 LOSS_FIELDS = """
@@ -816,9 +1007,109 @@ def calculator_shell(primary, advanced, print_label, extra="", power_toggle=Fals
         <div id="readout-body"></div>
     </div>
     {results_extra}
-    <button type="button" class="action-btn" onclick="window.print()">{esc(print_label)}</button>
+    <div class="action-row">
+        <button type="button" class="action-btn" onclick="window.print()">{esc(print_label)}</button>
+        <button type="button" class="action-btn action-secondary" id="copy-setup">Copy link to this setup</button>
+    </div>
+    <p class="print-sheet">{esc(PRINT_LINE)}</p>
     {extra}
 """
+
+
+def gear_housing_field(select_id):
+    opts = "".join(
+        f'<option value="{esc(house["id"])}">{esc(house["label"])}</option>'
+        for house in GEAR_HOUSINGS
+    )
+    return (
+        f'<div class="field"><label for="{esc(select_id)}">Rear end</label>'
+        f'<select id="{esc(select_id)}">{opts}</select></div>'
+    )
+
+
+def gear_shop_mount(mount_id):
+    return f'<div id="{esc(mount_id)}" class="gear-shop"></div>'
+
+
+GEAR_SHOP_FN = """
+const GEAR_HOUSINGS = %%HOUSES%%;
+function gearHouse(selectId) {
+    const pick = document.getElementById(selectId);
+    const key = pick ? pick.value : "";
+    for (let i = 0; i < GEAR_HOUSINGS.length; i++) {
+        if (GEAR_HOUSINGS[i].id === key) return GEAR_HOUSINGS[i];
+    }
+    return GEAR_HOUSINGS[0];
+}
+function nearestGear(ratios, gear) {
+    let best = ratios[0];
+    let bestDist = Math.abs(gear - best);
+    for (let i = 1; i < ratios.length; i++) {
+        const dist = Math.abs(gear - ratios[i]);
+        if (dist < bestDist) {
+            best = ratios[i];
+            bestDist = dist;
+        }
+    }
+    return best;
+}
+function gearNote(house, ratio) {
+    let note = "";
+    const bands = house.bands || [];
+    for (let i = 0; i < bands.length; i++) {
+        if (ratio <= bands[i][0] + 0.001) {
+            note = bands[i][1];
+            break;
+        }
+    }
+    if (house.deep && ratio >= house.deep[0] - 0.001) note += " " + house.deep[1];
+    return note;
+}
+function renderGearShop(mountId, selectId, gear, offer) {
+    const mount = document.getElementById(mountId);
+    if (!mount) return;
+    const house = gearHouse(selectId);
+    const set = nearestGear(house.ratios, gear);
+    const shown = set.toFixed(2);
+    const typed = Number(gear).toFixed(2);
+    const lead = Math.abs(set - gear) >= 0.005
+        ? typed + " is not a catalog " + house.label + " set. The set to order is the " + shown + "."
+        : "The set to order is the " + house.label + " " + shown + " ring and pinion.";
+    const q = encodeURIComponent(house.search + " " + shown + " ring and pinion");
+    const summit = "https://www.summitracing.com/search?keyword=" + q;
+    const jegs = "https://www.jegs.com/search?Ntt=" + q;
+    let use = "";
+    if (offer && Math.abs(offer.ratio - gear) >= 0.005) {
+        use = '<button type="button" class="action-btn action-secondary" id="gear-use">Use the ' + offer.ratio.toFixed(2) + " for this trap</button>";
+    }
+    mount.innerHTML = "<p>" + lead + " " + gearNote(house, set) + "</p>"
+        + use
+        + '<a href="' + summit + '" target="_blank" rel="noopener">Summit Racing, ' + house.label + " " + shown + "</a>"
+        + '<a href="' + jegs + '" target="_blank" rel="noopener">Jegs, ' + house.label + " " + shown + "</a>"
+        + '<p class="shop-note">The link searches that housing and ratio. Confirm the carrier before you order. Bearings and shims are a separate install kit.</p>';
+    const button = document.getElementById("gear-use");
+    if (button && offer) {
+        button.addEventListener("click", function () {
+            const input = document.getElementById(offer.inputId);
+            if (input) input.value = offer.ratio.toFixed(2);
+            if (window.refreshCalc) window.refreshCalc();
+        });
+    }
+}
+""".replace(
+    "%%HOUSES%%",
+    json.dumps([
+        {
+            "id": house["id"],
+            "label": house["label"],
+            "search": house["search"],
+            "ratios": house["ratios"],
+            "bands": [list(band) for band in house["bands"]],
+            "deep": list(house["deep"]) if house.get("deep") else None,
+        }
+        for house in GEAR_HOUSINGS
+    ]),
+)
 
 
 def transmission_html(row):
@@ -833,6 +1124,8 @@ def transmission_html(row):
         <div class="field"><label for="trans">Transmission</label><select id="trans">{''.join(groups)}</select></div>
         <div class="field"><label for="rear-gear">Rear gear</label><input type="number" id="rear-gear" value="{esc(field(row, 'rear_gear', '3.42'))}" step="0.01"></div>
     </div>
+    {gear_housing_field("rear-end")}
+    <p class="field-hint">The ring and pinion is cut for one housing. A 4.11 for a Ford 9-inch does not fit an 8.8 or a 12-bolt.</p>
     <div class="grid-2">
         <div class="field"><label for="custom-ratios">Custom ratios</label><input type="text" id="custom-ratios" placeholder="2.48, 1.48, 1.00" inputmode="decimal" autocomplete="off"></div>
         <div class="field"><label for="converter-slip">Converter slip (%)</label><input type="number" id="converter-slip" value="{slip_default}" min="0" max="40" step="0.5"></div>
@@ -856,10 +1149,12 @@ def transmission_html(row):
         <tbody id="gear-body"></tbody>
     </table>
     """
-    return calculator_shell(primary, advanced, "Print track sheet", table, power_toggle=True)
+    return calculator_shell(
+        primary, advanced, "Print track sheet", table, power_toggle=True, results_extra=gear_shop_mount("gear-shop")
+    )
 
 
-DRIVETRAIN_SCRIPT = """
+DRIVETRAIN_SCRIPT = GEAR_SHOP_FN + """
 const ratios = %%RATIOS%%;
 function parseRatios(text) {
     return String(text || "").split(/[^0-9.]+/).map(parseFloat).filter(function (n) {
@@ -910,6 +1205,7 @@ function calcAll() {
             tbody.innerHTML += "<tr><td>Gear " + (i + 1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + reading(speed, "mph") + "</td><td>" + drop + "</td></tr>";
         }
     }
+    renderGearShop("gear-shop", "rear-end", gear);
 }
 const manualTrans = new Set(%%MANUALS%%);
 const transPick = document.getElementById("trans");
@@ -924,7 +1220,7 @@ if (transPick && slipPick) {
         if (next !== null) slipPick.value = next;
     });
 }
-bindCalc(calcAll, ["trans", "custom-ratios", "converter-slip", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "dt-loss"]);
+bindCalc(calcAll, ["trans", "custom-ratios", "converter-slip", "max-rpm", "tire-dia", "rear-gear", "rear-end", "veh-wt", "veh-hp", "dt-loss"]);
 """.replace(
     "%%RATIOS%%",
     json.dumps({key: ratios for key, (_label, ratios) in TRANSMISSIONS.items()}),
@@ -1430,38 +1726,52 @@ bindCalc(calcSupercharger, ["sc-crank", "sc-blower", "sc-rpm", "sc-fac", "sc-tar
 
 def rear_gear_html(row):
     primary = f"""
+    {gear_housing_field("rg-end")}
+    <p class="field-hint">Pick the rear end in the car. The link opens that ring and pinion. The target RPM names the set that hits it.</p>
     <div class="grid-2">
         <div class="field"><label for="rg-gear">Rear gear</label><input type="number" id="rg-gear" value="{esc(field(row, 'rear_gear', '4.11'))}" step="0.01"></div>
         <div class="field"><label for="rg-tire">Tire diameter (in)</label><input type="number" id="rg-tire" value="{esc(field(row, 'tire_diameter', '32.0'))}" step="0.1"></div>
     </div>
-    """
-    advanced = """
     <div class="grid-2">
         <div class="field"><label for="rg-trap">Target trap speed (MPH)</label><input type="number" id="rg-trap" value="125" step="1"></div>
-        <div class="field"><label for="rg-final">Trans final ratio</label><input type="number" id="rg-final" value="1.00" step="0.01"></div>
+        <div class="field"><label for="rg-rpm">Target finish RPM</label><input type="number" id="rg-rpm" value="7200" step="100"></div>
     </div>
     """
-    return calculator_shell(primary, advanced, "Print rear gear sheet")
+    advanced = """
+    <div class="field"><label for="rg-final">Trans final ratio</label><input type="number" id="rg-final" value="1.00" step="0.01"></div>
+    """
+    return calculator_shell(primary, advanced, "Print rear gear sheet", results_extra=gear_shop_mount("rg-shop"))
 
 
-REAR_GEAR_SCRIPT = """
+REAR_GEAR_SCRIPT = GEAR_SHOP_FN + """
 function calcRearGear() {
     let trap = parseFloat(document.getElementById("rg-trap").value) || 125;
     let gear = parseFloat(document.getElementById("rg-gear").value) || 4.11;
     let tire = parseFloat(document.getElementById("rg-tire").value) || 32;
     let transFinal = parseFloat(document.getElementById("rg-final").value) || 1.00;
+    let targetRpm = parseFloat(document.getElementById("rg-rpm").value) || 7200;
+    tire = Math.max(tire, 0.1);
+    trap = Math.max(trap, 1);
+    transFinal = Math.max(transFinal, 0.1);
     let overall = gear * transFinal;
-    let finishRpm = (trap * overall * 336) / Math.max(tire, 0.1);
+    let finishRpm = (trap * overall * 336) / tire;
     let rollout = tire * Math.PI;
     let mphAt7500 = (7500 * tire) / (overall * 336);
+    const house = gearHouse("rg-end");
+    const wanted = (targetRpm * tire) / (trap * transFinal * 336);
+    const set = nearestGear(house.ratios, wanted);
+    const setRpm = (trap * set * transFinal * 336) / tire;
     publishReadout([
         { label: "Finish RPM", value: finishRpm, unit: "rpm", primary: true },
+        { label: "Set for the target RPM", value: set.toFixed(2) + " " + house.label, unit: "text" },
+        { label: "That set at the trap", value: setRpm, unit: "rpm" },
         { label: "Overall ratio", value: overall, unit: "ratio" },
         { label: "Rollout", value: rollout, unit: "in" },
         { label: "Speed at 7,500 RPM", value: mphAt7500, unit: "mph" }
     ]);
+    renderGearShop("rg-shop", "rg-end", gear, { inputId: "rg-gear", ratio: set });
 }
-bindCalc(calcRearGear, ["rg-trap", "rg-gear", "rg-tire", "rg-final"]);
+bindCalc(calcRearGear, ["rg-trap", "rg-gear", "rg-tire", "rg-final", "rg-end", "rg-rpm"]);
 """
 
 
@@ -3853,7 +4163,7 @@ WIDGETS = {
         SUPERCHARGER_SCRIPT,
     ),
     "RearGear": (
-        "Finish RPM = (Trap MPH x Overall Ratio x 336) / Tire Diameter | Overall Ratio = Rear Gear x Trans Final",
+        "Gear = (Target RPM x Tire Diameter) / (Trap MPH x Trans Final x 336). The set to order is the closest catalog ratio for that rear end. Finish RPM = (Trap MPH x Overall Ratio x 336) / Tire Diameter.",
         rear_gear_html,
         REAR_GEAR_SCRIPT,
     ),
@@ -3910,12 +4220,40 @@ WIDGETS = {
 }
 
 
+def follow_on(category):
+    steps = []
+    for slug, label in NEXT_STEPS.get(category, ()):
+        steps.append(f'<a href="{esc(slug)}.html">{esc(label)}</a>')
+    shops = []
+    for label, url in AFFILIATE_LINKS.get(category, ()):
+        shops.append(f'<a href="{esc(url)}" rel="sponsored noopener">{esc(label)}</a>')
+    parts = []
+    if steps:
+        parts.append('<div class="next-steps"><p class="field-hint">Next in the build</p>' + "".join(steps) + "</div>")
+    if shops:
+        parts.append(
+            '<div class="next-steps"><p class="field-hint">Shop this spec</p>'
+            + "".join(shops)
+            + '<p class="shop-note">Some of these are affiliate links. DragCalculators may earn a commission if you buy through them, at no extra cost to you.</p></div>'
+        )
+    return "".join(parts)
+
+
 def footer():
-    return """
+    analytics = ""
+    if ANALYTICS_ID:
+        tag = esc(ANALYTICS_ID)
+        analytics = (
+            f'<script async src="https://www.googletagmanager.com/gtag/js?id={tag}"></script>'
+            "<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}"
+            f"gtag('js',new Date());gtag('config','{tag}');</script>"
+        )
+    return f"""
 <footer class="site-footer">
     <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
     <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
 </footer>
+{analytics}
 """
 
 
@@ -3973,6 +4311,7 @@ TRACKSIDE_NOTES = {
         ("How is shift recovery RPM calculated?", "Recovery RPM is the shift RPM times (1 minus converter slip) times the next gear divided by the gear you are leaving. At 0% slip that is the straight gear drop, and it still needs to land above converter stall."),
         ("What does the 336 constant represent?", "Miles per hour equals RPM times (1 minus converter slip) times tire diameter, divided by overall ratio times 336. Overall ratio is the transmission ratio times the rear gear."),
         ("Why does a taller tire change the chart?", "A taller tire lowers engine RPM at the same trap speed. Use the grown diameter, not the sidewall number, once the tire is at speed."),
+        ("Why pick the rear end to buy a gear?", "The ratio alone is not a part. A 3.73 Ford 9-inch set does not fit an 8.8, a 12-bolt, or a Dana 60. The housing sets the ring, the pinion, and the carrier."),
     ),
     "Turbo": (
         ("How do you match a turbo?", "Match airflow in pounds per minute and the pressure ratio to a compressor map, then check the island at the boost you will actually run."),
@@ -3998,6 +4337,7 @@ TRACKSIDE_NOTES = {
         ("How does gear ratio change finish-line RPM?", "A higher numeric gear raises engine RPM at the same trap speed and tire diameter."),
         ("What is a useful drag gear window?", "The gear should put the engine near peak power at the stripe without forcing an extra shift. A street gear trades that RPM for cruise."),
         ("Why measure the tire at speed?", "Growth makes the tire taller, which drops RPM. Size the gear with the grown diameter."),
+        ("Why does the same ratio need a different gear?", "Each housing has its own ring diameter and its own catalog ratios. A Ford 9-inch 4.10 is the 4.11 set. A Dana 60 4.56 also needs the 4.56-and-up carrier."),
     ),
     "Tire": (
         ("Why do drag tires grow?", "Centrifugal force stretches the carcass, so the rolling diameter is larger than the static measurement."),
@@ -4113,7 +4453,7 @@ def page_tokens(page, pages, hubs, hubs_by_category):
         "SIDEBAR": sidebar(active, hubs),
         "H1": esc(page["target_keyword"]),
         "SPEC": f'<p class="spec">{esc(spec)}</p>' if spec else "",
-        "TOOL": html_fn(page),
+        "TOOL": html_fn(page) + follow_on(page["category"]),
         "CONTENT": formula_box(formula) + notes_box(page) + related_box(page, pages, hubs_by_category),
         "FOOTER": footer(),
         "SCRIPT": UI_SCRIPT + "\n" + script,
@@ -4124,19 +4464,32 @@ def index_page(pages, hubs):
     transmission = next(page for page in pages if page["slug"] == "transmission-shift-recovery-calculator")
     _formula, html_fn, script = WIDGETS["Transmission"]
     directory = link_items(hubs)
+    start = link_items([
+        {"slug": "fuel-injector-calculator", "target_keyword": "Fuel injectors"},
+        {"slug": "fuel-pump-calculator", "target_keyword": "Fuel pump"},
+        {"slug": "nitrous-shot-calculator", "target_keyword": "Nitrous jet and timing"},
+        {"slug": "drag-shock-calculator", "target_keyword": "Shock to order"},
+        {"slug": "torque-converter-calculator", "target_keyword": "Torque converter stall"},
+    ])
     content = (
         content_box(
+            "Start a build",
+            "<p>These five end in a part. The gear calculator on the left is where the setup goes once the converter stall is chosen.</p>"
+            + start,
+        )
+        + content_box("Calculators", directory)
+        + content_box(
+            "Track sponsorships",
+            '<p class="sponsor">A sponsor line can sit on the printed setup sheet. '
+            'Advertising and partnership inquiries go through the '
+            '<a href="contact.html">contact form</a>.</p>',
+        )
+        + content_box(
             "Track-side notes",
             "<p>Density altitude: about 3% naturally aspirated power per 1,000 feet. "
             "Converter slip at the finish is often kept around 5% to 8%. "
             "On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</p>",
         )
-        + content_box(
-            "Track sponsorships",
-            '<p class="sponsor">Advertising and partnership inquiries go through the '
-            '<a href="contact.html">contact form</a>.</p>',
-        )
-        + content_box("Calculators", directory)
     )
     spec = spec_text(transmission)
     return fill(
@@ -4213,6 +4566,48 @@ def privacy_page():
     )
 
 
+def not_found_page():
+    content = """
+<h1>That setup page moved</h1>
+<p>The gear-and-tire grid and the pulley grid now live inside the calculators. Open the tool, set the combination, and copy a link to that setup.</p>
+<ul class="variant-list">
+    <li><a href="transmission-shift-recovery-calculator.html">Transmission and gearing</a></li>
+    <li><a href="supercharger-pulley-calculator.html">Supercharger pulleys</a></li>
+    <li><a href="index.html">All calculators</a></li>
+</ul>
+"""
+    return fill(
+        NARROW_TEMPLATE,
+        TITLE=esc("Page not found | DragCalculators.com"),
+        DESCRIPTION=esc("That calculator page moved into the main tool."),
+        CANONICAL=esc(f"{ORIGIN}/404.html"),
+        VERIFICATION=VERIFICATION,
+        ORIGIN=ORIGIN,
+        CONTENT=content,
+        FOOTER=footer(),
+    )
+
+
+KEEP_HTML = {
+    "index.html",
+    "contact.html",
+    "privacy.html",
+    "404.html",
+    "google9e7c88791a3f2f72.html",
+}
+
+
+def remove_stale_pages(pages):
+    keep = set(KEEP_HTML)
+    keep.update(f"{page['slug']}.html" for page in pages)
+    removed = []
+    for name in os.listdir(ROOT):
+        if name.endswith(".html") and name not in keep:
+            os.remove(os.path.join(ROOT, name))
+            removed.append(name)
+    return removed
+
+
 def sitemap(pages):
     entries = [
         ("index.html", "1.0"),
@@ -4261,10 +4656,12 @@ def main():
     write("google9e7c88791a3f2f72.html", "google-site-verification: google9e7c88791a3f2f72.html\n")
     write("contact.html", contact_page())
     write("privacy.html", privacy_page())
+    write("404.html", not_found_page())
     write("index.html", index_page(pages, hubs))
     for page in pages:
         write(f"{page['slug']}.html", fill(PAGE_TEMPLATE, **page_tokens(page, pages, hubs, hubs_by_category)))
     write("sitemap.xml", sitemap(pages))
+    removed = remove_stale_pages(pages)
 
     counts = {}
     for page in pages:
@@ -4273,6 +4670,8 @@ def main():
     print(f"Built {len(pages)} calculator pages ({len(hubs)} hubs) from pseo_pages_list.csv")
     print(summary)
     print(f"Sitemap URLs: {len(pages) + 3}")
+    if removed:
+        print(f"Removed {len(removed)} stale calculator pages")
 
 
 if __name__ == "__main__":

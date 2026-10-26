@@ -30,18 +30,21 @@
             </header>
             
     <div class="field-stack">
+    <div class="field"><label for="rg-end">Rear end</label><select id="rg-end"><option value="ford9">Ford 9-inch</option><option value="ford88">Ford 8.8</option><option value="gm12car">GM 12-bolt car</option><option value="gm12truck">GM 12-bolt truck</option><option value="gm85">GM 8.5-inch 10-bolt</option><option value="dana60">Dana 60</option><option value="dana44">Dana 44</option><option value="mopar875">Mopar 8.75</option></select></div>
+    <p class="field-hint">Pick the rear end in the car. The link opens that ring and pinion. The target RPM names the set that hits it.</p>
     <div class="grid-2">
         <div class="field"><label for="rg-gear">Rear gear</label><input type="number" id="rg-gear" value="4.56" step="0.01"></div>
         <div class="field"><label for="rg-tire">Tire diameter (in)</label><input type="number" id="rg-tire" value="32.0" step="0.1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="rg-trap">Target trap speed (MPH)</label><input type="number" id="rg-trap" value="125" step="1"></div>
+        <div class="field"><label for="rg-rpm">Target finish RPM</label><input type="number" id="rg-rpm" value="7200" step="100"></div>
     </div>
     </div>
     <details class="accordion">
         <summary>Advanced / Conditions</summary>
         <div class="accordion-body field-stack">
-    <div class="grid-2">
-        <div class="field"><label for="rg-trap">Target trap speed (MPH)</label><input type="number" id="rg-trap" value="125" step="1"></div>
-        <div class="field"><label for="rg-final">Trans final ratio</label><input type="number" id="rg-final" value="1.00" step="0.01"></div>
-    </div>
+    <div class="field"><label for="rg-final">Trans final ratio</label><input type="number" id="rg-final" value="1.00" step="0.01"></div>
     </div>
     </details>
     <div class="readout" id="results">
@@ -56,13 +59,17 @@
         </div>
         <div id="readout-body"></div>
     </div>
-    
-    <button type="button" class="action-btn" onclick="window.print()">Print rear gear sheet</button>
+    <div id="rg-shop" class="gear-shop"></div>
+    <div class="action-row">
+        <button type="button" class="action-btn" onclick="window.print()">Print rear gear sheet</button>
+        <button type="button" class="action-btn action-secondary" id="copy-setup">Copy link to this setup</button>
+    </div>
+    <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
 
         </section>
         <div class="content-column">
-            <section class="content-box"><h2>Formula</h2><p class="formula">Finish RPM = (Trap MPH x Overall Ratio x 336) / Tire Diameter | Overall Ratio = Rear Gear x Trans Final</p></section><section class="content-box"><h2>Trackside notes</h2><p>4.56 Rear Gear Drag Racing Calculator. Loaded defaults: 4.56 rear gear, 32.0 inch tire.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>How does gear ratio change finish-line RPM?</h3><p>A higher numeric gear raises engine RPM at the same trap speed and tire diameter.</p></div><div class="faq-item"><h3>What is a useful drag gear window?</h3><p>The gear should put the engine near peak power at the stripe without forcing an extra shift. A street gear trades that RPM for cruise.</p></div><div class="faq-item"><h3>Why measure the tire at speed?</h3><p>Growth makes the tire taller, which drops RPM. Size the gear with the grown diameter.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (3)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="rear-gear-calculator.html">Ring and Pinion Rear Gear Quarter-Mile Calculator</a></li><li><a href="rear-gear-ratio-calculator.html">Rear Gear Ratio Calculator</a></li><li><a href="rear-gear-ratio-3.89-street-strip.html">3.89 Rear Gear Street-Strip Calculator</a></li></ul></div></div></details>
+            <section class="content-box"><h2>Formula</h2><p class="formula">Gear = (Target RPM x Tire Diameter) / (Trap MPH x Trans Final x 336). The set to order is the closest catalog ratio for that rear end. Finish RPM = (Trap MPH x Overall Ratio x 336) / Tire Diameter.</p></section><section class="content-box"><h2>Trackside notes</h2><p>4.56 Rear Gear Drag Racing Calculator. Loaded defaults: 4.56 rear gear, 32.0 inch tire.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>How does gear ratio change finish-line RPM?</h3><p>A higher numeric gear raises engine RPM at the same trap speed and tire diameter.</p></div><div class="faq-item"><h3>What is a useful drag gear window?</h3><p>The gear should put the engine near peak power at the stripe without forcing an extra shift. A street gear trades that RPM for cruise.</p></div><div class="faq-item"><h3>Why measure the tire at speed?</h3><p>Growth makes the tire taller, which drops RPM. Size the gear with the grown diameter.</p></div><div class="faq-item"><h3>Why does the same ratio need a different gear?</h3><p>Each housing has its own ring diameter and its own catalog ratios. A Ford 9-inch 4.10 is the 4.11 set. A Dana 60 4.56 also needs the 4.56-and-up carrier.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (3)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="rear-gear-calculator.html">Ring and Pinion Rear Gear Quarter-Mile Calculator</a></li><li><a href="rear-gear-ratio-calculator.html">Rear Gear Ratio Calculator</a></li><li><a href="rear-gear-ratio-3.89-street-strip.html">3.89 Rear Gear Street-Strip Calculator</a></li></ul></div></div></details>
         </div>
     </div>
     
@@ -70,6 +77,7 @@
     <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
     <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
 </footer>
+
 
     <script>
 
@@ -162,15 +170,48 @@ function publishReadout(items) {
         + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
 }
 
+function applySharedState(ids) {
+    const params = new URLSearchParams(location.search);
+    if (!params.toString()) return;
+    ids.forEach(id => {
+        if (!params.has(id)) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = params.get(id);
+    });
+    ["power", "system"].forEach(group => {
+        if (!params.has(group)) return;
+        unitState[group] = params.get(group);
+        document.querySelectorAll('[data-unit-group="' + group + '"]').forEach(pill => {
+            pill.classList.toggle("active", pill.dataset.unit === unitState[group]);
+        });
+    });
+}
+
+function setupSearch() {
+    const params = new URLSearchParams();
+    (window.shareIds || []).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.value === "") return;
+        params.set(id, el.value);
+    });
+    if (unitState.power !== "bhp") params.set("power", unitState.power);
+    if (unitState.system !== "imperial") params.set("system", unitState.system);
+    return params.toString();
+}
+
 function bindCalc(fn, ids) {
-    window.refreshCalc = fn;
+    window.shareIds = ids;
+    applySharedState(ids);
+    const run = () => fn();
+    window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.addEventListener("input", fn);
-        el.addEventListener("change", fn);
+        el.addEventListener("input", run);
+        el.addEventListener("change", run);
     });
-    fn();
+    run();
 }
 
 document.querySelectorAll(".pill").forEach(button => {
@@ -185,24 +226,139 @@ document.querySelectorAll(".pill").forEach(button => {
     });
 });
 
+function copyText(text) {
+    const legacy = () => {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "0";
+        area.style.left = "0";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+        area.remove();
+        return ok;
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(() => (legacy() ? undefined : Promise.reject()));
+    }
+    return legacy() ? Promise.resolve() : Promise.reject();
+}
+
+const copySetup = document.getElementById("copy-setup");
+if (copySetup) {
+    copySetup.addEventListener("click", () => {
+        const search = setupSearch();
+        const url = location.origin + location.pathname + (search ? "?" + search : "");
+        const done = (label) => {
+            copySetup.textContent = label;
+            setTimeout(() => { copySetup.textContent = "Copy link to this setup"; }, 1600);
+        };
+        copyText(url).then(() => done("Link copied")).catch(() => {
+            window.prompt("Copy this setup link", url);
+            done("Link ready");
+        });
+    });
+}
+
+
+const GEAR_HOUSINGS = [{"id": "ford9", "label": "Ford 9-inch", "search": "Ford 9 inch", "ratios": [3.0, 3.25, 3.4, 3.5, 3.55, 3.7, 3.73, 3.89, 4.0, 4.11, 4.3, 4.56, 4.71, 4.86, 5.0, 5.14, 5.43, 5.67, 5.83, 6.0], "bands": [[99, "A Ford 9-inch has no carrier break. The set bolts into the third member. Axle spline does not change the ring and pinion."]], "deep": null}, {"id": "ford88", "label": "Ford 8.8", "search": "Ford 8.8", "ratios": [3.08, 3.31, 3.55, 3.73, 3.9, 4.1, 4.3, 4.56, 4.88, 5.13, 5.71], "bands": [[99, "A Ford 8.8 has no carrier break. A 28-spline axle and a 31-spline axle take the same ring and pinion."]], "deep": [4.56, "A 4.56 and deeper can hit a stock cover. A deep cover clears the ring gear."]}, {"id": "gm12car", "label": "GM 12-bolt car", "search": "GM 12 bolt car", "ratios": [3.08, 3.31, 3.42, 3.55, 3.73, 3.9, 4.1, 4.56, 4.88, 5.14], "bands": [[3.73, "This set uses the 3.07 to 3.73 carrier."], [3.9, "A 3.90 sits on the carrier break. Match the carrier to the set."], [99, "This set uses the 4.10-and-up carrier."]], "deep": null}, {"id": "gm12truck", "label": "GM 12-bolt truck", "search": "GM 12 bolt truck", "ratios": [3.08, 3.42, 3.73, 4.1, 4.56], "bands": [[3.42, "This set uses the 2.76 to 3.42 carrier."], [99, "This set uses the 3.73-and-up carrier."]], "deep": null}, {"id": "gm85", "label": "GM 8.5-inch 10-bolt", "search": "GM 8.5 10 bolt", "ratios": [3.08, 3.42, 3.73, 4.1, 4.56, 4.88, 5.13], "bands": [[99, "This set uses the 2.73-and-up carrier. A 2.56 carrier will not take it."]], "deep": null}, {"id": "dana60", "label": "Dana 60", "search": "Dana 60", "ratios": [3.54, 3.73, 4.1, 4.56, 4.88, 5.13, 5.38], "bands": [[4.1, "This set uses the 4.10-and-down carrier."], [99, "This set uses the 4.56-and-up carrier."]], "deep": null}, {"id": "dana44", "label": "Dana 44", "search": "Dana 44", "ratios": [3.54, 3.73, 4.09, 4.56, 4.88, 5.13], "bands": [[3.73, "This set uses the 3.73-and-down carrier."], [99, "This set uses the 3.92-and-up carrier."]], "deep": null}, {"id": "mopar875", "label": "Mopar 8.75", "search": "Mopar 8.75", "ratios": [3.55, 3.73, 3.91, 4.1, 4.3, 4.56, 4.86, 5.13], "bands": [[99, "Match the set to the case number cast in the center. 489 is the drag case. 741 is the weak case."]], "deep": null}];
+function gearHouse(selectId) {
+    const pick = document.getElementById(selectId);
+    const key = pick ? pick.value : "";
+    for (let i = 0; i < GEAR_HOUSINGS.length; i++) {
+        if (GEAR_HOUSINGS[i].id === key) return GEAR_HOUSINGS[i];
+    }
+    return GEAR_HOUSINGS[0];
+}
+function nearestGear(ratios, gear) {
+    let best = ratios[0];
+    let bestDist = Math.abs(gear - best);
+    for (let i = 1; i < ratios.length; i++) {
+        const dist = Math.abs(gear - ratios[i]);
+        if (dist < bestDist) {
+            best = ratios[i];
+            bestDist = dist;
+        }
+    }
+    return best;
+}
+function gearNote(house, ratio) {
+    let note = "";
+    const bands = house.bands || [];
+    for (let i = 0; i < bands.length; i++) {
+        if (ratio <= bands[i][0] + 0.001) {
+            note = bands[i][1];
+            break;
+        }
+    }
+    if (house.deep && ratio >= house.deep[0] - 0.001) note += " " + house.deep[1];
+    return note;
+}
+function renderGearShop(mountId, selectId, gear, offer) {
+    const mount = document.getElementById(mountId);
+    if (!mount) return;
+    const house = gearHouse(selectId);
+    const set = nearestGear(house.ratios, gear);
+    const shown = set.toFixed(2);
+    const typed = Number(gear).toFixed(2);
+    const lead = Math.abs(set - gear) >= 0.005
+        ? typed + " is not a catalog " + house.label + " set. The set to order is the " + shown + "."
+        : "The set to order is the " + house.label + " " + shown + " ring and pinion.";
+    const q = encodeURIComponent(house.search + " " + shown + " ring and pinion");
+    const summit = "https://www.summitracing.com/search?keyword=" + q;
+    const jegs = "https://www.jegs.com/search?Ntt=" + q;
+    let use = "";
+    if (offer && Math.abs(offer.ratio - gear) >= 0.005) {
+        use = '<button type="button" class="action-btn action-secondary" id="gear-use">Use the ' + offer.ratio.toFixed(2) + " for this trap</button>";
+    }
+    mount.innerHTML = "<p>" + lead + " " + gearNote(house, set) + "</p>"
+        + use
+        + '<a href="' + summit + '" target="_blank" rel="noopener">Summit Racing, ' + house.label + " " + shown + "</a>"
+        + '<a href="' + jegs + '" target="_blank" rel="noopener">Jegs, ' + house.label + " " + shown + "</a>"
+        + '<p class="shop-note">The link searches that housing and ratio. Confirm the carrier before you order. Bearings and shims are a separate install kit.</p>';
+    const button = document.getElementById("gear-use");
+    if (button && offer) {
+        button.addEventListener("click", function () {
+            const input = document.getElementById(offer.inputId);
+            if (input) input.value = offer.ratio.toFixed(2);
+            if (window.refreshCalc) window.refreshCalc();
+        });
+    }
+}
 
 function calcRearGear() {
     let trap = parseFloat(document.getElementById("rg-trap").value) || 125;
     let gear = parseFloat(document.getElementById("rg-gear").value) || 4.11;
     let tire = parseFloat(document.getElementById("rg-tire").value) || 32;
     let transFinal = parseFloat(document.getElementById("rg-final").value) || 1.00;
+    let targetRpm = parseFloat(document.getElementById("rg-rpm").value) || 7200;
+    tire = Math.max(tire, 0.1);
+    trap = Math.max(trap, 1);
+    transFinal = Math.max(transFinal, 0.1);
     let overall = gear * transFinal;
-    let finishRpm = (trap * overall * 336) / Math.max(tire, 0.1);
+    let finishRpm = (trap * overall * 336) / tire;
     let rollout = tire * Math.PI;
     let mphAt7500 = (7500 * tire) / (overall * 336);
+    const house = gearHouse("rg-end");
+    const wanted = (targetRpm * tire) / (trap * transFinal * 336);
+    const set = nearestGear(house.ratios, wanted);
+    const setRpm = (trap * set * transFinal * 336) / tire;
     publishReadout([
         { label: "Finish RPM", value: finishRpm, unit: "rpm", primary: true },
+        { label: "Set for the target RPM", value: set.toFixed(2) + " " + house.label, unit: "text" },
+        { label: "That set at the trap", value: setRpm, unit: "rpm" },
         { label: "Overall ratio", value: overall, unit: "ratio" },
         { label: "Rollout", value: rollout, unit: "in" },
         { label: "Speed at 7,500 RPM", value: mphAt7500, unit: "mph" }
     ]);
+    renderGearShop("rg-shop", "rg-end", gear, { inputId: "rg-gear", ratio: set });
 }
-bindCalc(calcRearGear, ["rg-trap", "rg-gear", "rg-tire", "rg-final"]);
+bindCalc(calcRearGear, ["rg-trap", "rg-gear", "rg-tire", "rg-final", "rg-end", "rg-rpm"]);
 
     </script>
 </body>

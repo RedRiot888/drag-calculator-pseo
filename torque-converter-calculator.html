@@ -111,9 +111,13 @@
         <p class="field-hint">K-factor is brake stall divided by the square root of the torque at that RPM. Give the shop the stall, the torque, the K, and the stall torque ratio. The core diameter is the usual can for that stall. The stator and the vane angle are what set it.</p>
     </div>
     
-    <button type="button" class="action-btn" onclick="window.print()">Print converter sheet</button>
+    <div class="action-row">
+        <button type="button" class="action-btn" onclick="window.print()">Print converter sheet</button>
+        <button type="button" class="action-btn action-secondary" id="copy-setup">Copy link to this setup</button>
+    </div>
+    <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
-
+<div class="next-steps"><p class="field-hint">Next in the build</p><a href="transmission-shift-recovery-calculator.html">Put this slip into the gear calculator</a></div>
         </section>
         <div class="content-column">
             <section class="content-box"><h2>Formula</h2><p class="formula">K = Brake stall RPM / sqrt(torque at that RPM). Brake stall is set under the torque peak so the engine can accelerate through it. Stall torque ratio is as high as the tire can take. Cruise RPM = (MPH x top gear x rear gear x 336) / tire diameter, and an unlocked converter has to stall under that.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Torque Converter Stall and K-Factor Calculator. Loaded defaults: TH400, 500 lb-ft at 4,800 RPM, prepped slick, trans brake.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>What is K-factor?</h3><p>K-factor is brake stall RPM divided by the square root of engine torque at that RPM. The same converter stalls higher behind an engine with more torque. Give the shop the K, the stall, and the torque, not a stall number with no engine attached.</p></div><div class="faq-item"><h3>Where should the stall sit?</h3><p>Brake stall wants to land about 500 to 700 RPM under the torque peak so the engine accelerates through the converter instead of starting above it. A no-prep tire wants it lower. An unlocked street converter also has to stall under cruise RPM.</p></div><div class="faq-item"><h3>Why is the car weight not in the stall?</h3><p>Brake stall is engine torque against the converter with the turbine held. Weight, the tire, and the gear decide whether that stall hooks. They do not change the RPM.</p></div></section><details class="accordion config-drawer"><summary>Configurations (8)</summary><div class="accordion-body"><p class="field-hint">8 saved combinations for this calculator.</p><div class="config-scroll"><ul class="variant-list"><li><a href="footbrake-converter-calculator.html">Foot Brake Torque Converter Calculator</a></li><li><a href="no-prep-converter-calculator.html">No Prep Torque Converter Calculator</a></li><li><a href="powerglide-converter-calculator.html">Powerglide Torque Converter Calculator</a></li><li><a href="radial-converter-calculator.html">Radial Prep Torque Converter Calculator</a></li><li><a href="street-lockup-converter-calculator.html">Street Lockup Torque Converter Calculator</a></li><li><a href="street-strip-converter-calculator.html">Street Strip Torque Converter Calculator</a></li><li><a href="th400-converter-calculator.html">TH400 Torque Converter Calculator</a></li><li><a href="trans-brake-converter-calculator.html">Trans Brake Torque Converter Calculator</a></li></ul></div></div></details>
@@ -124,6 +128,7 @@
     <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
     <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
 </footer>
+
 
     <script>
 
@@ -216,15 +221,48 @@ function publishReadout(items) {
         + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
 }
 
+function applySharedState(ids) {
+    const params = new URLSearchParams(location.search);
+    if (!params.toString()) return;
+    ids.forEach(id => {
+        if (!params.has(id)) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = params.get(id);
+    });
+    ["power", "system"].forEach(group => {
+        if (!params.has(group)) return;
+        unitState[group] = params.get(group);
+        document.querySelectorAll('[data-unit-group="' + group + '"]').forEach(pill => {
+            pill.classList.toggle("active", pill.dataset.unit === unitState[group]);
+        });
+    });
+}
+
+function setupSearch() {
+    const params = new URLSearchParams();
+    (window.shareIds || []).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.value === "") return;
+        params.set(id, el.value);
+    });
+    if (unitState.power !== "bhp") params.set("power", unitState.power);
+    if (unitState.system !== "imperial") params.set("system", unitState.system);
+    return params.toString();
+}
+
 function bindCalc(fn, ids) {
-    window.refreshCalc = fn;
+    window.shareIds = ids;
+    applySharedState(ids);
+    const run = () => fn();
+    window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.addEventListener("input", fn);
-        el.addEventListener("change", fn);
+        el.addEventListener("input", run);
+        el.addEventListener("change", run);
     });
-    fn();
+    run();
 }
 
 document.querySelectorAll(".pill").forEach(button => {
@@ -238,6 +276,45 @@ document.querySelectorAll(".pill").forEach(button => {
         else if (lastReadout.length) publishReadout(lastReadout);
     });
 });
+
+function copyText(text) {
+    const legacy = () => {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "0";
+        area.style.left = "0";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+        area.remove();
+        return ok;
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(() => (legacy() ? undefined : Promise.reject()));
+    }
+    return legacy() ? Promise.resolve() : Promise.reject();
+}
+
+const copySetup = document.getElementById("copy-setup");
+if (copySetup) {
+    copySetup.addEventListener("click", () => {
+        const search = setupSearch();
+        const url = location.origin + location.pathname + (search ? "?" + search : "");
+        const done = (label) => {
+            copySetup.textContent = label;
+            setTimeout(() => { copySetup.textContent = "Copy link to this setup"; }, 1600);
+        };
+        copyText(url).then(() => done("Link copied")).catch(() => {
+            window.prompt("Copy this setup link", url);
+            done("Link ready");
+        });
+    });
+}
 
 
 const CV_TRANS = {

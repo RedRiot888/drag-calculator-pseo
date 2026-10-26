@@ -62,12 +62,16 @@
         <div id="readout-body"></div>
     </div>
     
-    <button type="button" class="action-btn" onclick="window.print()">Print pulley spec sheet</button>
+    <div class="action-row">
+        <button type="button" class="action-btn" onclick="window.print()">Print pulley spec sheet</button>
+        <button type="button" class="action-btn action-secondary" id="copy-setup">Copy link to this setup</button>
+    </div>
+    <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
 
         </section>
         <div class="content-column">
-            <section class="content-box"><h2>Formula</h2><p class="formula">Pulley Ratio = Crank Dia / Blower Dia | Impeller RPM = Crank RPM x Ratio | Est. Boost = Ratio x 5.2 x Blower Factor</p></section><section class="content-box"><h2>Trackside notes</h2><p>Centrifugal Supercharger Pulley Calculator for an 8.0 Inch Crank and 3.0 Inch Blower. Loaded defaults: centrifugal blower, 8.0 inch crank pulley, 3.0 inch blower pulley.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>How does pulley ratio set boost?</h3><p>Pulley ratio is crank pulley diameter divided by blower pulley diameter. A smaller blower pulley raises ratio, rotor speed, and boost.</p></div><div class="faq-item"><h3>Why do roots, screw, and centrifugal blowers differ?</h3><p>Roots and twin-screw blowers move a fixed volume per revolution. A centrifugal compressor builds boost with shaft speed, so it comes on later.</p></div><div class="faq-item"><h3>What does the boost factor mean?</h3><p>The factor estimates PSI per unit of overdrive for that blower family. It is a planning number. The gauge and the inlet temperature decide the real result.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="supercharger-pulley-calculator.html">Supercharger Pulley Ratio &amp; Boost Pressure Calculator</a></li><li><a href="supercharger-pulley-centrifugal-8.0in-crank-3.25in-blower.html">Centrifugal Supercharger Pulley Calculator for an 8.0 Inch Crank and 3.25 Inch Blower</a></li><li><a href="supercharger-pulley-centrifugal-8.0in-crank-3.5in-blower.html">Centrifugal Supercharger Pulley Calculator for an 8.0 Inch Crank and 3.5 Inch Blower</a></li><li><a href="supercharger-pulley-centrifugal-8.0in-crank-3.75in-blower.html">Centrifugal Supercharger Pulley Calculator for an 8.0 Inch Crank and 3.75 Inch Blower</a></li><li><a href="supercharger-pulley-centrifugal-8.0in-crank-4.0in-blower.html">Centrifugal Supercharger Pulley Calculator for an 8.0 Inch Crank and 4.0 Inch Blower</a></li><li><a href="supercharger-pulley-centrifugal-8.5in-crank-2.75in-blower.html">Centrifugal Supercharger Pulley Calculator for an 8.5 Inch Crank and 2.75 Inch Blower</a></li><li><a href="supercharger-pulley-centrifugal-8.5in-crank-3.0in-blower.html">Centrifugal Supercharger Pulley Calculator for an 8.5 Inch Crank and 3.0 Inch Blower</a></li></ul></div></div></details>
+            <section class="content-box"><h2>Formula</h2><p class="formula">Pulley Ratio = Crank Dia / Blower Dia | Impeller RPM = Crank RPM x Ratio | Est. Boost = Ratio x 5.2 x Blower Factor</p></section><section class="content-box"><h2>Trackside notes</h2><p>Centrifugal Supercharger Pulley Calculator for an 8.0 Inch Crank and 3.0 Inch Blower. Loaded defaults: centrifugal blower, 8.0 inch crank pulley, 3.0 inch blower pulley.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>How does pulley ratio set boost?</h3><p>Pulley ratio is crank pulley diameter divided by blower pulley diameter. A smaller blower pulley raises ratio, rotor speed, and boost.</p></div><div class="faq-item"><h3>Why do roots, screw, and centrifugal blowers differ?</h3><p>Roots and twin-screw blowers move a fixed volume per revolution. A centrifugal compressor builds boost with shaft speed, so it comes on later.</p></div><div class="faq-item"><h3>What does the boost factor mean?</h3><p>The factor estimates PSI per unit of overdrive for that blower family. It is a planning number. The gauge and the inlet temperature decide the real result.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (4)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="supercharger-pulley-calculator.html">Supercharger Pulley Ratio &amp; Boost Pressure Calculator</a></li><li><a href="supercharger-pulley-15psi-roots.html">Roots Supercharger Calculator Targeting 15 PSI</a></li><li><a href="supercharger-pulley-20psi-screws.html">Twin-Screw Supercharger Calculator Targeting 20 PSI</a></li><li><a href="supercharger-pulley-boost-calculator.html">Supercharger Pulley Boost Calculator</a></li></ul></div></div></details>
         </div>
     </div>
     
@@ -75,6 +79,7 @@
     <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
     <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
 </footer>
+
 
     <script>
 
@@ -167,15 +172,48 @@ function publishReadout(items) {
         + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
 }
 
+function applySharedState(ids) {
+    const params = new URLSearchParams(location.search);
+    if (!params.toString()) return;
+    ids.forEach(id => {
+        if (!params.has(id)) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = params.get(id);
+    });
+    ["power", "system"].forEach(group => {
+        if (!params.has(group)) return;
+        unitState[group] = params.get(group);
+        document.querySelectorAll('[data-unit-group="' + group + '"]').forEach(pill => {
+            pill.classList.toggle("active", pill.dataset.unit === unitState[group]);
+        });
+    });
+}
+
+function setupSearch() {
+    const params = new URLSearchParams();
+    (window.shareIds || []).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.value === "") return;
+        params.set(id, el.value);
+    });
+    if (unitState.power !== "bhp") params.set("power", unitState.power);
+    if (unitState.system !== "imperial") params.set("system", unitState.system);
+    return params.toString();
+}
+
 function bindCalc(fn, ids) {
-    window.refreshCalc = fn;
+    window.shareIds = ids;
+    applySharedState(ids);
+    const run = () => fn();
+    window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.addEventListener("input", fn);
-        el.addEventListener("change", fn);
+        el.addEventListener("input", run);
+        el.addEventListener("change", run);
     });
-    fn();
+    run();
 }
 
 document.querySelectorAll(".pill").forEach(button => {
@@ -189,6 +227,45 @@ document.querySelectorAll(".pill").forEach(button => {
         else if (lastReadout.length) publishReadout(lastReadout);
     });
 });
+
+function copyText(text) {
+    const legacy = () => {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "0";
+        area.style.left = "0";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+        area.remove();
+        return ok;
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(() => (legacy() ? undefined : Promise.reject()));
+    }
+    return legacy() ? Promise.resolve() : Promise.reject();
+}
+
+const copySetup = document.getElementById("copy-setup");
+if (copySetup) {
+    copySetup.addEventListener("click", () => {
+        const search = setupSearch();
+        const url = location.origin + location.pathname + (search ? "?" + search : "");
+        const done = (label) => {
+            copySetup.textContent = label;
+            setTimeout(() => { copySetup.textContent = "Copy link to this setup"; }, 1600);
+        };
+        copyText(url).then(() => done("Link copied")).catch(() => {
+            window.prompt("Copy this setup link", url);
+            done("Link ready");
+        });
+    });
+}
 
 
 function calcSupercharger() {

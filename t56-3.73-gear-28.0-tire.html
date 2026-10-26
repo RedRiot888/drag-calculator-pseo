@@ -58,6 +58,8 @@
 </optgroup></select></div>
         <div class="field"><label for="rear-gear">Rear gear</label><input type="number" id="rear-gear" value="3.73" step="0.01"></div>
     </div>
+    <div class="field"><label for="rear-end">Rear end</label><select id="rear-end"><option value="ford9">Ford 9-inch</option><option value="ford88">Ford 8.8</option><option value="gm12car">GM 12-bolt car</option><option value="gm12truck">GM 12-bolt truck</option><option value="gm85">GM 8.5-inch 10-bolt</option><option value="dana60">Dana 60</option><option value="dana44">Dana 44</option><option value="mopar875">Mopar 8.75</option></select></div>
+    <p class="field-hint">The ring and pinion is cut for one housing. A 4.11 for a Ford 9-inch does not fit an 8.8 or a 12-bolt.</p>
     <div class="grid-2">
         <div class="field"><label for="custom-ratios">Custom ratios</label><input type="text" id="custom-ratios" placeholder="2.48, 1.48, 1.00" inputmode="decimal" autocomplete="off"></div>
         <div class="field"><label for="converter-slip">Converter slip (%)</label><input type="number" id="converter-slip" value="0" min="0" max="40" step="0.5"></div>
@@ -99,18 +101,22 @@
         </div>
         <div id="readout-body"></div>
     </div>
-    
-    <button type="button" class="action-btn" onclick="window.print()">Print track sheet</button>
+    <div id="gear-shop" class="gear-shop"></div>
+    <div class="action-row">
+        <button type="button" class="action-btn" onclick="window.print()">Print track sheet</button>
+        <button type="button" class="action-btn action-secondary" id="copy-setup">Copy link to this setup</button>
+    </div>
+    <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
     <table>
         <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift speed</th><th>RPM drop</th></tr></thead>
         <tbody id="gear-body"></tbody>
     </table>
     
-
+<div class="next-steps"><p class="field-hint">Next in the build</p><a href="torque-converter-calculator.html">Pick the converter stall, then come back to the slip</a></div>
         </section>
         <div class="content-column">
-            <section class="content-box"><h2>Formula</h2><p class="formula">Overall Ratio = Trans Ratio x Rear Gear. Shift Speed (MPH) = (RPM x (1 - Slip) x Tire) / (Overall x 336). Recovery RPM = Shift RPM x (1 - Slip) x (Next Ratio / Current Ratio).</p></section><section class="content-box"><h2>Trackside notes</h2><p>T56 Manual (6-Speed) 3.73 Gear 28.0 Inch Tire Drag Calculator. Loaded defaults: Tremec T56, 3.73 rear gear, 28.0 inch tire.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>How is shift recovery RPM calculated?</h3><p>Recovery RPM is the shift RPM times (1 minus converter slip) times the next gear divided by the gear you are leaving. At 0% slip that is the straight gear drop, and it still needs to land above converter stall.</p></div><div class="faq-item"><h3>What does the 336 constant represent?</h3><p>Miles per hour equals RPM times (1 minus converter slip) times tire diameter, divided by overall ratio times 336. Overall ratio is the transmission ratio times the rear gear.</p></div><div class="faq-item"><h3>Why does a taller tire change the chart?</h3><p>A taller tire lowers engine RPM at the same trap speed. Use the grown diameter, not the sidewall number, once the tire is at speed.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="transmission-shift-recovery-calculator.html">Transmission Shift Recovery &amp; Gear Drop Calculator</a></li><li><a href="t56-3.73-gear-29.5-tire.html">T56 Manual (6-Speed) 3.73 Gear 29.5 Inch Tire Drag Calculator</a></li><li><a href="t56-3.73-gear-31.0-tire.html">T56 Manual (6-Speed) 3.73 Gear 31.0 Inch Tire Drag Calculator</a></li><li><a href="t56-3.73-gear-33.0-tire.html">T56 Manual (6-Speed) 3.73 Gear 33.0 Inch Tire Drag Calculator</a></li><li><a href="t56-3.9-gear-26.0-tire.html">T56 Manual (6-Speed) 3.9 Gear 26.0 Inch Tire Drag Calculator</a></li><li><a href="t56-3.9-gear-28.0-tire.html">T56 Manual (6-Speed) 3.9 Gear 28.0 Inch Tire Drag Calculator</a></li><li><a href="t56-3.9-gear-29.5-tire.html">T56 Manual (6-Speed) 3.9 Gear 29.5 Inch Tire Drag Calculator</a></li></ul></div></div></details>
+            <section class="content-box"><h2>Formula</h2><p class="formula">Overall Ratio = Trans Ratio x Rear Gear. Shift Speed (MPH) = (RPM x (1 - Slip) x Tire) / (Overall x 336). Recovery RPM = Shift RPM x (1 - Slip) x (Next Ratio / Current Ratio).</p></section><section class="content-box"><h2>Trackside notes</h2><p>T56 Manual (6-Speed) 3.73 Gear 28.0 Inch Tire Drag Calculator. Loaded defaults: Tremec T56, 3.73 rear gear, 28.0 inch tire.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>How is shift recovery RPM calculated?</h3><p>Recovery RPM is the shift RPM times (1 minus converter slip) times the next gear divided by the gear you are leaving. At 0% slip that is the straight gear drop, and it still needs to land above converter stall.</p></div><div class="faq-item"><h3>What does the 336 constant represent?</h3><p>Miles per hour equals RPM times (1 minus converter slip) times tire diameter, divided by overall ratio times 336. Overall ratio is the transmission ratio times the rear gear.</p></div><div class="faq-item"><h3>Why does a taller tire change the chart?</h3><p>A taller tire lowers engine RPM at the same trap speed. Use the grown diameter, not the sidewall number, once the tire is at speed.</p></div><div class="faq-item"><h3>Why pick the rear end to buy a gear?</h3><p>The ratio alone is not a part. A 3.73 Ford 9-inch set does not fit an 8.8, a 12-bolt, or a Dana 60. The housing sets the ring, the pinion, and the carrier.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (5)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="transmission-shift-recovery-calculator.html">Transmission Shift Recovery &amp; Gear Drop Calculator</a></li><li><a href="th400-3.73-gear-28.0-tire.html">TH400 3.73 Gear 28.0 Inch Tire Drag Calculator</a></li><li><a href="transmission-gear-drop-calculator.html">Transmission Gear Drop Calculator</a></li><li><a href="zf8hp-3.23-gear-28.0-tire.html">ZF8HP 3.23 Gear 28.0 Inch Tire Drag Calculator</a></li><li><a href="powerglide-4.1-gear-28.0-tire.html">Powerglide (2-Speed) 4.1 Gear 28.0 Inch Tire Drag Calculator</a></li></ul></div></div></details>
         </div>
     </div>
     
@@ -118,6 +124,7 @@
     <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
     <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
 </footer>
+
 
     <script>
 
@@ -210,15 +217,48 @@ function publishReadout(items) {
         + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
 }
 
+function applySharedState(ids) {
+    const params = new URLSearchParams(location.search);
+    if (!params.toString()) return;
+    ids.forEach(id => {
+        if (!params.has(id)) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = params.get(id);
+    });
+    ["power", "system"].forEach(group => {
+        if (!params.has(group)) return;
+        unitState[group] = params.get(group);
+        document.querySelectorAll('[data-unit-group="' + group + '"]').forEach(pill => {
+            pill.classList.toggle("active", pill.dataset.unit === unitState[group]);
+        });
+    });
+}
+
+function setupSearch() {
+    const params = new URLSearchParams();
+    (window.shareIds || []).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.value === "") return;
+        params.set(id, el.value);
+    });
+    if (unitState.power !== "bhp") params.set("power", unitState.power);
+    if (unitState.system !== "imperial") params.set("system", unitState.system);
+    return params.toString();
+}
+
 function bindCalc(fn, ids) {
-    window.refreshCalc = fn;
+    window.shareIds = ids;
+    applySharedState(ids);
+    const run = () => fn();
+    window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.addEventListener("input", fn);
-        el.addEventListener("change", fn);
+        el.addEventListener("input", run);
+        el.addEventListener("change", run);
     });
-    fn();
+    run();
 }
 
 document.querySelectorAll(".pill").forEach(button => {
@@ -233,6 +273,110 @@ document.querySelectorAll(".pill").forEach(button => {
     });
 });
 
+function copyText(text) {
+    const legacy = () => {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "0";
+        area.style.left = "0";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+        area.remove();
+        return ok;
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(() => (legacy() ? undefined : Promise.reject()));
+    }
+    return legacy() ? Promise.resolve() : Promise.reject();
+}
+
+const copySetup = document.getElementById("copy-setup");
+if (copySetup) {
+    copySetup.addEventListener("click", () => {
+        const search = setupSearch();
+        const url = location.origin + location.pathname + (search ? "?" + search : "");
+        const done = (label) => {
+            copySetup.textContent = label;
+            setTimeout(() => { copySetup.textContent = "Copy link to this setup"; }, 1600);
+        };
+        copyText(url).then(() => done("Link copied")).catch(() => {
+            window.prompt("Copy this setup link", url);
+            done("Link ready");
+        });
+    });
+}
+
+
+const GEAR_HOUSINGS = [{"id": "ford9", "label": "Ford 9-inch", "search": "Ford 9 inch", "ratios": [3.0, 3.25, 3.4, 3.5, 3.55, 3.7, 3.73, 3.89, 4.0, 4.11, 4.3, 4.56, 4.71, 4.86, 5.0, 5.14, 5.43, 5.67, 5.83, 6.0], "bands": [[99, "A Ford 9-inch has no carrier break. The set bolts into the third member. Axle spline does not change the ring and pinion."]], "deep": null}, {"id": "ford88", "label": "Ford 8.8", "search": "Ford 8.8", "ratios": [3.08, 3.31, 3.55, 3.73, 3.9, 4.1, 4.3, 4.56, 4.88, 5.13, 5.71], "bands": [[99, "A Ford 8.8 has no carrier break. A 28-spline axle and a 31-spline axle take the same ring and pinion."]], "deep": [4.56, "A 4.56 and deeper can hit a stock cover. A deep cover clears the ring gear."]}, {"id": "gm12car", "label": "GM 12-bolt car", "search": "GM 12 bolt car", "ratios": [3.08, 3.31, 3.42, 3.55, 3.73, 3.9, 4.1, 4.56, 4.88, 5.14], "bands": [[3.73, "This set uses the 3.07 to 3.73 carrier."], [3.9, "A 3.90 sits on the carrier break. Match the carrier to the set."], [99, "This set uses the 4.10-and-up carrier."]], "deep": null}, {"id": "gm12truck", "label": "GM 12-bolt truck", "search": "GM 12 bolt truck", "ratios": [3.08, 3.42, 3.73, 4.1, 4.56], "bands": [[3.42, "This set uses the 2.76 to 3.42 carrier."], [99, "This set uses the 3.73-and-up carrier."]], "deep": null}, {"id": "gm85", "label": "GM 8.5-inch 10-bolt", "search": "GM 8.5 10 bolt", "ratios": [3.08, 3.42, 3.73, 4.1, 4.56, 4.88, 5.13], "bands": [[99, "This set uses the 2.73-and-up carrier. A 2.56 carrier will not take it."]], "deep": null}, {"id": "dana60", "label": "Dana 60", "search": "Dana 60", "ratios": [3.54, 3.73, 4.1, 4.56, 4.88, 5.13, 5.38], "bands": [[4.1, "This set uses the 4.10-and-down carrier."], [99, "This set uses the 4.56-and-up carrier."]], "deep": null}, {"id": "dana44", "label": "Dana 44", "search": "Dana 44", "ratios": [3.54, 3.73, 4.09, 4.56, 4.88, 5.13], "bands": [[3.73, "This set uses the 3.73-and-down carrier."], [99, "This set uses the 3.92-and-up carrier."]], "deep": null}, {"id": "mopar875", "label": "Mopar 8.75", "search": "Mopar 8.75", "ratios": [3.55, 3.73, 3.91, 4.1, 4.3, 4.56, 4.86, 5.13], "bands": [[99, "Match the set to the case number cast in the center. 489 is the drag case. 741 is the weak case."]], "deep": null}];
+function gearHouse(selectId) {
+    const pick = document.getElementById(selectId);
+    const key = pick ? pick.value : "";
+    for (let i = 0; i < GEAR_HOUSINGS.length; i++) {
+        if (GEAR_HOUSINGS[i].id === key) return GEAR_HOUSINGS[i];
+    }
+    return GEAR_HOUSINGS[0];
+}
+function nearestGear(ratios, gear) {
+    let best = ratios[0];
+    let bestDist = Math.abs(gear - best);
+    for (let i = 1; i < ratios.length; i++) {
+        const dist = Math.abs(gear - ratios[i]);
+        if (dist < bestDist) {
+            best = ratios[i];
+            bestDist = dist;
+        }
+    }
+    return best;
+}
+function gearNote(house, ratio) {
+    let note = "";
+    const bands = house.bands || [];
+    for (let i = 0; i < bands.length; i++) {
+        if (ratio <= bands[i][0] + 0.001) {
+            note = bands[i][1];
+            break;
+        }
+    }
+    if (house.deep && ratio >= house.deep[0] - 0.001) note += " " + house.deep[1];
+    return note;
+}
+function renderGearShop(mountId, selectId, gear, offer) {
+    const mount = document.getElementById(mountId);
+    if (!mount) return;
+    const house = gearHouse(selectId);
+    const set = nearestGear(house.ratios, gear);
+    const shown = set.toFixed(2);
+    const typed = Number(gear).toFixed(2);
+    const lead = Math.abs(set - gear) >= 0.005
+        ? typed + " is not a catalog " + house.label + " set. The set to order is the " + shown + "."
+        : "The set to order is the " + house.label + " " + shown + " ring and pinion.";
+    const q = encodeURIComponent(house.search + " " + shown + " ring and pinion");
+    const summit = "https://www.summitracing.com/search?keyword=" + q;
+    const jegs = "https://www.jegs.com/search?Ntt=" + q;
+    let use = "";
+    if (offer && Math.abs(offer.ratio - gear) >= 0.005) {
+        use = '<button type="button" class="action-btn action-secondary" id="gear-use">Use the ' + offer.ratio.toFixed(2) + " for this trap</button>";
+    }
+    mount.innerHTML = "<p>" + lead + " " + gearNote(house, set) + "</p>"
+        + use
+        + '<a href="' + summit + '" target="_blank" rel="noopener">Summit Racing, ' + house.label + " " + shown + "</a>"
+        + '<a href="' + jegs + '" target="_blank" rel="noopener">Jegs, ' + house.label + " " + shown + "</a>"
+        + '<p class="shop-note">The link searches that housing and ratio. Confirm the carrier before you order. Bearings and shims are a separate install kit.</p>';
+    const button = document.getElementById("gear-use");
+    if (button && offer) {
+        button.addEventListener("click", function () {
+            const input = document.getElementById(offer.inputId);
+            if (input) input.value = offer.ratio.toFixed(2);
+            if (window.refreshCalc) window.refreshCalc();
+        });
+    }
+}
 
 const ratios = {"th400": [2.48, 1.48, 1.0], "powerglide": [1.76, 1.0], "th350": [2.52, 1.52, 1.0], "4l60e": [3.06, 1.62, 1.0, 0.7], "6l80": [4.027, 2.364, 1.532, 1.152, 0.852, 0.667], "8l90": [4.56, 2.97, 2.08, 1.69, 1.27, 1.0, 0.85, 0.65], "c4": [2.46, 1.46, 1.0], "c6": [2.46, 1.46, 1.0], "aod": [2.4, 1.47, 1.0, 0.67], "4r70w": [2.84, 1.55, 1.0, 0.7], "10r80": [4.696, 2.985, 2.146, 1.769, 1.52, 1.275, 1.0, 0.854, 0.689, 0.636], "727": [2.45, 1.45, 1.0], "904": [2.74, 1.54, 1.0], "zf8hp": [4.714, 3.143, 2.106, 1.667, 1.285, 1.0, 0.839, 0.667], "t56": [2.66, 1.78, 1.3, 1.0, 0.74, 0.5], "tr6060": [2.66, 1.78, 1.3, 1.0, 0.8, 0.63], "tkx": [2.87, 1.89, 1.28, 1.0, 0.81], "jerico": [1.8, 1.4, 1.16, 1.0], "bmwzf5": [4.2, 2.49, 1.66, 1.24, 1.0], "bmwzf6": [4.23, 2.53, 1.67, 1.23, 1.0, 0.83]};
 function parseRatios(text) {
@@ -284,6 +428,7 @@ function calcAll() {
             tbody.innerHTML += "<tr><td>Gear " + (i + 1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + reading(speed, "mph") + "</td><td>" + drop + "</td></tr>";
         }
     }
+    renderGearShop("gear-shop", "rear-end", gear);
 }
 const manualTrans = new Set(["bmwzf5", "bmwzf6", "jerico", "t56", "tkx", "tr6060"]);
 const transPick = document.getElementById("trans");
@@ -298,7 +443,7 @@ if (transPick && slipPick) {
         if (next !== null) slipPick.value = next;
     });
 }
-bindCalc(calcAll, ["trans", "custom-ratios", "converter-slip", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "dt-loss"]);
+bindCalc(calcAll, ["trans", "custom-ratios", "converter-slip", "max-rpm", "tire-dia", "rear-gear", "rear-end", "veh-wt", "veh-hp", "dt-loss"]);
 
     </script>
 </body>

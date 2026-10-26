@@ -115,9 +115,13 @@
         <p class="field-hint">Hit horsepower is the base engine plus the full shot. Average horsepower is the button with a progressive ramp or a second-stage delay. Weigh the bottle after a timed hit before trusting the flow.</p>
     </div>
     
-    <button type="button" class="action-btn" onclick="window.print()">Print nitrous sheet</button>
+    <div class="action-row">
+        <button type="button" class="action-btn" onclick="window.print()">Print nitrous sheet</button>
+        <button type="button" class="action-btn action-secondary" id="copy-setup">Copy link to this setup</button>
+    </div>
+    <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
-
+<div class="next-steps"><p class="field-hint">Next in the build</p><a href="fuel-injector-calculator.html">Check the injectors when the shot is dry</a><a href="fuel-pump-calculator.html">Size the pump for the engine plus the shot</a></div>
         </section>
         <div class="content-column">
             <section class="content-box"><h2>Formula</h2><p class="formula">Nitrous lb/hr = Shot HP x 3.6 once the jet is sized for that shot. Jet diameter follows the shot per nozzle and the square root of bottle pressure over 900 PSI. The fuel jet feeds that nitrous at the fuel&#x27;s nitrous-to-fuel ratio. Gasoline timing pull is 2 degrees per 50 HP.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Two Stage Nitrous Calculator. Loaded defaults: 150 HP first stage, 100 HP second stage.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>Why does bottle pressure change the jet?</h3><p>A nitrous jet is a liquid orifice. More bottle pressure pushes more nitrous through the same hole, so the hit gets richer on nitrous and the fuel jet is suddenly small. Hold the bottle near 900 to 950 PSI.</p></div><div class="faq-item"><h3>How much timing does a shot want?</h3><p>Gasoline starts at about 2 degrees pulled for every 50 HP of nitrous. E85 and race gas want less, and methanol wants less again. The first hit on gasoline can stand another 2 degrees of reserve.</p></div><div class="faq-item"><h3>What is the difference between a wet plate and a dry shot?</h3><p>A wet system brings its own fuel through a fuel jet and a fuel solenoid. A dry system sprays only nitrous, and the injectors have to add the fuel. The duty cycle is the check on a dry car.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="nitrous-shot-calculator.html">Nitrous Shot Jet &amp; Timing Calculator</a></li><li><a href="100-shot-gasoline-nitrous-calculator.html">100 HP Nitrous Shot Jet Calculator</a></li><li><a href="150-shot-gasoline-nitrous-calculator.html">150 HP Nitrous Shot Jet Calculator</a></li><li><a href="200-shot-gasoline-nitrous-calculator.html">200 HP Nitrous Shot Jet Calculator</a></li><li><a href="250-shot-gasoline-nitrous-calculator.html">250 HP Nitrous Shot Jet Calculator</a></li><li><a href="direct-port-nitrous-calculator.html">Direct Port Nitrous Jet Calculator</a></li><li><a href="dry-nitrous-efi-calculator.html">Dry Nitrous EFI Calculator</a></li></ul></div></div></details>
@@ -128,6 +132,7 @@
     <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
     <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
 </footer>
+
 
     <script>
 
@@ -220,15 +225,48 @@ function publishReadout(items) {
         + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
 }
 
+function applySharedState(ids) {
+    const params = new URLSearchParams(location.search);
+    if (!params.toString()) return;
+    ids.forEach(id => {
+        if (!params.has(id)) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = params.get(id);
+    });
+    ["power", "system"].forEach(group => {
+        if (!params.has(group)) return;
+        unitState[group] = params.get(group);
+        document.querySelectorAll('[data-unit-group="' + group + '"]').forEach(pill => {
+            pill.classList.toggle("active", pill.dataset.unit === unitState[group]);
+        });
+    });
+}
+
+function setupSearch() {
+    const params = new URLSearchParams();
+    (window.shareIds || []).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.value === "") return;
+        params.set(id, el.value);
+    });
+    if (unitState.power !== "bhp") params.set("power", unitState.power);
+    if (unitState.system !== "imperial") params.set("system", unitState.system);
+    return params.toString();
+}
+
 function bindCalc(fn, ids) {
-    window.refreshCalc = fn;
+    window.shareIds = ids;
+    applySharedState(ids);
+    const run = () => fn();
+    window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.addEventListener("input", fn);
-        el.addEventListener("change", fn);
+        el.addEventListener("input", run);
+        el.addEventListener("change", run);
     });
-    fn();
+    run();
 }
 
 document.querySelectorAll(".pill").forEach(button => {
@@ -242,6 +280,45 @@ document.querySelectorAll(".pill").forEach(button => {
         else if (lastReadout.length) publishReadout(lastReadout);
     });
 });
+
+function copyText(text) {
+    const legacy = () => {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "0";
+        area.style.left = "0";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+        area.remove();
+        return ok;
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(() => (legacy() ? undefined : Promise.reject()));
+    }
+    return legacy() ? Promise.resolve() : Promise.reject();
+}
+
+const copySetup = document.getElementById("copy-setup");
+if (copySetup) {
+    copySetup.addEventListener("click", () => {
+        const search = setupSearch();
+        const url = location.origin + location.pathname + (search ? "?" + search : "");
+        const done = (label) => {
+            copySetup.textContent = label;
+            setTimeout(() => { copySetup.textContent = "Copy link to this setup"; }, 1600);
+        };
+        copyText(url).then(() => done("Link copied")).catch(() => {
+            window.prompt("Copy this setup link", url);
+            done("Link ready");
+        });
+    });
+}
 
 
 const N2O_FUEL = {

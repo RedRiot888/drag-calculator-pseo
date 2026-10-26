@@ -113,9 +113,13 @@
         <p class="field-hint">Cam rows are diaphragm pumps. The GPH number is free flow, and the shutoff is the pressure where they stop. Belt rows are gear or gerotor pumps: 6 and 12 GPM follow the Aeromotive belt-drive classes, and 6.8 and 12.5 GPM follow Weldon 34706 and 34712, which publish a boosted EFI rating at 80 PSI. A belt pump's flow follows its rpm. The Weldon gear pumps are rated near 4,000 pump rpm.</p>
     </div>
     
-    <button type="button" class="action-btn" onclick="window.print()">Print pump spec sheet</button>
+    <div class="action-row">
+        <button type="button" class="action-btn" onclick="window.print()">Print pump spec sheet</button>
+        <button type="button" class="action-btn action-secondary" id="copy-setup">Copy link to this setup</button>
+    </div>
+    <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
-
+<div class="next-steps"><p class="field-hint">Next in the build</p><a href="fuel-injector-calculator.html">Size the injectors this pump has to feed</a><a href="automotive-relay-calculator.html">Size the relay and the wire for the pump</a></div>
         </section>
         <div class="content-column">
             <section class="content-box"><h2>Formula</h2><p class="formula">Engine gal/hr = (Flywheel HP x BSFC) / Fuel density. A 1:1 return regulator makes the pump hold base pressure plus boost. Shop the flow that remains at that pressure after the margin.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Fuel Pump Flow &amp; Pressure Calculator. Loaded defaults: 1000 HP, 20 PSI boost, gasoline.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>Why does boost change the pump and not just the injector?</h3><p>A 1:1 regulator raises rail pressure with manifold pressure, so the pump outlet is base pressure plus boost. The injector differential stays near the base, which is why injector size uses base pressure and the pump uses the higher number.</p></div><div class="faq-item"><h3>Why is the shopping flow bigger than engine demand?</h3><p>Voltage drop, a dirty filter, and hot fuel all steal flow. The margin, 25% unless you change it, is the flow the pump still needs to make at the working pressure.</p></div><div class="faq-item"><h3>Why does a 40 PSI catalog number shrink?</h3><p>Most in-tank pumps are rated near 40 PSI and fall off toward their deadhead. The table draws a straight line between those two points. Raise the deadhead if the pump&#x27;s own curve holds pressure longer.</p></div><div class="faq-item"><h3>When does a mechanical pump belong on the car?</h3><p>A cam-driven diaphragm pump feeds a carburetor and shuts off around 7 to 17 PSI. A belt-driven gear or gerotor pump is the mechanical pump that holds EFI pressure. Its flow follows pump rpm, so the pulley ratio is part of the setup.</p></div></section>
@@ -126,6 +130,7 @@
     <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
     <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
 </footer>
+
 
     <script>
 
@@ -218,15 +223,48 @@ function publishReadout(items) {
         + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
 }
 
+function applySharedState(ids) {
+    const params = new URLSearchParams(location.search);
+    if (!params.toString()) return;
+    ids.forEach(id => {
+        if (!params.has(id)) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = params.get(id);
+    });
+    ["power", "system"].forEach(group => {
+        if (!params.has(group)) return;
+        unitState[group] = params.get(group);
+        document.querySelectorAll('[data-unit-group="' + group + '"]').forEach(pill => {
+            pill.classList.toggle("active", pill.dataset.unit === unitState[group]);
+        });
+    });
+}
+
+function setupSearch() {
+    const params = new URLSearchParams();
+    (window.shareIds || []).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.value === "") return;
+        params.set(id, el.value);
+    });
+    if (unitState.power !== "bhp") params.set("power", unitState.power);
+    if (unitState.system !== "imperial") params.set("system", unitState.system);
+    return params.toString();
+}
+
 function bindCalc(fn, ids) {
-    window.refreshCalc = fn;
+    window.shareIds = ids;
+    applySharedState(ids);
+    const run = () => fn();
+    window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.addEventListener("input", fn);
-        el.addEventListener("change", fn);
+        el.addEventListener("input", run);
+        el.addEventListener("change", run);
     });
-    fn();
+    run();
 }
 
 document.querySelectorAll(".pill").forEach(button => {
@@ -240,6 +278,45 @@ document.querySelectorAll(".pill").forEach(button => {
         else if (lastReadout.length) publishReadout(lastReadout);
     });
 });
+
+function copyText(text) {
+    const legacy = () => {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "0";
+        area.style.left = "0";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+        area.remove();
+        return ok;
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(() => (legacy() ? undefined : Promise.reject()));
+    }
+    return legacy() ? Promise.resolve() : Promise.reject();
+}
+
+const copySetup = document.getElementById("copy-setup");
+if (copySetup) {
+    copySetup.addEventListener("click", () => {
+        const search = setupSearch();
+        const url = location.origin + location.pathname + (search ? "?" + search : "");
+        const done = (label) => {
+            copySetup.textContent = label;
+            setTimeout(() => { copySetup.textContent = "Copy link to this setup"; }, 1600);
+        };
+        copyText(url).then(() => done("Link copied")).catch(() => {
+            window.prompt("Copy this setup link", url);
+            done("Link ready");
+        });
+    });
+}
 
 
 const PUMP_BSFC = {

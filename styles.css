@@ -218,6 +218,24 @@ tr.is-small td { color: #8d8d8d; }
     text-transform: uppercase;
 }
 .action-btn:hover { background: #c40812; }
+.action-row { display: flex; flex-direction: column; gap: 8px; }
+.action-secondary { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+.action-secondary:hover { background: #242424; }
+.next-steps { display: flex; flex-direction: column; gap: 8px; }
+.next-steps a { color: var(--text-main); font-weight: 650; text-decoration: none; }
+.next-steps a:hover { color: var(--accent-red); }
+.gear-shop { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.gear-shop p { margin: 0; }
+.gear-shop a { color: var(--text-main); font-weight: 650; text-decoration: none; }
+.gear-shop a:hover { color: var(--accent-red); }
+.shop-note { color: var(--text-muted); font-size: 0.78rem; }
+.print-sheet { display: none; }
+@media print {
+    .nexus-sidebar, .content-column, .back-row, .site-footer, .action-row, .pill-row, .next-steps, .accordion { display: none !important; }
+    .gear-shop, .gear-shop a, .gear-shop .shop-note { color: #111 !important; }
+    .print-sheet { display: block; margin-top: 18px; color: #111; font-size: 0.85rem; }
+    body, .sticky-calculator, .readout, .table-scroll, .assess, th, td { background: #fff !important; color: #111 !important; }
+}
 table { width: 100%; margin-top: 4px; border-collapse: collapse; background: #161616; }
 th, td { padding: 7px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
 th { background: #202020; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }

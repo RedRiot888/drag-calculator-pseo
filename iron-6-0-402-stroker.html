@@ -158,7 +158,11 @@
         <p class="field-hint">Horsepower is the airflow estimate, plus the nitrous shot when that adder is selected. The power row flags a part rated below that number. The cam row is a starting profile.</p>
     </div>
     
-    <button type="button" class="action-btn" onclick="window.print()">Print build sheet</button>
+    <div class="action-row">
+        <button type="button" class="action-btn" onclick="window.print()">Print build sheet</button>
+        <button type="button" class="action-btn action-secondary" id="copy-setup">Copy link to this setup</button>
+    </div>
+    <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
 
         </section>
@@ -171,6 +175,7 @@
     <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
     <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
 </footer>
+
 
     <script>
 
@@ -263,15 +268,48 @@ function publishReadout(items) {
         + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
 }
 
+function applySharedState(ids) {
+    const params = new URLSearchParams(location.search);
+    if (!params.toString()) return;
+    ids.forEach(id => {
+        if (!params.has(id)) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = params.get(id);
+    });
+    ["power", "system"].forEach(group => {
+        if (!params.has(group)) return;
+        unitState[group] = params.get(group);
+        document.querySelectorAll('[data-unit-group="' + group + '"]').forEach(pill => {
+            pill.classList.toggle("active", pill.dataset.unit === unitState[group]);
+        });
+    });
+}
+
+function setupSearch() {
+    const params = new URLSearchParams();
+    (window.shareIds || []).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.value === "") return;
+        params.set(id, el.value);
+    });
+    if (unitState.power !== "bhp") params.set("power", unitState.power);
+    if (unitState.system !== "imperial") params.set("system", unitState.system);
+    return params.toString();
+}
+
 function bindCalc(fn, ids) {
-    window.refreshCalc = fn;
+    window.shareIds = ids;
+    applySharedState(ids);
+    const run = () => fn();
+    window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.addEventListener("input", fn);
-        el.addEventListener("change", fn);
+        el.addEventListener("input", run);
+        el.addEventListener("change", run);
     });
-    fn();
+    run();
 }
 
 document.querySelectorAll(".pill").forEach(button => {
@@ -285,6 +323,45 @@ document.querySelectorAll(".pill").forEach(button => {
         else if (lastReadout.length) publishReadout(lastReadout);
     });
 });
+
+function copyText(text) {
+    const legacy = () => {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "0";
+        area.style.left = "0";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+        area.remove();
+        return ok;
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(() => (legacy() ? undefined : Promise.reject()));
+    }
+    return legacy() ? Promise.resolve() : Promise.reject();
+}
+
+const copySetup = document.getElementById("copy-setup");
+if (copySetup) {
+    copySetup.addEventListener("click", () => {
+        const search = setupSearch();
+        const url = location.origin + location.pathname + (search ? "?" + search : "");
+        const done = (label) => {
+            copySetup.textContent = label;
+            setTimeout(() => { copySetup.textContent = "Copy link to this setup"; }, 1600);
+        };
+        copyText(url).then(() => done("Link copied")).catch(() => {
+            window.prompt("Copy this setup link", url);
+            done("Link ready");
+        });
+    });
+}
 
 
 const LS = {"blocks":{"lm7":{"label":"LM7 5.3 iron","bore":3.78,"safeBore":3.81,"maxBore":4.0,"stockStroke":3.622,"hp":850,"boost":18,"sleeved":false,"note":"Gen III iron 5.3. The small bore leaves more cylinder wall than an aluminum block, and it is the usual budget turbo foundation."},"lq4":{"label":"LQ4 6.0 iron","bore":4.0,"safeBore":4.03,"maxBore":4.07,"stockStroke":3.622,"hp":1100,"boost":24,"sleeved":false,"note":"Gen III iron 6.0. One of the strongest factory LS castings."},"lq9":{"label":"LQ9 6.0 iron","bore":4.0,"safeBore":4.03,"maxBore":4.07,"stockStroke":3.622,"hp":1100,"boost":24,"sleeved":false,"note":"Iron 6.0 HO. Same casting family as the LQ4, with flat-top pistons from the factory."},"ls1":{"label":"LS1 aluminum","bore":3.898,"safeBore":3.905,"maxBore":3.94,"stockStroke":3.622,"hp":550,"boost":8,"sleeved":false,"note":"Aluminum 5.7. Thin cylinder walls and a modest boost ceiling."},"ls2":{"label":"LS2 aluminum","bore":4.0,"safeBore":4.01,"maxBore":4.03,"stockStroke":3.622,"hp":650,"boost":10,"sleeved":false,"note":"Aluminum 6.0. A little stronger than an LS1, and still not an iron 6.0."},"ls3":{"label":"LS3 aluminum","bore":4.065,"safeBore":4.07,"maxBore":4.1,"stockStroke":3.622,"hp":700,"boost":12,"sleeved":false,"note":"Aluminum 6.2. Rectangle-port heads from the factory and a short overbore window."},"ls7":{"label":"LS7 aluminum","bore":4.125,"safeBore":4.13,"maxBore":4.155,"stockStroke":4.0,"hp":700,"boost":8,"sleeved":false,"note":"Aluminum 7.0. The windows in the barrels are the boost limit."},"sleeve53":{"label":"5.3 iron, resleeved","bore":3.905,"safeBore":4.0,"maxBore":4.0,"stockStroke":3.622,"hp":1200,"boost":26,"sleeved":true,"note":"Iron 5.3 with aftermarket sleeves. The bore and the power rating both move up."},"sleeve60":{"label":"6.0 iron, resleeved","bore":4.03,"safeBore":4.07,"maxBore":4.07,"stockStroke":3.622,"hp":1500,"boost":30,"sleeved":true,"note":"Iron 6.0 with aftermarket sleeves for a bigger bore and more boost."},"lsx":{"label":"Aftermarket iron (LSX class)","bore":4.125,"safeBore":4.165,"maxBore":4.185,"stockStroke":3.622,"hp":1800,"boost":35,"sleeved":false,"note":"Aftermarket iron in the LSX class. Priority mains and room for a large bore."}},"cranks":{"s3268":{"label":"4.8 factory 3.268 in","stroke":3.268,"hp":600,"note":"Factory 4.8 cast crank. This is the destroker when it goes into a 6.0."},"s3622":{"label":"5.3 / 6.0 / 6.2 factory 3.622 in","stroke":3.622,"hp":750,"note":"Factory cast crank shared by the 5.3, 6.0, and 6.2."},"f4000":{"label":"LS7 factory 4.000 in","stroke":4.0,"hp":900,"note":"LS7 forged 4.000 in crank. The mains fit a standard LS block, and the piston has to get shorter."},"a4000":{"label":"Aftermarket 4.000 in","stroke":4.0,"hp":1500,"note":"Forged 4.000 in stroker crank."},"a4100":{"label":"Aftermarket 4.100 in","stroke":4.1,"hp":1500,"note":"Forged 4.100 in stroker crank."},"a4125":{"label":"Aftermarket 4.125 in","stroke":4.125,"hp":1600,"note":"Forged 4.125 in stroker crank."},"a4250":{"label":"Aftermarket 4.250 in","stroke":4.25,"hp":1600,"note":"Forged 4.250 in stroker crank. Check the compression height before ordering pistons."}},"rods":{"pm":{"label":"Factory powdered metal","hp":550,"rpm":6800,"pin":"pressed","note":"Factory powdered-metal rod with a pressed pin."},"hbeam":{"label":"Forged H-beam","hp":1000,"rpm":7500,"pin":"floating","note":"Forged H-beam with a floating pin."},"ibeam":{"label":"Forged I-beam","hp":1500,"rpm":8000,"pin":"floating","note":"Forged I-beam with a floating pin. The usual choice once the power goal passes four figures."},"ti":{"label":"LS7 titanium","hp":700,"rpm":7100,"pin":"floating","note":"LS7 titanium rod. Light, and hard on the big end if RPM or oil is wrong."}},"heads":{"h241":{"label":"241 cathedral (LS6 / LS2)","cc":64.5,"cfm":240,"minBore":3.7,"direct":true,"note":"Cathedral 241 from the LS6 and LS2. About 64 cc and a direct swap onto a cathedral intake."},"h243":{"label":"243 / 799 cathedral","cc":64,"cfm":250,"minBore":3.7,"direct":true,"note":"Cathedral 243 and 799. The standard performance swap onto a 5.3 or 6.0."},"h317":{"label":"317 cathedral (5.3 truck)","cc":71,"cfm":215,"minBore":3.7,"direct":true,"note":"Cathedral 317 truck head. Larger chamber and less flow."},"tfx":{"label":"Trick Flow GenX cathedral","cc":62,"cfm":310,"minBore":3.78,"direct":true,"note":"Trick Flow GenX cathedral. More port than a factory 243, and it still uses a cathedral intake."},"ls3":{"label":"LS3 / L92 rectangular","cc":68,"cfm":320,"minBore":3.9,"direct":true,"note":"LS3 and L92 rectangle port. Needs a rectangle-port intake, and the chamber wants a 3.900 in bore or larger."},"ls7":{"label":"LS7 rectangular","cc":70,"cfm":370,"minBore":4.1,"direct":false,"note":"LS7 rectangle port. Different valve angle, rockers, and intake."},"afr":{"label":"Aftermarket rectangular","cc":65,"cfm":360,"minBore":3.9,"direct":true,"note":"Aftermarket rectangle port in the AFR or Mast class, matched to a rectangle-port intake."}},"pistons":{"hyper":{"label":"Factory hypereutectic","dish":8,"hp":500,"note":"Hypereutectic piston. Fine for a mild naturally aspirated build, and the first part to give up under boost."},"flat":{"label":"Forged flat top","dish":4,"hp":1500,"note":"Forged flat top with valve reliefs."},"dish":{"label":"Forged dished","dish":16,"hp":1500,"note":"Forged dished piston for boost. The dish is what keeps the compression in range."},"dome":{"label":"Forged dome","dish":-4,"hp":1200,"note":"Forged dome for fuel that can support the compression, such as E85 or race gas."}}};
