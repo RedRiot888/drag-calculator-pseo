@@ -674,7 +674,7 @@ th { background: #202020; color: var(--accent-red); text-transform: uppercase; f
 PAGE_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
-{{ANALYTICS}}    <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{TITLE}}</title>
     <meta name="description" content="{{DESCRIPTION}}">
@@ -684,13 +684,16 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     <meta property="og:url" content="{{CANONICAL}}">
     <meta property="og:title" content="{{TITLE}}">
     <meta property="og:description" content="{{DESCRIPTION}}">
-    <meta property="og:image" content="{{ORIGIN}}/social-banner.jpg">
+    <meta property="og:image" content="{{ORIGIN}}/social-banner.jpg?v=2">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{TITLE}}">
     <meta name="twitter:description" content="{{DESCRIPTION}}">
-    <meta name="twitter:image" content="{{ORIGIN}}/social-banner.jpg">
+    <meta name="twitter:image" content="{{ORIGIN}}/social-banner.jpg?v=2">
     <link rel="stylesheet" href="styles.css">
-</head>
+{{ANALYTICS}}</head>
 <body>
     {{BANNER}}
     {{BACK_ROW}}
@@ -718,7 +721,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 NARROW_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
-{{ANALYTICS}}    <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{TITLE}}</title>
     <meta name="description" content="{{DESCRIPTION}}">
@@ -728,9 +731,14 @@ NARROW_TEMPLATE = """<!DOCTYPE html>
     <meta property="og:url" content="{{CANONICAL}}">
     <meta property="og:title" content="{{TITLE}}">
     <meta property="og:description" content="{{DESCRIPTION}}">
-    <meta property="og:image" content="{{ORIGIN}}/social-banner.jpg">
+    <meta property="og:image" content="{{ORIGIN}}/social-banner.jpg?v=2">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{ORIGIN}}/social-banner.jpg?v=2">
     <link rel="stylesheet" href="styles.css">
-</head>
+{{ANALYTICS}}</head>
 <body>
     {{BANNER}}
     <div class="narrow">
