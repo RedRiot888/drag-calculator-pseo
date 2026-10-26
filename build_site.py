@@ -101,9 +101,11 @@ TURBO_FUELS = [
     ("methanol", "1.50", "Methanol (1.50)"),
 ]
 INJECTOR_FUELS = [
-    ("gasoline", "0.65", "Gasoline (BSFC ~0.65)"),
-    ("e85", "1.10", "E85 Ethanol (BSFC ~1.10)"),
-    ("methanol", "1.50", "Methanol (BSFC ~1.50)"),
+    ("gasoline", "Gasoline (91/93)"),
+    ("e85", "E85"),
+    ("methanol", "Methanol"),
+    ("race", "Race gas"),
+    ("diesel", "Diesel"),
 ]
 BLOWER_OPTIONS = [
     ("roots", "1.20", "Roots (~1.20)"),
@@ -219,6 +221,13 @@ input, select, textarea {
 textarea { height: auto; min-height: 120px; padding: 10px 12px; resize: vertical; }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-red); }
 input:disabled { opacity: 0.65; }
+input[type="range"] {
+    height: 22px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    accent-color: var(--accent-red);
+}
 .narrow-card form > div { margin-bottom: 14px; }
 .accordion {
     border: 1px solid var(--border-color);
@@ -272,6 +281,31 @@ input:disabled { opacity: 0.65; }
 }
 .readout-extra span { display: block; color: var(--text-muted); font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; }
 .readout-extra strong { display: block; margin-top: 2px; font-size: 0.95rem; font-weight: 650; color: var(--text-main); }
+.duty-card, .assess, .table-scroll {
+    background: #161616;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 14px;
+}
+.duty-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; color: var(--text-muted); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.duty-head strong { font-size: 1.05rem; letter-spacing: 0; text-transform: none; }
+.duty-track { height: 10px; margin-top: 10px; border-radius: 999px; background: #2a2a2a; overflow: hidden; }
+.duty-fill { height: 100%; width: 0; border-radius: 999px; background: #3dd68c; }
+.duty-scale { display: flex; justify-content: space-between; margin-top: 6px; color: #6f6f6f; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.04em; }
+.assess { color: var(--text-main); font-size: 0.88rem; }
+.assess strong { color: #fff; }
+.table-scroll { overflow-x: auto; padding: 8px; }
+.size-sub { color: var(--text-muted); font-size: 0.68rem; margin-top: 2px; }
+tr.is-rec td { background: rgba(229, 9, 20, 0.14); }
+tr.is-small td { color: #8d8d8d; }
+.badge { display: inline-block; padding: 2px 6px; border-radius: 999px; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.badge-rec { background: var(--accent-red); color: #fff; }
+.badge-ok { background: rgba(61, 214, 140, 0.16); color: #3dd68c; }
+.badge-tight { background: rgba(245, 165, 36, 0.16); color: #f5a524; }
+.badge-no { background: #2a2a2a; color: #8d8d8d; }
+.tone-ok { color: #3dd68c; }
+.tone-tight { color: #f5a524; }
+.tone-over { color: var(--accent-red); }
 .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .pill-group { display: inline-flex; border: 1px solid #3a3a3a; border-radius: 999px; overflow: hidden; background: #141414; }
 .pill {
@@ -607,8 +641,12 @@ function formatUnit(value, unit) {
             return { text: n.toFixed(2), suffix: "s" };
         case "pct":
             return { text: Math.round(n).toString(), suffix: "%" };
+        case "pct1":
+            return { text: n.toFixed(1), suffix: "%" };
         case "cc":
-            return { text: n.toFixed(1), suffix: "cc/min" };
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "cc/min" };
+        case "gph":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/h" } : { text: n.toFixed(1), suffix: "gal/hr" };
         case "amp":
             return { text: n.toFixed(1), suffix: "A" };
         case "mm":
@@ -676,7 +714,7 @@ LOSS_FIELDS = """
 """
 
 
-def calculator_shell(primary, advanced, print_label, extra="", power_toggle=False):
+def calculator_shell(primary, advanced, print_label, extra="", power_toggle=False, results_extra=""):
     power = ""
     if power_toggle:
         power = """
@@ -702,6 +740,7 @@ def calculator_shell(primary, advanced, print_label, extra="", power_toggle=Fals
         </div>
         <div id="readout-body"></div>
     </div>
+    {results_extra}
     <button type="button" class="action-btn" onclick="window.print()">{esc(print_label)}</button>
     {extra}
 """
@@ -1099,52 +1138,189 @@ bindCalc(calcWastegate, ["wg-hp", "wg-boost", "wg-count", "wg-style", "dt-loss"]
 
 def fuel_html(row):
     fuel = field(row, "fuel", "gasoline")
-    fuel_value = {key: value for key, value, _label in INJECTOR_FUELS}[fuel]
-    fuel_options = options([(value, label) for _key, value, label in INJECTOR_FUELS], fuel_value)
+    fuel_options = options(INJECTOR_FUELS, fuel)
     primary = f"""
     <div class="grid-2">
-        <div class="field"><label for="fi-hp">Power</label><input type="number" id="fi-hp" value="{esc(field(row, 'hp', '1000'))}" step="50"></div>
-        <div class="field"><label for="fi-inj">Injector count</label><input type="number" id="fi-inj" value="8" step="1"></div>
+        <div class="field"><label for="fi-hp">Target power</label><input type="number" id="fi-hp" value="{esc(field(row, 'hp', '1000'))}" min="50" step="25"></div>
+        <div class="field"><label for="fi-inj">Injector count</label><input type="number" id="fi-inj" value="8" min="1" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="fi-fuel">Fuel</label><select id="fi-fuel">{fuel_options}</select></div>
+        <div class="field"><label for="fi-ind">Induction</label>
+            <select id="fi-ind">
+                <option value="turbo" selected>Turbocharged</option>
+                <option value="supercharged">Supercharged</option>
+                <option value="na">Naturally aspirated</option>
+            </select>
+        </div>
+    </div>
+    <div class="field">
+        <label for="fi-dc">Max duty cycle (%)</label>
+        <input type="number" id="fi-dc" value="80" min="50" max="95" step="1">
+        <input type="range" id="fi-dc-range" value="80" min="50" max="95" step="1" aria-label="Max duty cycle slider">
+        <p class="field-hint">80% is the street ceiling. 85% is the redline limit. Count every injector on a staged system.</p>
     </div>
     """
     advanced = f"""
     <div class="grid-2">
-        <div class="field"><label for="fi-ind">Induction</label>
-            <select id="fi-ind">
-                <option value="0.50">Naturally aspirated</option>
-                <option value="0.65" selected>Turbocharged / supercharged</option>
-            </select>
-        </div>
-        <div class="field"><label for="fi-fuel">Fuel</label><select id="fi-fuel">{fuel_options}</select></div>
+        <div class="field"><label for="fi-bsfc">Custom BSFC</label><input type="number" id="fi-bsfc" placeholder="Auto" min="0.2" max="2" step="0.01"></div>
+        <div class="field"><label for="fi-pressure">Base fuel pressure (PSI)</label><input type="number" id="fi-pressure" value="43.5" min="20" max="100" step="0.5"></div>
     </div>
-    <div class="grid-2">
-        <div class="field"><label for="fi-dc">Max duty cycle (%)</label><input type="number" id="fi-dc" value="80" step="5"></div>
-        <div class="field"><label for="fi-pressure">Pressure offset</label><input id="fi-pressure" type="text" value="Standard (43.5 PSI)" disabled></div>
-    </div>
+    <p class="field-hint">Leave BSFC blank to use the fuel and induction table. Injectors are rated at 43.5 PSI, so a higher base pressure lets you buy a smaller rated size. A 1:1 boost-referenced regulator holds that differential on boost.</p>
     {LOSS_FIELDS}
     """
-    return calculator_shell(primary, advanced, "Print injector spec sheet", power_toggle=True)
+    results = """
+    <div class="duty-card">
+        <div class="duty-head"><span>Duty cycle on recommended size</span><strong id="fi-dc-label">—</strong></div>
+        <div class="duty-track"><div class="duty-fill" id="fi-dc-fill"></div></div>
+        <div class="duty-scale"><span>0%</span><span>50%</span><span>80%</span><span>85%</span><span>100%</span></div>
+    </div>
+    <p class="assess" id="fi-assess"></p>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>Size</th><th>Duty at target</th><th>Supports</th><th>Status</th></tr></thead>
+            <tbody id="fi-sizes"></tbody>
+        </table>
+        <p class="field-hint">Catalog flow is at 43.5 PSI. Duty cycle and horsepower use flow at your base pressure.</p>
+    </div>
+    """
+    return calculator_shell(primary, advanced, "Print injector spec sheet", power_toggle=True, results_extra=results)
 
 
-FUEL_SCRIPT = """
-function calcInjector() {
-    let hp = crankHorsepower(document.getElementById("fi-hp").value || 1000);
-    let count = parseFloat(document.getElementById("fi-inj").value) || 8;
-    let ind = parseFloat(document.getElementById("fi-ind").value) || 0.65;
-    let fuel = parseFloat(document.getElementById("fi-fuel").value) || 0.65;
-    let bsfc = fuel * (ind / 0.65);
-    let dc = (parseFloat(document.getElementById("fi-dc").value) || 80) / 100;
-    let totalLbHr = (hp * bsfc) / dc;
-    let perInjectorLbHr = totalLbHr / count;
-    let perInjectorCcMin = perInjectorLbHr * 10.5;
-    publishReadout([
-        { label: "Flow per injector", value: perInjectorCcMin, unit: "cc", primary: true },
-        { label: "Mass flow", value: perInjectorLbHr, unit: "lbhr" },
-        { label: "Total flow", value: totalLbHr, unit: "lbhr" }
-    ]);
+FUEL_SCRIPT = r"""
+const FUEL_BSFC = {
+    gasoline: { turbo: 0.65, supercharged: 0.65, na: 0.50 },
+    e85: { turbo: 0.95, supercharged: 0.95, na: 0.75 },
+    methanol: { turbo: 1.20, supercharged: 1.20, na: 0.95 },
+    race: { turbo: 0.70, supercharged: 0.70, na: 0.55 },
+    diesel: { turbo: 0.40, supercharged: 0.40, na: 0.37 }
+};
+const FUEL_DENSITY = { gasoline: 6.17, e85: 6.55, methanol: 6.63, race: 6.20, diesel: 7.05 };
+const INJECTOR_SIZES = [275, 310, 365, 440, 550, 650, 750, 850, 1000, 1100, 1200, 1300, 1650, 2200];
+const CC_PER_LBHR = 10.5;
+const RATED_PSI = 43.5;
+
+function injectorDuty(size, totalLbHr, count, pressureFactor) {
+    const actualLb = (size / CC_PER_LBHR) * pressureFactor;
+    return (totalLbHr / (count * actualLb)) * 100;
 }
-bindCalc(calcInjector, ["fi-hp", "fi-inj", "fi-ind", "fi-fuel", "fi-dc", "dt-loss"]);
+
+function calcInjector() {
+    const hp = crankHorsepower(document.getElementById("fi-hp").value || 1000);
+    const count = Math.max(1, parseFloat(document.getElementById("fi-inj").value) || 8);
+    const fuelKey = document.getElementById("fi-fuel").value || "gasoline";
+    const induction = document.getElementById("fi-ind").value || "turbo";
+    const custom = parseFloat(document.getElementById("fi-bsfc").value);
+    const table = FUEL_BSFC[fuelKey] || FUEL_BSFC.gasoline;
+    const bsfc = Number.isFinite(custom) && custom > 0 ? custom : (table[induction] || table.turbo);
+    let maxDcPct = parseFloat(document.getElementById("fi-dc").value);
+    if (!Number.isFinite(maxDcPct)) maxDcPct = 80;
+    maxDcPct = Math.min(95, Math.max(50, maxDcPct));
+    const maxDc = maxDcPct / 100;
+    let pressure = parseFloat(document.getElementById("fi-pressure").value);
+    if (!Number.isFinite(pressure) || pressure < 20) pressure = RATED_PSI;
+    const pressureFactor = Math.sqrt(pressure / RATED_PSI);
+    const totalLbHr = hp * bsfc;
+    const railLbHr = totalLbHr / (count * maxDc);
+    const ratedCc = (railLbHr / pressureFactor) * CC_PER_LBHR;
+    const recommended = INJECTOR_SIZES.find(size => injectorDuty(size, totalLbHr, count, pressureFactor) <= maxDcPct + 0.05);
+    const heroSize = recommended || ratedCc;
+    const shownSize = recommended || INJECTOR_SIZES[INJECTOR_SIZES.length - 1];
+    const shownDuty = injectorDuty(shownSize, totalLbHr, count, pressureFactor);
+    const shownFlow = (shownSize / CC_PER_LBHR) * pressureFactor;
+    const supports = (shownFlow * count * maxDc) / bsfc;
+    const density = FUEL_DENSITY[fuelKey] || 6.17;
+    const pumpGph = (totalLbHr / density) * 1.25;
+    publishReadout([
+        { label: recommended ? "Recommended size" : "Minimum rated size", value: heroSize, unit: "cc", primary: true },
+        { label: "Flow each at cap", value: railLbHr, unit: "lbhr" },
+        { label: "Duty on " + shownSize.toLocaleString("en-US") + " cc", value: shownDuty, unit: "pct1" },
+        { label: shownSize.toLocaleString("en-US") + " cc supports", value: Math.round(supports) + " HP", unit: "text" },
+        { label: "System flow", value: totalLbHr, unit: "lbhr" },
+        { label: "BSFC used", value: bsfc.toFixed(2), unit: "text" },
+        { label: "Flywheel power", value: Math.round(hp) + " HP", unit: "text" },
+        { label: "Fuel pump + 25%", value: pumpGph, unit: "gph" }
+    ]);
+
+    const fill = document.getElementById("fi-dc-fill");
+    const label = document.getElementById("fi-dc-label");
+    const tone = shownDuty <= 80 ? "tone-ok" : (shownDuty <= 85 ? "tone-tight" : "tone-over");
+    if (fill) {
+        fill.style.width = Math.min(shownDuty, 100) + "%";
+        fill.style.background = shownDuty <= 80 ? "#3dd68c" : (shownDuty <= 85 ? "#f5a524" : "#e50914");
+    }
+    if (label) {
+        label.textContent = shownDuty.toFixed(1) + "%";
+        label.className = tone;
+    }
+    const assess = document.getElementById("fi-assess");
+    if (assess) {
+        const pressureNote = Math.abs(pressure - RATED_PSI) > 0.2
+            ? " Catalog sizes are corrected for " + pressure.toFixed(1) + " PSI base pressure."
+            : "";
+        if (!recommended) {
+            assess.textContent = "This target needs more than a 2200 cc injector can deliver with " + count + " injectors. Add injectors or raise base pressure before the top of the gear." + pressureNote;
+        } else if (shownDuty <= 80) {
+            assess.textContent = "A " + recommended + " cc injector covers this target at " + shownDuty.toFixed(1) + "% duty, under the 80% street ceiling. One size larger is cheap insurance if the power number is still climbing." + pressureNote;
+        } else if (shownDuty <= 85) {
+            assess.textContent = "A " + recommended + " cc injector is the smallest common size inside your duty-cycle cap, and it still runs " + shownDuty.toFixed(1) + "%. That is the tight side of 85%, so leave pump and regulator headroom." + pressureNote;
+        } else {
+            assess.textContent = "The closest common injector still runs " + shownDuty.toFixed(1) + "% at this target. Treat anything over 85% as a lean risk at redline." + pressureNote;
+        }
+    }
+    const body = document.getElementById("fi-sizes");
+    if (body) {
+        body.replaceChildren();
+        INJECTOR_SIZES.forEach(size => {
+            const duty = injectorDuty(size, totalLbHr, count, pressureFactor);
+            const flow = (size / CC_PER_LBHR) * pressureFactor;
+            const supportHp = (flow * count * maxDc) / bsfc;
+            const tr = document.createElement("tr");
+            let status = "Too small";
+            let badge = "badge-no";
+            if (size === recommended) {
+                tr.className = "is-rec";
+                status = "Recommended";
+                badge = "badge-rec";
+            } else if (duty <= 80) {
+                status = "Good";
+                badge = "badge-ok";
+            } else if (duty <= 85) {
+                status = "Tight";
+                badge = "badge-tight";
+            } else {
+                tr.className = "is-small";
+            }
+            const sizeCell = document.createElement("td");
+            sizeCell.textContent = size.toLocaleString("en-US") + " cc";
+            const sub = document.createElement("div");
+            sub.className = "size-sub";
+            sub.textContent = reading(size / CC_PER_LBHR, "lbhr") + " rated";
+            sizeCell.appendChild(sub);
+            const dutyCell = document.createElement("td");
+            dutyCell.textContent = duty.toFixed(1) + "%";
+            dutyCell.className = duty <= 80 ? "tone-ok" : (duty <= 85 ? "tone-tight" : "tone-over");
+            const supportCell = document.createElement("td");
+            supportCell.textContent = Math.round(supportHp).toLocaleString("en-US") + " HP";
+            const statusCell = document.createElement("td");
+            const pill = document.createElement("span");
+            pill.className = "badge " + badge;
+            pill.textContent = status;
+            statusCell.appendChild(pill);
+            tr.append(sizeCell, dutyCell, supportCell, statusCell);
+            body.appendChild(tr);
+        });
+    }
+}
+const dutyNumber = document.getElementById("fi-dc");
+const dutyRange = document.getElementById("fi-dc-range");
+if (dutyNumber && dutyRange) {
+    dutyRange.addEventListener("input", () => { dutyNumber.value = dutyRange.value; });
+    dutyNumber.addEventListener("input", () => { dutyRange.value = dutyNumber.value; });
+}
+bindCalc(calcInjector, ["fi-hp", "fi-inj", "fi-ind", "fi-fuel", "fi-dc", "fi-dc-range", "fi-bsfc", "fi-pressure", "dt-loss"]);
 """
+
 
 
 def electrical_html(_row):
@@ -1282,7 +1458,7 @@ WIDGETS = {
         WASTEGATE_SCRIPT,
     ),
     "Fuel": (
-        "Injector lb/hr = (Flywheel HP x BSFC) / (Max Duty Cycle x Injector Count). cc/min = lb/hr x 10.5.",
+        "Rated lb/hr = (Flywheel HP x BSFC) / (Injector Count x Max Duty x sqrt(Base PSI / 43.5)). cc/min = lb/hr x 10.5. Buy the smallest common size whose duty cycle stays inside your cap.",
         fuel_html,
         FUEL_SCRIPT,
     ),

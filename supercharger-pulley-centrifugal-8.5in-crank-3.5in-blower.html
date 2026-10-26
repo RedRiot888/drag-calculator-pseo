@@ -61,6 +61,7 @@
         </div>
         <div id="readout-body"></div>
     </div>
+    
     <button type="button" class="action-btn" onclick="window.print()">Print pulley spec sheet</button>
     
 
@@ -116,8 +117,12 @@ function formatUnit(value, unit) {
             return { text: n.toFixed(2), suffix: "s" };
         case "pct":
             return { text: Math.round(n).toString(), suffix: "%" };
+        case "pct1":
+            return { text: n.toFixed(1), suffix: "%" };
         case "cc":
-            return { text: n.toFixed(1), suffix: "cc/min" };
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "cc/min" };
+        case "gph":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/h" } : { text: n.toFixed(1), suffix: "gal/hr" };
         case "amp":
             return { text: n.toFixed(1), suffix: "A" };
         case "mm":
