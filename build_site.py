@@ -24,6 +24,7 @@ NEXT_STEPS = {
     "Fuel": (("fuel-pump-calculator", "Size the pump for this power"),),
     "FuelPump": (
         ("fuel-injector-calculator", "Size the injectors this pump has to feed"),
+        ("carburetor-cfm-calculator", "Size the carburetor when the pump is mechanical"),
         ("automotive-relay-calculator", "Size the relay and the wire for the pump"),
     ),
     "Nitrous": (
@@ -45,6 +46,9 @@ NEXT_STEPS = {
     "Power": (("automotive-relay-calculator", "Size one circuit from this budget"),),
     "Electrical": (("race-car-wiring-calculator", "Add the whole car up before sizing one relay"),),
     "Driveline": (("transmission-shift-recovery-calculator", "The top gear here is the shaft speed"),),
+    "Carb": (("fuel-pump-calculator", "Size the mechanical pump for this carburetor"),),
+    "Compression": (("ls-engine-builder", "Put this compression on the LS build"),),
+    "Cam": (("ls-engine-builder", "Match the head and the RPM on the LS build"),),
 }
 # Catalog ring-and-pinion sets. The ratio list is what that housing is actually sold in.
 # bands are (max ratio, carrier note). deep is an extra note at and above that ratio.
@@ -173,6 +177,9 @@ CATEGORY_FIELDS = {
     "Cooling": ["hp"],
     "Driveline": [],
     "Power": [],
+    "Carb": [],
+    "Compression": [],
+    "Cam": [],
 }
 FUELS = {"gasoline", "e85", "methanol"}
 BLOWER_TYPES = {"roots", "twin-screw", "centrifugal"}
@@ -870,6 +877,12 @@ def spec_text(row):
         return "Loaded defaults: 48 in center to center, 3.50 x 0.125 aluminum, 7,000 RPM in 1.00."
     if row["category"] == "Power":
         return "Loaded defaults: dual in-tank pump, 16 in fan, 55 GPM water pump, battery in the trunk."
+    if row["category"] == "Carb":
+        return "Loaded defaults: 383 cubic inches, 6,500 RPM, 90% volumetric efficiency."
+    if row["category"] == "Compression":
+        return "Loaded defaults: 4.030 bore, 3.750 stroke, 64 cc chamber."
+    if row["category"] == "Cam":
+        return "Loaded defaults: 243 cathedral head, naturally aspirated, 6,200 RPM."
     parts = []
     for key in CATEGORY_FIELDS[row["category"]]:
         value = cell(row, key)
@@ -4883,6 +4896,236 @@ function calcConverter() {
 bindCalc(calcConverter, ["cv-use", "cv-track", "cv-trans", "cv-hold", "cv-tq", "cv-tqrpm", "cv-hp", "cv-hprpm", "cv-rear", "cv-tire", "cv-shift", "cv-mph", "dt-loss"]);
 """
 
+def carb_html(row):
+    del row
+    primary = """
+    <div class="grid-2">
+        <div class="field"><label for="cb-cid">Cubic inches</label><input type="number" id="cb-cid" value="383" min="200" max="800" step="1"></div>
+        <div class="field"><label for="cb-rpm">Peak RPM</label><input type="number" id="cb-rpm" value="6500" min="4000" max="9000" step="100"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cb-ve">Volumetric efficiency (%)</label><input type="number" id="cb-ve" value="90" min="50" max="120" step="1"></div>
+        <div class="field"><label for="cb-cyl">Cylinders</label><input type="number" id="cb-cyl" value="8" min="4" max="16" step="1"></div>
+    </div>
+    <p class="field-hint">A street engine is often 80 to 85 percent. A race head can be 90 to 100. This is a naturally aspirated carburetor. Boost does not use this number.</p>
+    """
+    return calculator_shell(primary, "", "Print carb sheet", results_extra='<div id="cb-shop" class="gear-shop"></div>')
+
+
+CARB_SCRIPT = r"""
+const CARB_SIZES = [600, 650, 750, 850, 950, 1050, 1150];
+
+function carbShop(size, covered) {
+    const mount = document.getElementById("cb-shop");
+    if (!mount) return;
+    const query = size + " CFM carburetor";
+    const q = encodeURIComponent(query);
+    const note = covered
+        ? "The link searches that CFM. Confirm the flange, the choke, and whether the carb is vacuum or mechanical secondary."
+        : "That flow is past a single 1,150 CFM carburetor. Two carburetors or a larger custom is the next step. Confirm the flange before you order.";
+    mount.innerHTML = '<a href="https://www.summitracing.com/search?keyword=' + q + '" rel="noopener">Summit Racing, ' + query + '</a>'
+        + '<a href="https://www.jegs.com/search?Ntt=' + q + '" rel="noopener">Jegs, ' + query + '</a>'
+        + '<p class="shop-note">' + note + '</p>';
+}
+
+function calcCarb() {
+    const cid = parseFloat(document.getElementById("cb-cid").value);
+    const rpm = parseFloat(document.getElementById("cb-rpm").value);
+    const vePct = parseFloat(document.getElementById("cb-ve").value);
+    const cyl = parseFloat(document.getElementById("cb-cyl").value);
+    const cidOk = Number.isFinite(cid) ? cid : 0;
+    const rpmOk = Number.isFinite(rpm) ? rpm : 0;
+    const ve = Math.min(1.2, Math.max(0.5, (Number.isFinite(vePct) ? vePct : 0) / 100));
+    const cfm = (cidOk * rpmOk * ve) / 3456;
+    let size = CARB_SIZES[CARB_SIZES.length - 1];
+    let covered = false;
+    for (let i = 0; i < CARB_SIZES.length; i++) {
+        if (CARB_SIZES[i] >= cfm) {
+            size = CARB_SIZES[i];
+            covered = true;
+            break;
+        }
+    }
+    const per = cyl > 0 ? cidOk / cyl : 0;
+    publishReadout([
+        { label: "Carburetor to order", value: covered ? (size + " CFM") : "Two carbs or a custom", unit: "text", primary: true },
+        { label: "Calculated flow", value: cfm, unit: "cfm" },
+        { label: "Per cylinder", value: per, unit: "ci" }
+    ]);
+    carbShop(covered ? size : 1150, covered);
+}
+bindCalc(calcCarb, ["cb-cid", "cb-rpm", "cb-ve", "cb-cyl"]);
+"""
+
+
+def compression_html(row):
+    del row
+    primary = """
+    <div class="grid-2">
+        <div class="field"><label for="cr-bore">Bore (in)</label><input type="number" id="cr-bore" value="4.030" min="3.000" max="5.000" step="0.001"></div>
+        <div class="field"><label for="cr-stroke">Stroke (in)</label><input type="number" id="cr-stroke" value="3.750" min="2.000" max="5.000" step="0.001"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cr-chamber">Chamber (cc)</label><input type="number" id="cr-chamber" value="64" min="20" max="120" step="0.1"></div>
+        <div class="field"><label for="cr-dish">Piston dish (cc)</label><input type="number" id="cr-dish" value="6" min="-30" max="50" step="0.1"></div>
+    </div>
+    <p class="field-hint">A dish is a positive cc. A dome is a negative number. Valve reliefs on a flat top are a small positive dish.</p>
+    """
+    advanced = """
+    <div class="grid-2">
+        <div class="field"><label for="cr-gasket-bore">Gasket bore (in)</label><input type="number" id="cr-gasket-bore" value="4.100" min="3.000" max="5.200" step="0.001"></div>
+        <div class="field"><label for="cr-gasket">Gasket thickness (in)</label><input type="number" id="cr-gasket" value="0.039" min="0.015" max="0.120" step="0.001"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cr-deck">Deck clearance (in)</label><input type="number" id="cr-deck" value="0.000" min="-0.030" max="0.050" step="0.001"></div>
+        <div class="field"><label for="cr-target">Target ratio</label><input type="number" id="cr-target" value="10.5" min="7" max="16" step="0.1"></div>
+    </div>
+    <p class="field-hint">Deck clearance is how far the piston sits down in the hole at top dead center. A piston above the deck is a negative number.</p>
+    """
+    return calculator_shell(primary, advanced, "Print compression sheet")
+
+
+COMPRESSION_SCRIPT = r"""
+function crCc(bore, depth) {
+    return bore * bore * depth * 0.785398163 * 16.387064;
+}
+
+function calcCompression() {
+    const bore = parseFloat(document.getElementById("cr-bore").value);
+    const stroke = parseFloat(document.getElementById("cr-stroke").value);
+    const chamber = parseFloat(document.getElementById("cr-chamber").value);
+    const dish = parseFloat(document.getElementById("cr-dish").value);
+    const gasketBore = parseFloat(document.getElementById("cr-gasket-bore").value);
+    const gasket = parseFloat(document.getElementById("cr-gasket").value);
+    const deck = parseFloat(document.getElementById("cr-deck").value);
+    const target = parseFloat(document.getElementById("cr-target").value);
+    const boreOk = Number.isFinite(bore) ? bore : 0;
+    const strokeOk = Number.isFinite(stroke) ? stroke : 0;
+    const chamberOk = Number.isFinite(chamber) ? chamber : 0;
+    const dishOk = Number.isFinite(dish) ? dish : 0;
+    const gasketBoreOk = Number.isFinite(gasketBore) ? gasketBore : boreOk;
+    const gasketOk = Number.isFinite(gasket) ? gasket : 0;
+    const deckOk = Number.isFinite(deck) ? deck : 0;
+    const targetOk = Number.isFinite(target) ? target : 10.5;
+    const swept = crCc(boreOk, strokeOk);
+    const gasketCc = crCc(gasketBoreOk, gasketOk);
+    const deckCc = crCc(boreOk, deckOk);
+    const clearance = chamberOk + gasketCc + deckCc + dishOk;
+    const ratio = clearance > 0.5 ? (swept + clearance) / clearance : 0;
+    const dishTarget = targetOk > 1 ? (swept / (targetOk - 1)) - chamberOk - gasketCc - deckCc : 0;
+    const dishText = Math.abs(dishTarget).toFixed(1) + (dishTarget >= 0 ? " cc dish" : " cc dome");
+    const rows = [
+        { label: "Swept volume", value: swept.toFixed(1) + " cc", unit: "text" },
+        { label: "Clearance volume", value: clearance.toFixed(1) + " cc", unit: "text" },
+        { label: "Piston for " + targetOk.toFixed(1) + ":1", value: dishText, unit: "text" }
+    ];
+    if (ratio > 0) rows.unshift({ label: "Static compression", value: ratio, unit: "ratio", primary: true });
+    else rows.unshift({ label: "Static compression", value: "Clearance is gone", unit: "text", primary: true });
+    publishReadout(rows);
+}
+bindCalc(calcCompression, ["cr-bore", "cr-stroke", "cr-chamber", "cr-dish", "cr-gasket-bore", "cr-gasket", "cr-deck", "cr-target"]);
+"""
+
+
+def cam_html(row):
+    del row
+    heads = (
+        ("h317", "317 cathedral"),
+        ("h241", "241 cathedral"),
+        ("h243", "243 / 799 cathedral"),
+        ("tfx", "Trick Flow GenX cathedral"),
+        ("ls3", "LS3 / L92 rectangle"),
+        ("ls7", "LS7 rectangle"),
+        ("afr", "Aftermarket rectangle"),
+    )
+    primary = f"""
+    <div class="grid-2">
+        <div class="field"><label for="cm-head">Cylinder head</label><select id="cm-head">{options(heads, "h243")}</select></div>
+        <div class="field"><label for="cm-rpm">Peak RPM</label><input type="number" id="cm-rpm" value="6200" min="4500" max="8000" step="100"></div>
+    </div>
+    <div class="field"><label for="cm-adder">Power adder</label><select id="cm-adder">{options((("na", "Naturally aspirated"), ("boost", "Turbo or supercharged")), "na")}</select></div>
+    <p class="field-hint">Every cam on this page is a published card with a part number. The page does not grind a lobe.</p>
+    """
+    return calculator_shell(primary, "", "Print cam card", results_extra='<div id="cm-shop" class="gear-shop"></div>')
+
+
+CAM_SCRIPT = r"""
+const CAM_HEADS = {
+    h317: "cathedral",
+    h241: "cathedral",
+    h243: "cathedral",
+    tfx: "cathedral",
+    ls3: "rectangle",
+    ls7: "rectangle",
+    afr: "rectangle"
+};
+const CAMS = [
+    { part: "GM 12561721", port: "cathedral", durIn: 196, durEx: 207, liftIn: 0.467, liftEx: 0.479, lsa: 116, boost: true, rpm: 0, card: "196/207 at 0.050, 0.467/0.479 lift, 116 LSA. 2001 LS1 and 6.0 truck cam." },
+    { part: "GM 12560950", port: "cathedral", durIn: 204, durEx: 211, liftIn: 0.525, liftEx: 0.525, lsa: 116, boost: true, rpm: 0, card: "204/211 at 0.050, 0.525/0.525 lift, 116 LSA. 2001 LS6 cam." },
+    { part: "GM 12565308", port: "cathedral", durIn: 204, durEx: 218, liftIn: 0.551, liftEx: 0.548, lsa: 117.5, boost: true, rpm: 0, card: "204/218 at 0.050, 0.551/0.548 lift, 117.5 LSA. 2002-2004 LS6 cam." },
+    { part: "GM 12623063", port: "rectangle", durIn: 204, durEx: 211, liftIn: 0.551, liftEx: 0.522, lsa: 117, boost: true, rpm: 0, card: "204/211 at 0.050, 0.551/0.522 lift, 117 LSA. LS3 cam, single-bolt, no AFM and no VVT." },
+    { part: "GM 12638426", port: "rectangle", durIn: 211, durEx: 230, liftIn: 0.558, liftEx: 0.558, lsa: 121, boost: false, rpm: 6500, card: "211/230 at 0.050, 121 LSA, 0.558/0.558 lift with a 1.7 rocker. GM lists 0.593/0.588 with the LS7 1.8 rocker, and a 6,500 RPM operating range. It does not fit a Gen III block." },
+    { part: "Comp Cams 54-469-11", port: "rectangle", durIn: 231, durEx: 247, liftIn: 0.617, liftEx: 0.624, lsa: 113, boost: false, rpmMin: 2000, rpmMax: 7000, card: "231/247 at 0.050, 0.617/0.624 lift, 113 LSA. Comp publishes 2,000 to 7,000 RPM on rectangle-port heads. Stock springs will not hold it." }
+];
+
+function camOverlap(cam) {
+    return (cam.durIn + cam.durEx) / 2 - (2 * cam.lsa);
+}
+
+function camByPart(part) {
+    return CAMS.find(cam => cam.part === part) || null;
+}
+
+function calcCam() {
+    const head = document.getElementById("cm-head").value;
+    const rpm = parseFloat(document.getElementById("cm-rpm").value);
+    const boosted = document.getElementById("cm-adder").value === "boost";
+    const port = CAM_HEADS[head] || "cathedral";
+    const rpmOk = Number.isFinite(rpm) ? rpm : 0;
+    let cam = null;
+    if (port === "cathedral") {
+        if (boosted || rpmOk >= 6400) cam = camByPart("GM 12565308");
+        else if (rpmOk >= 5800) cam = camByPart("GM 12560950");
+        else cam = camByPart("GM 12561721");
+    } else if (boosted) {
+        cam = camByPart("GM 12623063");
+    } else if (rpmOk >= 6800) {
+        cam = camByPart("Comp Cams 54-469-11");
+    } else if (rpmOk >= 6200) {
+        cam = camByPart("GM 12638426");
+    } else {
+        cam = camByPart("GM 12623063");
+    }
+    const mount = document.getElementById("cm-shop");
+    if (!cam) {
+        publishReadout([{ label: "Cam to order", value: "No published card", unit: "text", primary: true }]);
+        if (mount) mount.innerHTML = "";
+        return;
+    }
+    let limit = "";
+    if (port === "cathedral" && rpmOk >= 6800) limit = " This list has no cathedral cam published for that RPM. This is the longest cathedral card on the list, and it is not a race lobe.";
+    else if (cam.part === "Comp Cams 54-469-11" && rpmOk > 7000) limit = " Comp publishes this card to 7,000 RPM. This list has no rectangle cam published above that.";
+    else if (boosted && port === "rectangle") limit = " On boost the 113 LSA race cam stays off this list. This is the published rectangle card with the wider separation.";
+    else if (boosted && cam.part === "GM 12565308") limit = " On boost this is the widest lobe separation in the cathedral list.";
+    publishReadout([
+        { label: "Cam to order", value: cam.part, unit: "text", primary: true },
+        { label: "Duration at 0.050", value: cam.durIn + "/" + cam.durEx, unit: "text" },
+        { label: "Valve lift", value: cam.liftIn.toFixed(3) + "/" + cam.liftEx.toFixed(3), unit: "text" },
+        { label: "Lobe separation", value: cam.lsa, unit: "deg" },
+        { label: "Overlap at 0.050", value: camOverlap(cam), unit: "deg" }
+    ]);
+    if (mount) {
+        const q = encodeURIComponent(cam.part);
+        mount.innerHTML = "<p>" + cam.card + limit + "</p>"
+            + '<a href="https://www.summitracing.com/search?keyword=' + q + '" rel="noopener">Summit Racing, ' + cam.part + "</a>"
+            + '<a href="https://www.jegs.com/search?Ntt=' + q + '" rel="noopener">Jegs, ' + cam.part + "</a>"
+            + '<p class="shop-note">The link searches that part number. Check piston-to-valve clearance and the valve springs before you order.</p>';
+    }
+}
+bindCalc(calcCam, ["cm-head", "cm-rpm", "cm-adder"]);
+"""
+
+
 WIDGETS = {
     "Transmission": (
         "Overall Ratio = Trans Ratio x Rear Gear. Shift Speed (MPH) = (RPM x (1 - Slip) x Tire) / (Overall x 336). Recovery RPM = Shift RPM x (1 - Slip) x (Next Ratio / Current Ratio).",
@@ -4973,6 +5216,21 @@ WIDGETS = {
         "Running amps are the pump, fan, water pump, ignition, and ECU. Alternator idle output wants 1.2 times that. Cable circular mils = 10.75 x amps x one-way feet x 2 / (voltage x 0.03). The trans brake and the nitrous sit on the battery for the hit.",
         power_html,
         POWER_SCRIPT,
+    ),
+    "Carb": (
+        "CFM = (Cubic inches x RPM x Volumetric efficiency) / 3456. The carburetor to order is the smallest common CFM at or above that flow.",
+        carb_html,
+        CARB_SCRIPT,
+    ),
+    "Compression": (
+        "Static compression = (Swept volume + clearance volume) / clearance volume. Clearance volume is the chamber, the gasket, the deck, and the piston dish. A dome is a negative dish.",
+        compression_html,
+        COMPRESSION_SCRIPT,
+    ),
+    "Cam": (
+        "The page orders a published cam card for that head port and RPM. Overlap at 0.050 = (intake duration + exhaust duration) / 2 - (2 x lobe separation).",
+        cam_html,
+        CAM_SCRIPT,
     ),
     "CAS": (
         "Pressure Ratio = (Boost PSI + Barometric PSI) / Barometric PSI",
@@ -5144,14 +5402,14 @@ def site_banner(records):
 
 
 NAV_SECTIONS = (
-    ("Fuel", ("fuel-injector-calculator", "fuel-pump-calculator")),
+    ("Fuel", ("fuel-injector-calculator", "fuel-pump-calculator", "carburetor-cfm-calculator")),
     ("Power", (
         "turbo-sizing-calculator",
         "wastegate-sizing-calculator",
         "supercharger-pulley-calculator",
         "nitrous-shot-calculator",
     )),
-    ("Engine", ("ls-engine-builder", "exhaust-header-sizing-calculator")),
+    ("Engine", ("ls-engine-builder", "compression-ratio-calculator", "ls-camshaft-calculator", "exhaust-header-sizing-calculator")),
     ("Drivetrain", (
         "transmission-shift-recovery-calculator",
         "torque-converter-calculator",
@@ -5359,6 +5617,21 @@ TRACKSIDE_NOTES = {
         ("Why size the wire from voltage drop?", "Circular mils equal 10.75 times the amps times the round-trip length, divided by a 3% voltage drop. A trunk battery makes the alternator wire the long one. High-strand battery cable is what carries it, not primary wire in a loom."),
         ("Where does the fuse go?", "On the battery post, ahead of the panel feed. The starter cable is its own 1/0 or 2/0 and is not fused like a running load."),
     ),
+    "Carb": (
+        ("How is carburetor CFM calculated?", "Cubic inches times peak RPM times volumetric efficiency, divided by 3456. A 383 at 6,500 RPM and 90 percent is about 648 CFM, so the carburetor to order is a 650."),
+        ("Why order the next size up?", "Catalog carburetors come in steps: 600, 650, 750, 850, 950, 1,050, and 1,150. The page picks the smallest step that still covers the calculated flow."),
+        ("Does this work on a boosted engine?", "No. That formula is a naturally aspirated carburetor. A blow-through carburetor is sized off the boosted air, and the fuel pump is a different part."),
+    ),
+    "Compression": (
+        ("How is static compression calculated?", "Swept volume plus clearance volume, divided by clearance volume. Clearance is the chamber, the head gasket, the deck, and the piston dish. A dome is entered as a negative dish."),
+        ("What dish hits a target ratio?", "The page solves the dish that lands on the target once the bore, stroke, chamber, gasket, and deck are fixed. It does not pick a piston part number."),
+        ("Why does a thicker gasket drop the ratio?", "A thicker gasket, or a larger gasket bore, adds clearance volume. The same piston in a bigger chamber does the same thing."),
+    ),
+    "Cam": (
+        ("Why is there no custom duration?", "Every result is a published cam card with a part number. The page matches the head port and the RPM to that card. It does not invent a lobe."),
+        ("What is the difference between cathedral and rectangle?", "A 241, 243, 317, or Trick Flow GenX head is cathedral, so the list stops at the LS1 and LS6 cards. An LS3, LS7, or aftermarket rectangle head can use the LS3, LS7, or Comp rectangle card."),
+        ("Which card is for boost?", "Boost wants the wider published lobe separation. That is the 117.5 LS6 card on a cathedral head, and the 117 LS3 card on a rectangle head. The 113 LSA Comp card is the naturally aspirated race cam."),
+    ),
     "Converter": (
         ("What is K-factor?", "K-factor is brake stall RPM divided by the square root of engine torque at that RPM. The same converter stalls higher behind an engine with more torque. Give the shop the K, the stall, and the torque, not a stall number with no engine attached."),
         ("Where should the stall sit?", "Brake stall wants to land about 500 to 700 RPM under the torque peak so the engine accelerates through the converter instead of starting above it. A no-prep tire wants it lower. An unlocked street converter also has to stall under cruise RPM."),
@@ -5446,6 +5719,9 @@ def index_page(pages, hubs):
     start = link_items([
         {"slug": "fuel-injector-calculator", "target_keyword": "Fuel injectors"},
         {"slug": "fuel-pump-calculator", "target_keyword": "Fuel pump"},
+        {"slug": "carburetor-cfm-calculator", "target_keyword": "Carburetor"},
+        {"slug": "compression-ratio-calculator", "target_keyword": "Compression ratio"},
+        {"slug": "ls-camshaft-calculator", "target_keyword": "LS camshaft"},
         {"slug": "nitrous-shot-calculator", "target_keyword": "Nitrous jet and timing"},
         {"slug": "drag-shock-calculator", "target_keyword": "Shock to order"},
         {"slug": "torque-converter-calculator", "target_keyword": "Torque converter stall"},

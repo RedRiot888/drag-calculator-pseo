@@ -86,6 +86,21 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://dragcalculators.com/carburetor-cfm-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/compression-ratio-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/ls-camshaft-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://dragcalculators.com/automotive-relay-calculator.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
