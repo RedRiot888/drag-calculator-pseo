@@ -878,11 +878,11 @@ def spec_text(row):
     if row["category"] == "Power":
         return "Loaded defaults: dual in-tank pump, 16 in fan, 55 GPM water pump, battery in the trunk."
     if row["category"] == "Carb":
-        return "Loaded defaults: 383 cubic inches, 6,500 RPM, 90% volumetric efficiency."
+        return "Loaded defaults: 383 cubic inches, 6,500 RPM, 90% volumetric efficiency, street/strip."
     if row["category"] == "Compression":
         return "Loaded defaults: 4.030 bore, 3.750 stroke, 64 cc chamber."
     if row["category"] == "Cam":
-        return "Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, 6,200 RPM."
+        return "Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, street/strip, 6,200 RPM."
     parts = []
     for key in CATEGORY_FIELDS[row["category"]]:
         value = cell(row, key)
@@ -4898,16 +4898,30 @@ bindCalc(calcConverter, ["cv-use", "cv-track", "cv-trans", "cv-hold", "cv-tq", "
 
 def carb_html(row):
     del row
-    primary = """
+    uses = (
+        ("na", "Naturally aspirated"),
+        ("blow", "Blow-through turbo"),
+        ("draw", "Draw-through blower"),
+    )
+    jobs = (
+        ("street", "Street"),
+        ("strip", "Street/strip"),
+        ("drag", "Drag"),
+    )
+    primary = f"""
     <div class="grid-2">
         <div class="field"><label for="cb-cid">Cubic inches</label><input type="number" id="cb-cid" value="383" min="200" max="800" step="1"></div>
         <div class="field"><label for="cb-rpm">Peak RPM</label><input type="number" id="cb-rpm" value="6500" min="4000" max="9000" step="100"></div>
     </div>
     <div class="grid-2">
-        <div class="field"><label for="cb-ve">Volumetric efficiency (%)</label><input type="number" id="cb-ve" value="90" min="50" max="120" step="1"></div>
-        <div class="field"><label for="cb-cyl">Cylinders</label><input type="number" id="cb-cyl" value="8" min="4" max="16" step="1"></div>
+        <div class="field"><label for="cb-use">Induction</label><select id="cb-use">{options(uses, "na")}</select></div>
+        <div class="field"><label for="cb-job">Use</label><select id="cb-job">{options(jobs, "strip")}</select></div>
     </div>
-    <p class="field-hint">A street engine is often 80 to 85 percent. A race head can be 90 to 100. This is a naturally aspirated carburetor. Boost does not use this number.</p>
+    <div class="grid-2">
+        <div class="field"><label for="cb-ve">Volumetric efficiency (%)</label><input type="number" id="cb-ve" value="90" min="50" max="120" step="1"></div>
+        <div class="field" id="cb-boost-field"><label for="cb-boost">Boost (PSI)</label><input type="number" id="cb-boost" value="10" min="0" max="40" step="1"></div>
+    </div>
+    <p class="field-hint">Street is often 80 to 85 percent volumetric efficiency. Street/strip is about 90. Drag on a race head can be 95 to 100. A blow-through carb sits in the hat, so boost does not raise the CFM. A draw-through carb sits ahead of the blower, so the pressure ratio does.</p>
     """
     return calculator_shell(primary, "", "Print carb sheet", results_extra='<div id="cb-shop" class="gear-shop"></div>')
 
@@ -4915,46 +4929,79 @@ def carb_html(row):
 CARB_SCRIPT = r"""
 const CARB_SIZES = [600, 650, 750, 850, 950, 1050, 1150];
 
-function carbShop(size, covered) {
-    const mount = document.getElementById("cb-shop");
-    if (!mount) return;
-    const query = size + " CFM carburetor";
-    const q = encodeURIComponent(query);
-    const note = covered
-        ? "The link searches that CFM. Confirm the flange, the choke, and whether the carb is vacuum or mechanical secondary."
-        : "That flow is past a single 1,150 CFM carburetor. Two carburetors or a larger custom is the next step. Confirm the flange before you order.";
-    mount.innerHTML = '<a href="https://www.summitracing.com/search?keyword=' + q + '" rel="noopener">Summit Racing, ' + query + '</a>'
-        + '<a href="https://www.jegs.com/search?Ntt=' + q + '" rel="noopener">Jegs, ' + query + '</a>'
-        + '<p class="shop-note">' + note + '</p>';
+function carbCeiling(cfm) {
+    for (let i = 0; i < CARB_SIZES.length; i++) {
+        if (CARB_SIZES[i] >= cfm) return CARB_SIZES[i];
+    }
+    return null;
+}
+
+function carbFloor(cfm) {
+    let floor = null;
+    for (let i = 0; i < CARB_SIZES.length; i++) {
+        if (CARB_SIZES[i] <= cfm) floor = CARB_SIZES[i];
+    }
+    return floor;
+}
+
+function pickCarb(cfm, job) {
+    const above = carbCeiling(cfm);
+    const below = carbFloor(cfm);
+    if (job === "street" && below && above && (above - cfm) > 40 && ((cfm - below) / cfm) <= 0.12) {
+        return { size: below, covered: true };
+    }
+    if (above) return { size: above, covered: true };
+    return { size: CARB_SIZES[CARB_SIZES.length - 1], covered: false };
 }
 
 function calcCarb() {
     const cid = parseFloat(document.getElementById("cb-cid").value);
     const rpm = parseFloat(document.getElementById("cb-rpm").value);
     const vePct = parseFloat(document.getElementById("cb-ve").value);
-    const cyl = parseFloat(document.getElementById("cb-cyl").value);
+    const boost = parseFloat(document.getElementById("cb-boost").value);
+    const use = document.getElementById("cb-use").value;
+    const job = document.getElementById("cb-job").value;
     const cidOk = Number.isFinite(cid) ? cid : 0;
     const rpmOk = Number.isFinite(rpm) ? rpm : 0;
+    const boostOk = Math.max(0, Number.isFinite(boost) ? boost : 0);
     const ve = Math.min(1.2, Math.max(0.5, (Number.isFinite(vePct) ? vePct : 0) / 100));
-    const cfm = (cidOk * rpmOk * ve) / 3456;
-    let size = CARB_SIZES[CARB_SIZES.length - 1];
-    let covered = false;
-    for (let i = 0; i < CARB_SIZES.length; i++) {
-        if (CARB_SIZES[i] >= cfm) {
-            size = CARB_SIZES[i];
-            covered = true;
-            break;
-        }
-    }
-    const per = cyl > 0 ? cidOk / cyl : 0;
-    publishReadout([
-        { label: "Carburetor to order", value: covered ? (size + " CFM") : "Two carbs or a custom", unit: "text", primary: true },
-        { label: "Calculated flow", value: cfm, unit: "cfm" },
-        { label: "Per cylinder", value: per, unit: "ci" }
-    ]);
-    carbShop(covered ? size : 1150, covered);
+    const volume = (cidOk * rpmOk * ve) / 3456;
+    const ratio = (boostOk + 14.7) / 14.7;
+    const boosted = use === "na" ? volume : volume * ratio;
+    const sizing = use === "draw" ? boosted : volume;
+    const pair = use === "draw" && sizing > 900;
+    const each = pair ? sizing / 2 : sizing;
+    const picked = pickCarb(each, use === "na" ? job : "strip");
+    const mechanical = use !== "na" || job !== "street";
+    const secondary = mechanical ? "Mechanical secondary" : "Vacuum secondary";
+    const boostField = document.getElementById("cb-boost-field");
+    if (boostField) boostField.style.display = use === "na" ? "none" : "";
+    let order = picked.covered ? (picked.size + " CFM") : "Two carbs or a custom";
+    if (use === "blow") order = picked.covered ? (picked.size + " CFM blow-through") : "Two blow-through carbs or a custom";
+    if (pair && picked.covered) order = "Two " + picked.size + " CFM";
+    const rows = [
+        { label: "Carburetor to order", value: order, unit: "text", primary: true },
+        { label: "Secondary", value: secondary, unit: "text" },
+        { label: use === "draw" ? "Draw-through flow" : "Engine flow", value: sizing, unit: "cfm" }
+    ];
+    if (use === "blow") rows.push({ label: "Density ratio", value: ratio.toFixed(2) + " x", unit: "text" });
+    publishReadout(rows);
+    const mount = document.getElementById("cb-shop");
+    if (!mount) return;
+    const words = use === "blow" ? " CFM blow through carburetor" : (use === "draw" ? " CFM blower carburetor" : " CFM carburetor");
+    const query = picked.size + words;
+    const q = encodeURIComponent(query);
+    let note = "The link searches that carburetor. Confirm the flange before you order.";
+    if (!picked.covered) note = "That flow is past a single 1,150 CFM carburetor. Two carburetors or a larger custom is the next step.";
+    else if (use === "blow") note = "Blow-through uses the same cubic feet as the engine. Boost makes the air denser, so this CFM can feed more power than it would on a naturally aspirated engine. The carb needs a solid float, a sealed bowl, mechanical secondaries, and a boost-referenced fuel-pressure regulator.";
+    else if (pair) note = "A draw-through carb sits in atmospheric air ahead of the blower, so the flow is the engine CFM times the pressure ratio. The Blower Shop publishes that formula. This split is two carbs.";
+    else if (job === "street") note = "Holley sizes a street carb at the flow, or slightly under it, and uses a vacuum secondary so the primaries can drive the car.";
+    else note = "A street/strip or drag carb on this page is a mechanical-secondary double pumper. The converter or the clutch has to pull the main circuit open.";
+    mount.innerHTML = '<a href="https://www.summitracing.com/search?keyword=' + q + '" rel="noopener">Summit Racing, ' + query + '</a>'
+        + '<a href="https://www.jegs.com/search?Ntt=' + q + '" rel="noopener">Jegs, ' + query + '</a>'
+        + '<p class="shop-note">' + note + '</p>';
 }
-bindCalc(calcCarb, ["cb-cid", "cb-rpm", "cb-ve", "cb-cyl"]);
+bindCalc(calcCarb, ["cb-cid", "cb-rpm", "cb-ve", "cb-boost", "cb-use", "cb-job"]);
 """
 
 
@@ -5043,6 +5090,12 @@ def cam_html(row):
         ("turbo-low", "Turbo, large or twin"),
         ("turbo-high", "Turbo, single small"),
         ("super", "Supercharger"),
+        ("nitrous", "Nitrous"),
+    )
+    jobs = (
+        ("street", "Street"),
+        ("strip", "Street/strip"),
+        ("drag", "Drag"),
     )
     primary = f"""
     <div class="grid-2">
@@ -5053,7 +5106,8 @@ def cam_html(row):
         <div class="field"><label for="cm-rpm">Peak RPM</label><input type="number" id="cm-rpm" value="6200" min="4500" max="8500" step="100"></div>
         <div class="field"><label for="cm-adder">Power adder</label><select id="cm-adder">{options(adders, "na")}</select></div>
     </div>
-    <p class="field-hint">A 5.3 is about 325 cubic inches, a 6.0 is 364, a 6.2 is 376, and a 408 is the stroker. A large turbo or a pair keeps turbine pressure down. A single small turbo does not. Every result is a published card. The page does not grind a lobe.</p>
+    <div class="field"><label for="cm-job">Use</label><select id="cm-job">{options(jobs, "strip")}</select></div>
+    <p class="field-hint">A 5.3 is about 325 cubic inches, a 6.0 is 364, a 6.2 is 376, and a 408 is the stroker. Street stays on the shortest card that still covers the RPM. Drag uses the longest published card aimed at that RPM. A large turbo or a pair keeps turbine pressure down. Every result is a published card. The page does not grind a lobe.</p>
     """
     return calculator_shell(primary, "", "Print cam card", results_extra='<div id="cm-shop" class="gear-shop"></div>')
 
@@ -5098,11 +5152,13 @@ const CAMS = [
     { part: "Comp Cams 54-476-11", port: "rectangle", uses: ["na"], cidMin: 440, durIn: 259, durEx: 275, liftIn: 0.624, liftEx: 0.624, lsa: 115, rpmMin: 3000, rpmMax: 7200, card: "Comp's longest rectangle LSR card, for an extreme-displacement race engine. Published 3,000 to 7,200 RPM. Stock springs cannot be used." },
     { part: "Comp Cams 54-330-11", port: "both", uses: ["turbo-low", "super"], cidMax: 346, durIn: 223, durEx: 225, liftIn: 0.598, liftEx: 0.600, lsa: 115, rpmMin: 2300, rpmMax: 7400, card: "Comp LST Stage 1, published for a 4.8 or 5.3 turbo when the turbine pressure is unknown. 2,300 to 7,400 RPM, 115 LSA. Stock springs cannot be used." },
     { part: "Comp Cams 54-332-11", port: "both", uses: ["turbo-low"], cidMax: 346, durIn: 231, durEx: 237, liftIn: 0.605, liftEx: 0.610, lsa: 115, rpmMin: 2500, rpmMax: 7400, card: "Comp LST Stage 2, published for a 5.3 with a lower-backpressure turbo. 2,500 to 7,400 RPM, 115 LSA. Stock springs cannot be used." },
-    { part: "Summit SUM-8715", port: "both", uses: ["turbo-high", "super"], durIn: 222, durEx: 233, liftIn: 0.600, liftEx: 0.575, lsa: 115, overlap: -3, ivc: 43, rpmMin: 2800, rpmMax: 6800, card: "Summit Stage 1 turbo card for a single turbo. Published overlap at 0.050 is -3 degrees, intake closes 43 degrees after bottom dead center, 2,800 to 6,800 RPM. Order the cathedral or rectangle core that matches the head." },
+    { part: "Summit SUM-8715", port: "both", uses: ["turbo-high", "super", "nitrous"], durIn: 222, durEx: 233, liftIn: 0.600, liftEx: 0.575, lsa: 115, overlap: -3, ivc: 43, rpmMin: 2800, rpmMax: 6800, card: "Summit Stage 1. Published overlap at 0.050 is -3 degrees, intake closes 43 degrees after bottom dead center, 2,800 to 6,800 RPM. Summit says this card works with a turbo, nitrous, or a supercharger, and it is the largest of their stages that works with a stock converter. Order the cathedral or rectangle core that matches the head." },
     { part: "Summit SUM-8706", port: "both", uses: ["turbo-high", "super"], durIn: 226, durEx: 230, liftIn: 0.600, liftEx: 0.575, lsa: 113, overlap: 2, ivc: 42, rpmMin: 3000, rpmMax: 7000, card: "Summit Stage 2 turbo card. Summit published it to keep overlap at 2 degrees when turbine pressure is high. Intake closes 42 degrees after bottom dead center, 3,000 to 7,000 RPM. Order the core that matches the head." },
     { part: "Summit SUM-8716", port: "both", uses: ["turbo-high", "super"], durIn: 231, durEx: 234, liftIn: 0.600, liftEx: 0.575, lsa: 115, overlap: 2, ivc: 46, rpmMin: 3000, rpmMax: 7000, card: "Summit Stage 3 turbo card for a single turbo with higher turbine pressure. Published overlap is 2 degrees, 3,000 to 7,000 RPM. Order the core that matches the head." },
     { part: "Summit SUM-8717", port: "both", uses: ["turbo-high", "super"], durIn: 237, durEx: 234, liftIn: 0.625, liftEx: 0.600, lsa: 117, overlap: 2, ivc: 50, rpmMin: 3500, rpmMax: 7200, card: "Summit Stage 4 turbo card. Reverse split, 237/234 at 0.050, 117 LSA, published for a single turbo with a T4 hot side. Overlap is 2 degrees. 3,500 to 7,200 RPM. Order the core that matches the head." },
-    { part: "BTR-TURBOSTG4", port: "both", uses: ["turbo-low"], durIn: 227, durEx: null, liftIn: 0.618, liftEx: 0.618, lsa: 115, rpmMin: 6400, rpmMax: 8200, card: "Brian Tooley Stage 4 V2 turbo card, 227 intake duration at 0.050 and 115 LSA. Exhaust duration is printed 24X, so overlap is not calculated. Published for a stock-stroke engine over 8,000 RPM with the matching valvetrain, and for about 408 cubic inches at 6,400 to 6,800 RPM." }
+    { part: "BTR-TURBOSTG4", port: "both", uses: ["turbo-low"], durIn: 227, durEx: null, liftIn: 0.618, liftEx: 0.618, lsa: 115, rpmMin: 6400, rpmMax: 8200, card: "Brian Tooley Stage 4 V2 turbo card, 227 intake duration at 0.050 and 115 LSA. Exhaust duration is printed 24X, so overlap is not calculated. Published for a stock-stroke engine over 8,000 RPM with the matching valvetrain, and for about 408 cubic inches at 6,400 to 6,800 RPM." },
+    { part: "BTR-53NITROUS", port: "both", uses: ["nitrous"], cidMax: 346, durIn: 233, durEx: 250, liftIn: 0.631, liftEx: 0.617, lsa: 113, ivc: 44.5, rpmMin: 5200, rpmMax: 7500, band: "Higher RPM, high stall", card: "Brian Tooley 5.3 nitrous cam. The cam card prints 233/250 at 0.050, 113 LSA, and 0.631/0.617 net lift with a 1.7 rocker. Intake closes 44.5 degrees after bottom dead center. BTR describes a rough idle, a high stall, and power in the higher RPM range. They do not print a closed RPM band on that card." },
+    { part: "BTR-400+NITROUS", port: "both", uses: ["nitrous"], cidMin: 400, durIn: 247, durEx: null, liftIn: 0.618, liftEx: 0.618, lsa: 112, rpmMin: 6800, rpmMax: 8000, band: "7,500 to 8,000 with the springs they name", card: "Brian Tooley 400-plus nitrous cam, 247 intake duration at 0.050 and 112 LSA. Exhaust duration is printed 27X, so overlap is not calculated. BTR says 7,500 RPM with SP010 springs and valves under 105 grams, and 8,000 RPM with SK703 springs shimmed to 1.700 and lightweight valves. Check piston to valve. A 1-bolt engine needs the 3-bolt conversion." }
 ];
 
 function camOverlap(cam) {
@@ -5123,11 +5179,37 @@ function camCandidates(head, port, cid, adder) {
     });
 }
 
-function pickCam(list, rpm) {
+const RACE_CAMS = {
+    "Comp Cams 54-461-11": true,
+    "Comp Cams 54-462-11": true,
+    "Comp Cams 54-465-11": true,
+    "Comp Cams 54-466-11": true,
+    "Comp Cams 54-471-11": true,
+    "Comp Cams 54-472-11": true,
+    "Comp Cams 54-475-11": true,
+    "Comp Cams 54-476-11": true,
+    "BTR-TURBOSTG4": true,
+    "BTR-53NITROUS": true,
+    "BTR-400+NITROUS": true
+};
+
+function pickCam(list, rpm, job) {
     const eligible = list.filter(cam => !(cam.stock && rpm > 5600));
     if (!eligible.length) return null;
     const inside = eligible.filter(cam => rpm >= cam.rpmMin && rpm <= cam.rpmMax);
     if (inside.length) {
+        if (job === "street") {
+            const tame = inside.filter(cam => !RACE_CAMS[cam.part]);
+            const pool = tame.length ? tame : inside;
+            pool.sort((a, b) => a.durIn - b.durIn);
+            return pool[0];
+        }
+        if (job === "drag") {
+            const near = inside.filter(cam => (cam.rpmMax - rpm) <= 800);
+            const pool = near.length ? near : inside;
+            pool.sort((a, b) => b.durIn - a.durIn);
+            return pool[0];
+        }
         inside.sort((a, b) => {
             const gap = (a.rpmMax - rpm) - (b.rpmMax - rpm);
             if (gap) return gap;
@@ -5149,7 +5231,8 @@ function pickCam(list, rpm) {
     return pool[0];
 }
 
-function overlapLine(overlap) {
+function overlapLine(overlap, adder, cam) {
+    if (adder === "nitrous" && cam && cam.durEx != null && cam.durEx > cam.durIn) return " The exhaust duration is longer than the intake. That is the published nitrous split, so the extra exhaust from the shot has time to leave.";
     if (overlap == null) return "";
     if (overlap <= -5) return " Overlap at 0.050 is negative. That is the wide factory lobe separation, and it gives up the intake pull a longer published card uses.";
     if (overlap < 4) return " Overlap at 0.050 stays near zero, so boost is not pushed out the exhaust. That is the published turbo and supercharger pattern on this list.";
@@ -5161,10 +5244,11 @@ function calcCam() {
     const cid = parseFloat(document.getElementById("cm-cid").value);
     const rpm = parseFloat(document.getElementById("cm-rpm").value);
     const adder = document.getElementById("cm-adder").value;
+    const job = document.getElementById("cm-job").value;
     const port = CAM_HEADS[head] || "cathedral";
     const cidOk = Number.isFinite(cid) ? cid : 0;
     const rpmOk = Number.isFinite(rpm) ? rpm : 0;
-    const cam = pickCam(camCandidates(head, port, cidOk, adder), rpmOk);
+    const cam = pickCam(camCandidates(head, port, cidOk, adder), rpmOk, job);
     const mount = document.getElementById("cm-shop");
     if (!cam) {
         publishReadout([{ label: "Cam to order", value: "No published card", unit: "text", primary: true }]);
@@ -5178,27 +5262,32 @@ function calcCam() {
         { label: "Duration at 0.050", value: duration, unit: "text" },
         { label: "Valve lift", value: cam.liftIn.toFixed(3) + "/" + cam.liftEx.toFixed(3), unit: "text" },
         { label: "Lobe separation", value: cam.lsa, unit: "deg" },
-        { label: "Published range", value: cam.rpmMin.toLocaleString("en-US") + "-" + cam.rpmMax.toLocaleString("en-US"), unit: "text" }
+        { label: "Published range", value: cam.band || (cam.rpmMin.toLocaleString("en-US") + "-" + cam.rpmMax.toLocaleString("en-US")), unit: "text" }
     ];
     if (overlap == null) rows.push({ label: "Overlap at 0.050", value: "Not published", unit: "text" });
     else rows.push({ label: "Overlap at 0.050", value: overlap, unit: "deg" });
     if (Number.isFinite(cam.ivc)) rows.push({ label: "Intake close at 0.050", value: cam.ivc + " ABDC", unit: "text" });
     publishReadout(rows);
     let limit = "";
-    if (rpmOk > cam.rpmMax) {
+    if (cam.band) {
+        limit = "";
+    } else if (rpmOk > cam.rpmMax) {
         limit = " This card is published to " + cam.rpmMax.toLocaleString("en-US") + " RPM. No card on this list is published to " + rpmOk.toLocaleString("en-US") + " RPM.";
     } else if (rpmOk < cam.rpmMin) {
         limit = " This card is published from " + cam.rpmMin.toLocaleString("en-US") + " RPM. No card on this list starts as low as " + rpmOk.toLocaleString("en-US") + " RPM.";
     }
     if (mount) {
         const q = encodeURIComponent(cam.part);
-        mount.innerHTML = "<p>" + cam.card + overlapLine(overlap) + limit + "</p>"
+        const useLine = job === "street"
+            ? " Street uses the shortest published card that still covers this RPM."
+            : (job === "drag" ? " Drag uses the longest published card aimed at this RPM." : "");
+        mount.innerHTML = "<p>" + cam.card + overlapLine(overlap, adder, cam) + useLine + limit + "</p>"
             + '<a href="https://www.summitracing.com/search?keyword=' + q + '" rel="noopener">Summit Racing, ' + cam.part + "</a>"
             + '<a href="https://www.jegs.com/search?Ntt=' + q + '" rel="noopener">Jegs, ' + cam.part + "</a>"
             + '<p class="shop-note">The link searches that part number. Check piston-to-valve clearance and the valve springs before you order.</p>';
     }
 }
-bindCalc(calcCam, ["cm-head", "cm-cid", "cm-rpm", "cm-adder"]);
+bindCalc(calcCam, ["cm-head", "cm-cid", "cm-rpm", "cm-adder", "cm-job"]);
 """
 
 
@@ -5294,7 +5383,7 @@ WIDGETS = {
         POWER_SCRIPT,
     ),
     "Carb": (
-        "CFM = (Cubic inches x RPM x Volumetric efficiency) / 3456. The carburetor to order is the smallest common CFM at or above that flow.",
+        "Engine CFM = (Cubic inches x RPM x Volumetric efficiency) / 3456. A blow-through carb uses that CFM. A draw-through carb multiplies it by (boost + 14.7) / 14.7. Street orders the catalog size at the flow, or one step under. Street/strip and drag order the next size up.",
         carb_html,
         CARB_SCRIPT,
     ),
@@ -5304,7 +5393,7 @@ WIDGETS = {
         COMPRESSION_SCRIPT,
     ),
     "Cam": (
-        "The page orders the published cam card whose RPM range covers this cubic inch, head port, and power adder. Overlap at 0.050 = (intake duration + exhaust duration) / 2 - (2 x lobe separation). Turbo and supercharger cards are a separate list from the naturally aspirated cards.",
+        "The page orders the published cam card whose RPM range covers this cubic inch, head port, power adder, and use. Street takes the shortest card that still covers the RPM. Drag takes the longest card aimed at that RPM. Overlap at 0.050 = (intake duration + exhaust duration) / 2 - (2 x lobe separation). Nitrous, turbo, and supercharger cards are separate lists.",
         cam_html,
         CAM_SCRIPT,
     ),
@@ -5695,8 +5784,9 @@ TRACKSIDE_NOTES = {
     ),
     "Carb": (
         ("How is carburetor CFM calculated?", "Cubic inches times peak RPM times volumetric efficiency, divided by 3456. A 383 at 6,500 RPM and 90 percent is about 648 CFM, so the carburetor to order is a 650."),
-        ("Why order the next size up?", "Catalog carburetors come in steps: 600, 650, 750, 850, 950, 1,050, and 1,150. The page picks the smallest step that still covers the calculated flow."),
-        ("Does this work on a boosted engine?", "No. That formula is a naturally aspirated carburetor. A blow-through carburetor is sized off the boosted air, and the fuel pump is a different part."),
+        ("Why does street sometimes order the smaller carb?", "Holley sizes a street carb at the calculated flow, or slightly under it, with a vacuum secondary. Street/strip and drag stay at or above the flow and use a mechanical secondary."),
+        ("Why is a blow-through carb not a bigger CFM?", "The carb sits in the hat, after the turbo. It still passes the engine's cubic feet. Boost raises the density, not the volume, so a 650 or 750 can feed a lot more power than it would on a naturally aspirated engine. It needs a solid float, sealed bowls, mechanical secondaries, and a boost-referenced regulator."),
+        ("What changes on a draw-through blower?", "The carb sits in atmospheric air ahead of the blower. The Blower Shop multiplies the engine CFM by (boost + 14.7) / 14.7. This page also keeps the volumetric efficiency you enter. Past 900 CFM the result is two carbs, each carrying half."),
     ),
     "Compression": (
         ("How is static compression calculated?", "Swept volume plus clearance volume, divided by clearance volume. Clearance is the chamber, the head gasket, the deck, and the piston dish. A dome is entered as a negative dish."),
@@ -5707,6 +5797,8 @@ TRACKSIDE_NOTES = {
         ("Why is there no custom duration?", "Every result is a published cam card with a part number. Intake duration, exhaust duration, lift, and lobe separation come from that card. The page does not grind a lobe."),
         ("Why does a turbo engine not get the factory cam?", "A factory LS3 or LS6 card is about 204 degrees at 0.050 and it is not published as a turbo cam. A large turbo at high RPM uses the Brian Tooley Stage 4 card, which is published past 8,000 RPM on a stock-stroke engine. A single small turbo uses the Summit turbo cards, which keep overlap near zero so exhaust pressure does not blow back into the intake."),
         ("What does cubic inches change?", "Comp splits the naturally aspirated LSR cards into under 360 cubic inches, 360 to 399, and 400 and up. The Comp turbo cards are published for a 4.8 or 5.3. A bigger turbo engine moves to the Summit or Brian Tooley card."),
+        ("What does street or drag change?", "Street orders the shortest published card that still covers the RPM, and it skips the race cards when a milder one covers. Drag orders the longest card whose published range is aimed at that RPM. Street/strip keeps the tightest ceiling."),
+        ("Where are the nitrous cams?", "A mild nitrous build uses Summit Stage 1, which Summit says works with nitrous and a stock converter. A 5.3 at higher RPM uses the Brian Tooley 5.3 nitrous card, 233/250 at 0.050. A 400-cube nitrous engine uses the Brian Tooley 400-plus card. Exhaust duration printed as 27X is left unpublished."),
         ("What happens past the published RPM?", "Hydraulic-roller cards on this list stop where the maker printed the range, about 7,200 RPM for the naturally aspirated LSR cams and 7,200 to 7,400 for the Comp and Summit turbo cams. Above that, the page says so instead of stretching a shorter card."),
     ),
     "Converter": (

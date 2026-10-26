@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carburetor CFM Calculator | DragCalculators.com</title>
-    <meta name="description" content="Carburetor CFM Calculator. Loaded defaults: 383 cubic inches, 6,500 RPM, 90% volumetric efficiency.">
+    <meta name="description" content="Carburetor CFM Calculator. Loaded defaults: 383 cubic inches, 6,500 RPM, 90% volumetric efficiency, street/strip.">
     <link rel="canonical" href="https://dragcalculators.com/carburetor-cfm-calculator.html">
     <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
     <meta name="google-site-verification" content="google9e7c88791a3f2f72">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dragcalculators.com/carburetor-cfm-calculator.html">
     <meta property="og:title" content="Carburetor CFM Calculator | DragCalculators.com">
-    <meta property="og:description" content="Carburetor CFM Calculator. Loaded defaults: 383 cubic inches, 6,500 RPM, 90% volumetric efficiency.">
+    <meta property="og:description" content="Carburetor CFM Calculator. Loaded defaults: 383 cubic inches, 6,500 RPM, 90% volumetric efficiency, street/strip.">
     <meta property="og:image" content="https://dragcalculators.com/share-card.jpg">
     <meta property="og:image:secure_url" content="https://dragcalculators.com/share-card.jpg">
     <meta property="og:image:type" content="image/jpeg">
@@ -20,7 +20,7 @@
     <meta property="og:image:alt" content="DragCalculators">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Carburetor CFM Calculator | DragCalculators.com">
-    <meta name="twitter:description" content="Carburetor CFM Calculator. Loaded defaults: 383 cubic inches, 6,500 RPM, 90% volumetric efficiency.">
+    <meta name="twitter:description" content="Carburetor CFM Calculator. Loaded defaults: 383 cubic inches, 6,500 RPM, 90% volumetric efficiency, street/strip.">
     <meta name="twitter:image" content="https://dragcalculators.com/share-card.jpg">
     <link rel="stylesheet" href="styles.css">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VXS2PPLZ20"></script>
@@ -135,7 +135,7 @@
         <section class="sticky-calculator">
             <header class="master-header">
                 <h1>Carburetor CFM Calculator</h1>
-                <p class="spec">Loaded defaults: 383 cubic inches, 6,500 RPM, 90% volumetric efficiency.</p>
+                <p class="spec">Loaded defaults: 383 cubic inches, 6,500 RPM, 90% volumetric efficiency, street/strip.</p>
             </header>
             
     <div class="field-stack">
@@ -144,10 +144,18 @@
         <div class="field"><label for="cb-rpm">Peak RPM</label><input type="number" id="cb-rpm" value="6500" min="4000" max="9000" step="100"></div>
     </div>
     <div class="grid-2">
-        <div class="field"><label for="cb-ve">Volumetric efficiency (%)</label><input type="number" id="cb-ve" value="90" min="50" max="120" step="1"></div>
-        <div class="field"><label for="cb-cyl">Cylinders</label><input type="number" id="cb-cyl" value="8" min="4" max="16" step="1"></div>
+        <div class="field"><label for="cb-use">Induction</label><select id="cb-use"><option value="na" selected>Naturally aspirated</option>
+<option value="blow">Blow-through turbo</option>
+<option value="draw">Draw-through blower</option></select></div>
+        <div class="field"><label for="cb-job">Use</label><select id="cb-job"><option value="street">Street</option>
+<option value="strip" selected>Street/strip</option>
+<option value="drag">Drag</option></select></div>
     </div>
-    <p class="field-hint">A street engine is often 80 to 85 percent. A race head can be 90 to 100. This is a naturally aspirated carburetor. Boost does not use this number.</p>
+    <div class="grid-2">
+        <div class="field"><label for="cb-ve">Volumetric efficiency (%)</label><input type="number" id="cb-ve" value="90" min="50" max="120" step="1"></div>
+        <div class="field" id="cb-boost-field"><label for="cb-boost">Boost (PSI)</label><input type="number" id="cb-boost" value="10" min="0" max="40" step="1"></div>
+    </div>
+    <p class="field-hint">Street is often 80 to 85 percent volumetric efficiency. Street/strip is about 90. Drag on a race head can be 95 to 100. A blow-through carb sits in the hat, so boost does not raise the CFM. A draw-through carb sits ahead of the blower, so the pressure ratio does.</p>
     </div>
     <details class="accordion">
         <summary>Advanced / Conditions</summary>
@@ -183,7 +191,7 @@
 <div class="next-steps"><p class="field-hint">Next in the build</p><a href="fuel-pump-calculator.html">Size the mechanical pump for this carburetor</a></div>
         </section>
         <div class="content-column">
-            <section class="content-box"><h2>Formula</h2><p class="formula">CFM = (Cubic inches x RPM x Volumetric efficiency) / 3456. The carburetor to order is the smallest common CFM at or above that flow.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Carburetor CFM Calculator. Loaded defaults: 383 cubic inches, 6,500 RPM, 90% volumetric efficiency.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>How is carburetor CFM calculated?</h3><p>Cubic inches times peak RPM times volumetric efficiency, divided by 3456. A 383 at 6,500 RPM and 90 percent is about 648 CFM, so the carburetor to order is a 650.</p></div><div class="faq-item"><h3>Why order the next size up?</h3><p>Catalog carburetors come in steps: 600, 650, 750, 850, 950, 1,050, and 1,150. The page picks the smallest step that still covers the calculated flow.</p></div><div class="faq-item"><h3>Does this work on a boosted engine?</h3><p>No. That formula is a naturally aspirated carburetor. A blow-through carburetor is sized off the boosted air, and the fuel pump is a different part.</p></div></section>
+            <section class="content-box"><h2>Formula</h2><p class="formula">Engine CFM = (Cubic inches x RPM x Volumetric efficiency) / 3456. A blow-through carb uses that CFM. A draw-through carb multiplies it by (boost + 14.7) / 14.7. Street orders the catalog size at the flow, or one step under. Street/strip and drag order the next size up.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Carburetor CFM Calculator. Loaded defaults: 383 cubic inches, 6,500 RPM, 90% volumetric efficiency, street/strip.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>How is carburetor CFM calculated?</h3><p>Cubic inches times peak RPM times volumetric efficiency, divided by 3456. A 383 at 6,500 RPM and 90 percent is about 648 CFM, so the carburetor to order is a 650.</p></div><div class="faq-item"><h3>Why does street sometimes order the smaller carb?</h3><p>Holley sizes a street carb at the calculated flow, or slightly under it, with a vacuum secondary. Street/strip and drag stay at or above the flow and use a mechanical secondary.</p></div><div class="faq-item"><h3>Why is a blow-through carb not a bigger CFM?</h3><p>The carb sits in the hat, after the turbo. It still passes the engine&#x27;s cubic feet. Boost raises the density, not the volume, so a 650 or 750 can feed a lot more power than it would on a naturally aspirated engine. It needs a solid float, sealed bowls, mechanical secondaries, and a boost-referenced regulator.</p></div><div class="faq-item"><h3>What changes on a draw-through blower?</h3><p>The carb sits in atmospheric air ahead of the blower. The Blower Shop multiplies the engine CFM by (boost + 14.7) / 14.7. This page also keeps the volumetric efficiency you enter. Past 900 CFM the result is two carbs, each carrying half.</p></div></section>
         </div>
     </div>
     
@@ -433,46 +441,79 @@ if (setupMail) {
 
 const CARB_SIZES = [600, 650, 750, 850, 950, 1050, 1150];
 
-function carbShop(size, covered) {
-    const mount = document.getElementById("cb-shop");
-    if (!mount) return;
-    const query = size + " CFM carburetor";
-    const q = encodeURIComponent(query);
-    const note = covered
-        ? "The link searches that CFM. Confirm the flange, the choke, and whether the carb is vacuum or mechanical secondary."
-        : "That flow is past a single 1,150 CFM carburetor. Two carburetors or a larger custom is the next step. Confirm the flange before you order.";
-    mount.innerHTML = '<a href="https://www.summitracing.com/search?keyword=' + q + '" rel="noopener">Summit Racing, ' + query + '</a>'
-        + '<a href="https://www.jegs.com/search?Ntt=' + q + '" rel="noopener">Jegs, ' + query + '</a>'
-        + '<p class="shop-note">' + note + '</p>';
+function carbCeiling(cfm) {
+    for (let i = 0; i < CARB_SIZES.length; i++) {
+        if (CARB_SIZES[i] >= cfm) return CARB_SIZES[i];
+    }
+    return null;
+}
+
+function carbFloor(cfm) {
+    let floor = null;
+    for (let i = 0; i < CARB_SIZES.length; i++) {
+        if (CARB_SIZES[i] <= cfm) floor = CARB_SIZES[i];
+    }
+    return floor;
+}
+
+function pickCarb(cfm, job) {
+    const above = carbCeiling(cfm);
+    const below = carbFloor(cfm);
+    if (job === "street" && below && above && (above - cfm) > 40 && ((cfm - below) / cfm) <= 0.12) {
+        return { size: below, covered: true };
+    }
+    if (above) return { size: above, covered: true };
+    return { size: CARB_SIZES[CARB_SIZES.length - 1], covered: false };
 }
 
 function calcCarb() {
     const cid = parseFloat(document.getElementById("cb-cid").value);
     const rpm = parseFloat(document.getElementById("cb-rpm").value);
     const vePct = parseFloat(document.getElementById("cb-ve").value);
-    const cyl = parseFloat(document.getElementById("cb-cyl").value);
+    const boost = parseFloat(document.getElementById("cb-boost").value);
+    const use = document.getElementById("cb-use").value;
+    const job = document.getElementById("cb-job").value;
     const cidOk = Number.isFinite(cid) ? cid : 0;
     const rpmOk = Number.isFinite(rpm) ? rpm : 0;
+    const boostOk = Math.max(0, Number.isFinite(boost) ? boost : 0);
     const ve = Math.min(1.2, Math.max(0.5, (Number.isFinite(vePct) ? vePct : 0) / 100));
-    const cfm = (cidOk * rpmOk * ve) / 3456;
-    let size = CARB_SIZES[CARB_SIZES.length - 1];
-    let covered = false;
-    for (let i = 0; i < CARB_SIZES.length; i++) {
-        if (CARB_SIZES[i] >= cfm) {
-            size = CARB_SIZES[i];
-            covered = true;
-            break;
-        }
-    }
-    const per = cyl > 0 ? cidOk / cyl : 0;
-    publishReadout([
-        { label: "Carburetor to order", value: covered ? (size + " CFM") : "Two carbs or a custom", unit: "text", primary: true },
-        { label: "Calculated flow", value: cfm, unit: "cfm" },
-        { label: "Per cylinder", value: per, unit: "ci" }
-    ]);
-    carbShop(covered ? size : 1150, covered);
+    const volume = (cidOk * rpmOk * ve) / 3456;
+    const ratio = (boostOk + 14.7) / 14.7;
+    const boosted = use === "na" ? volume : volume * ratio;
+    const sizing = use === "draw" ? boosted : volume;
+    const pair = use === "draw" && sizing > 900;
+    const each = pair ? sizing / 2 : sizing;
+    const picked = pickCarb(each, use === "na" ? job : "strip");
+    const mechanical = use !== "na" || job !== "street";
+    const secondary = mechanical ? "Mechanical secondary" : "Vacuum secondary";
+    const boostField = document.getElementById("cb-boost-field");
+    if (boostField) boostField.style.display = use === "na" ? "none" : "";
+    let order = picked.covered ? (picked.size + " CFM") : "Two carbs or a custom";
+    if (use === "blow") order = picked.covered ? (picked.size + " CFM blow-through") : "Two blow-through carbs or a custom";
+    if (pair && picked.covered) order = "Two " + picked.size + " CFM";
+    const rows = [
+        { label: "Carburetor to order", value: order, unit: "text", primary: true },
+        { label: "Secondary", value: secondary, unit: "text" },
+        { label: use === "draw" ? "Draw-through flow" : "Engine flow", value: sizing, unit: "cfm" }
+    ];
+    if (use === "blow") rows.push({ label: "Density ratio", value: ratio.toFixed(2) + " x", unit: "text" });
+    publishReadout(rows);
+    const mount = document.getElementById("cb-shop");
+    if (!mount) return;
+    const words = use === "blow" ? " CFM blow through carburetor" : (use === "draw" ? " CFM blower carburetor" : " CFM carburetor");
+    const query = picked.size + words;
+    const q = encodeURIComponent(query);
+    let note = "The link searches that carburetor. Confirm the flange before you order.";
+    if (!picked.covered) note = "That flow is past a single 1,150 CFM carburetor. Two carburetors or a larger custom is the next step.";
+    else if (use === "blow") note = "Blow-through uses the same cubic feet as the engine. Boost makes the air denser, so this CFM can feed more power than it would on a naturally aspirated engine. The carb needs a solid float, a sealed bowl, mechanical secondaries, and a boost-referenced fuel-pressure regulator.";
+    else if (pair) note = "A draw-through carb sits in atmospheric air ahead of the blower, so the flow is the engine CFM times the pressure ratio. The Blower Shop publishes that formula. This split is two carbs.";
+    else if (job === "street") note = "Holley sizes a street carb at the flow, or slightly under it, and uses a vacuum secondary so the primaries can drive the car.";
+    else note = "A street/strip or drag carb on this page is a mechanical-secondary double pumper. The converter or the clutch has to pull the main circuit open.";
+    mount.innerHTML = '<a href="https://www.summitracing.com/search?keyword=' + q + '" rel="noopener">Summit Racing, ' + query + '</a>'
+        + '<a href="https://www.jegs.com/search?Ntt=' + q + '" rel="noopener">Jegs, ' + query + '</a>'
+        + '<p class="shop-note">' + note + '</p>';
 }
-bindCalc(calcCarb, ["cb-cid", "cb-rpm", "cb-ve", "cb-cyl"]);
+bindCalc(calcCarb, ["cb-cid", "cb-rpm", "cb-ve", "cb-boost", "cb-use", "cb-job"]);
 
     </script>
 </body>

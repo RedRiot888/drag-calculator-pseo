@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LS Camshaft Calculator | DragCalculators.com</title>
-    <meta name="description" content="LS Camshaft Calculator. Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, 6,200 RPM.">
+    <meta name="description" content="LS Camshaft Calculator. Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, street/strip, 6,200 RPM.">
     <link rel="canonical" href="https://dragcalculators.com/ls-camshaft-calculator.html">
     <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
     <meta name="google-site-verification" content="google9e7c88791a3f2f72">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dragcalculators.com/ls-camshaft-calculator.html">
     <meta property="og:title" content="LS Camshaft Calculator | DragCalculators.com">
-    <meta property="og:description" content="LS Camshaft Calculator. Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, 6,200 RPM.">
+    <meta property="og:description" content="LS Camshaft Calculator. Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, street/strip, 6,200 RPM.">
     <meta property="og:image" content="https://dragcalculators.com/share-card.jpg">
     <meta property="og:image:secure_url" content="https://dragcalculators.com/share-card.jpg">
     <meta property="og:image:type" content="image/jpeg">
@@ -20,7 +20,7 @@
     <meta property="og:image:alt" content="DragCalculators">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LS Camshaft Calculator | DragCalculators.com">
-    <meta name="twitter:description" content="LS Camshaft Calculator. Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, 6,200 RPM.">
+    <meta name="twitter:description" content="LS Camshaft Calculator. Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, street/strip, 6,200 RPM.">
     <meta name="twitter:image" content="https://dragcalculators.com/share-card.jpg">
     <link rel="stylesheet" href="styles.css">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VXS2PPLZ20"></script>
@@ -135,7 +135,7 @@
         <section class="sticky-calculator">
             <header class="master-header">
                 <h1>LS Camshaft Calculator</h1>
-                <p class="spec">Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, 6,200 RPM.</p>
+                <p class="spec">Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, street/strip, 6,200 RPM.</p>
             </header>
             
     <div class="field-stack">
@@ -154,9 +154,13 @@
         <div class="field"><label for="cm-adder">Power adder</label><select id="cm-adder"><option value="na" selected>Naturally aspirated</option>
 <option value="turbo-low">Turbo, large or twin</option>
 <option value="turbo-high">Turbo, single small</option>
-<option value="super">Supercharger</option></select></div>
+<option value="super">Supercharger</option>
+<option value="nitrous">Nitrous</option></select></div>
     </div>
-    <p class="field-hint">A 5.3 is about 325 cubic inches, a 6.0 is 364, a 6.2 is 376, and a 408 is the stroker. A large turbo or a pair keeps turbine pressure down. A single small turbo does not. Every result is a published card. The page does not grind a lobe.</p>
+    <div class="field"><label for="cm-job">Use</label><select id="cm-job"><option value="street">Street</option>
+<option value="strip" selected>Street/strip</option>
+<option value="drag">Drag</option></select></div>
+    <p class="field-hint">A 5.3 is about 325 cubic inches, a 6.0 is 364, a 6.2 is 376, and a 408 is the stroker. Street stays on the shortest card that still covers the RPM. Drag uses the longest published card aimed at that RPM. A large turbo or a pair keeps turbine pressure down. Every result is a published card. The page does not grind a lobe.</p>
     </div>
     <details class="accordion">
         <summary>Advanced / Conditions</summary>
@@ -192,7 +196,7 @@
 <div class="next-steps"><p class="field-hint">Next in the build</p><a href="ls-engine-builder.html">Match the head and the RPM on the LS build</a></div>
         </section>
         <div class="content-column">
-            <section class="content-box"><h2>Formula</h2><p class="formula">The page orders the published cam card whose RPM range covers this cubic inch, head port, and power adder. Overlap at 0.050 = (intake duration + exhaust duration) / 2 - (2 x lobe separation). Turbo and supercharger cards are a separate list from the naturally aspirated cards.</p></section><section class="content-box"><h2>Trackside notes</h2><p>LS Camshaft Calculator. Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, 6,200 RPM.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>Why is there no custom duration?</h3><p>Every result is a published cam card with a part number. Intake duration, exhaust duration, lift, and lobe separation come from that card. The page does not grind a lobe.</p></div><div class="faq-item"><h3>Why does a turbo engine not get the factory cam?</h3><p>A factory LS3 or LS6 card is about 204 degrees at 0.050 and it is not published as a turbo cam. A large turbo at high RPM uses the Brian Tooley Stage 4 card, which is published past 8,000 RPM on a stock-stroke engine. A single small turbo uses the Summit turbo cards, which keep overlap near zero so exhaust pressure does not blow back into the intake.</p></div><div class="faq-item"><h3>What does cubic inches change?</h3><p>Comp splits the naturally aspirated LSR cards into under 360 cubic inches, 360 to 399, and 400 and up. The Comp turbo cards are published for a 4.8 or 5.3. A bigger turbo engine moves to the Summit or Brian Tooley card.</p></div><div class="faq-item"><h3>What happens past the published RPM?</h3><p>Hydraulic-roller cards on this list stop where the maker printed the range, about 7,200 RPM for the naturally aspirated LSR cams and 7,200 to 7,400 for the Comp and Summit turbo cams. Above that, the page says so instead of stretching a shorter card.</p></div></section>
+            <section class="content-box"><h2>Formula</h2><p class="formula">The page orders the published cam card whose RPM range covers this cubic inch, head port, power adder, and use. Street takes the shortest card that still covers the RPM. Drag takes the longest card aimed at that RPM. Overlap at 0.050 = (intake duration + exhaust duration) / 2 - (2 x lobe separation). Nitrous, turbo, and supercharger cards are separate lists.</p></section><section class="content-box"><h2>Trackside notes</h2><p>LS Camshaft Calculator. Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, street/strip, 6,200 RPM.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>Why is there no custom duration?</h3><p>Every result is a published cam card with a part number. Intake duration, exhaust duration, lift, and lobe separation come from that card. The page does not grind a lobe.</p></div><div class="faq-item"><h3>Why does a turbo engine not get the factory cam?</h3><p>A factory LS3 or LS6 card is about 204 degrees at 0.050 and it is not published as a turbo cam. A large turbo at high RPM uses the Brian Tooley Stage 4 card, which is published past 8,000 RPM on a stock-stroke engine. A single small turbo uses the Summit turbo cards, which keep overlap near zero so exhaust pressure does not blow back into the intake.</p></div><div class="faq-item"><h3>What does cubic inches change?</h3><p>Comp splits the naturally aspirated LSR cards into under 360 cubic inches, 360 to 399, and 400 and up. The Comp turbo cards are published for a 4.8 or 5.3. A bigger turbo engine moves to the Summit or Brian Tooley card.</p></div><div class="faq-item"><h3>What does street or drag change?</h3><p>Street orders the shortest published card that still covers the RPM, and it skips the race cards when a milder one covers. Drag orders the longest card whose published range is aimed at that RPM. Street/strip keeps the tightest ceiling.</p></div><div class="faq-item"><h3>Where are the nitrous cams?</h3><p>A mild nitrous build uses Summit Stage 1, which Summit says works with nitrous and a stock converter. A 5.3 at higher RPM uses the Brian Tooley 5.3 nitrous card, 233/250 at 0.050. A 400-cube nitrous engine uses the Brian Tooley 400-plus card. Exhaust duration printed as 27X is left unpublished.</p></div><div class="faq-item"><h3>What happens past the published RPM?</h3><p>Hydraulic-roller cards on this list stop where the maker printed the range, about 7,200 RPM for the naturally aspirated LSR cams and 7,200 to 7,400 for the Comp and Summit turbo cams. Above that, the page says so instead of stretching a shorter card.</p></div></section>
         </div>
     </div>
     
@@ -479,11 +483,13 @@ const CAMS = [
     { part: "Comp Cams 54-476-11", port: "rectangle", uses: ["na"], cidMin: 440, durIn: 259, durEx: 275, liftIn: 0.624, liftEx: 0.624, lsa: 115, rpmMin: 3000, rpmMax: 7200, card: "Comp's longest rectangle LSR card, for an extreme-displacement race engine. Published 3,000 to 7,200 RPM. Stock springs cannot be used." },
     { part: "Comp Cams 54-330-11", port: "both", uses: ["turbo-low", "super"], cidMax: 346, durIn: 223, durEx: 225, liftIn: 0.598, liftEx: 0.600, lsa: 115, rpmMin: 2300, rpmMax: 7400, card: "Comp LST Stage 1, published for a 4.8 or 5.3 turbo when the turbine pressure is unknown. 2,300 to 7,400 RPM, 115 LSA. Stock springs cannot be used." },
     { part: "Comp Cams 54-332-11", port: "both", uses: ["turbo-low"], cidMax: 346, durIn: 231, durEx: 237, liftIn: 0.605, liftEx: 0.610, lsa: 115, rpmMin: 2500, rpmMax: 7400, card: "Comp LST Stage 2, published for a 5.3 with a lower-backpressure turbo. 2,500 to 7,400 RPM, 115 LSA. Stock springs cannot be used." },
-    { part: "Summit SUM-8715", port: "both", uses: ["turbo-high", "super"], durIn: 222, durEx: 233, liftIn: 0.600, liftEx: 0.575, lsa: 115, overlap: -3, ivc: 43, rpmMin: 2800, rpmMax: 6800, card: "Summit Stage 1 turbo card for a single turbo. Published overlap at 0.050 is -3 degrees, intake closes 43 degrees after bottom dead center, 2,800 to 6,800 RPM. Order the cathedral or rectangle core that matches the head." },
+    { part: "Summit SUM-8715", port: "both", uses: ["turbo-high", "super", "nitrous"], durIn: 222, durEx: 233, liftIn: 0.600, liftEx: 0.575, lsa: 115, overlap: -3, ivc: 43, rpmMin: 2800, rpmMax: 6800, card: "Summit Stage 1. Published overlap at 0.050 is -3 degrees, intake closes 43 degrees after bottom dead center, 2,800 to 6,800 RPM. Summit says this card works with a turbo, nitrous, or a supercharger, and it is the largest of their stages that works with a stock converter. Order the cathedral or rectangle core that matches the head." },
     { part: "Summit SUM-8706", port: "both", uses: ["turbo-high", "super"], durIn: 226, durEx: 230, liftIn: 0.600, liftEx: 0.575, lsa: 113, overlap: 2, ivc: 42, rpmMin: 3000, rpmMax: 7000, card: "Summit Stage 2 turbo card. Summit published it to keep overlap at 2 degrees when turbine pressure is high. Intake closes 42 degrees after bottom dead center, 3,000 to 7,000 RPM. Order the core that matches the head." },
     { part: "Summit SUM-8716", port: "both", uses: ["turbo-high", "super"], durIn: 231, durEx: 234, liftIn: 0.600, liftEx: 0.575, lsa: 115, overlap: 2, ivc: 46, rpmMin: 3000, rpmMax: 7000, card: "Summit Stage 3 turbo card for a single turbo with higher turbine pressure. Published overlap is 2 degrees, 3,000 to 7,000 RPM. Order the core that matches the head." },
     { part: "Summit SUM-8717", port: "both", uses: ["turbo-high", "super"], durIn: 237, durEx: 234, liftIn: 0.625, liftEx: 0.600, lsa: 117, overlap: 2, ivc: 50, rpmMin: 3500, rpmMax: 7200, card: "Summit Stage 4 turbo card. Reverse split, 237/234 at 0.050, 117 LSA, published for a single turbo with a T4 hot side. Overlap is 2 degrees. 3,500 to 7,200 RPM. Order the core that matches the head." },
-    { part: "BTR-TURBOSTG4", port: "both", uses: ["turbo-low"], durIn: 227, durEx: null, liftIn: 0.618, liftEx: 0.618, lsa: 115, rpmMin: 6400, rpmMax: 8200, card: "Brian Tooley Stage 4 V2 turbo card, 227 intake duration at 0.050 and 115 LSA. Exhaust duration is printed 24X, so overlap is not calculated. Published for a stock-stroke engine over 8,000 RPM with the matching valvetrain, and for about 408 cubic inches at 6,400 to 6,800 RPM." }
+    { part: "BTR-TURBOSTG4", port: "both", uses: ["turbo-low"], durIn: 227, durEx: null, liftIn: 0.618, liftEx: 0.618, lsa: 115, rpmMin: 6400, rpmMax: 8200, card: "Brian Tooley Stage 4 V2 turbo card, 227 intake duration at 0.050 and 115 LSA. Exhaust duration is printed 24X, so overlap is not calculated. Published for a stock-stroke engine over 8,000 RPM with the matching valvetrain, and for about 408 cubic inches at 6,400 to 6,800 RPM." },
+    { part: "BTR-53NITROUS", port: "both", uses: ["nitrous"], cidMax: 346, durIn: 233, durEx: 250, liftIn: 0.631, liftEx: 0.617, lsa: 113, ivc: 44.5, rpmMin: 5200, rpmMax: 7500, band: "Higher RPM, high stall", card: "Brian Tooley 5.3 nitrous cam. The cam card prints 233/250 at 0.050, 113 LSA, and 0.631/0.617 net lift with a 1.7 rocker. Intake closes 44.5 degrees after bottom dead center. BTR describes a rough idle, a high stall, and power in the higher RPM range. They do not print a closed RPM band on that card." },
+    { part: "BTR-400+NITROUS", port: "both", uses: ["nitrous"], cidMin: 400, durIn: 247, durEx: null, liftIn: 0.618, liftEx: 0.618, lsa: 112, rpmMin: 6800, rpmMax: 8000, band: "7,500 to 8,000 with the springs they name", card: "Brian Tooley 400-plus nitrous cam, 247 intake duration at 0.050 and 112 LSA. Exhaust duration is printed 27X, so overlap is not calculated. BTR says 7,500 RPM with SP010 springs and valves under 105 grams, and 8,000 RPM with SK703 springs shimmed to 1.700 and lightweight valves. Check piston to valve. A 1-bolt engine needs the 3-bolt conversion." }
 ];
 
 function camOverlap(cam) {
@@ -504,11 +510,37 @@ function camCandidates(head, port, cid, adder) {
     });
 }
 
-function pickCam(list, rpm) {
+const RACE_CAMS = {
+    "Comp Cams 54-461-11": true,
+    "Comp Cams 54-462-11": true,
+    "Comp Cams 54-465-11": true,
+    "Comp Cams 54-466-11": true,
+    "Comp Cams 54-471-11": true,
+    "Comp Cams 54-472-11": true,
+    "Comp Cams 54-475-11": true,
+    "Comp Cams 54-476-11": true,
+    "BTR-TURBOSTG4": true,
+    "BTR-53NITROUS": true,
+    "BTR-400+NITROUS": true
+};
+
+function pickCam(list, rpm, job) {
     const eligible = list.filter(cam => !(cam.stock && rpm > 5600));
     if (!eligible.length) return null;
     const inside = eligible.filter(cam => rpm >= cam.rpmMin && rpm <= cam.rpmMax);
     if (inside.length) {
+        if (job === "street") {
+            const tame = inside.filter(cam => !RACE_CAMS[cam.part]);
+            const pool = tame.length ? tame : inside;
+            pool.sort((a, b) => a.durIn - b.durIn);
+            return pool[0];
+        }
+        if (job === "drag") {
+            const near = inside.filter(cam => (cam.rpmMax - rpm) <= 800);
+            const pool = near.length ? near : inside;
+            pool.sort((a, b) => b.durIn - a.durIn);
+            return pool[0];
+        }
         inside.sort((a, b) => {
             const gap = (a.rpmMax - rpm) - (b.rpmMax - rpm);
             if (gap) return gap;
@@ -530,7 +562,8 @@ function pickCam(list, rpm) {
     return pool[0];
 }
 
-function overlapLine(overlap) {
+function overlapLine(overlap, adder, cam) {
+    if (adder === "nitrous" && cam && cam.durEx != null && cam.durEx > cam.durIn) return " The exhaust duration is longer than the intake. That is the published nitrous split, so the extra exhaust from the shot has time to leave.";
     if (overlap == null) return "";
     if (overlap <= -5) return " Overlap at 0.050 is negative. That is the wide factory lobe separation, and it gives up the intake pull a longer published card uses.";
     if (overlap < 4) return " Overlap at 0.050 stays near zero, so boost is not pushed out the exhaust. That is the published turbo and supercharger pattern on this list.";
@@ -542,10 +575,11 @@ function calcCam() {
     const cid = parseFloat(document.getElementById("cm-cid").value);
     const rpm = parseFloat(document.getElementById("cm-rpm").value);
     const adder = document.getElementById("cm-adder").value;
+    const job = document.getElementById("cm-job").value;
     const port = CAM_HEADS[head] || "cathedral";
     const cidOk = Number.isFinite(cid) ? cid : 0;
     const rpmOk = Number.isFinite(rpm) ? rpm : 0;
-    const cam = pickCam(camCandidates(head, port, cidOk, adder), rpmOk);
+    const cam = pickCam(camCandidates(head, port, cidOk, adder), rpmOk, job);
     const mount = document.getElementById("cm-shop");
     if (!cam) {
         publishReadout([{ label: "Cam to order", value: "No published card", unit: "text", primary: true }]);
@@ -559,27 +593,32 @@ function calcCam() {
         { label: "Duration at 0.050", value: duration, unit: "text" },
         { label: "Valve lift", value: cam.liftIn.toFixed(3) + "/" + cam.liftEx.toFixed(3), unit: "text" },
         { label: "Lobe separation", value: cam.lsa, unit: "deg" },
-        { label: "Published range", value: cam.rpmMin.toLocaleString("en-US") + "-" + cam.rpmMax.toLocaleString("en-US"), unit: "text" }
+        { label: "Published range", value: cam.band || (cam.rpmMin.toLocaleString("en-US") + "-" + cam.rpmMax.toLocaleString("en-US")), unit: "text" }
     ];
     if (overlap == null) rows.push({ label: "Overlap at 0.050", value: "Not published", unit: "text" });
     else rows.push({ label: "Overlap at 0.050", value: overlap, unit: "deg" });
     if (Number.isFinite(cam.ivc)) rows.push({ label: "Intake close at 0.050", value: cam.ivc + " ABDC", unit: "text" });
     publishReadout(rows);
     let limit = "";
-    if (rpmOk > cam.rpmMax) {
+    if (cam.band) {
+        limit = "";
+    } else if (rpmOk > cam.rpmMax) {
         limit = " This card is published to " + cam.rpmMax.toLocaleString("en-US") + " RPM. No card on this list is published to " + rpmOk.toLocaleString("en-US") + " RPM.";
     } else if (rpmOk < cam.rpmMin) {
         limit = " This card is published from " + cam.rpmMin.toLocaleString("en-US") + " RPM. No card on this list starts as low as " + rpmOk.toLocaleString("en-US") + " RPM.";
     }
     if (mount) {
         const q = encodeURIComponent(cam.part);
-        mount.innerHTML = "<p>" + cam.card + overlapLine(overlap) + limit + "</p>"
+        const useLine = job === "street"
+            ? " Street uses the shortest published card that still covers this RPM."
+            : (job === "drag" ? " Drag uses the longest published card aimed at this RPM." : "");
+        mount.innerHTML = "<p>" + cam.card + overlapLine(overlap, adder, cam) + useLine + limit + "</p>"
             + '<a href="https://www.summitracing.com/search?keyword=' + q + '" rel="noopener">Summit Racing, ' + cam.part + "</a>"
             + '<a href="https://www.jegs.com/search?Ntt=' + q + '" rel="noopener">Jegs, ' + cam.part + "</a>"
             + '<p class="shop-note">The link searches that part number. Check piston-to-valve clearance and the valve springs before you order.</p>';
     }
 }
-bindCalc(calcCam, ["cm-head", "cm-cid", "cm-rpm", "cm-adder"]);
+bindCalc(calcCam, ["cm-head", "cm-cid", "cm-rpm", "cm-adder", "cm-job"]);
 
     </script>
 </body>
