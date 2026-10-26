@@ -1787,7 +1787,7 @@ LS_ROD_LENGTHS = (
     ("6.200", "6.200 in (long)"),
 )
 LS_PINS = (("pressed", "Pressed pin"), ("floating", "Floating pin"))
-LS_INTENTS = (("na", "Naturally aspirated"), ("turbo", "Turbocharged"), ("super", "Supercharged"))
+LS_INTENTS = (("na", "Naturally aspirated"), ("turbo", "Turbocharged"), ("super", "Supercharged"), ("nitrous", "Nitrous"))
 LS_BUILD_FUELS = (("gasoline", "Gasoline (91/93)"), ("e85", "E85"), ("methanol", "Methanol"), ("race", "Race gas"))
 LS_PRESETS = {
     "ls-engine-builder": {"block": "lq4", "crank": "s3622", "rod": "pm", "rodlen": "6.098", "pin": "pressed", "piston": "hyper", "head": "h317", "intent": "na", "fuel": "gasoline", "bore": "4.000", "boost": "0", "rpm": "6000", "gasket": "0.051", "deck": "0.005", "spec": "LQ4 iron 6.0, 317 heads, naturally aspirated"},
@@ -1852,7 +1852,7 @@ def ls_html(row):
         <div class="field"><label for="ls-fuel">Fuel</label><select id="ls-fuel">{options(LS_BUILD_FUELS, preset["fuel"])}</select></div>
     </div>
     <div class="grid-2">
-        <div class="field"><label for="ls-boost">Target boost (PSI)</label><input type="number" id="ls-boost" value="{esc(preset["boost"])}" min="0" max="40" step="0.5"{boost_disabled}></div>
+        <div class="field"><label for="ls-boost" id="ls-boost-label">Target boost (PSI)</label><input type="number" id="ls-boost" value="{esc(preset["boost"])}" min="0" max="600" step="0.5"{boost_disabled}></div>
         <div class="field"><label for="ls-rpm">Peak RPM</label><input type="number" id="ls-rpm" value="{esc(preset["rpm"])}" min="4000" max="8500" step="100"></div>
     </div>
     <p class="field-hint">A 4.000 in crank in an iron 5.3 or 6.0 is the budget stroker. A 3.268 in crank in a 6.0 is the destroker. Power figures are planning limits for a tuned engine, not a guarantee.</p>
@@ -1880,7 +1880,7 @@ def ls_html(row):
             <thead><tr><th>Check</th><th>Detail</th><th>Result</th><th>Status</th></tr></thead>
             <tbody id="ls-matrix"></tbody>
         </table>
-        <p class="field-hint">Horsepower and boost ratings are planning limits. The cam row is a starting profile, not a finished cam card.</p>
+        <p class="field-hint">Horsepower is the airflow estimate, plus the nitrous shot when that adder is selected. The power row flags a part rated below that number. The cam row is a starting profile.</p>
     </div>
     """
     return calculator_shell(primary, advanced, "Print build sheet", power_toggle=True, results_extra=results)
@@ -1927,6 +1927,9 @@ function camPlan(intent, cid) {
     }
     if (intent === "super") {
         return { duration: clamp(Math.round(216 + (cid - 346) * 0.04), 214, 230), lsa: 114, lift: 0.585, ivc: 36 };
+    }
+    if (intent === "nitrous") {
+        return { duration: clamp(Math.round(212 + (cid - 346) * 0.035), 210, 226), lsa: 113, lift: 0.570, ivc: 40 };
     }
     const duration = clamp(Math.round(208 + (cid - 330) * 0.07), 206, 238);
     const lift = Math.min(0.65, 0.54 + Math.max(0, cid - 330) * 0.00045);
@@ -1999,8 +2002,14 @@ function calcLs() {
     const chamber = chamberRaw ? Math.max(20, parseFloat(chamberRaw) || head.cc) : head.cc;
     const rpm = clamp(lsNum("ls-rpm", 6400), 4000, 8500);
     const boostEl = document.getElementById("ls-boost");
+    const boostLabel = document.getElementById("ls-boost-label");
+    const nitrous = intent === "nitrous";
+    const boosted = intent === "turbo" || intent === "super";
     if (boostEl) boostEl.disabled = intent === "na";
-    const boost = intent === "na" ? 0 : Math.max(0, lsNum("ls-boost", 0));
+    if (boostLabel) boostLabel.textContent = nitrous ? "Nitrous shot (HP)" : "Target boost (PSI)";
+    const adderValue = Math.max(0, lsNum("ls-boost", 0));
+    const shot = nitrous ? Math.min(600, adderValue) : 0;
+    const boost = boosted ? Math.min(40, adderValue) : 0;
     const cid = cidOf(bore, stroke);
     const delta = cid - cidOf(bore, block.stockStroke);
     const swept = volCc(bore, stroke);
@@ -2018,16 +2027,16 @@ function calcLs() {
     const ve = head.cfm >= 300 ? 0.93 : (head.cfm >= 240 ? 0.88 : 0.84);
     const naHp = Math.max(1, Math.min(cid * rpm * ve / 3456 * 0.85, head.cfm * 2.05));
     const adder = intent === "super" ? 0.88 : 0.9;
-    const airHp = intent === "na" ? naHp : naHp * ((14.7 + boost) / 14.7) * adder;
+    let airHp = naHp;
+    if (boosted) airHp = naHp * ((14.7 + boost) / 14.7) * adder;
+    if (nitrous) airHp = naHp + shot;
     let hardware = { phrase: "The block is", hp: block.hp };
     [
         { phrase: "The crank is", hp: crank.hp },
         { phrase: "The rods are", hp: rod.hp },
         { phrase: "The pistons are", hp: piston.hp }
     ].forEach(item => { if (item.hp < hardware.hp) hardware = item; });
-    const ceiling = Math.min(airHp, hardware.hp);
-    const shown = ceiling * wheelScale();
-    const boostRoom = Math.max(0, Math.min(block.boost, (hardware.hp / (naHp * adder)) * 14.7 - 14.7));
+    const shown = airHp * wheelScale();
     let strokeLabel = "Stock stroke";
     if (delta >= 1.5) strokeLabel = "Stroker, +" + delta.toFixed(0) + " ci";
     else if (delta <= -1.5) strokeLabel = "Destroker, " + Math.abs(delta).toFixed(0) + " ci down";
@@ -2080,19 +2089,17 @@ function calcLs() {
     const rrResult = rodRatio.toFixed(2) + ":1. " + (rodRatio < 1.5 ? "Low rod ratio and more skirt load." : (rodRatio > 1.8 ? "High rod ratio, happier at RPM." : "Healthy rod ratio."));
     const rpmStatus = rpm <= rod.rpm ? "Good" : "Watch";
     let powerStatus = "Good";
-    let powerResult = "About " + Math.round(ceiling) + " HP at the crank, limited by airflow.";
+    let powerResult = "About " + Math.round(airHp) + " HP at the crank.";
+    if (nitrous) powerResult += " The " + Math.round(shot) + " HP shot is added to the naturally aspirated estimate.";
     if (!realClearance) {
         powerStatus = "No";
         powerResult = "Compression volume is not real until the piston clears the head.";
-    } else if (intent !== "na" && boost > block.boost + 0.4) {
+    } else if (boosted && boost > block.boost + 0.4) {
         powerStatus = "No";
-        powerResult = block.boost + " PSI is the planning limit for this block. The request is " + boost.toFixed(1) + " PSI.";
+        powerResult = "About " + Math.round(airHp) + " HP at the crank. This block's planning limit is " + block.boost + " PSI, and the request is " + boost.toFixed(1) + " PSI.";
     } else if (airHp > hardware.hp + 20) {
         powerStatus = "Watch";
-        powerResult = "Air can make about " + Math.round(airHp) + " HP. " + hardware.phrase + " the limit at " + hardware.hp + " HP.";
-        if (intent !== "na") powerResult += " About " + boostRoom.toFixed(1) + " PSI stays inside that limit.";
-    } else if (hardware.hp <= airHp) {
-        powerResult = "About " + Math.round(ceiling) + " HP at the crank. " + hardware.phrase + " the closest hardware limit.";
+        powerResult += " " + hardware.phrase + " the planning limit at " + hardware.hp + " HP.";
     }
     const scrResult = realClearance
         ? scr.toFixed(2) + ":1. Target " + band.scrLo.toFixed(1) + " to " + band.scrHi.toFixed(1) + " for this fuel and power adder."
@@ -2119,7 +2126,7 @@ function calcLs() {
     lsText("ls-piston-note", piston.note);
     const assess = document.getElementById("ls-assess");
     if (assess) {
-        const intentName = intent === "turbo" ? "turbo" : (intent === "super" ? "supercharged" : "naturally aspirated");
+        const intentName = intent === "turbo" ? "turbo" : (intent === "super" ? "supercharged" : (nitrous ? "nitrous" : "naturally aspirated"));
         const sentences = [cid.toFixed(0) + " ci " + intentName + " combination. " + strokeLabel + "."];
         if (!realClearance) sentences.push("The piston is into the head. Add dish, gasket thickness, or deck clearance before the compression number means anything.");
         else if (scrStatus === "Good" && dcrStatus === "Good") sentences.push("Static compression is " + scr.toFixed(2) + ":1 and dynamic is " + dcr.toFixed(2) + ":1. Both sit in the usual window for this fuel.");
@@ -2142,8 +2149,8 @@ function calcLs() {
             matrixRow("Static compression", chamber.toFixed(1) + " cc chamber", scrResult, scrStatus),
             matrixRow("Dynamic compression", ivc + " deg ABDC", dcrResult, dcrStatus),
             matrixRow("RPM", rod.label, Math.round(rpm).toLocaleString("en-US") + " RPM. Rod planning limit is " + rod.rpm.toLocaleString("en-US") + ".", rpmStatus),
-            matrixRow("Power", intent === "na" ? "Naturally aspirated" : (boost.toFixed(1) + " PSI"), powerResult, powerStatus),
-            matrixRow("Cam profile", intent === "na" ? "Naturally aspirated" : (intent === "turbo" ? "Turbo" : "Supercharged"), camResult, "Good")
+            matrixRow("Power", nitrous ? (Math.round(shot) + " HP shot") : (boosted ? (boost.toFixed(1) + " PSI") : "Naturally aspirated"), powerResult, powerStatus),
+            matrixRow("Cam profile", nitrous ? "Nitrous" : (intent === "turbo" ? "Turbo" : (intent === "super" ? "Supercharged" : "Naturally aspirated")), camResult, "Good")
         );
     }
 }
@@ -2159,6 +2166,21 @@ if (lsPiston) {
     lsPiston.addEventListener("change", () => {
         const next = LS.pistons[lsPiston.value];
         if (next) document.getElementById("ls-dish").value = next.dish;
+    });
+}
+const lsIntent = document.getElementById("ls-intent");
+if (lsIntent) {
+    lsIntent.addEventListener("change", () => {
+        const field = document.getElementById("ls-boost");
+        if (!field) return;
+        const current = parseFloat(field.value);
+        if (lsIntent.value === "nitrous") {
+            field.step = "25";
+            if (!Number.isFinite(current) || current < 50) field.value = "150";
+        } else if (lsIntent.value === "turbo" || lsIntent.value === "super") {
+            field.step = "0.5";
+            if (Number.isFinite(current) && current > 45) field.value = "10";
+        }
     });
 }
 bindCalc(calcLs, ["ls-block", "ls-bore", "ls-crank", "ls-rod", "ls-rodlen", "ls-pin", "ls-piston", "ls-head", "ls-intent", "ls-fuel", "ls-boost", "ls-rpm", "ls-gasket", "ls-deck", "ls-deck-height", "ls-dish", "ls-chamber", "ls-ivc", "dt-loss"]);
