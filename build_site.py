@@ -349,7 +349,7 @@ th { background: #202020; color: var(--accent-red); text-transform: uppercase; f
     border-radius: 6px;
     margin: 0;
 }
-.variant-list { list-style: none; padding: 0; margin: 0; max-height: 420px; overflow: auto; }
+.variant-list { list-style: none; padding: 0; margin: 0; }
 .variant-list a {
     display: block;
     padding: 6px 0;
@@ -359,6 +359,17 @@ th { background: #202020; color: var(--accent-red); text-transform: uppercase; f
     font-size: 0.82rem;
 }
 .variant-list a:hover { color: var(--text-main); }
+.config-drawer { background: var(--card-bg); }
+.config-drawer summary { color: var(--text-muted); }
+.config-scroll { max-height: 160px; overflow: auto; padding-right: 6px; }
+.config-scroll::-webkit-scrollbar { width: 8px; }
+.config-scroll::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 8px; }
+.config-scroll .variant-list a { font-size: 0.78rem; padding: 5px 0; }
+.cheat-list { margin: 0 0 14px; padding-left: 18px; color: var(--text-muted); font-size: 0.84rem; }
+.cheat-list li { margin: 0 0 6px; }
+.faq-item { margin: 0 0 12px; }
+.faq-item h3 { margin: 0 0 3px; font-size: 0.84rem; color: var(--text-main); font-weight: 650; }
+.faq-item p { margin: 0; }
 .site-footer {
     max-width: 1350px;
     margin: 40px auto 20px;
@@ -1758,13 +1769,89 @@ def neighbor_pages(page, pages):
     return picks
 
 
+TRACKSIDE_NOTES = {
+    "Transmission": (
+        ("How is shift recovery RPM calculated?", "Recovery RPM is the shift RPM multiplied by the next gear ratio divided by the gear you are leaving. The drop needs to stay above converter stall and inside the powerband."),
+        ("What does the 336 constant represent?", "Miles per hour equals RPM times tire diameter, divided by overall ratio times 336. Overall ratio is the transmission ratio times the rear gear."),
+        ("Why does a taller tire change the chart?", "A taller tire lowers engine RPM at the same trap speed. Use the grown diameter, not the sidewall number, once the tire is at speed."),
+    ),
+    "Turbo": (
+        ("How do you match a turbo?", "Match airflow in pounds per minute and the pressure ratio to a compressor map, then check the island at the boost you will actually run."),
+        ("Why can the typed boost miss the power number?", "Naturally aspirated flow at that RPM and volumetric efficiency sets how much boost the horsepower target needs. A short boost number runs out of air first."),
+        ("What does compressor outlet temperature tell you?", "Outlet temperature rises with pressure ratio and falls as compressor efficiency improves. The intercooler has to pull that heat out before the intake valve."),
+    ),
+    "Suspension": (
+        ("What is instant center?", "Instant center is where the upper and lower link lines meet. Its height versus the center of gravity sets anti-squat."),
+        ("What anti-squat range do drag cars use?", "Many door cars land around 100% to 140% anti-squat so the rear plants without unloading the front too early."),
+        ("Why do small hole moves matter?", "Moving a front or rear mount an inch changes the intersection a lot. Measure from the axle center and the ground, then change one hole at a time."),
+    ),
+    "Exhaust": (
+        ("How are primary tubes sized?", "Primary diameter follows horsepower per cylinder and the RPM where you want the torque. Bigger primaries move the peak up and can hurt the bottom."),
+        ("What about a turbo downpipe?", "The downpipe has to carry the turbine discharge without becoming the restriction. Area matters more than a huge open collector on a turbo car."),
+        ("Why does backpressure hurt a boosted engine?", "Excess backpressure raises turbine drive pressure, adds heat, and makes the same boost harder to control."),
+    ),
+    "Supercharger": (
+        ("How does pulley ratio set boost?", "Pulley ratio is crank pulley diameter divided by blower pulley diameter. A smaller blower pulley raises ratio, rotor speed, and boost."),
+        ("Why do roots, screw, and centrifugal blowers differ?", "Roots and twin-screw blowers move a fixed volume per revolution. A centrifugal compressor builds boost with shaft speed, so it comes on later."),
+        ("What does the boost factor mean?", "The factor estimates PSI per unit of overdrive for that blower family. It is a planning number. The gauge and the inlet temperature decide the real result."),
+    ),
+    "RearGear": (
+        ("How does gear ratio change finish-line RPM?", "A higher numeric gear raises engine RPM at the same trap speed and tire diameter."),
+        ("What is a useful drag gear window?", "The gear should put the engine near peak power at the stripe without forcing an extra shift. A street gear trades that RPM for cruise."),
+        ("Why measure the tire at speed?", "Growth makes the tire taller, which drops RPM. Size the gear with the grown diameter."),
+    ),
+    "Tire": (
+        ("Why do drag tires grow?", "Centrifugal force stretches the carcass, so the rolling diameter is larger than the static measurement."),
+        ("How does growth change the gear?", "A larger dynamic diameter lowers engine RPM at trap speed. The rollout and the gear chart should use that grown number."),
+        ("What growth is typical?", "A radial might grow a few percent. A slick at speed can grow more. The percentage on this page is the estimate to test, not a measured rollout."),
+    ),
+    "Wastegate": (
+        ("What sets wastegate size?", "The gate has to bypass the exhaust the turbine does not swallow at the target boost. Airflow, boost, and drive pressure decide the valve area."),
+        ("What causes boost creep?", "The valve or the discharge path is too small, so exhaust still drives the turbine after the gate is open."),
+        ("Why do twins use two gates?", "Each scroll or each turbo needs its own bypass path. One undersized gate on a divided housing leaves one side uncontrolled."),
+    ),
+    "Fuel": (
+        ("How is injector size chosen?", "Rated flow is flywheel horsepower times BSFC, divided by injector count, max duty, and the pressure correction. Buy the smallest common size that stays inside the duty cap."),
+        ("Why does base pressure change the rating?", "Flow scales with the square root of the pressure ratio versus the 43.5 PSI rating pressure. A higher base lets the same injector support more power."),
+        ("What duty cycle is safe?", "A cap around 80% leaves room for the injector to open, close, and stay cool. Living at 90% or more is where lean spikes show up."),
+    ),
+    "Electrical": (
+        ("How is the circuit current found?", "Load amps are watts divided by voltage. Size the wire, fuse, and relay above that, and apply a duty factor for a fan or pump that is not on full time."),
+        ("Why size the wire for the run length?", "Voltage drop grows with current and length. A fuel pump at the back of the car needs a larger gauge than the same pump next to the battery."),
+        ("What does the relay protect?", "The relay lets a small switch current close a high-current path. The fuse protects the wire, and it belongs at the power source."),
+    ),
+    "CAS": (
+        ("What is a compressed-air supercharger doing?", "A stored-air system raises manifold pressure from a bottle. Pressure ratio is boost plus barometer, divided by barometer."),
+        ("How long does the bottle last?", "Flow rate and bottle volume set the pass. A bigger shot or a longer gear uses the supply faster."),
+        ("What should the plumbing handle?", "The solenoid, lines, and nozzles have to pass the mass flow at the pressure you dial in. A restriction downstream of the regulator is lost boost."),
+    ),
+}
+
+
+def notes_box(page):
+    keyword = page["target_keyword"].rstrip(".")
+    spec = spec_text(page)
+    lead = f"{keyword}. {spec}" if spec else f"{keyword}. The inputs above are the starting point for this combination."
+    cheat = (
+        '<ul class="cheat-list">'
+        "<li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li>"
+        "<li>Converter slip at the finish is often kept around 5% to 8%.</li>"
+        "<li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li>"
+        "</ul>"
+    )
+    items = []
+    for question, answer in TRACKSIDE_NOTES[page["category"]]:
+        items.append(f'<div class="faq-item"><h3>{esc(question)}</h3><p>{esc(answer)}</p></div>')
+    return content_box("Trackside notes", f"<p>{esc(lead)}</p>{cheat}{''.join(items)}")
+
+
 def related_box(page, pages, hubs_by_category):
     links = []
     hub = hubs_by_category.get(page["category"])
     if page["role"] == "hub":
         links.extend(variants_for(page["category"], pages))
         title = "Configurations"
-        intro = f"<p>{len(links)} saved combinations for this calculator.</p>" if links else ""
+        intro = f'<p class="field-hint">{len(links)} saved combinations for this calculator.</p>' if links else ""
     else:
         if hub:
             links.append(hub)
@@ -1774,7 +1861,12 @@ def related_box(page, pages, hubs_by_category):
     listing = link_items(links)
     if not listing:
         return ""
-    return content_box(title, intro + listing)
+    return (
+        '<details class="accordion config-drawer">'
+        f"<summary>{esc(title)} ({len(links)})</summary>"
+        f'<div class="accordion-body">{intro}<div class="config-scroll">{listing}</div></div>'
+        "</details>"
+    )
 
 
 def page_tokens(page, pages, hubs, hubs_by_category):
@@ -1795,7 +1887,7 @@ def page_tokens(page, pages, hubs, hubs_by_category):
         "H1": esc(page["target_keyword"]),
         "SPEC": f'<p class="spec">{esc(spec)}</p>' if spec else "",
         "TOOL": html_fn(page),
-        "CONTENT": formula_box(formula) + related_box(page, pages, hubs_by_category),
+        "CONTENT": formula_box(formula) + notes_box(page) + related_box(page, pages, hubs_by_category),
         "FOOTER": footer(),
         "SCRIPT": UI_SCRIPT + "\n" + script,
     }

@@ -227,7 +227,7 @@ th { background: #202020; color: var(--accent-red); text-transform: uppercase; f
     border-radius: 6px;
     margin: 0;
 }
-.variant-list { list-style: none; padding: 0; margin: 0; max-height: 420px; overflow: auto; }
+.variant-list { list-style: none; padding: 0; margin: 0; }
 .variant-list a {
     display: block;
     padding: 6px 0;
@@ -237,6 +237,17 @@ th { background: #202020; color: var(--accent-red); text-transform: uppercase; f
     font-size: 0.82rem;
 }
 .variant-list a:hover { color: var(--text-main); }
+.config-drawer { background: var(--card-bg); }
+.config-drawer summary { color: var(--text-muted); }
+.config-scroll { max-height: 160px; overflow: auto; padding-right: 6px; }
+.config-scroll::-webkit-scrollbar { width: 8px; }
+.config-scroll::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 8px; }
+.config-scroll .variant-list a { font-size: 0.78rem; padding: 5px 0; }
+.cheat-list { margin: 0 0 14px; padding-left: 18px; color: var(--text-muted); font-size: 0.84rem; }
+.cheat-list li { margin: 0 0 6px; }
+.faq-item { margin: 0 0 12px; }
+.faq-item h3 { margin: 0 0 3px; font-size: 0.84rem; color: var(--text-main); font-weight: 650; }
+.faq-item p { margin: 0; }
 .site-footer {
     max-width: 1350px;
     margin: 40px auto 20px;
