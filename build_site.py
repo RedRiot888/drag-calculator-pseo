@@ -882,7 +882,7 @@ def spec_text(row):
     if row["category"] == "Compression":
         return "Loaded defaults: 4.030 bore, 3.750 stroke, 64 cc chamber."
     if row["category"] == "Cam":
-        return "Loaded defaults: 243 cathedral head, naturally aspirated, 6,200 RPM."
+        return "Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, 6,200 RPM."
     parts = []
     for key in CATEGORY_FIELDS[row["category"]]:
         value = cell(row, key)
@@ -5038,13 +5038,22 @@ def cam_html(row):
         ("ls7", "LS7 rectangle"),
         ("afr", "Aftermarket rectangle"),
     )
+    adders = (
+        ("na", "Naturally aspirated"),
+        ("turbo-low", "Turbo, large or twin"),
+        ("turbo-high", "Turbo, single small"),
+        ("super", "Supercharger"),
+    )
     primary = f"""
     <div class="grid-2">
         <div class="field"><label for="cm-head">Cylinder head</label><select id="cm-head">{options(heads, "h243")}</select></div>
-        <div class="field"><label for="cm-rpm">Peak RPM</label><input type="number" id="cm-rpm" value="6200" min="4500" max="8000" step="100"></div>
+        <div class="field"><label for="cm-cid">Cubic inches</label><input type="number" id="cm-cid" value="364" min="280" max="500" step="1"></div>
     </div>
-    <div class="field"><label for="cm-adder">Power adder</label><select id="cm-adder">{options((("na", "Naturally aspirated"), ("boost", "Turbo or supercharged")), "na")}</select></div>
-    <p class="field-hint">Every cam on this page is a published card with a part number. The page does not grind a lobe.</p>
+    <div class="grid-2">
+        <div class="field"><label for="cm-rpm">Peak RPM</label><input type="number" id="cm-rpm" value="6200" min="4500" max="8500" step="100"></div>
+        <div class="field"><label for="cm-adder">Power adder</label><select id="cm-adder">{options(adders, "na")}</select></div>
+    </div>
+    <p class="field-hint">A 5.3 is about 325 cubic inches, a 6.0 is 364, a 6.2 is 376, and a 408 is the stroker. A large turbo or a pair keeps turbine pressure down. A single small turbo does not. Every result is a published card. The page does not grind a lobe.</p>
     """
     return calculator_shell(primary, "", "Print cam card", results_extra='<div id="cm-shop" class="gear-shop"></div>')
 
@@ -5060,69 +5069,136 @@ const CAM_HEADS = {
     afr: "rectangle"
 };
 const CAMS = [
-    { part: "GM 12561721", port: "cathedral", durIn: 196, durEx: 207, liftIn: 0.467, liftEx: 0.479, lsa: 116, boost: true, rpm: 0, card: "196/207 at 0.050, 0.467/0.479 lift, 116 LSA. 2001 LS1 and 6.0 truck cam." },
-    { part: "GM 12560950", port: "cathedral", durIn: 204, durEx: 211, liftIn: 0.525, liftEx: 0.525, lsa: 116, boost: true, rpm: 0, card: "204/211 at 0.050, 0.525/0.525 lift, 116 LSA. 2001 LS6 cam." },
-    { part: "GM 12565308", port: "cathedral", durIn: 204, durEx: 218, liftIn: 0.551, liftEx: 0.548, lsa: 117.5, boost: true, rpm: 0, card: "204/218 at 0.050, 0.551/0.548 lift, 117.5 LSA. 2002-2004 LS6 cam." },
-    { part: "GM 12623063", port: "rectangle", durIn: 204, durEx: 211, liftIn: 0.551, liftEx: 0.522, lsa: 117, boost: true, rpm: 0, card: "204/211 at 0.050, 0.551/0.522 lift, 117 LSA. LS3 cam, single-bolt, no AFM and no VVT." },
-    { part: "GM 12638426", port: "rectangle", durIn: 211, durEx: 230, liftIn: 0.558, liftEx: 0.558, lsa: 121, boost: false, rpm: 6500, card: "211/230 at 0.050, 121 LSA, 0.558/0.558 lift with a 1.7 rocker. GM lists 0.593/0.588 with the LS7 1.8 rocker, and a 6,500 RPM operating range. It does not fit a Gen III block." },
-    { part: "Comp Cams 54-469-11", port: "rectangle", durIn: 231, durEx: 247, liftIn: 0.617, liftEx: 0.624, lsa: 113, boost: false, rpmMin: 2000, rpmMax: 7000, card: "231/247 at 0.050, 0.617/0.624 lift, 113 LSA. Comp publishes 2,000 to 7,000 RPM on rectangle-port heads. Stock springs will not hold it." }
+    { part: "GM 12561721", port: "cathedral", uses: ["na"], stock: true, durIn: 196, durEx: 207, liftIn: 0.467, liftEx: 0.479, lsa: 116, rpmMin: 4000, rpmMax: 5400, card: "Factory 2001 LS1 and 6.0 truck card, 196/207 at 0.050. Stock springs fit this lobe. It is the mild end of the list." },
+    { part: "GM 12560950", port: "cathedral", uses: ["na"], stock: true, durIn: 204, durEx: 211, liftIn: 0.525, liftEx: 0.525, lsa: 116, rpmMin: 4800, rpmMax: 5800, card: "Factory 2001 LS6 card, 204/211 at 0.050. Stock springs fit this lobe." },
+    { part: "GM 12565308", port: "cathedral", uses: ["na"], stock: true, durIn: 204, durEx: 218, liftIn: 0.551, liftEx: 0.548, lsa: 117.5, rpmMin: 5200, rpmMax: 6200, card: "Factory 2002-2004 LS6 card, 204/218 at 0.050. Stock springs fit this lobe." },
+    { part: "GM 12623063", port: "rectangle", uses: ["na"], stock: true, durIn: 204, durEx: 211, liftIn: 0.551, liftEx: 0.522, lsa: 117, rpmMin: 4800, rpmMax: 5800, card: "Factory LS3 card, 204/211 at 0.050, single-bolt, no AFM and no VVT. Stock springs fit this lobe." },
+    { part: "GM 12638426", port: "rectangle", heads: ["ls7"], uses: ["na"], durIn: 211, durEx: 230, liftIn: 0.558, liftEx: 0.558, lsa: 121, rpmMin: 5600, rpmMax: 6600, card: "Factory LS7 card, 211/230 at 0.050 and 121 LSA. GM lists 0.558 lift with a 1.7 rocker and 0.593/0.588 with the LS7 1.8 rocker. Operating range 6,500 RPM. It does not fit a Gen III block." },
+    { part: "Comp Cams 54-455-11", port: "cathedral", uses: ["na"], cidMax: 359, durIn: 215, durEx: 223, liftIn: 0.604, liftEx: 0.610, lsa: 112, rpmMin: 1300, rpmMax: 6500, card: "Comp LSR cathedral card for a 4.8 to 5.7 that wants torque. Published 1,300 to 6,500 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-456-11", port: "cathedral", uses: ["na"], cidMax: 359, durIn: 219, durEx: 227, liftIn: 0.607, liftEx: 0.614, lsa: 112, rpmMin: 1500, rpmMax: 6700, card: "Comp LSR cathedral card for a broad 4.8 to 5.7 power band. Published 1,500 to 6,700 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-457-11", port: "cathedral", uses: ["na"], cidMax: 359, durIn: 223, durEx: 231, liftIn: 0.610, liftEx: 0.617, lsa: 112, rpmMin: 1700, rpmMax: 6800, card: "Comp LSR cathedral card once the intake and the exhaust can feed it. Published 1,700 to 6,800 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-458-11", port: "cathedral", uses: ["na"], cidMax: 359, durIn: 227, durEx: 235, liftIn: 0.614, liftEx: 0.621, lsa: 113, rpmMin: 1900, rpmMax: 7000, card: "Comp LSR cathedral street/strip card for a 4.8 to 5.7 with real airflow. Published 1,900 to 7,000 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-459-11", port: "cathedral", uses: ["na"], cidMin: 360, cidMax: 399, durIn: 231, durEx: 239, liftIn: 0.617, liftEx: 0.624, lsa: 113, rpmMin: 2000, rpmMax: 7000, card: "Comp LSR cathedral card for all-out 5.7 to 6.2 power. Published 2,000 to 7,000 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-460-11", port: "cathedral", uses: ["na"], cidMin: 360, cidMax: 399, durIn: 235, durEx: 243, liftIn: 0.621, liftEx: 0.624, lsa: 113, rpmMin: 2200, rpmMax: 7200, card: "Comp LSR cathedral card for mid-range through the top of a 5.7 to 6.2. Published 2,200 to 7,200 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-461-11", port: "cathedral", uses: ["na"], cidMin: 360, cidMax: 399, durIn: 239, durEx: 247, liftIn: 0.624, liftEx: 0.624, lsa: 114, rpmMin: 2400, rpmMax: 7200, card: "Comp LSR race card for aftermarket cathedral heads and higher compression. Published 2,400 to 7,200 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-462-11", port: "cathedral", uses: ["na"], cidMin: 360, cidMax: 399, durIn: 243, durEx: 251, liftIn: 0.624, liftEx: 0.624, lsa: 114, rpmMin: 2600, rpmMax: 7200, card: "Comp's longest 5.7 to 6.2 cathedral race card. Published 2,600 to 7,200 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-463-11", port: "cathedral", uses: ["na"], cidMin: 400, cidMax: 419, durIn: 247, durEx: 255, liftIn: 0.624, liftEx: 0.624, lsa: 114, rpmMin: 2400, rpmMax: 7000, card: "Comp LSR cathedral card for 400 cubic inches and up. Published 2,400 to 7,000 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-464-11", port: "cathedral", uses: ["na"], cidMin: 420, cidMax: 439, durIn: 251, durEx: 259, liftIn: 0.624, liftEx: 0.624, lsa: 115, rpmMin: 2600, rpmMax: 7000, card: "Comp LSR cathedral card for a 420-cube race head. Published 2,600 to 7,000 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-465-11", port: "cathedral", uses: ["na"], cidMin: 440, durIn: 255, durEx: 263, liftIn: 0.624, liftEx: 0.624, lsa: 115, rpmMin: 2800, rpmMax: 7200, card: "Comp LSR cathedral card for power above 6,000 RPM on 440 cubic inches and up. Published 2,800 to 7,200 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-466-11", port: "cathedral", uses: ["na"], cidMin: 440, durIn: 259, durEx: 267, liftIn: 0.624, liftEx: 0.624, lsa: 115, rpmMin: 3000, rpmMax: 7200, card: "Comp's longest cathedral LSR card, for an extreme-displacement race engine. Published 3,000 to 7,200 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-453-11", port: "rectangle", uses: ["na"], cidMax: 399, durIn: 219, durEx: 235, liftIn: 0.607, liftEx: 0.621, lsa: 113, rpmMin: 1500, rpmMax: 6700, card: "Comp LSR rectangle card for torque and a broad street band. Published 1,500 to 6,700 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-454-11", port: "rectangle", uses: ["na"], cidMax: 399, durIn: 227, durEx: 243, liftIn: 0.614, liftEx: 0.624, lsa: 113, rpmMin: 1900, rpmMax: 7000, card: "Comp LSR rectangle street/strip card. Published 1,900 to 7,000 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-469-11", port: "rectangle", uses: ["na"], cidMax: 399, durIn: 231, durEx: 247, liftIn: 0.617, liftEx: 0.624, lsa: 113, rpmMin: 2000, rpmMax: 7000, card: "Comp LSR rectangle card for a wide 5.7 to 6.2 power band. Published 2,000 to 7,000 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-470-11", port: "rectangle", uses: ["na"], cidMax: 399, durIn: 235, durEx: 251, liftIn: 0.621, liftEx: 0.624, lsa: 113, rpmMin: 2200, rpmMax: 7200, card: "Comp LSR rectangle card for mid-range through the top. Published 2,200 to 7,200 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-471-11", port: "rectangle", uses: ["na"], cidMax: 399, durIn: 239, durEx: 255, liftIn: 0.624, liftEx: 0.624, lsa: 114, rpmMin: 2400, rpmMax: 7200, card: "Comp LSR race card for aftermarket rectangle heads and higher compression. Published 2,400 to 7,200 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-472-11", port: "rectangle", uses: ["na"], cidMax: 399, durIn: 243, durEx: 259, liftIn: 0.624, liftEx: 0.624, lsa: 114, rpmMin: 2600, rpmMax: 7200, card: "Comp's longest 5.7 to 6.2 rectangle race card. Published 2,600 to 7,200 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-473-11", port: "rectangle", uses: ["na"], cidMin: 400, cidMax: 419, durIn: 247, durEx: 263, liftIn: 0.624, liftEx: 0.624, lsa: 114, rpmMin: 2400, rpmMax: 7000, card: "Comp LSR rectangle card for 400 cubic inches and up. Published 2,400 to 7,000 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-474-11", port: "rectangle", uses: ["na"], cidMin: 420, cidMax: 439, durIn: 251, durEx: 267, liftIn: 0.624, liftEx: 0.624, lsa: 115, rpmMin: 2600, rpmMax: 7000, card: "Comp LSR rectangle card for a 420-cube race head. Published 2,600 to 7,000 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-475-11", port: "rectangle", uses: ["na"], cidMin: 440, durIn: 255, durEx: 271, liftIn: 0.624, liftEx: 0.624, lsa: 115, rpmMin: 2800, rpmMax: 7200, card: "Comp LSR rectangle card for power above 6,000 RPM on 440 cubic inches and up. Published 2,800 to 7,200 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-476-11", port: "rectangle", uses: ["na"], cidMin: 440, durIn: 259, durEx: 275, liftIn: 0.624, liftEx: 0.624, lsa: 115, rpmMin: 3000, rpmMax: 7200, card: "Comp's longest rectangle LSR card, for an extreme-displacement race engine. Published 3,000 to 7,200 RPM. Stock springs cannot be used." },
+    { part: "Comp Cams 54-330-11", port: "both", uses: ["turbo-low", "super"], cidMax: 346, durIn: 223, durEx: 225, liftIn: 0.598, liftEx: 0.600, lsa: 115, rpmMin: 2300, rpmMax: 7400, card: "Comp LST Stage 1, published for a 4.8 or 5.3 turbo when the turbine pressure is unknown. 2,300 to 7,400 RPM, 115 LSA. Stock springs cannot be used." },
+    { part: "Comp Cams 54-332-11", port: "both", uses: ["turbo-low"], cidMax: 346, durIn: 231, durEx: 237, liftIn: 0.605, liftEx: 0.610, lsa: 115, rpmMin: 2500, rpmMax: 7400, card: "Comp LST Stage 2, published for a 5.3 with a lower-backpressure turbo. 2,500 to 7,400 RPM, 115 LSA. Stock springs cannot be used." },
+    { part: "Summit SUM-8715", port: "both", uses: ["turbo-high", "super"], durIn: 222, durEx: 233, liftIn: 0.600, liftEx: 0.575, lsa: 115, overlap: -3, ivc: 43, rpmMin: 2800, rpmMax: 6800, card: "Summit Stage 1 turbo card for a single turbo. Published overlap at 0.050 is -3 degrees, intake closes 43 degrees after bottom dead center, 2,800 to 6,800 RPM. Order the cathedral or rectangle core that matches the head." },
+    { part: "Summit SUM-8706", port: "both", uses: ["turbo-high", "super"], durIn: 226, durEx: 230, liftIn: 0.600, liftEx: 0.575, lsa: 113, overlap: 2, ivc: 42, rpmMin: 3000, rpmMax: 7000, card: "Summit Stage 2 turbo card. Summit published it to keep overlap at 2 degrees when turbine pressure is high. Intake closes 42 degrees after bottom dead center, 3,000 to 7,000 RPM. Order the core that matches the head." },
+    { part: "Summit SUM-8716", port: "both", uses: ["turbo-high", "super"], durIn: 231, durEx: 234, liftIn: 0.600, liftEx: 0.575, lsa: 115, overlap: 2, ivc: 46, rpmMin: 3000, rpmMax: 7000, card: "Summit Stage 3 turbo card for a single turbo with higher turbine pressure. Published overlap is 2 degrees, 3,000 to 7,000 RPM. Order the core that matches the head." },
+    { part: "Summit SUM-8717", port: "both", uses: ["turbo-high", "super"], durIn: 237, durEx: 234, liftIn: 0.625, liftEx: 0.600, lsa: 117, overlap: 2, ivc: 50, rpmMin: 3500, rpmMax: 7200, card: "Summit Stage 4 turbo card. Reverse split, 237/234 at 0.050, 117 LSA, published for a single turbo with a T4 hot side. Overlap is 2 degrees. 3,500 to 7,200 RPM. Order the core that matches the head." },
+    { part: "BTR-TURBOSTG4", port: "both", uses: ["turbo-low"], durIn: 227, durEx: null, liftIn: 0.618, liftEx: 0.618, lsa: 115, rpmMin: 6400, rpmMax: 8200, card: "Brian Tooley Stage 4 V2 turbo card, 227 intake duration at 0.050 and 115 LSA. Exhaust duration is printed 24X, so overlap is not calculated. Published for a stock-stroke engine over 8,000 RPM with the matching valvetrain, and for about 408 cubic inches at 6,400 to 6,800 RPM." }
 ];
 
 function camOverlap(cam) {
+    if (Number.isFinite(cam.overlap)) return cam.overlap;
+    if (!Number.isFinite(cam.durEx)) return null;
     return (cam.durIn + cam.durEx) / 2 - (2 * cam.lsa);
 }
 
-function camByPart(part) {
-    return CAMS.find(cam => cam.part === part) || null;
+function camCandidates(head, port, cid, adder) {
+    return CAMS.filter(cam => {
+        if (cam.port !== "both" && cam.port !== port) return false;
+        if (cam.heads && cam.heads.indexOf(head) < 0) return false;
+        if (cam.uses.indexOf(adder) < 0) return false;
+        if (cam.stock && adder !== "na") return false;
+        if (Number.isFinite(cam.cidMin) && cid < cam.cidMin) return false;
+        if (Number.isFinite(cam.cidMax) && cid > cam.cidMax) return false;
+        return true;
+    });
+}
+
+function pickCam(list, rpm) {
+    const eligible = list.filter(cam => !(cam.stock && rpm > 5600));
+    if (!eligible.length) return null;
+    const inside = eligible.filter(cam => rpm >= cam.rpmMin && rpm <= cam.rpmMax);
+    if (inside.length) {
+        inside.sort((a, b) => {
+            const gap = (a.rpmMax - rpm) - (b.rpmMax - rpm);
+            if (gap) return gap;
+            const nearTop = (a.rpmMax - rpm) <= 400;
+            return nearTop ? b.durIn - a.durIn : a.durIn - b.durIn;
+        });
+        return inside[0];
+    }
+    const above = eligible.filter(cam => cam.rpmMax < rpm);
+    const pool = above.length ? above : eligible.filter(cam => cam.rpmMin > rpm);
+    if (!pool.length) return eligible[0];
+    if (above.length) {
+        const bestMax = Math.max.apply(null, pool.map(cam => cam.rpmMax));
+        const close = pool.filter(cam => bestMax - cam.rpmMax <= 400);
+        close.sort((a, b) => b.durIn - a.durIn);
+        return close[0];
+    }
+    pool.sort((a, b) => a.rpmMin - b.rpmMin || a.durIn - b.durIn);
+    return pool[0];
+}
+
+function overlapLine(overlap) {
+    if (overlap == null) return "";
+    if (overlap <= -5) return " Overlap at 0.050 is negative. That is the wide factory lobe separation, and it gives up the intake pull a longer published card uses.";
+    if (overlap < 4) return " Overlap at 0.050 stays near zero, so boost is not pushed out the exhaust. That is the published turbo and supercharger pattern on this list.";
+    return " Overlap at 0.050 is positive, so the exhaust can pull the next intake charge. That is the naturally aspirated pattern on this list.";
 }
 
 function calcCam() {
     const head = document.getElementById("cm-head").value;
+    const cid = parseFloat(document.getElementById("cm-cid").value);
     const rpm = parseFloat(document.getElementById("cm-rpm").value);
-    const boosted = document.getElementById("cm-adder").value === "boost";
+    const adder = document.getElementById("cm-adder").value;
     const port = CAM_HEADS[head] || "cathedral";
+    const cidOk = Number.isFinite(cid) ? cid : 0;
     const rpmOk = Number.isFinite(rpm) ? rpm : 0;
-    let cam = null;
-    if (port === "cathedral") {
-        if (boosted || rpmOk >= 6400) cam = camByPart("GM 12565308");
-        else if (rpmOk >= 5800) cam = camByPart("GM 12560950");
-        else cam = camByPart("GM 12561721");
-    } else if (boosted) {
-        cam = camByPart("GM 12623063");
-    } else if (rpmOk >= 6800) {
-        cam = camByPart("Comp Cams 54-469-11");
-    } else if (rpmOk >= 6200) {
-        cam = camByPart("GM 12638426");
-    } else {
-        cam = camByPart("GM 12623063");
-    }
+    const cam = pickCam(camCandidates(head, port, cidOk, adder), rpmOk);
     const mount = document.getElementById("cm-shop");
     if (!cam) {
         publishReadout([{ label: "Cam to order", value: "No published card", unit: "text", primary: true }]);
         if (mount) mount.innerHTML = "";
         return;
     }
-    let limit = "";
-    if (port === "cathedral" && rpmOk >= 6800) limit = " This list has no cathedral cam published for that RPM. This is the longest cathedral card on the list, and it is not a race lobe.";
-    else if (cam.part === "Comp Cams 54-469-11" && rpmOk > 7000) limit = " Comp publishes this card to 7,000 RPM. This list has no rectangle cam published above that.";
-    else if (boosted && port === "rectangle") limit = " On boost the 113 LSA race cam stays off this list. This is the published rectangle card with the wider separation.";
-    else if (boosted && cam.part === "GM 12565308") limit = " On boost this is the widest lobe separation in the cathedral list.";
-    publishReadout([
+    const overlap = camOverlap(cam);
+    const duration = Number.isFinite(cam.durEx) ? (cam.durIn + "/" + cam.durEx) : (cam.durIn + " / not published");
+    const rows = [
         { label: "Cam to order", value: cam.part, unit: "text", primary: true },
-        { label: "Duration at 0.050", value: cam.durIn + "/" + cam.durEx, unit: "text" },
+        { label: "Duration at 0.050", value: duration, unit: "text" },
         { label: "Valve lift", value: cam.liftIn.toFixed(3) + "/" + cam.liftEx.toFixed(3), unit: "text" },
         { label: "Lobe separation", value: cam.lsa, unit: "deg" },
-        { label: "Overlap at 0.050", value: camOverlap(cam), unit: "deg" }
-    ]);
+        { label: "Published range", value: cam.rpmMin.toLocaleString("en-US") + "-" + cam.rpmMax.toLocaleString("en-US"), unit: "text" }
+    ];
+    if (overlap == null) rows.push({ label: "Overlap at 0.050", value: "Not published", unit: "text" });
+    else rows.push({ label: "Overlap at 0.050", value: overlap, unit: "deg" });
+    if (Number.isFinite(cam.ivc)) rows.push({ label: "Intake close at 0.050", value: cam.ivc + " ABDC", unit: "text" });
+    publishReadout(rows);
+    let limit = "";
+    if (rpmOk > cam.rpmMax) {
+        limit = " This card is published to " + cam.rpmMax.toLocaleString("en-US") + " RPM. No card on this list is published to " + rpmOk.toLocaleString("en-US") + " RPM.";
+    } else if (rpmOk < cam.rpmMin) {
+        limit = " This card is published from " + cam.rpmMin.toLocaleString("en-US") + " RPM. No card on this list starts as low as " + rpmOk.toLocaleString("en-US") + " RPM.";
+    }
     if (mount) {
         const q = encodeURIComponent(cam.part);
-        mount.innerHTML = "<p>" + cam.card + limit + "</p>"
+        mount.innerHTML = "<p>" + cam.card + overlapLine(overlap) + limit + "</p>"
             + '<a href="https://www.summitracing.com/search?keyword=' + q + '" rel="noopener">Summit Racing, ' + cam.part + "</a>"
             + '<a href="https://www.jegs.com/search?Ntt=' + q + '" rel="noopener">Jegs, ' + cam.part + "</a>"
             + '<p class="shop-note">The link searches that part number. Check piston-to-valve clearance and the valve springs before you order.</p>';
     }
 }
-bindCalc(calcCam, ["cm-head", "cm-rpm", "cm-adder"]);
+bindCalc(calcCam, ["cm-head", "cm-cid", "cm-rpm", "cm-adder"]);
 """
 
 
@@ -5228,7 +5304,7 @@ WIDGETS = {
         COMPRESSION_SCRIPT,
     ),
     "Cam": (
-        "The page orders a published cam card for that head port and RPM. Overlap at 0.050 = (intake duration + exhaust duration) / 2 - (2 x lobe separation).",
+        "The page orders the published cam card whose RPM range covers this cubic inch, head port, and power adder. Overlap at 0.050 = (intake duration + exhaust duration) / 2 - (2 x lobe separation). Turbo and supercharger cards are a separate list from the naturally aspirated cards.",
         cam_html,
         CAM_SCRIPT,
     ),
@@ -5628,9 +5704,10 @@ TRACKSIDE_NOTES = {
         ("Why does a thicker gasket drop the ratio?", "A thicker gasket, or a larger gasket bore, adds clearance volume. The same piston in a bigger chamber does the same thing."),
     ),
     "Cam": (
-        ("Why is there no custom duration?", "Every result is a published cam card with a part number. The page matches the head port and the RPM to that card. It does not invent a lobe."),
-        ("What is the difference between cathedral and rectangle?", "A 241, 243, 317, or Trick Flow GenX head is cathedral, so the list stops at the LS1 and LS6 cards. An LS3, LS7, or aftermarket rectangle head can use the LS3, LS7, or Comp rectangle card."),
-        ("Which card is for boost?", "Boost wants the wider published lobe separation. That is the 117.5 LS6 card on a cathedral head, and the 117 LS3 card on a rectangle head. The 113 LSA Comp card is the naturally aspirated race cam."),
+        ("Why is there no custom duration?", "Every result is a published cam card with a part number. Intake duration, exhaust duration, lift, and lobe separation come from that card. The page does not grind a lobe."),
+        ("Why does a turbo engine not get the factory cam?", "A factory LS3 or LS6 card is about 204 degrees at 0.050 and it is not published as a turbo cam. A large turbo at high RPM uses the Brian Tooley Stage 4 card, which is published past 8,000 RPM on a stock-stroke engine. A single small turbo uses the Summit turbo cards, which keep overlap near zero so exhaust pressure does not blow back into the intake."),
+        ("What does cubic inches change?", "Comp splits the naturally aspirated LSR cards into under 360 cubic inches, 360 to 399, and 400 and up. The Comp turbo cards are published for a 4.8 or 5.3. A bigger turbo engine moves to the Summit or Brian Tooley card."),
+        ("What happens past the published RPM?", "Hydraulic-roller cards on this list stop where the maker printed the range, about 7,200 RPM for the naturally aspirated LSR cams and 7,200 to 7,400 for the Comp and Summit turbo cams. Above that, the page says so instead of stretching a shorter card."),
     ),
     "Converter": (
         ("What is K-factor?", "K-factor is brake stall RPM divided by the square root of engine torque at that RPM. The same converter stalls higher behind an engine with more torque. Give the shop the K, the stall, and the torque, not a stall number with no engine attached."),
