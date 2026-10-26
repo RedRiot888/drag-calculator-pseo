@@ -64,30 +64,57 @@ TRANSMISSIONS = {
     "th400": ("TH400 / 4L80E (2.48 / 1.48 / 1.00)", [2.48, 1.48, 1.00]),
     "powerglide": ("Powerglide (1.76 / 1.00)", [1.76, 1.00]),
     "th350": ("TH350 (2.52 / 1.52 / 1.00)", [2.52, 1.52, 1.00]),
-    "4l60e": ("4L60E (3.06 / 1.62 / 1.00 / 0.70)", [3.06, 1.62, 1.00, 0.70]),
-    "c4_c6": ("Ford C4 / C6 (2.46 / 1.46 / 1.00)", [2.46, 1.46, 1.00]),
+    "4l60e": ("4L60E / 4L70E (3.06 / 1.62 / 1.00 / 0.70)", [3.06, 1.62, 1.00, 0.70]),
+    "6l80": ("6L80 (4.03 / 2.36 / 1.53 / 1.15 / 0.85 / 0.67)", [4.027, 2.364, 1.532, 1.152, 0.852, 0.667]),
+    "8l90": ("8L90 (4.56 / 2.97 / 2.08 / 1.69 / 1.27 / 1.00 / 0.85 / 0.65)", [4.56, 2.97, 2.08, 1.69, 1.27, 1.00, 0.85, 0.65]),
+    "c4": ("C4 (2.46 / 1.46 / 1.00)", [2.46, 1.46, 1.00]),
+    "c6": ("C6 (2.46 / 1.46 / 1.00)", [2.46, 1.46, 1.00]),
     "aod": ("AOD (2.40 / 1.47 / 1.00 / 0.67)", [2.40, 1.47, 1.00, 0.67]),
-    "t56": ("T56 (2.66 / 1.78 / 1.30 / 1.00 / 0.74 / 0.50)", [2.66, 1.78, 1.30, 1.00, 0.74, 0.50]),
+    "4r70w": ("4R70W (2.84 / 1.55 / 1.00 / 0.70)", [2.84, 1.55, 1.00, 0.70]),
+    "10r80": (
+        "10R80 (4.70 / 2.99 / 2.15 / 1.77 / 1.52 / 1.28 / 1.00 / 0.85 / 0.69 / 0.64)",
+        [4.696, 2.985, 2.146, 1.769, 1.520, 1.275, 1.000, 0.854, 0.689, 0.636],
+    ),
+    "727": ("Torqueflite 727 (2.45 / 1.45 / 1.00)", [2.45, 1.45, 1.00]),
+    "904": ("Torqueflite 904 (2.74 / 1.54 / 1.00)", [2.74, 1.54, 1.00]),
     "zf8hp": (
-        "ZF 8HP70 (4.71 / 3.14 / 2.11 / 1.67 / 1.29 / 1.00 / 0.84 / 0.67)",
+        "8HP70 / 8HP90 (4.71 / 3.14 / 2.11 / 1.67 / 1.29 / 1.00 / 0.84 / 0.67)",
         [4.714, 3.143, 2.106, 1.667, 1.285, 1.000, 0.839, 0.667],
     ),
+    "t56": ("Tremec T56 / Magnum (2.66 / 1.78 / 1.30 / 1.00 / 0.74 / 0.50)", [2.66, 1.78, 1.30, 1.00, 0.74, 0.50]),
+    "tr6060": ("Tremec TR-6060 (2.66 / 1.78 / 1.30 / 1.00 / 0.80 / 0.63)", [2.66, 1.78, 1.30, 1.00, 0.80, 0.63]),
+    "tkx": ("Tremec TKX (2.87 / 1.89 / 1.28 / 1.00 / 0.81)", [2.87, 1.89, 1.28, 1.00, 0.81]),
+    "jerico": ("Jerico 4-speed / Liberty (1.80 / 1.40 / 1.16 / 1.00)", [1.80, 1.40, 1.16, 1.00]),
+    "bmwzf5": ("BMW ZF 5-speed (4.20 / 2.49 / 1.66 / 1.24 / 1.00)", [4.20, 2.49, 1.66, 1.24, 1.00]),
+    "bmwzf6": ("BMW ZF 6-speed (4.23 / 2.53 / 1.67 / 1.23 / 1.00 / 0.83)", [4.23, 2.53, 1.67, 1.23, 1.00, 0.83]),
 }
 TRANSMISSION_GROUPS = [
-    ("GM Automatic", ["th400", "powerglide", "th350", "4l60e"]),
-    ("Ford Automatic", ["c4_c6", "aod"]),
-    ("Manual", ["t56"]),
-    ("ZF Automatic", ["zf8hp"]),
+    ("GM Automatic", ["th400", "powerglide", "th350", "4l60e", "6l80", "8l90"]),
+    ("Ford Automatic", ["c4", "c6", "aod", "4r70w", "10r80"]),
+    ("Chrysler / Mopar Automatic", ["727", "904", "zf8hp"]),
+    ("Manual", ["t56", "tr6060", "tkx", "jerico", "bmwzf5", "bmwzf6"]),
 ]
 TRANS_SHORT = {
-    "powerglide": "Powerglide (2-Speed)",
     "th400": "TH400",
+    "powerglide": "Powerglide (2-Speed)",
     "th350": "TH350",
     "4l60e": "4L60E",
-    "c4_c6": "Ford C4 / C6",
+    "6l80": "6L80",
+    "8l90": "8L90",
+    "c4": "Ford C4",
+    "c6": "Ford C6",
     "aod": "AOD",
-    "t56": "T56 Manual (6-Speed)",
-    "zf8hp": "ZF8HP",
+    "4r70w": "4R70W",
+    "10r80": "10R80",
+    "727": "Torqueflite 727",
+    "904": "Torqueflite 904",
+    "zf8hp": "8HP70 / 8HP90",
+    "t56": "Tremec T56",
+    "tr6060": "TR-6060",
+    "tkx": "Tremec TKX",
+    "jerico": "Jerico / Liberty",
+    "bmwzf5": "BMW ZF 5-speed",
+    "bmwzf6": "BMW ZF 6-speed",
 }
 FUEL_LABEL = {"gasoline": "gasoline", "e85": "E85", "methanol": "methanol"}
 BLOWER_LABEL = {
@@ -766,7 +793,7 @@ def calculator_shell(primary, advanced, print_label, extra="", power_toggle=Fals
 
 def transmission_html(row):
     current = field(row, "transmission", "th400")
-    groups = []
+    groups = ['<option value="custom">Custom ratios</option>']
     for label, keys in TRANSMISSION_GROUPS:
         opts = options([(key, TRANSMISSIONS[key][0]) for key in keys], current)
         groups.append(f'<optgroup label="{esc(label)}">\n{opts}\n</optgroup>')
@@ -775,6 +802,11 @@ def transmission_html(row):
         <div class="field"><label for="trans">Transmission</label><select id="trans">{''.join(groups)}</select></div>
         <div class="field"><label for="rear-gear">Rear gear</label><input type="number" id="rear-gear" value="{esc(field(row, 'rear_gear', '3.42'))}" step="0.01"></div>
     </div>
+    <div class="grid-2">
+        <div class="field"><label for="custom-ratios">Custom ratios</label><input type="text" id="custom-ratios" placeholder="2.48, 1.48, 1.00" inputmode="decimal" autocomplete="off"></div>
+        <div class="field"><label for="converter-slip">Converter slip (%)</label><input type="number" id="converter-slip" value="0" min="0" max="40" step="0.5"></div>
+    </div>
+    <p class="field-hint">Type a ratio list to switch to Custom ratios. Leave slip at 0% for a manual or a locked converter. 5% to 8% is a typical loose converter at the shift.</p>
     <div class="grid-2">
         <div class="field"><label for="tire-dia">Tire diameter (in)</label><input type="number" id="tire-dia" value="{esc(field(row, 'tire_diameter', '28.0'))}" step="0.1"></div>
         <div class="field"><label for="max-rpm">Shift RPM</label><input type="number" id="max-rpm" value="{esc(field(row, 'rpm', '7500'))}" step="100"></div>
@@ -798,36 +830,57 @@ def transmission_html(row):
 
 DRIVETRAIN_SCRIPT = """
 const ratios = %%RATIOS%%;
+function parseRatios(text) {
+    return String(text || "").split(/[^0-9.]+/).map(parseFloat).filter(function (n) {
+        return Number.isFinite(n) && n > 0 && n < 12;
+    }).slice(0, 10);
+}
 function calcAll() {
-    let tKey = document.getElementById("trans").value;
-    let rat = ratios[tKey] || [2.48, 1.48, 1.00];
+    const transEl = document.getElementById("trans");
+    const customEl = document.getElementById("custom-ratios");
+    const typed = parseRatios(customEl.value);
+    if (document.activeElement === customEl && typed.length) transEl.value = "custom";
+    let rat = ratios[transEl.value] || [2.48, 1.48, 1.00];
+    if (transEl.value === "custom") rat = typed.length ? typed : [2.48, 1.48, 1.00];
     let rpm = parseFloat(document.getElementById("max-rpm").value) || 7500;
     let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
     let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
+    let slip = parseFloat(document.getElementById("converter-slip").value);
+    if (!Number.isFinite(slip)) slip = 0;
+    slip = Math.min(40, Math.max(0, slip)) / 100;
+    const drive = 1 - slip;
     let wt = parseFloat(document.getElementById("veh-wt").value) || 3200;
     let hp = crankHorsepower(document.getElementById("veh-hp").value || 1100);
     let rollout = tire * Math.PI;
     let estEt = 5.825 * Math.pow(wt / Math.max(hp, 1), 0.333);
     let estTrap = 234 * Math.cbrt(hp / Math.max(wt, 1));
+    let firstOverall = rat[0] * gear;
+    let firstSpeed = (rpm * drive * tire) / (firstOverall * 336);
+    let finishOverall = rat[rat.length - 1] * gear;
+    let finishRpm = (estTrap * finishOverall * 336) / (tire * drive);
     publishReadout([
         { label: "Quarter-mile ET", value: estEt, unit: "sec", primary: true },
         { label: "Trap speed", value: estTrap, unit: "mph" },
+        { label: "1st gear shift speed", value: firstSpeed, unit: "mph" },
+        { label: "Finish RPM", value: Math.round(finishRpm) + " RPM", unit: "text" },
         { label: "Rollout", value: rollout, unit: "in" },
-        { label: "1st gear overall", value: rat[0] * gear, unit: "ratio" }
+        { label: "1st gear overall", value: firstOverall, unit: "ratio" }
     ]);
     let tbody = document.getElementById("gear-body");
     if (tbody) {
         tbody.innerHTML = "";
         for (let i = 0; i < rat.length; i++) {
             let overall = rat[i] * gear;
-            let speed = (rpm * tire) / (overall * 336);
-            let trapRpm = Math.round((estTrap * overall * 336) / tire);
-            let drop = i < rat.length - 1 ? "Drop to " + Math.round(rpm * (rat[i + 1] / rat[i])) + " RPM" : "Finish: " + trapRpm + " RPM";
+            let speed = (rpm * drive * tire) / (overall * 336);
+            let trapRpm = Math.round((estTrap * overall * 336) / (tire * drive));
+            let drop = i < rat.length - 1
+                ? "Drop to " + Math.round(rpm * drive * (rat[i + 1] / rat[i])) + " RPM"
+                : "Finish: " + trapRpm + " RPM";
             tbody.innerHTML += "<tr><td>Gear " + (i + 1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + reading(speed, "mph") + "</td><td>" + drop + "</td></tr>";
         }
     }
 }
-bindCalc(calcAll, ["trans", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "dt-loss"]);
+bindCalc(calcAll, ["trans", "custom-ratios", "converter-slip", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "dt-loss"]);
 """.replace(
     "%%RATIOS%%",
     json.dumps({key: ratios for key, (_label, ratios) in TRANSMISSIONS.items()}),
@@ -1654,7 +1707,7 @@ bindCalc(calcCas, ["cas-boost", "cas-baro"]);
 
 WIDGETS = {
     "Transmission": (
-        "Overall Ratio = Trans Ratio x Rear Gear | Shift Speed (MPH) = (RPM x Tire) / (Overall x 336)",
+        "Overall Ratio = Trans Ratio x Rear Gear. Shift Speed (MPH) = (RPM x (1 - Slip) x Tire) / (Overall x 336). Recovery RPM = Shift RPM x (1 - Slip) x (Next Ratio / Current Ratio).",
         transmission_html,
         DRIVETRAIN_SCRIPT,
     ),
@@ -1771,8 +1824,8 @@ def neighbor_pages(page, pages):
 
 TRACKSIDE_NOTES = {
     "Transmission": (
-        ("How is shift recovery RPM calculated?", "Recovery RPM is the shift RPM multiplied by the next gear ratio divided by the gear you are leaving. The drop needs to stay above converter stall and inside the powerband."),
-        ("What does the 336 constant represent?", "Miles per hour equals RPM times tire diameter, divided by overall ratio times 336. Overall ratio is the transmission ratio times the rear gear."),
+        ("How is shift recovery RPM calculated?", "Recovery RPM is the shift RPM times (1 minus converter slip) times the next gear divided by the gear you are leaving. At 0% slip that is the straight gear drop, and it still needs to land above converter stall."),
+        ("What does the 336 constant represent?", "Miles per hour equals RPM times (1 minus converter slip) times tire diameter, divided by overall ratio times 336. Overall ratio is the transmission ratio times the rear gear."),
         ("Why does a taller tire change the chart?", "A taller tire lowers engine RPM at the same trap speed. Use the grown diameter, not the sidewall number, once the tire is at speed."),
     ),
     "Turbo": (
