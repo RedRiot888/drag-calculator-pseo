@@ -98,6 +98,8 @@ TRANSMISSION_GROUPS = [
     ("Chrysler / Mopar Automatic", ["727", "904", "zf8hp"]),
     ("Manual", ["t56", "tr6060", "tkx", "jerico", "bmwzf5", "bmwzf6"]),
 ]
+MANUAL_TRANSMISSIONS = set(next(keys for label, keys in TRANSMISSION_GROUPS if label == "Manual"))
+AUTO_CONVERTER_SLIP = "6"
 TRANS_SHORT = {
     "th400": "TH400",
     "powerglide": "Powerglide (2-Speed)",
@@ -819,6 +821,7 @@ def transmission_html(row):
     for label, keys in TRANSMISSION_GROUPS:
         opts = options([(key, TRANSMISSIONS[key][0]) for key in keys], current)
         groups.append(f'<optgroup label="{esc(label)}">\n{opts}\n</optgroup>')
+    slip_default = "0" if current in MANUAL_TRANSMISSIONS else AUTO_CONVERTER_SLIP
     primary = f"""
     <div class="grid-2">
         <div class="field"><label for="trans">Transmission</label><select id="trans">{''.join(groups)}</select></div>
@@ -826,9 +829,9 @@ def transmission_html(row):
     </div>
     <div class="grid-2">
         <div class="field"><label for="custom-ratios">Custom ratios</label><input type="text" id="custom-ratios" placeholder="2.48, 1.48, 1.00" inputmode="decimal" autocomplete="off"></div>
-        <div class="field"><label for="converter-slip">Converter slip (%)</label><input type="number" id="converter-slip" value="0" min="0" max="40" step="0.5"></div>
+        <div class="field"><label for="converter-slip">Converter slip (%)</label><input type="number" id="converter-slip" value="{slip_default}" min="0" max="40" step="0.5"></div>
     </div>
-    <p class="field-hint">Type a ratio list to switch to Custom ratios. Leave slip at 0% for a manual or a locked converter. 5% to 8% is a typical loose converter at the shift.</p>
+    <p class="field-hint">An automatic starts at {AUTO_CONVERTER_SLIP}% slip, the usual converter at the shift. A manual or a locked converter starts at 0%. Type any slip you want after the transmission is chosen.</p>
     <div class="grid-2">
         <div class="field"><label for="tire-dia">Tire diameter (in)</label><input type="number" id="tire-dia" value="{esc(field(row, 'tire_diameter', '28.0'))}" step="0.1"></div>
         <div class="field"><label for="max-rpm">Shift RPM</label><input type="number" id="max-rpm" value="{esc(field(row, 'rpm', '7500'))}" step="100"></div>
@@ -902,11 +905,27 @@ function calcAll() {
         }
     }
 }
+const manualTrans = new Set(%%MANUALS%%);
+const transPick = document.getElementById("trans");
+const slipPick = document.getElementById("converter-slip");
+function standardSlip(value) {
+    if (value === "custom") return null;
+    return manualTrans.has(value) ? "0" : "%%SLIP%%";
+}
+if (transPick && slipPick) {
+    transPick.addEventListener("change", () => {
+        const next = standardSlip(transPick.value);
+        if (next !== null) slipPick.value = next;
+    });
+}
 bindCalc(calcAll, ["trans", "custom-ratios", "converter-slip", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "dt-loss"]);
 """.replace(
     "%%RATIOS%%",
     json.dumps({key: ratios for key, (_label, ratios) in TRANSMISSIONS.items()}),
-)
+).replace(
+    "%%MANUALS%%",
+    json.dumps(sorted(MANUAL_TRANSMISSIONS)),
+).replace("%%SLIP%%", AUTO_CONVERTER_SLIP)
 
 
 def turbo_html(row):
@@ -2250,7 +2269,7 @@ def fuel_pump_html(row):
             <thead><tr><th>Pump class</th><th>At your pressure</th><th>Vs target</th><th>Status</th></tr></thead>
             <tbody id="fp-pumps"></tbody>
         </table>
-        <p class="field-hint">Classes are common catalog ratings at 40 PSI, not a brand chart. Dual and triple rows assume the pumps share the rail and the voltage stays up.</p>
+        <p class="field-hint">Classes are common catalog ratings at 40 PSI, not a brand chart. Multiple-pump rows assume the pumps share the rail and the voltage stays up. The 1400 L/h rows are large external pumps, sized so a 2500 HP combination still has a class that covers.</p>
     </div>
     """
     return calculator_shell(primary, advanced, "Print pump spec sheet", power_toggle=True, results_extra=results)
@@ -2273,7 +2292,13 @@ const PUMP_SHELF = [
     { label: "525 L/h", lph: 525 },
     { label: "Dual 340", lph: 680 },
     { label: "Dual 450", lph: 900 },
-    { label: "Triple 450", lph: 1350 }
+    { label: "Dual 525", lph: 1050 },
+    { label: "Triple 450", lph: 1350 },
+    { label: "Triple 525", lph: 1575 },
+    { label: "Quad 450", lph: 1800 },
+    { label: "Quad 525", lph: 2100 },
+    { label: "Dual 1400 external", lph: 2800 },
+    { label: "Triple 1400 external", lph: 4200 }
 ];
 const LITER_PER_GALLON = 3.78541;
 const SHELF_RATED_PSI = 40;

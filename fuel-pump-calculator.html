@@ -103,7 +103,7 @@
             <thead><tr><th>Pump class</th><th>At your pressure</th><th>Vs target</th><th>Status</th></tr></thead>
             <tbody id="fp-pumps"></tbody>
         </table>
-        <p class="field-hint">Classes are common catalog ratings at 40 PSI, not a brand chart. Dual and triple rows assume the pumps share the rail and the voltage stays up.</p>
+        <p class="field-hint">Classes are common catalog ratings at 40 PSI, not a brand chart. Multiple-pump rows assume the pumps share the rail and the voltage stays up. The 1400 L/h rows are large external pumps, sized so a 2500 HP combination still has a class that covers.</p>
     </div>
     
     <button type="button" class="action-btn" onclick="window.print()">Print pump spec sheet</button>
@@ -251,7 +251,13 @@ const PUMP_SHELF = [
     { label: "525 L/h", lph: 525 },
     { label: "Dual 340", lph: 680 },
     { label: "Dual 450", lph: 900 },
-    { label: "Triple 450", lph: 1350 }
+    { label: "Dual 525", lph: 1050 },
+    { label: "Triple 450", lph: 1350 },
+    { label: "Triple 525", lph: 1575 },
+    { label: "Quad 450", lph: 1800 },
+    { label: "Quad 525", lph: 2100 },
+    { label: "Dual 1400 external", lph: 2800 },
+    { label: "Triple 1400 external", lph: 4200 }
 ];
 const LITER_PER_GALLON = 3.78541;
 const SHELF_RATED_PSI = 40;

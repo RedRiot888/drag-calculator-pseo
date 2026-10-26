@@ -62,7 +62,7 @@
         <div class="field"><label for="custom-ratios">Custom ratios</label><input type="text" id="custom-ratios" placeholder="2.48, 1.48, 1.00" inputmode="decimal" autocomplete="off"></div>
         <div class="field"><label for="converter-slip">Converter slip (%)</label><input type="number" id="converter-slip" value="0" min="0" max="40" step="0.5"></div>
     </div>
-    <p class="field-hint">Type a ratio list to switch to Custom ratios. Leave slip at 0% for a manual or a locked converter. 5% to 8% is a typical loose converter at the shift.</p>
+    <p class="field-hint">An automatic starts at 6% slip, the usual converter at the shift. A manual or a locked converter starts at 0%. Type any slip you want after the transmission is chosen.</p>
     <div class="grid-2">
         <div class="field"><label for="tire-dia">Tire diameter (in)</label><input type="number" id="tire-dia" value="31.0" step="0.1"></div>
         <div class="field"><label for="max-rpm">Shift RPM</label><input type="number" id="max-rpm" value="7500" step="100"></div>
@@ -284,6 +284,19 @@ function calcAll() {
             tbody.innerHTML += "<tr><td>Gear " + (i + 1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + reading(speed, "mph") + "</td><td>" + drop + "</td></tr>";
         }
     }
+}
+const manualTrans = new Set(["bmwzf5", "bmwzf6", "jerico", "t56", "tkx", "tr6060"]);
+const transPick = document.getElementById("trans");
+const slipPick = document.getElementById("converter-slip");
+function standardSlip(value) {
+    if (value === "custom") return null;
+    return manualTrans.has(value) ? "0" : "6";
+}
+if (transPick && slipPick) {
+    transPick.addEventListener("change", () => {
+        const next = standardSlip(transPick.value);
+        if (next !== null) slipPick.value = next;
+    });
 }
 bindCalc(calcAll, ["trans", "custom-ratios", "converter-slip", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "dt-loss"]);
 
