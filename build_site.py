@@ -399,6 +399,16 @@ body {
     padding: 12px;
 }
 .nav-list { display: flex; flex-direction: column; gap: 4px; }
+.nav-group { margin: 12px 0 2px; }
+.nav-group-label {
+    margin: 0;
+    padding: 4px 12px 2px;
+    color: #6f6f6f;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
 .nav-item {
     display: block;
     padding: 9px 12px;
@@ -746,7 +756,7 @@ NARROW_TEMPLATE = """<!DOCTYPE html>
 <body>
     {{BANNER}}
     <div class="narrow">
-        <a href="index.html" class="back-link">&larr; Back to Master Hub</a>
+        <a href="index.html" class="back-link">&larr; Start here</a>
         <article class="narrow-card">
             {{CONTENT}}
         </article>
@@ -5106,7 +5116,7 @@ def search_records(pages, hubs_by_category):
         records.append({
             "slug": page["slug"],
             "title": page["target_keyword"],
-            "group": hub.get("nav_label") or page["category"],
+            "group": section_for(hub.get("slug", "")) or hub.get("nav_label") or page["category"],
             "hub": page["role"] == "hub",
         })
     return records
@@ -5133,14 +5143,90 @@ def site_banner(records):
 """
 
 
+NAV_SECTIONS = (
+    ("Fuel", ("fuel-injector-calculator", "fuel-pump-calculator")),
+    ("Power", (
+        "turbo-sizing-calculator",
+        "wastegate-sizing-calculator",
+        "supercharger-pulley-calculator",
+        "nitrous-shot-calculator",
+    )),
+    ("Engine", ("ls-engine-builder", "exhaust-header-sizing-calculator")),
+    ("Drivetrain", (
+        "transmission-shift-recovery-calculator",
+        "torque-converter-calculator",
+        "rear-gear-calculator",
+        "driveshaft-calculator",
+    )),
+    ("Chassis", (
+        "four-link-suspension-calculator",
+        "drag-shock-calculator",
+        "tire-growth-calculator",
+    )),
+    ("Cooling and wiring", (
+        "drag-cooling-system-calculator",
+        "automotive-relay-calculator",
+        "race-car-wiring-calculator",
+    )),
+)
+
+
+def section_for(slug):
+    for title, slugs in NAV_SECTIONS:
+        if slug in slugs:
+            return title
+    return ""
+
+
 def sidebar(active_slug, hubs):
+    by_slug = {hub["slug"]: hub for hub in hubs}
     parts = ['<nav class="nav-list">']
     master_class = "nav-item active" if active_slug == "index" else "nav-item"
-    parts.append(f'<a class="{master_class}" href="index.html">Popular / Master Hub</a>')
+    parts.append(f'<a class="{master_class}" href="index.html">Start here</a>')
+    used = set()
+    for title, slugs in NAV_SECTIONS:
+        rows = []
+        for slug in slugs:
+            hub = by_slug.get(slug)
+            if not hub:
+                continue
+            used.add(slug)
+            css = "nav-item active" if hub["slug"] == active_slug else "nav-item"
+            rows.append(f'<a class="{css}" href="{esc(hub["slug"])}.html">{esc(hub["nav_label"])}</a>')
+        if rows:
+            parts.append(f'<div class="nav-group"><p class="nav-group-label">{esc(title)}</p>{"".join(rows)}</div>')
+    leftover = []
     for hub in hubs:
+        if hub["slug"] in used:
+            continue
         css = "nav-item active" if hub["slug"] == active_slug else "nav-item"
-        parts.append(f'<a class="{css}" href="{esc(hub["slug"])}.html">{esc(hub["nav_label"])}</a>')
+        leftover.append(f'<a class="{css}" href="{esc(hub["slug"])}.html">{esc(hub["nav_label"])}</a>')
+    if leftover:
+        parts.append(f'<div class="nav-group"><p class="nav-group-label">More</p>{"".join(leftover)}</div>')
     parts.append("</nav>")
+    return "".join(parts)
+
+
+def grouped_directory(hubs):
+    by_slug = {hub["slug"]: hub for hub in hubs}
+    parts = []
+    used = set()
+    for title, slugs in NAV_SECTIONS:
+        items = []
+        for slug in slugs:
+            hub = by_slug.get(slug)
+            if not hub:
+                continue
+            used.add(slug)
+            items.append(f'<li><a href="{esc(slug)}.html">{esc(hub["nav_label"])}</a></li>')
+        if items:
+            parts.append(f'<p class="field-hint">{esc(title)}</p><ul class="variant-list">{"".join(items)}</ul>')
+    leftover = [hub for hub in hubs if hub["slug"] not in used]
+    if leftover:
+        items = "".join(
+            f'<li><a href="{esc(hub["slug"])}.html">{esc(hub["nav_label"])}</a></li>' for hub in leftover
+        )
+        parts.append(f'<p class="field-hint">More</p><ul class="variant-list">{items}</ul>')
     return "".join(parts)
 
 
@@ -5342,7 +5428,7 @@ def page_tokens(page, pages, hubs, hubs_by_category):
         "ORIGIN": ORIGIN,
         "ANALYTICS": analytics_tag(),
         "BANNER": SITE_BANNER,
-        "BACK_ROW": '<div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>',
+        "BACK_ROW": '<div class="back-row"><a href="index.html" class="back-link">&larr; Start here</a></div>',
         "SIDEBAR": sidebar(active, hubs),
         "H1": esc(page["target_keyword"]),
         "SPEC": f'<p class="spec">{esc(spec)}</p>' if spec else "",
@@ -5356,7 +5442,7 @@ def page_tokens(page, pages, hubs, hubs_by_category):
 def index_page(pages, hubs):
     transmission = next(page for page in pages if page["slug"] == "transmission-shift-recovery-calculator")
     _formula, html_fn, script = WIDGETS["Transmission"]
-    directory = link_items(hubs)
+    directory = grouped_directory(hubs)
     start = link_items([
         {"slug": "fuel-injector-calculator", "target_keyword": "Fuel injectors"},
         {"slug": "fuel-pump-calculator", "target_keyword": "Fuel pump"},
@@ -5370,7 +5456,7 @@ def index_page(pages, hubs):
     content = (
         content_box(
             "Start a build",
-            "<p>These end in a part. The gear calculator on the left is where the setup goes once the converter stall is chosen.</p>"
+            "<p>These end in a part. The menu is grouped the way a car is built: fuel together, power together, then the gear, the chassis, and the wiring.</p>"
             + start,
         )
         + content_box("Calculators", directory)
