@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LS3 376 Engine Build Calculator | DragCalculators.com</title>
+    <meta name="description" content="LS3 376 Engine Build Calculator. Loaded defaults: LS3 aluminum, rectangular heads.">
+    <link rel="canonical" href="https://dragcalculators.com/ls3-376-engine-build.html">
+    <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
+    <meta name="google-site-verification" content="google9e7c88791a3f2f72">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dragcalculators.com/ls3-376-engine-build.html">
+    <meta property="og:title" content="LS3 376 Engine Build Calculator | DragCalculators.com">
+    <meta property="og:description" content="LS3 376 Engine Build Calculator. Loaded defaults: LS3 aluminum, rectangular heads.">
+    <meta property="og:image" content="https://dragcalculators.com/social-banner.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LS3 376 Engine Build Calculator | DragCalculators.com">
+    <meta name="twitter:description" content="LS3 376 Engine Build Calculator. Loaded defaults: LS3 aluminum, rectangular heads.">
+    <meta name="twitter:image" content="https://dragcalculators.com/social-banner.jpg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
+    <div class="layout-grid">
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item active" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
+        <section class="sticky-calculator">
+            <header class="master-header">
+                <h1>LS3 376 Engine Build Calculator</h1>
+                <p class="spec">Loaded defaults: LS3 aluminum, rectangular heads.</p>
+            </header>
+            
+    <div class="field-stack">
+    <div class="grid-2">
+        <div class="field"><label for="ls-block">Block</label><select id="ls-block"><optgroup label="Factory iron">
+<option value="lm7">LM7 5.3 iron</option>
+<option value="lq4">LQ4 6.0 iron</option>
+<option value="lq9">LQ9 6.0 iron</option>
+</optgroup><optgroup label="Factory aluminum">
+<option value="ls1">LS1 aluminum</option>
+<option value="ls2">LS2 aluminum</option>
+<option value="ls3" selected>LS3 aluminum</option>
+<option value="ls7">LS7 aluminum</option>
+</optgroup><optgroup label="Aftermarket / resleeved">
+<option value="sleeve53">5.3 iron, resleeved</option>
+<option value="sleeve60">6.0 iron, resleeved</option>
+<option value="lsx">Aftermarket iron (LSX class)</option>
+</optgroup></select></div>
+        <div class="field"><label for="ls-bore">Bore (in)</label><input type="number" id="ls-bore" value="4.065" min="3.4" max="4.3" step="0.001"></div>
+    </div>
+    <p class="field-hint" id="ls-block-note"></p>
+    <div class="grid-2">
+        <div class="field"><label for="ls-crank">Crankshaft</label><select id="ls-crank"><optgroup label="Factory">
+<option value="s3268">4.8 factory 3.268 in</option>
+<option value="s3622" selected>5.3 / 6.0 / 6.2 factory 3.622 in</option>
+<option value="f4000">LS7 factory 4.000 in</option>
+</optgroup><optgroup label="Aftermarket stroker">
+<option value="a4000">Aftermarket 4.000 in</option>
+<option value="a4100">Aftermarket 4.100 in</option>
+<option value="a4125">Aftermarket 4.125 in</option>
+<option value="a4250">Aftermarket 4.250 in</option>
+</optgroup></select></div>
+        <div class="field"><label for="ls-rod">Rods</label><select id="ls-rod"><option value="pm" selected>Factory powdered metal</option>
+<option value="hbeam">Forged H-beam</option>
+<option value="ibeam">Forged I-beam</option>
+<option value="ti">LS7 titanium</option></select></div>
+    </div>
+    <p class="field-hint" id="ls-crank-note"></p>
+    <div class="grid-2">
+        <div class="field"><label for="ls-rodlen">Rod length</label><select id="ls-rodlen"><option value="6.067">6.067 in (LS7)</option>
+<option value="6.098" selected>6.098 in (factory)</option>
+<option value="6.125">6.125 in (stroker)</option>
+<option value="6.200">6.200 in (long)</option></select></div>
+        <div class="field"><label for="ls-pin">Wrist pin</label><select id="ls-pin"><option value="pressed" selected>Pressed pin</option>
+<option value="floating">Floating pin</option></select></div>
+    </div>
+    <p class="field-hint" id="ls-rod-note"></p>
+    <div class="grid-2">
+        <div class="field"><label for="ls-head">Cylinder heads</label><select id="ls-head"><optgroup label="Cathedral port">
+<option value="h241">241 cathedral (LS6 / LS2)</option>
+<option value="h243">243 / 799 cathedral</option>
+<option value="h317">317 cathedral (5.3 truck)</option>
+<option value="tfx">Trick Flow GenX cathedral</option>
+</optgroup><optgroup label="Rectangular port">
+<option value="ls3" selected>LS3 / L92 rectangular</option>
+<option value="ls7">LS7 rectangular</option>
+<option value="afr">Aftermarket rectangular</option>
+</optgroup></select></div>
+        <div class="field"><label for="ls-piston">Pistons</label><select id="ls-piston"><option value="hyper">Factory hypereutectic</option>
+<option value="flat" selected>Forged flat top</option>
+<option value="dish">Forged dished</option>
+<option value="dome">Forged dome</option></select></div>
+    </div>
+    <p class="field-hint" id="ls-head-note"></p>
+    <p class="field-hint" id="ls-piston-note"></p>
+    <div class="grid-2">
+        <div class="field"><label for="ls-intent">Power adder</label><select id="ls-intent"><option value="na" selected>Naturally aspirated</option>
+<option value="turbo">Turbocharged</option>
+<option value="super">Supercharged</option></select></div>
+        <div class="field"><label for="ls-fuel">Fuel</label><select id="ls-fuel"><option value="gasoline" selected>Gasoline (91/93)</option>
+<option value="e85">E85</option>
+<option value="methanol">Methanol</option>
+<option value="race">Race gas</option></select></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="ls-boost">Target boost (PSI)</label><input type="number" id="ls-boost" value="0" min="0" max="40" step="0.5" disabled></div>
+        <div class="field"><label for="ls-rpm">Peak RPM</label><input type="number" id="ls-rpm" value="6600" min="4000" max="8500" step="100"></div>
+    </div>
+    <p class="field-hint">A 4.000 in crank in an iron 5.3 or 6.0 is the budget stroker. A 3.268 in crank in a 6.0 is the destroker. Power figures are planning limits for a tuned engine, not a guarantee.</p>
+    </div>
+    <details class="accordion">
+        <summary>Advanced / Conditions</summary>
+        <div class="accordion-body field-stack">
+    <div class="grid-2">
+        <div class="field"><label for="ls-gasket">Head gasket (in)</label><input type="number" id="ls-gasket" value="0.051" min="0.020" max="0.120" step="0.001"></div>
+        <div class="field"><label for="ls-deck">Deck clearance (in)</label><input type="number" id="ls-deck" value="0.005" min="-0.020" max="0.040" step="0.001"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="ls-deck-height">Deck height (in)</label><input type="number" id="ls-deck-height" value="9.240" min="9.000" max="10.000" step="0.001"></div>
+        <div class="field"><label for="ls-dish">Piston dish (cc)</label><input type="number" id="ls-dish" value="4" min="-20" max="40" step="0.5"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="ls-chamber">Chamber volume (cc)</label><input type="number" id="ls-chamber" placeholder="Auto" min="40" max="120" step="0.5"></div>
+        <div class="field"><label for="ls-ivc">Intake close (deg ABDC)</label><input type="number" id="ls-ivc" placeholder="Auto" min="20" max="70" step="1"></div>
+    </div>
+    <p class="field-hint">Positive dish adds volume and lowers compression. A dome is a negative number. Leave chamber and intake closing blank to use the selected head and the cam profile.</p>
+    
+<p class="field-hint">BHP uses the power entry as flywheel power. WHP treats it as wheel power and converts with this drivetrain loss.</p>
+<div class="grid-2">
+    <div class="field"><label for="dt-loss">Drivetrain loss (%)</label><input type="number" id="dt-loss" value="15" min="0" max="40" step="1"></div>
+</div>
+
+    </div>
+    </details>
+    <div class="readout" id="results">
+        <div class="readout-top">
+            <span class="readout-kicker">Result</span>
+            <div class="pill-row">
+                <div class="pill-group" role="group" aria-label="Power unit">
+                    <button type="button" class="pill" data-unit-group="power" data-unit="whp">WHP</button>
+                    <button type="button" class="pill active" data-unit-group="power" data-unit="bhp">BHP</button>
+                </div>
+                <div class="pill-group" role="group" aria-label="Units">
+                    <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
+                    <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+                </div>
+            </div>
+        </div>
+        <div id="readout-body"></div>
+    </div>
+    
+    <p class="assess" id="ls-assess"></p>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>Check</th><th>Detail</th><th>Result</th><th>Status</th></tr></thead>
+            <tbody id="ls-matrix"></tbody>
+        </table>
+        <p class="field-hint">Horsepower and boost ratings are planning limits. The cam row is a starting profile, not a finished cam card.</p>
+    </div>
+    
+    <button type="button" class="action-btn" onclick="window.print()">Print build sheet</button>
+    
+
+        </section>
+        <div class="content-column">
+            <section class="content-box"><h2>Formula</h2><p class="formula">CID = Bore x Bore x Stroke x 0.7854 x 8. SCR = (Swept volume + clearance volume) / clearance volume. Clearance volume is the chamber, the gasket, the deck, and the piston dish. DCR uses the piston position at intake-valve closing instead of the full stroke.</p></section><section class="content-box"><h2>Trackside notes</h2><p>LS3 376 Engine Build Calculator. Loaded defaults: LS3 aluminum, rectangular heads.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>How does a stroker change the inches?</h3><p>Displacement is bore times bore times stroke times 0.7854 times 8. A 4.000 inch crank in an iron 5.3 or 6.0 adds cubes without changing the bore, as long as the piston compression height still clears the rings.</p></div><div class="faq-item"><h3>What is the difference between static and dynamic compression?</h3><p>Static compression uses the full stroke. Dynamic compression uses the piston position when the intake valve closes, so a later-closing cam bleeds some of that compression off.</p></div><div class="faq-item"><h3>Why can a part fit the block and still be the wrong part?</h3><p>An LS7 crank shares the main journal, and an LS3 head bolts to a 6.0, but the piston height, the chamber versus the bore, and the power limit still have to match the combination.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="ls-engine-builder.html">LS Engine Builder &amp; Factory/Aftermarket Interchange Matrix</a></li><li><a href="ls7-427-engine-build.html">LS7 427 Engine Build Calculator</a></li><li><a href="supercharged-ls3-build.html">Supercharged LS3 Build Calculator</a></li><li><a href="turbo-5-3-iron-build.html">Turbo 5.3 Iron LS Build Calculator</a></li><li><a href="aftermarket-lsx-engine-build.html">Aftermarket Iron LSX Engine Build Calculator</a></li><li><a href="iron-5-3-4-inch-stroker.html">5.3 LS 4.000 Stroke Stroker Calculator</a></li><li><a href="iron-6-0-4-125-stroker.html">6.0 LS 4.125 Stroker Calculator</a></li></ul></div></div></details>
+        </div>
+    </div>
+    
+<footer class="site-footer">
+    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
+    <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
+</footer>
+
+    <script>
+
+const unitState = { power: "bhp", system: "imperial" };
+let lastReadout = [];
+
+function crankHorsepower(raw) {
+    const hp = parseFloat(raw);
+    const entered = Number.isFinite(hp) ? hp : 0;
+    if (unitState.power !== "whp") return entered;
+    const lossInput = document.getElementById("dt-loss");
+    const lossPct = lossInput ? parseFloat(lossInput.value) : 15;
+    const loss = Math.min(0.4, Math.max(0, (Number.isFinite(lossPct) ? lossPct : 15) / 100));
+    return entered / Math.max(0.05, 1 - loss);
+}
+
+function formatUnit(value, unit) {
+    const metric = unitState.system === "metric";
+    const n = Number(value);
+    if (unit === "text") return { text: String(value), suffix: "" };
+    if (!Number.isFinite(n)) return { text: "—", suffix: "" };
+    switch (unit) {
+        case "mph":
+            return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
+        case "in":
+            return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "in3":
+            return metric ? { text: (n * 25.4).toFixed(2), suffix: "mm" } : { text: n.toFixed(3), suffix: "in" };
+        case "psi":
+            return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
+        case "lbmin":
+            return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "cfm":
+            return metric ? { text: (n * 0.0283168).toFixed(2), suffix: "m3/min" } : { text: Math.round(n).toLocaleString("en-US"), suffix: "CFM" };
+        case "tempf":
+            return metric ? { text: ((n - 32) * 5 / 9).toFixed(0), suffix: "C" } : { text: Math.round(n).toString(), suffix: "F" };
+        case "lbhr":
+            return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
+        case "ft":
+            return metric ? { text: (n * 0.3048).toFixed(2), suffix: "m" } : { text: n.toFixed(1), suffix: "ft" };
+        case "rpm":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "RPM" };
+        case "ratio":
+            return { text: n.toFixed(2), suffix: ":1" };
+        case "sec":
+            return { text: n.toFixed(2), suffix: "s" };
+        case "pct":
+            return { text: Math.round(n).toString(), suffix: "%" };
+        case "pct1":
+            return { text: n.toFixed(1), suffix: "%" };
+        case "cc":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "cc/min" };
+        case "ci":
+            return metric ? { text: (n * 0.0163871).toFixed(2), suffix: "L" } : { text: n.toFixed(1), suffix: "ci" };
+        case "gph":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/h" } : { text: n.toFixed(1), suffix: "gal/hr" };
+        case "amp":
+            return { text: n.toFixed(1), suffix: "A" };
+        case "mm":
+            return { text: String(Math.round(n)), suffix: "mm" };
+        case "awg":
+            return { text: String(value), suffix: "AWG" };
+        default:
+            return { text: String(value), suffix: unit || "" };
+    }
+}
+
+function joinReading(shown) {
+    if (!shown.suffix) return shown.text;
+    if (shown.suffix.charAt(0) === ":") return shown.text + shown.suffix;
+    return shown.text + " " + shown.suffix;
+}
+
+function reading(value, unit) {
+    return joinReading(formatUnit(value, unit));
+}
+
+function publishReadout(items) {
+    lastReadout = items;
+    const body = document.getElementById("readout-body");
+    if (!body || !items.length) return;
+    const primary = items.find(item => item.primary) || items[0];
+    const rest = items.filter(item => item !== primary);
+    const main = formatUnit(primary.value, primary.unit);
+    const extras = rest.map(item => {
+        return '<div class="readout-extra"><span>' + item.label + '</span><strong>' + reading(item.value, item.unit) + '</strong></div>';
+    }).join("");
+    body.innerHTML = '<div class="readout-label">' + primary.label + '</div>'
+        + '<div class="readout-value">' + main.text + (main.suffix ? '<span class="readout-suffix">' + main.suffix + '</span>' : '') + '</div>'
+        + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
+}
+
+function bindCalc(fn, ids) {
+    window.refreshCalc = fn;
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", fn);
+        el.addEventListener("change", fn);
+    });
+    fn();
+}
+
+document.querySelectorAll(".pill").forEach(button => {
+    button.addEventListener("click", () => {
+        if (!button.dataset.unitGroup) return;
+        unitState[button.dataset.unitGroup] = button.dataset.unit;
+        button.parentElement.querySelectorAll(".pill").forEach(pill => {
+            pill.classList.toggle("active", pill === button);
+        });
+        if (typeof window.refreshCalc === "function") window.refreshCalc();
+        else if (lastReadout.length) publishReadout(lastReadout);
+    });
+});
+
+
+const LS = {"blocks":{"lm7":{"label":"LM7 5.3 iron","bore":3.78,"safeBore":3.81,"maxBore":4.0,"stockStroke":3.622,"hp":850,"boost":18,"sleeved":false,"note":"Gen III iron 5.3. The small bore leaves more cylinder wall than an aluminum block, and it is the usual budget turbo foundation."},"lq4":{"label":"LQ4 6.0 iron","bore":4.0,"safeBore":4.03,"maxBore":4.07,"stockStroke":3.622,"hp":1100,"boost":24,"sleeved":false,"note":"Gen III iron 6.0. One of the strongest factory LS castings."},"lq9":{"label":"LQ9 6.0 iron","bore":4.0,"safeBore":4.03,"maxBore":4.07,"stockStroke":3.622,"hp":1100,"boost":24,"sleeved":false,"note":"Iron 6.0 HO. Same casting family as the LQ4, with flat-top pistons from the factory."},"ls1":{"label":"LS1 aluminum","bore":3.898,"safeBore":3.905,"maxBore":3.94,"stockStroke":3.622,"hp":550,"boost":8,"sleeved":false,"note":"Aluminum 5.7. Thin cylinder walls and a modest boost ceiling."},"ls2":{"label":"LS2 aluminum","bore":4.0,"safeBore":4.01,"maxBore":4.03,"stockStroke":3.622,"hp":650,"boost":10,"sleeved":false,"note":"Aluminum 6.0. A little stronger than an LS1, and still not an iron 6.0."},"ls3":{"label":"LS3 aluminum","bore":4.065,"safeBore":4.07,"maxBore":4.1,"stockStroke":3.622,"hp":700,"boost":12,"sleeved":false,"note":"Aluminum 6.2. Rectangle-port heads from the factory and a short overbore window."},"ls7":{"label":"LS7 aluminum","bore":4.125,"safeBore":4.13,"maxBore":4.155,"stockStroke":4.0,"hp":700,"boost":8,"sleeved":false,"note":"Aluminum 7.0. The windows in the barrels are the boost limit."},"sleeve53":{"label":"5.3 iron, resleeved","bore":3.905,"safeBore":4.0,"maxBore":4.0,"stockStroke":3.622,"hp":1200,"boost":26,"sleeved":true,"note":"Iron 5.3 with aftermarket sleeves. The bore and the power rating both move up."},"sleeve60":{"label":"6.0 iron, resleeved","bore":4.03,"safeBore":4.07,"maxBore":4.07,"stockStroke":3.622,"hp":1500,"boost":30,"sleeved":true,"note":"Iron 6.0 with aftermarket sleeves for a bigger bore and more boost."},"lsx":{"label":"Aftermarket iron (LSX class)","bore":4.125,"safeBore":4.165,"maxBore":4.185,"stockStroke":3.622,"hp":1800,"boost":35,"sleeved":false,"note":"Aftermarket iron in the LSX class. Priority mains and room for a large bore."}},"cranks":{"s3268":{"label":"4.8 factory 3.268 in","stroke":3.268,"hp":600,"note":"Factory 4.8 cast crank. This is the destroker when it goes into a 6.0."},"s3622":{"label":"5.3 / 6.0 / 6.2 factory 3.622 in","stroke":3.622,"hp":750,"note":"Factory cast crank shared by the 5.3, 6.0, and 6.2."},"f4000":{"label":"LS7 factory 4.000 in","stroke":4.0,"hp":900,"note":"LS7 forged 4.000 in crank. The mains fit a standard LS block, and the piston has to get shorter."},"a4000":{"label":"Aftermarket 4.000 in","stroke":4.0,"hp":1500,"note":"Forged 4.000 in stroker crank."},"a4100":{"label":"Aftermarket 4.100 in","stroke":4.1,"hp":1500,"note":"Forged 4.100 in stroker crank."},"a4125":{"label":"Aftermarket 4.125 in","stroke":4.125,"hp":1600,"note":"Forged 4.125 in stroker crank."},"a4250":{"label":"Aftermarket 4.250 in","stroke":4.25,"hp":1600,"note":"Forged 4.250 in stroker crank. Check the compression height before ordering pistons."}},"rods":{"pm":{"label":"Factory powdered metal","hp":550,"rpm":6800,"pin":"pressed","note":"Factory powdered-metal rod with a pressed pin."},"hbeam":{"label":"Forged H-beam","hp":1000,"rpm":7500,"pin":"floating","note":"Forged H-beam with a floating pin."},"ibeam":{"label":"Forged I-beam","hp":1500,"rpm":8000,"pin":"floating","note":"Forged I-beam with a floating pin. The usual choice once the power goal passes four figures."},"ti":{"label":"LS7 titanium","hp":700,"rpm":7100,"pin":"floating","note":"LS7 titanium rod. Light, and hard on the big end if RPM or oil is wrong."}},"heads":{"h241":{"label":"241 cathedral (LS6 / LS2)","cc":64.5,"cfm":240,"minBore":3.7,"direct":true,"note":"Cathedral 241 from the LS6 and LS2. About 64 cc and a direct swap onto a cathedral intake."},"h243":{"label":"243 / 799 cathedral","cc":64,"cfm":250,"minBore":3.7,"direct":true,"note":"Cathedral 243 and 799. The standard performance swap onto a 5.3 or 6.0."},"h317":{"label":"317 cathedral (5.3 truck)","cc":71,"cfm":215,"minBore":3.7,"direct":true,"note":"Cathedral 317 truck head. Larger chamber and less flow."},"tfx":{"label":"Trick Flow GenX cathedral","cc":62,"cfm":310,"minBore":3.78,"direct":true,"note":"Trick Flow GenX cathedral. More port than a factory 243, and it still uses a cathedral intake."},"ls3":{"label":"LS3 / L92 rectangular","cc":68,"cfm":320,"minBore":3.9,"direct":true,"note":"LS3 and L92 rectangle port. Needs a rectangle-port intake, and the chamber wants a 3.900 in bore or larger."},"ls7":{"label":"LS7 rectangular","cc":70,"cfm":370,"minBore":4.1,"direct":false,"note":"LS7 rectangle port. Different valve angle, rockers, and intake."},"afr":{"label":"Aftermarket rectangular","cc":65,"cfm":360,"minBore":3.9,"direct":true,"note":"Aftermarket rectangle port in the AFR or Mast class, matched to a rectangle-port intake."}},"pistons":{"hyper":{"label":"Factory hypereutectic","dish":8,"hp":500,"note":"Hypereutectic piston. Fine for a mild naturally aspirated build, and the first part to give up under boost."},"flat":{"label":"Forged flat top","dish":4,"hp":1500,"note":"Forged flat top with valve reliefs."},"dish":{"label":"Forged dished","dish":16,"hp":1500,"note":"Forged dished piston for boost. The dish is what keeps the compression in range."},"dome":{"label":"Forged dome","dish":-4,"hp":1200,"note":"Forged dome for fuel that can support the compression, such as E85 or race gas."}}};
+const CC_PER_CI = 16.387064;
+
+function lsNum(id, fallback) {
+    const el = document.getElementById(id);
+    const value = el ? parseFloat(el.value) : NaN;
+    return Number.isFinite(value) ? value : fallback;
+}
+
+function lsText(id, text) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+}
+
+function cidOf(bore, stroke) {
+    return bore * bore * stroke * Math.PI / 4 * 8;
+}
+
+function volCc(bore, inches) {
+    return bore * bore * Math.PI / 4 * inches * CC_PER_CI;
+}
+
+function clamp(value, lo, hi) {
+    return Math.min(hi, Math.max(lo, value));
+}
+
+function pistonFromTdc(stroke, rod, theta) {
+    const half = stroke / 2;
+    const s = Math.sin(theta);
+    const inside = 1 - Math.pow((half / rod) * s, 2);
+    if (inside <= 0 || rod <= 0) return stroke;
+    return half * (1 - Math.cos(theta)) + rod * (1 - Math.sqrt(inside));
+}
+
+function camPlan(intent, cid) {
+    if (intent === "turbo") {
+        return { duration: clamp(Math.round(214 + (cid - 346) * 0.04), 212, 228), lsa: 115, lift: 0.595, ivc: 34 };
+    }
+    if (intent === "super") {
+        return { duration: clamp(Math.round(216 + (cid - 346) * 0.04), 214, 230), lsa: 114, lift: 0.585, ivc: 36 };
+    }
+    const duration = clamp(Math.round(208 + (cid - 330) * 0.07), 206, 238);
+    const lift = Math.min(0.65, 0.54 + Math.max(0, cid - 330) * 0.00045);
+    return {
+        duration: duration,
+        lsa: cid >= 400 ? 112 : 113,
+        lift: Math.round(lift * 1000) / 1000,
+        ivc: clamp(Math.round(36 + (duration - 214) * 0.45), 34, 52)
+    };
+}
+
+function compressionBand(intent, fuel) {
+    const boosted = intent !== "na";
+    if (fuel === "methanol") return boosted ? { scrLo: 11, scrHi: 14, dcrLo: 8.5, dcrHi: 10 } : { scrLo: 12, scrHi: 15, dcrLo: 9, dcrHi: 11 };
+    if (fuel === "e85") return boosted ? { scrLo: 10, scrHi: 12, dcrLo: 8, dcrHi: 9.2 } : { scrLo: 11, scrHi: 13.2, dcrLo: 8.4, dcrHi: 9.6 };
+    if (fuel === "race") return boosted ? { scrLo: 10, scrHi: 11.5, dcrLo: 8, dcrHi: 9 } : { scrLo: 11, scrHi: 13, dcrLo: 8.5, dcrHi: 9.4 };
+    return boosted ? { scrLo: 8.8, scrHi: 10.3, dcrLo: 7.5, dcrHi: 8.4 } : { scrLo: 10, scrHi: 11.5, dcrLo: 8, dcrHi: 8.7 };
+}
+
+function compressionStatus(value, lo, hi) {
+    if (value >= lo && value <= hi) return "Good";
+    if (value > hi && value <= hi + 0.4) return "Watch";
+    if (value > hi) return "No";
+    if (value >= lo - 0.8) return "Watch";
+    return "No";
+}
+
+function wheelScale() {
+    if (unitState.power !== "whp") return 1;
+    const loss = Math.min(0.4, Math.max(0, lsNum("dt-loss", 15) / 100));
+    return 1 - loss;
+}
+
+function matrixRow(name, detail, result, status) {
+    const tr = document.createElement("tr");
+    if (status === "No") tr.className = "is-small";
+    const badge = status === "Good" ? "badge-ok" : (status === "Watch" ? "badge-tight" : "badge-no");
+    [name, detail, result].forEach(text => {
+        const td = document.createElement("td");
+        td.textContent = text;
+        tr.appendChild(td);
+    });
+    const statusCell = document.createElement("td");
+    const pill = document.createElement("span");
+    pill.className = "badge " + badge;
+    pill.textContent = status;
+    statusCell.appendChild(pill);
+    tr.appendChild(statusCell);
+    return tr;
+}
+
+function calcLs() {
+    const block = LS.blocks[document.getElementById("ls-block").value] || LS.blocks.lq4;
+    const crank = LS.cranks[document.getElementById("ls-crank").value] || LS.cranks.s3622;
+    const rod = LS.rods[document.getElementById("ls-rod").value] || LS.rods.pm;
+    const head = LS.heads[document.getElementById("ls-head").value] || LS.heads.h317;
+    const piston = LS.pistons[document.getElementById("ls-piston").value] || LS.pistons.hyper;
+    const rodLen = Math.max(5.5, lsNum("ls-rodlen", 6.098));
+    const pin = document.getElementById("ls-pin").value || "pressed";
+    const intent = document.getElementById("ls-intent").value || "na";
+    const fuel = document.getElementById("ls-fuel").value || "gasoline";
+    const bore = clamp(lsNum("ls-bore", block.bore), 3.4, 4.3);
+    const stroke = crank.stroke;
+    const deckHeight = lsNum("ls-deck-height", 9.24);
+    const gasket = Math.max(0.02, lsNum("ls-gasket", 0.051));
+    const deckClear = lsNum("ls-deck", 0.005);
+    const dish = lsNum("ls-dish", piston.dish);
+    const chamberEl = document.getElementById("ls-chamber");
+    const chamberRaw = chamberEl && chamberEl.value.trim();
+    const chamber = chamberRaw ? Math.max(20, parseFloat(chamberRaw) || head.cc) : head.cc;
+    const rpm = clamp(lsNum("ls-rpm", 6400), 4000, 8500);
+    const boostEl = document.getElementById("ls-boost");
+    if (boostEl) boostEl.disabled = intent === "na";
+    const boost = intent === "na" ? 0 : Math.max(0, lsNum("ls-boost", 0));
+    const cid = cidOf(bore, stroke);
+    const delta = cid - cidOf(bore, block.stockStroke);
+    const swept = volCc(bore, stroke);
+    const clearance = chamber + volCc(bore, gasket) + volCc(bore, deckClear) + dish;
+    const realClearance = clearance > 1;
+    const scr = realClearance ? (swept + clearance) / clearance : 0;
+    const ch = deckHeight - stroke / 2 - rodLen - deckClear;
+    const rodRatio = rodLen / stroke;
+    const cam = camPlan(intent, cid);
+    const ivcEl = document.getElementById("ls-ivc");
+    const ivcRaw = ivcEl && ivcEl.value.trim();
+    const ivc = ivcRaw ? clamp(parseFloat(ivcRaw) || cam.ivc, 20, 70) : cam.ivc;
+    const effective = pistonFromTdc(stroke, rodLen, (180 + ivc) * Math.PI / 180);
+    const dcr = realClearance ? (volCc(bore, effective) + clearance) / clearance : 0;
+    const ve = head.cfm >= 300 ? 0.93 : (head.cfm >= 240 ? 0.88 : 0.84);
+    const naHp = Math.max(1, Math.min(cid * rpm * ve / 3456 * 0.85, head.cfm * 2.05));
+    const adder = intent === "super" ? 0.88 : 0.9;
+    const airHp = intent === "na" ? naHp : naHp * ((14.7 + boost) / 14.7) * adder;
+    let hardware = { phrase: "The block is", hp: block.hp };
+    [
+        { phrase: "The crank is", hp: crank.hp },
+        { phrase: "The rods are", hp: rod.hp },
+        { phrase: "The pistons are", hp: piston.hp }
+    ].forEach(item => { if (item.hp < hardware.hp) hardware = item; });
+    const ceiling = Math.min(airHp, hardware.hp);
+    const shown = ceiling * wheelScale();
+    const boostRoom = Math.max(0, Math.min(block.boost, (hardware.hp / (naHp * adder)) * 14.7 - 14.7));
+    let strokeLabel = "Stock stroke";
+    if (delta >= 1.5) strokeLabel = "Stroker, +" + delta.toFixed(0) + " ci";
+    else if (delta <= -1.5) strokeLabel = "Destroker, " + Math.abs(delta).toFixed(0) + " ci down";
+    const band = compressionBand(intent, fuel);
+    const scrStatus = realClearance ? compressionStatus(scr, band.scrLo, band.scrHi) : "No";
+    const dcrStatus = realClearance ? compressionStatus(dcr, band.dcrLo, band.dcrHi) : "No";
+    let boreStatus = "Good";
+    let boreResult = Math.abs(bore - block.bore) > 0.002 ? "Overbore is inside the safe wall." : "Stock bore.";
+    if (bore > block.maxBore + 0.001) {
+        boreStatus = "No";
+        boreResult = "Past " + block.maxBore.toFixed(3) + " in, the sleeve limit for this casting.";
+    } else if (bore > block.safeBore + 0.001) {
+        boreStatus = "Watch";
+        boreResult = block.sleeved
+            ? "On the large side of what this sleeve likes."
+            : "Past the bare-casting overbore of " + block.safeBore.toFixed(3) + " in. This bore wants a sleeve.";
+    }
+    let chStatus = "Good";
+    let chResult = ch.toFixed(3) + " in is a normal compression height.";
+    if (ch < 0.98) {
+        chStatus = "No";
+        chResult = ch.toFixed(3) + " in puts the pin through the ring pack. Use less stroke or a shorter rod.";
+    } else if (ch < 1.12) {
+        chStatus = "Watch";
+        chResult = ch.toFixed(3) + " in needs a custom piston, and the ring pack is close to the pin.";
+    } else if (ch > 1.65) {
+        chStatus = "Watch";
+        chResult = ch.toFixed(3) + " in is a tall, heavy piston, and it still fits.";
+    }
+    let pinStatus = "Good";
+    let pinResult = pin === "floating" ? "Floating pin." : "Pressed pin.";
+    if (rod.pin === "pressed" && pin === "floating") {
+        pinStatus = "No";
+        pinResult = "These rods are pressed-pin. A floating pin needs a bushed rod.";
+    } else if (rod.pin === "floating" && pin === "pressed") {
+        pinStatus = "Watch";
+        pinResult = "These rods are bushed for a floating pin.";
+    }
+    let headStatus = "Good";
+    let headResult = "Clears a " + bore.toFixed(3) + " in bore.";
+    if (!head.direct) {
+        headStatus = "Watch";
+        headResult = "Needs the matching rockers and intake. Not a simple cathedral swap.";
+    }
+    if (bore + 0.002 < head.minBore) {
+        headStatus = "No";
+        headResult = "The chamber wants a " + head.minBore.toFixed(3) + " in bore or larger.";
+    }
+    const rrStatus = rodRatio < 1.5 ? "Watch" : "Good";
+    const rrResult = rodRatio.toFixed(2) + ":1. " + (rodRatio < 1.5 ? "Low rod ratio and more skirt load." : (rodRatio > 1.8 ? "High rod ratio, happier at RPM." : "Healthy rod ratio."));
+    const rpmStatus = rpm <= rod.rpm ? "Good" : "Watch";
+    let powerStatus = "Good";
+    let powerResult = "About " + Math.round(ceiling) + " HP at the crank, limited by airflow.";
+    if (!realClearance) {
+        powerStatus = "No";
+        powerResult = "Compression volume is not real until the piston clears the head.";
+    } else if (intent !== "na" && boost > block.boost + 0.4) {
+        powerStatus = "No";
+        powerResult = block.boost + " PSI is the planning limit for this block. The request is " + boost.toFixed(1) + " PSI.";
+    } else if (airHp > hardware.hp + 20) {
+        powerStatus = "Watch";
+        powerResult = "Air can make about " + Math.round(airHp) + " HP. " + hardware.phrase + " the limit at " + hardware.hp + " HP.";
+        if (intent !== "na") powerResult += " About " + boostRoom.toFixed(1) + " PSI stays inside that limit.";
+    } else if (hardware.hp <= airHp) {
+        powerResult = "About " + Math.round(ceiling) + " HP at the crank. " + hardware.phrase + " the closest hardware limit.";
+    }
+    const scrResult = realClearance
+        ? scr.toFixed(2) + ":1. Target " + band.scrLo.toFixed(1) + " to " + band.scrHi.toFixed(1) + " for this fuel and power adder."
+        : "The piston is into the head. Add dish, gasket, or deck clearance.";
+    const dcrResult = realClearance
+        ? dcr.toFixed(2) + ":1 at " + ivc + " deg ABDC. Target " + band.dcrLo.toFixed(1) + " to " + band.dcrHi.toFixed(1) + "."
+        : "No intake-closing compression until the piston clears the head.";
+    const camResult = cam.duration + " deg at 0.050, " + cam.lift.toFixed(3) + " in lift, " + cam.lsa + " LSA, intake closes " + (ivcRaw ? ivc + " deg ABDC typed" : cam.ivc + " deg ABDC") + ".";
+    publishReadout([
+        { label: "Displacement", value: cid, unit: "ci", primary: true },
+        { label: "Stroke class", value: strokeLabel, unit: "text" },
+        { label: "Static compression", value: realClearance ? scr : 0, unit: "ratio" },
+        { label: "Dynamic compression", value: realClearance ? dcr : 0, unit: "ratio" },
+        { label: unitState.power === "whp" ? "Power at the wheels" : "Power at the crank", value: Math.round(shown).toLocaleString("en-US") + (unitState.power === "whp" ? " WHP" : " HP"), unit: "text" },
+        { label: "Piston height", value: ch, unit: "in3" },
+        { label: "Rod ratio", value: rodRatio, unit: "ratio" },
+        { label: "Bore", value: bore, unit: "in3" },
+        { label: "Stroke", value: stroke, unit: "in3" }
+    ]);
+    lsText("ls-block-note", block.note + " Stock bore " + block.bore.toFixed(3) + " in, safe overbore " + block.safeBore.toFixed(3) + " in, sleeve limit " + block.maxBore.toFixed(3) + " in. Planning rating " + block.hp + " HP and " + block.boost + " PSI.");
+    lsText("ls-crank-note", crank.note + " Planning limit " + crank.hp + " HP.");
+    lsText("ls-rod-note", rod.note + " Planning limit " + rod.hp + " HP and " + rod.rpm.toLocaleString("en-US") + " RPM.");
+    lsText("ls-head-note", head.note);
+    lsText("ls-piston-note", piston.note);
+    const assess = document.getElementById("ls-assess");
+    if (assess) {
+        const intentName = intent === "turbo" ? "turbo" : (intent === "super" ? "supercharged" : "naturally aspirated");
+        const sentences = [cid.toFixed(0) + " ci " + intentName + " combination. " + strokeLabel + "."];
+        if (!realClearance) sentences.push("The piston is into the head. Add dish, gasket thickness, or deck clearance before the compression number means anything.");
+        else if (scrStatus === "Good" && dcrStatus === "Good") sentences.push("Static compression is " + scr.toFixed(2) + ":1 and dynamic is " + dcr.toFixed(2) + ":1. Both sit in the usual window for this fuel.");
+        else sentences.push("Static compression is " + scr.toFixed(2) + ":1 and dynamic is " + dcr.toFixed(2) + ":1. One of them sits outside the usual window for this fuel.");
+        sentences.push(chResult);
+        if (headStatus !== "Good") sentences.push(headResult);
+        sentences.push(powerResult);
+        sentences.push("Starting cam: " + cam.duration + " degrees at 0.050, " + cam.lift.toFixed(3) + " in lift, " + cam.lsa + " LSA, intake closing " + ivc + " degrees ABDC.");
+        assess.textContent = sentences.join(" ");
+    }
+    const body = document.getElementById("ls-matrix");
+    if (body) {
+        body.replaceChildren(
+            matrixRow("Bore", block.label, bore.toFixed(3) + " in. " + boreResult, boreStatus),
+            matrixRow("Stroke", crank.label, stroke.toFixed(3) + " in. " + strokeLabel + " versus the factory " + block.stockStroke.toFixed(3) + " in stroke.", "Good"),
+            matrixRow("Piston height", rodLen.toFixed(3) + " in rod", chResult, chStatus),
+            matrixRow("Rod ratio", rod.label, rrResult, rrStatus),
+            matrixRow("Wrist pin", pin === "floating" ? "Floating" : "Pressed", pinResult, pinStatus),
+            matrixRow("Heads", head.label, headResult, headStatus),
+            matrixRow("Static compression", chamber.toFixed(1) + " cc chamber", scrResult, scrStatus),
+            matrixRow("Dynamic compression", ivc + " deg ABDC", dcrResult, dcrStatus),
+            matrixRow("RPM", rod.label, Math.round(rpm).toLocaleString("en-US") + " RPM. Rod planning limit is " + rod.rpm.toLocaleString("en-US") + ".", rpmStatus),
+            matrixRow("Power", intent === "na" ? "Naturally aspirated" : (boost.toFixed(1) + " PSI"), powerResult, powerStatus),
+            matrixRow("Cam profile", intent === "na" ? "Naturally aspirated" : (intent === "turbo" ? "Turbo" : "Supercharged"), camResult, "Good")
+        );
+    }
+}
+const lsBlock = document.getElementById("ls-block");
+if (lsBlock) {
+    lsBlock.addEventListener("change", () => {
+        const next = LS.blocks[lsBlock.value];
+        if (next) document.getElementById("ls-bore").value = next.bore.toFixed(3);
+    });
+}
+const lsPiston = document.getElementById("ls-piston");
+if (lsPiston) {
+    lsPiston.addEventListener("change", () => {
+        const next = LS.pistons[lsPiston.value];
+        if (next) document.getElementById("ls-dish").value = next.dish;
+    });
+}
+bindCalc(calcLs, ["ls-block", "ls-bore", "ls-crank", "ls-rod", "ls-rodlen", "ls-pin", "ls-piston", "ls-head", "ls-intent", "ls-fuel", "ls-boost", "ls-rpm", "ls-gasket", "ls-deck", "ls-deck-height", "ls-dish", "ls-chamber", "ls-ivc", "dt-loss"]);
+
+    </script>
+</body>
+</html>

@@ -54,6 +54,7 @@ CATEGORY_FIELDS = {
     "Tire": ["tire_diameter", "rear_gear", "growth"],
     "Wastegate": ["hp", "boost"],
     "Fuel": ["hp", "fuel"],
+    "LS": [],
     "Electrical": [],
     "CAS": ["boost"],
 }
@@ -591,6 +592,8 @@ def load_pages(path):
 
 
 def spec_text(row):
+    if row["category"] == "LS":
+        return "Loaded defaults: " + ls_preset(row["slug"])["spec"] + "."
     parts = []
     for key in CATEGORY_FIELDS[row["category"]]:
         value = cell(row, key)
@@ -665,6 +668,8 @@ function formatUnit(value, unit) {
             return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
         case "in":
             return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "in3":
+            return metric ? { text: (n * 25.4).toFixed(2), suffix: "mm" } : { text: n.toFixed(3), suffix: "in" };
         case "psi":
             return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
         case "lbmin":
@@ -689,6 +694,8 @@ function formatUnit(value, unit) {
             return { text: n.toFixed(1), suffix: "%" };
         case "cc":
             return { text: Math.round(n).toLocaleString("en-US"), suffix: "cc/min" };
+        case "ci":
+            return metric ? { text: (n * 0.0163871).toFixed(2), suffix: "L" } : { text: n.toFixed(1), suffix: "ci" };
         case "gph":
             return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/h" } : { text: n.toFixed(1), suffix: "gal/hr" };
         case "amp":
@@ -1705,6 +1712,450 @@ function calcCas() {
 bindCalc(calcCas, ["cas-boost", "cas-baro"]);
 """
 
+LS_CATALOG = {
+    "blocks": {
+        "lm7": {"label": "LM7 5.3 iron", "bore": 3.780, "safeBore": 3.810, "maxBore": 4.000, "stockStroke": 3.622, "hp": 850, "boost": 18, "sleeved": False, "note": "Gen III iron 5.3. The small bore leaves more cylinder wall than an aluminum block, and it is the usual budget turbo foundation."},
+        "lq4": {"label": "LQ4 6.0 iron", "bore": 4.000, "safeBore": 4.030, "maxBore": 4.070, "stockStroke": 3.622, "hp": 1100, "boost": 24, "sleeved": False, "note": "Gen III iron 6.0. One of the strongest factory LS castings."},
+        "lq9": {"label": "LQ9 6.0 iron", "bore": 4.000, "safeBore": 4.030, "maxBore": 4.070, "stockStroke": 3.622, "hp": 1100, "boost": 24, "sleeved": False, "note": "Iron 6.0 HO. Same casting family as the LQ4, with flat-top pistons from the factory."},
+        "ls1": {"label": "LS1 aluminum", "bore": 3.898, "safeBore": 3.905, "maxBore": 3.940, "stockStroke": 3.622, "hp": 550, "boost": 8, "sleeved": False, "note": "Aluminum 5.7. Thin cylinder walls and a modest boost ceiling."},
+        "ls2": {"label": "LS2 aluminum", "bore": 4.000, "safeBore": 4.010, "maxBore": 4.030, "stockStroke": 3.622, "hp": 650, "boost": 10, "sleeved": False, "note": "Aluminum 6.0. A little stronger than an LS1, and still not an iron 6.0."},
+        "ls3": {"label": "LS3 aluminum", "bore": 4.065, "safeBore": 4.070, "maxBore": 4.100, "stockStroke": 3.622, "hp": 700, "boost": 12, "sleeved": False, "note": "Aluminum 6.2. Rectangle-port heads from the factory and a short overbore window."},
+        "ls7": {"label": "LS7 aluminum", "bore": 4.125, "safeBore": 4.130, "maxBore": 4.155, "stockStroke": 4.000, "hp": 700, "boost": 8, "sleeved": False, "note": "Aluminum 7.0. The windows in the barrels are the boost limit."},
+        "sleeve53": {"label": "5.3 iron, resleeved", "bore": 3.905, "safeBore": 4.000, "maxBore": 4.000, "stockStroke": 3.622, "hp": 1200, "boost": 26, "sleeved": True, "note": "Iron 5.3 with aftermarket sleeves. The bore and the power rating both move up."},
+        "sleeve60": {"label": "6.0 iron, resleeved", "bore": 4.030, "safeBore": 4.070, "maxBore": 4.070, "stockStroke": 3.622, "hp": 1500, "boost": 30, "sleeved": True, "note": "Iron 6.0 with aftermarket sleeves for a bigger bore and more boost."},
+        "lsx": {"label": "Aftermarket iron (LSX class)", "bore": 4.125, "safeBore": 4.165, "maxBore": 4.185, "stockStroke": 3.622, "hp": 1800, "boost": 35, "sleeved": False, "note": "Aftermarket iron in the LSX class. Priority mains and room for a large bore."},
+    },
+    "cranks": {
+        "s3268": {"label": "4.8 factory 3.268 in", "stroke": 3.268, "hp": 600, "note": "Factory 4.8 cast crank. This is the destroker when it goes into a 6.0."},
+        "s3622": {"label": "5.3 / 6.0 / 6.2 factory 3.622 in", "stroke": 3.622, "hp": 750, "note": "Factory cast crank shared by the 5.3, 6.0, and 6.2."},
+        "f4000": {"label": "LS7 factory 4.000 in", "stroke": 4.000, "hp": 900, "note": "LS7 forged 4.000 in crank. The mains fit a standard LS block, and the piston has to get shorter."},
+        "a4000": {"label": "Aftermarket 4.000 in", "stroke": 4.000, "hp": 1500, "note": "Forged 4.000 in stroker crank."},
+        "a4100": {"label": "Aftermarket 4.100 in", "stroke": 4.100, "hp": 1500, "note": "Forged 4.100 in stroker crank."},
+        "a4125": {"label": "Aftermarket 4.125 in", "stroke": 4.125, "hp": 1600, "note": "Forged 4.125 in stroker crank."},
+        "a4250": {"label": "Aftermarket 4.250 in", "stroke": 4.250, "hp": 1600, "note": "Forged 4.250 in stroker crank. Check the compression height before ordering pistons."},
+    },
+    "rods": {
+        "pm": {"label": "Factory powdered metal", "hp": 550, "rpm": 6800, "pin": "pressed", "note": "Factory powdered-metal rod with a pressed pin."},
+        "hbeam": {"label": "Forged H-beam", "hp": 1000, "rpm": 7500, "pin": "floating", "note": "Forged H-beam with a floating pin."},
+        "ibeam": {"label": "Forged I-beam", "hp": 1500, "rpm": 8000, "pin": "floating", "note": "Forged I-beam with a floating pin. The usual choice once the power goal passes four figures."},
+        "ti": {"label": "LS7 titanium", "hp": 700, "rpm": 7100, "pin": "floating", "note": "LS7 titanium rod. Light, and hard on the big end if RPM or oil is wrong."},
+    },
+    "heads": {
+        "h241": {"label": "241 cathedral (LS6 / LS2)", "cc": 64.5, "cfm": 240, "minBore": 3.70, "direct": True, "note": "Cathedral 241 from the LS6 and LS2. About 64 cc and a direct swap onto a cathedral intake."},
+        "h243": {"label": "243 / 799 cathedral", "cc": 64, "cfm": 250, "minBore": 3.70, "direct": True, "note": "Cathedral 243 and 799. The standard performance swap onto a 5.3 or 6.0."},
+        "h317": {"label": "317 cathedral (5.3 truck)", "cc": 71, "cfm": 215, "minBore": 3.70, "direct": True, "note": "Cathedral 317 truck head. Larger chamber and less flow."},
+        "tfx": {"label": "Trick Flow GenX cathedral", "cc": 62, "cfm": 310, "minBore": 3.78, "direct": True, "note": "Trick Flow GenX cathedral. More port than a factory 243, and it still uses a cathedral intake."},
+        "ls3": {"label": "LS3 / L92 rectangular", "cc": 68, "cfm": 320, "minBore": 3.90, "direct": True, "note": "LS3 and L92 rectangle port. Needs a rectangle-port intake, and the chamber wants a 3.900 in bore or larger."},
+        "ls7": {"label": "LS7 rectangular", "cc": 70, "cfm": 370, "minBore": 4.10, "direct": False, "note": "LS7 rectangle port. Different valve angle, rockers, and intake."},
+        "afr": {"label": "Aftermarket rectangular", "cc": 65, "cfm": 360, "minBore": 3.90, "direct": True, "note": "Aftermarket rectangle port in the AFR or Mast class, matched to a rectangle-port intake."},
+    },
+    "pistons": {
+        "hyper": {"label": "Factory hypereutectic", "dish": 8, "hp": 500, "note": "Hypereutectic piston. Fine for a mild naturally aspirated build, and the first part to give up under boost."},
+        "flat": {"label": "Forged flat top", "dish": 4, "hp": 1500, "note": "Forged flat top with valve reliefs."},
+        "dish": {"label": "Forged dished", "dish": 16, "hp": 1500, "note": "Forged dished piston for boost. The dish is what keeps the compression in range."},
+        "dome": {"label": "Forged dome", "dish": -4, "hp": 1200, "note": "Forged dome for fuel that can support the compression, such as E85 or race gas."},
+    },
+}
+LS_GROUPS = {
+    "blocks": (
+        ("Factory iron", ("lm7", "lq4", "lq9")),
+        ("Factory aluminum", ("ls1", "ls2", "ls3", "ls7")),
+        ("Aftermarket / resleeved", ("sleeve53", "sleeve60", "lsx")),
+    ),
+    "cranks": (
+        ("Factory", ("s3268", "s3622", "f4000")),
+        ("Aftermarket stroker", ("a4000", "a4100", "a4125", "a4250")),
+    ),
+    "heads": (
+        ("Cathedral port", ("h241", "h243", "h317", "tfx")),
+        ("Rectangular port", ("ls3", "ls7", "afr")),
+    ),
+}
+LS_ROD_LENGTHS = (
+    ("6.067", "6.067 in (LS7)"),
+    ("6.098", "6.098 in (factory)"),
+    ("6.125", "6.125 in (stroker)"),
+    ("6.200", "6.200 in (long)"),
+)
+LS_PINS = (("pressed", "Pressed pin"), ("floating", "Floating pin"))
+LS_INTENTS = (("na", "Naturally aspirated"), ("turbo", "Turbocharged"), ("super", "Supercharged"))
+LS_BUILD_FUELS = (("gasoline", "Gasoline (91/93)"), ("e85", "E85"), ("methanol", "Methanol"), ("race", "Race gas"))
+LS_PRESETS = {
+    "ls-engine-builder": {"block": "lq4", "crank": "s3622", "rod": "pm", "rodlen": "6.098", "pin": "pressed", "piston": "hyper", "head": "h317", "intent": "na", "fuel": "gasoline", "bore": "4.000", "boost": "0", "rpm": "6000", "gasket": "0.051", "deck": "0.005", "spec": "LQ4 iron 6.0, 317 heads, naturally aspirated"},
+    "lm7-5-3-iron-engine-build": {"block": "lm7", "crank": "s3622", "rod": "pm", "rodlen": "6.098", "pin": "pressed", "piston": "hyper", "head": "h317", "intent": "na", "fuel": "gasoline", "bore": "3.780", "boost": "0", "rpm": "5800", "gasket": "0.051", "deck": "0.005", "spec": "LM7 iron 5.3, 317 heads, naturally aspirated"},
+    "lq4-6-0-iron-engine-build": {"block": "lq4", "crank": "s3622", "rod": "pm", "rodlen": "6.098", "pin": "pressed", "piston": "hyper", "head": "h317", "intent": "na", "fuel": "gasoline", "bore": "4.000", "boost": "0", "rpm": "6000", "gasket": "0.051", "deck": "0.005", "spec": "LQ4 iron 6.0, 317 heads, naturally aspirated"},
+    "lq9-6-0-iron-engine-build": {"block": "lq9", "crank": "s3622", "rod": "pm", "rodlen": "6.098", "pin": "pressed", "piston": "flat", "head": "h317", "intent": "na", "fuel": "gasoline", "bore": "4.000", "boost": "0", "rpm": "6200", "gasket": "0.051", "deck": "0.005", "spec": "LQ9 iron 6.0, flat-top pistons, 317 heads"},
+    "ls1-aluminum-engine-build": {"block": "ls1", "crank": "s3622", "rod": "pm", "rodlen": "6.098", "pin": "pressed", "piston": "flat", "head": "h241", "intent": "na", "fuel": "gasoline", "bore": "3.898", "boost": "0", "rpm": "6200", "gasket": "0.051", "deck": "0.005", "spec": "LS1 aluminum, 241 cathedral heads"},
+    "ls2-aluminum-engine-build": {"block": "ls2", "crank": "s3622", "rod": "pm", "rodlen": "6.098", "pin": "pressed", "piston": "flat", "head": "h243", "intent": "na", "fuel": "gasoline", "bore": "4.000", "boost": "0", "rpm": "6400", "gasket": "0.051", "deck": "0.005", "spec": "LS2 aluminum, 243 cathedral heads"},
+    "ls3-376-engine-build": {"block": "ls3", "crank": "s3622", "rod": "pm", "rodlen": "6.098", "pin": "pressed", "piston": "flat", "head": "ls3", "intent": "na", "fuel": "gasoline", "bore": "4.065", "boost": "0", "rpm": "6600", "gasket": "0.051", "deck": "0.005", "spec": "LS3 aluminum, rectangular heads"},
+    "ls7-427-engine-build": {"block": "ls7", "crank": "f4000", "rod": "ti", "rodlen": "6.067", "pin": "floating", "piston": "flat", "head": "ls7", "intent": "na", "fuel": "gasoline", "bore": "4.125", "boost": "0", "rpm": "7000", "gasket": "0.051", "deck": "0.005", "spec": "LS7, 4.000 in stroke, titanium rods, LS7 heads"},
+    "iron-5-3-4-inch-stroker": {"block": "lm7", "crank": "f4000", "rod": "hbeam", "rodlen": "6.125", "pin": "floating", "piston": "flat", "head": "h243", "intent": "na", "fuel": "gasoline", "bore": "3.780", "boost": "0", "rpm": "6500", "gasket": "0.051", "deck": "0.005", "spec": "iron 5.3, 4.000 in crank, 6.125 in rods, 243 heads"},
+    "iron-6-0-402-stroker": {"block": "lq4", "crank": "a4000", "rod": "hbeam", "rodlen": "6.125", "pin": "floating", "piston": "flat", "head": "ls3", "intent": "na", "fuel": "gasoline", "bore": "4.000", "boost": "0", "rpm": "6500", "gasket": "0.051", "deck": "0.005", "spec": "iron 6.0, 4.000 in crank, LS3 heads"},
+    "iron-6-0-4-125-stroker": {"block": "lq4", "crank": "a4125", "rod": "ibeam", "rodlen": "6.125", "pin": "floating", "piston": "flat", "head": "ls3", "intent": "na", "fuel": "e85", "bore": "4.000", "boost": "0", "rpm": "6800", "gasket": "0.051", "deck": "0.005", "spec": "iron 6.0, 4.125 in crank, E85"},
+    "iron-6-0-4-8-destroker": {"block": "lq4", "crank": "s3268", "rod": "pm", "rodlen": "6.098", "pin": "pressed", "piston": "hyper", "head": "h317", "intent": "na", "fuel": "gasoline", "bore": "4.000", "boost": "0", "rpm": "7000", "gasket": "0.051", "deck": "0.005", "spec": "iron 6.0 with a 4.8 crank"},
+    "turbo-5-3-iron-build": {"block": "lm7", "crank": "s3622", "rod": "hbeam", "rodlen": "6.098", "pin": "floating", "piston": "dome", "head": "h243", "intent": "turbo", "fuel": "e85", "bore": "3.780", "boost": "12", "rpm": "6400", "gasket": "0.051", "deck": "0.005", "spec": "iron 5.3, 243 heads, E85, 12 PSI turbo"},
+    "supercharged-ls3-build": {"block": "ls3", "crank": "s3622", "rod": "hbeam", "rodlen": "6.098", "pin": "floating", "piston": "dish", "head": "ls3", "intent": "super", "fuel": "gasoline", "bore": "4.065", "boost": "8", "rpm": "6400", "gasket": "0.051", "deck": "0.005", "spec": "LS3, forged dished pistons, 8 PSI supercharged"},
+    "lq4-ls3-head-swap": {"block": "lq4", "crank": "s3622", "rod": "hbeam", "rodlen": "6.098", "pin": "floating", "piston": "flat", "head": "ls3", "intent": "na", "fuel": "gasoline", "bore": "4.000", "boost": "0", "rpm": "6500", "gasket": "0.051", "deck": "0.005", "spec": "iron 6.0 with LS3 rectangular heads"},
+    "aftermarket-lsx-engine-build": {"block": "lsx", "crank": "a4125", "rod": "ibeam", "rodlen": "6.125", "pin": "floating", "piston": "dish", "head": "afr", "intent": "turbo", "fuel": "e85", "bore": "4.125", "boost": "18", "rpm": "7000", "gasket": "0.051", "deck": "0.005", "spec": "aftermarket iron, 4.125 in crank, E85, 18 PSI"},
+}
+
+
+def ls_preset(slug):
+    return LS_PRESETS.get(slug, LS_PRESETS["ls-engine-builder"])
+
+
+def ls_group_options(kind, current):
+    parts = []
+    for label, keys in LS_GROUPS[kind]:
+        opts = options([(key, LS_CATALOG[kind][key]["label"]) for key in keys], current)
+        parts.append(f'<optgroup label="{esc(label)}">\n{opts}\n</optgroup>')
+    return "".join(parts)
+
+
+def ls_html(row):
+    preset = ls_preset(row["slug"])
+    dish = LS_CATALOG["pistons"][preset["piston"]]["dish"]
+    boost_disabled = " disabled" if preset["intent"] == "na" else ""
+    primary = f"""
+    <div class="grid-2">
+        <div class="field"><label for="ls-block">Block</label><select id="ls-block">{ls_group_options("blocks", preset["block"])}</select></div>
+        <div class="field"><label for="ls-bore">Bore (in)</label><input type="number" id="ls-bore" value="{esc(f'{float(preset["bore"]):.3f}')}" min="3.4" max="4.3" step="0.001"></div>
+    </div>
+    <p class="field-hint" id="ls-block-note"></p>
+    <div class="grid-2">
+        <div class="field"><label for="ls-crank">Crankshaft</label><select id="ls-crank">{ls_group_options("cranks", preset["crank"])}</select></div>
+        <div class="field"><label for="ls-rod">Rods</label><select id="ls-rod">{options([(key, item["label"]) for key, item in LS_CATALOG["rods"].items()], preset["rod"])}</select></div>
+    </div>
+    <p class="field-hint" id="ls-crank-note"></p>
+    <div class="grid-2">
+        <div class="field"><label for="ls-rodlen">Rod length</label><select id="ls-rodlen">{options(LS_ROD_LENGTHS, preset["rodlen"])}</select></div>
+        <div class="field"><label for="ls-pin">Wrist pin</label><select id="ls-pin">{options(LS_PINS, preset["pin"])}</select></div>
+    </div>
+    <p class="field-hint" id="ls-rod-note"></p>
+    <div class="grid-2">
+        <div class="field"><label for="ls-head">Cylinder heads</label><select id="ls-head">{ls_group_options("heads", preset["head"])}</select></div>
+        <div class="field"><label for="ls-piston">Pistons</label><select id="ls-piston">{options([(key, item["label"]) for key, item in LS_CATALOG["pistons"].items()], preset["piston"])}</select></div>
+    </div>
+    <p class="field-hint" id="ls-head-note"></p>
+    <p class="field-hint" id="ls-piston-note"></p>
+    <div class="grid-2">
+        <div class="field"><label for="ls-intent">Power adder</label><select id="ls-intent">{options(LS_INTENTS, preset["intent"])}</select></div>
+        <div class="field"><label for="ls-fuel">Fuel</label><select id="ls-fuel">{options(LS_BUILD_FUELS, preset["fuel"])}</select></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="ls-boost">Target boost (PSI)</label><input type="number" id="ls-boost" value="{esc(preset["boost"])}" min="0" max="40" step="0.5"{boost_disabled}></div>
+        <div class="field"><label for="ls-rpm">Peak RPM</label><input type="number" id="ls-rpm" value="{esc(preset["rpm"])}" min="4000" max="8500" step="100"></div>
+    </div>
+    <p class="field-hint">A 4.000 in crank in an iron 5.3 or 6.0 is the budget stroker. A 3.268 in crank in a 6.0 is the destroker. Power figures are planning limits for a tuned engine, not a guarantee.</p>
+    """
+    advanced = f"""
+    <div class="grid-2">
+        <div class="field"><label for="ls-gasket">Head gasket (in)</label><input type="number" id="ls-gasket" value="{esc(preset["gasket"])}" min="0.020" max="0.120" step="0.001"></div>
+        <div class="field"><label for="ls-deck">Deck clearance (in)</label><input type="number" id="ls-deck" value="{esc(preset["deck"])}" min="-0.020" max="0.040" step="0.001"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="ls-deck-height">Deck height (in)</label><input type="number" id="ls-deck-height" value="9.240" min="9.000" max="10.000" step="0.001"></div>
+        <div class="field"><label for="ls-dish">Piston dish (cc)</label><input type="number" id="ls-dish" value="{dish:g}" min="-20" max="40" step="0.5"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="ls-chamber">Chamber volume (cc)</label><input type="number" id="ls-chamber" placeholder="Auto" min="40" max="120" step="0.5"></div>
+        <div class="field"><label for="ls-ivc">Intake close (deg ABDC)</label><input type="number" id="ls-ivc" placeholder="Auto" min="20" max="70" step="1"></div>
+    </div>
+    <p class="field-hint">Positive dish adds volume and lowers compression. A dome is a negative number. Leave chamber and intake closing blank to use the selected head and the cam profile.</p>
+    {LOSS_FIELDS}
+    """
+    results = """
+    <p class="assess" id="ls-assess"></p>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>Check</th><th>Detail</th><th>Result</th><th>Status</th></tr></thead>
+            <tbody id="ls-matrix"></tbody>
+        </table>
+        <p class="field-hint">Horsepower and boost ratings are planning limits. The cam row is a starting profile, not a finished cam card.</p>
+    </div>
+    """
+    return calculator_shell(primary, advanced, "Print build sheet", power_toggle=True, results_extra=results)
+
+
+LS_SCRIPT = r"""
+const LS = %%LS%%;
+const CC_PER_CI = 16.387064;
+
+function lsNum(id, fallback) {
+    const el = document.getElementById(id);
+    const value = el ? parseFloat(el.value) : NaN;
+    return Number.isFinite(value) ? value : fallback;
+}
+
+function lsText(id, text) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+}
+
+function cidOf(bore, stroke) {
+    return bore * bore * stroke * Math.PI / 4 * 8;
+}
+
+function volCc(bore, inches) {
+    return bore * bore * Math.PI / 4 * inches * CC_PER_CI;
+}
+
+function clamp(value, lo, hi) {
+    return Math.min(hi, Math.max(lo, value));
+}
+
+function pistonFromTdc(stroke, rod, theta) {
+    const half = stroke / 2;
+    const s = Math.sin(theta);
+    const inside = 1 - Math.pow((half / rod) * s, 2);
+    if (inside <= 0 || rod <= 0) return stroke;
+    return half * (1 - Math.cos(theta)) + rod * (1 - Math.sqrt(inside));
+}
+
+function camPlan(intent, cid) {
+    if (intent === "turbo") {
+        return { duration: clamp(Math.round(214 + (cid - 346) * 0.04), 212, 228), lsa: 115, lift: 0.595, ivc: 34 };
+    }
+    if (intent === "super") {
+        return { duration: clamp(Math.round(216 + (cid - 346) * 0.04), 214, 230), lsa: 114, lift: 0.585, ivc: 36 };
+    }
+    const duration = clamp(Math.round(208 + (cid - 330) * 0.07), 206, 238);
+    const lift = Math.min(0.65, 0.54 + Math.max(0, cid - 330) * 0.00045);
+    return {
+        duration: duration,
+        lsa: cid >= 400 ? 112 : 113,
+        lift: Math.round(lift * 1000) / 1000,
+        ivc: clamp(Math.round(36 + (duration - 214) * 0.45), 34, 52)
+    };
+}
+
+function compressionBand(intent, fuel) {
+    const boosted = intent !== "na";
+    if (fuel === "methanol") return boosted ? { scrLo: 11, scrHi: 14, dcrLo: 8.5, dcrHi: 10 } : { scrLo: 12, scrHi: 15, dcrLo: 9, dcrHi: 11 };
+    if (fuel === "e85") return boosted ? { scrLo: 10, scrHi: 12, dcrLo: 8, dcrHi: 9.2 } : { scrLo: 11, scrHi: 13.2, dcrLo: 8.4, dcrHi: 9.6 };
+    if (fuel === "race") return boosted ? { scrLo: 10, scrHi: 11.5, dcrLo: 8, dcrHi: 9 } : { scrLo: 11, scrHi: 13, dcrLo: 8.5, dcrHi: 9.4 };
+    return boosted ? { scrLo: 8.8, scrHi: 10.3, dcrLo: 7.5, dcrHi: 8.4 } : { scrLo: 10, scrHi: 11.5, dcrLo: 8, dcrHi: 8.7 };
+}
+
+function compressionStatus(value, lo, hi) {
+    if (value >= lo && value <= hi) return "Good";
+    if (value > hi && value <= hi + 0.4) return "Watch";
+    if (value > hi) return "No";
+    if (value >= lo - 0.8) return "Watch";
+    return "No";
+}
+
+function wheelScale() {
+    if (unitState.power !== "whp") return 1;
+    const loss = Math.min(0.4, Math.max(0, lsNum("dt-loss", 15) / 100));
+    return 1 - loss;
+}
+
+function matrixRow(name, detail, result, status) {
+    const tr = document.createElement("tr");
+    if (status === "No") tr.className = "is-small";
+    const badge = status === "Good" ? "badge-ok" : (status === "Watch" ? "badge-tight" : "badge-no");
+    [name, detail, result].forEach(text => {
+        const td = document.createElement("td");
+        td.textContent = text;
+        tr.appendChild(td);
+    });
+    const statusCell = document.createElement("td");
+    const pill = document.createElement("span");
+    pill.className = "badge " + badge;
+    pill.textContent = status;
+    statusCell.appendChild(pill);
+    tr.appendChild(statusCell);
+    return tr;
+}
+
+function calcLs() {
+    const block = LS.blocks[document.getElementById("ls-block").value] || LS.blocks.lq4;
+    const crank = LS.cranks[document.getElementById("ls-crank").value] || LS.cranks.s3622;
+    const rod = LS.rods[document.getElementById("ls-rod").value] || LS.rods.pm;
+    const head = LS.heads[document.getElementById("ls-head").value] || LS.heads.h317;
+    const piston = LS.pistons[document.getElementById("ls-piston").value] || LS.pistons.hyper;
+    const rodLen = Math.max(5.5, lsNum("ls-rodlen", 6.098));
+    const pin = document.getElementById("ls-pin").value || "pressed";
+    const intent = document.getElementById("ls-intent").value || "na";
+    const fuel = document.getElementById("ls-fuel").value || "gasoline";
+    const bore = clamp(lsNum("ls-bore", block.bore), 3.4, 4.3);
+    const stroke = crank.stroke;
+    const deckHeight = lsNum("ls-deck-height", 9.24);
+    const gasket = Math.max(0.02, lsNum("ls-gasket", 0.051));
+    const deckClear = lsNum("ls-deck", 0.005);
+    const dish = lsNum("ls-dish", piston.dish);
+    const chamberEl = document.getElementById("ls-chamber");
+    const chamberRaw = chamberEl && chamberEl.value.trim();
+    const chamber = chamberRaw ? Math.max(20, parseFloat(chamberRaw) || head.cc) : head.cc;
+    const rpm = clamp(lsNum("ls-rpm", 6400), 4000, 8500);
+    const boostEl = document.getElementById("ls-boost");
+    if (boostEl) boostEl.disabled = intent === "na";
+    const boost = intent === "na" ? 0 : Math.max(0, lsNum("ls-boost", 0));
+    const cid = cidOf(bore, stroke);
+    const delta = cid - cidOf(bore, block.stockStroke);
+    const swept = volCc(bore, stroke);
+    const clearance = chamber + volCc(bore, gasket) + volCc(bore, deckClear) + dish;
+    const realClearance = clearance > 1;
+    const scr = realClearance ? (swept + clearance) / clearance : 0;
+    const ch = deckHeight - stroke / 2 - rodLen - deckClear;
+    const rodRatio = rodLen / stroke;
+    const cam = camPlan(intent, cid);
+    const ivcEl = document.getElementById("ls-ivc");
+    const ivcRaw = ivcEl && ivcEl.value.trim();
+    const ivc = ivcRaw ? clamp(parseFloat(ivcRaw) || cam.ivc, 20, 70) : cam.ivc;
+    const effective = pistonFromTdc(stroke, rodLen, (180 + ivc) * Math.PI / 180);
+    const dcr = realClearance ? (volCc(bore, effective) + clearance) / clearance : 0;
+    const ve = head.cfm >= 300 ? 0.93 : (head.cfm >= 240 ? 0.88 : 0.84);
+    const naHp = Math.max(1, Math.min(cid * rpm * ve / 3456 * 0.85, head.cfm * 2.05));
+    const adder = intent === "super" ? 0.88 : 0.9;
+    const airHp = intent === "na" ? naHp : naHp * ((14.7 + boost) / 14.7) * adder;
+    let hardware = { phrase: "The block is", hp: block.hp };
+    [
+        { phrase: "The crank is", hp: crank.hp },
+        { phrase: "The rods are", hp: rod.hp },
+        { phrase: "The pistons are", hp: piston.hp }
+    ].forEach(item => { if (item.hp < hardware.hp) hardware = item; });
+    const ceiling = Math.min(airHp, hardware.hp);
+    const shown = ceiling * wheelScale();
+    const boostRoom = Math.max(0, Math.min(block.boost, (hardware.hp / (naHp * adder)) * 14.7 - 14.7));
+    let strokeLabel = "Stock stroke";
+    if (delta >= 1.5) strokeLabel = "Stroker, +" + delta.toFixed(0) + " ci";
+    else if (delta <= -1.5) strokeLabel = "Destroker, " + Math.abs(delta).toFixed(0) + " ci down";
+    const band = compressionBand(intent, fuel);
+    const scrStatus = realClearance ? compressionStatus(scr, band.scrLo, band.scrHi) : "No";
+    const dcrStatus = realClearance ? compressionStatus(dcr, band.dcrLo, band.dcrHi) : "No";
+    let boreStatus = "Good";
+    let boreResult = Math.abs(bore - block.bore) > 0.002 ? "Overbore is inside the safe wall." : "Stock bore.";
+    if (bore > block.maxBore + 0.001) {
+        boreStatus = "No";
+        boreResult = "Past " + block.maxBore.toFixed(3) + " in, the sleeve limit for this casting.";
+    } else if (bore > block.safeBore + 0.001) {
+        boreStatus = "Watch";
+        boreResult = block.sleeved
+            ? "On the large side of what this sleeve likes."
+            : "Past the bare-casting overbore of " + block.safeBore.toFixed(3) + " in. This bore wants a sleeve.";
+    }
+    let chStatus = "Good";
+    let chResult = ch.toFixed(3) + " in is a normal compression height.";
+    if (ch < 0.98) {
+        chStatus = "No";
+        chResult = ch.toFixed(3) + " in puts the pin through the ring pack. Use less stroke or a shorter rod.";
+    } else if (ch < 1.12) {
+        chStatus = "Watch";
+        chResult = ch.toFixed(3) + " in needs a custom piston, and the ring pack is close to the pin.";
+    } else if (ch > 1.65) {
+        chStatus = "Watch";
+        chResult = ch.toFixed(3) + " in is a tall, heavy piston, and it still fits.";
+    }
+    let pinStatus = "Good";
+    let pinResult = pin === "floating" ? "Floating pin." : "Pressed pin.";
+    if (rod.pin === "pressed" && pin === "floating") {
+        pinStatus = "No";
+        pinResult = "These rods are pressed-pin. A floating pin needs a bushed rod.";
+    } else if (rod.pin === "floating" && pin === "pressed") {
+        pinStatus = "Watch";
+        pinResult = "These rods are bushed for a floating pin.";
+    }
+    let headStatus = "Good";
+    let headResult = "Clears a " + bore.toFixed(3) + " in bore.";
+    if (!head.direct) {
+        headStatus = "Watch";
+        headResult = "Needs the matching rockers and intake. Not a simple cathedral swap.";
+    }
+    if (bore + 0.002 < head.minBore) {
+        headStatus = "No";
+        headResult = "The chamber wants a " + head.minBore.toFixed(3) + " in bore or larger.";
+    }
+    const rrStatus = rodRatio < 1.5 ? "Watch" : "Good";
+    const rrResult = rodRatio.toFixed(2) + ":1. " + (rodRatio < 1.5 ? "Low rod ratio and more skirt load." : (rodRatio > 1.8 ? "High rod ratio, happier at RPM." : "Healthy rod ratio."));
+    const rpmStatus = rpm <= rod.rpm ? "Good" : "Watch";
+    let powerStatus = "Good";
+    let powerResult = "About " + Math.round(ceiling) + " HP at the crank, limited by airflow.";
+    if (!realClearance) {
+        powerStatus = "No";
+        powerResult = "Compression volume is not real until the piston clears the head.";
+    } else if (intent !== "na" && boost > block.boost + 0.4) {
+        powerStatus = "No";
+        powerResult = block.boost + " PSI is the planning limit for this block. The request is " + boost.toFixed(1) + " PSI.";
+    } else if (airHp > hardware.hp + 20) {
+        powerStatus = "Watch";
+        powerResult = "Air can make about " + Math.round(airHp) + " HP. " + hardware.phrase + " the limit at " + hardware.hp + " HP.";
+        if (intent !== "na") powerResult += " About " + boostRoom.toFixed(1) + " PSI stays inside that limit.";
+    } else if (hardware.hp <= airHp) {
+        powerResult = "About " + Math.round(ceiling) + " HP at the crank. " + hardware.phrase + " the closest hardware limit.";
+    }
+    const scrResult = realClearance
+        ? scr.toFixed(2) + ":1. Target " + band.scrLo.toFixed(1) + " to " + band.scrHi.toFixed(1) + " for this fuel and power adder."
+        : "The piston is into the head. Add dish, gasket, or deck clearance.";
+    const dcrResult = realClearance
+        ? dcr.toFixed(2) + ":1 at " + ivc + " deg ABDC. Target " + band.dcrLo.toFixed(1) + " to " + band.dcrHi.toFixed(1) + "."
+        : "No intake-closing compression until the piston clears the head.";
+    const camResult = cam.duration + " deg at 0.050, " + cam.lift.toFixed(3) + " in lift, " + cam.lsa + " LSA, intake closes " + (ivcRaw ? ivc + " deg ABDC typed" : cam.ivc + " deg ABDC") + ".";
+    publishReadout([
+        { label: "Displacement", value: cid, unit: "ci", primary: true },
+        { label: "Stroke class", value: strokeLabel, unit: "text" },
+        { label: "Static compression", value: realClearance ? scr : 0, unit: "ratio" },
+        { label: "Dynamic compression", value: realClearance ? dcr : 0, unit: "ratio" },
+        { label: unitState.power === "whp" ? "Power at the wheels" : "Power at the crank", value: Math.round(shown).toLocaleString("en-US") + (unitState.power === "whp" ? " WHP" : " HP"), unit: "text" },
+        { label: "Piston height", value: ch, unit: "in3" },
+        { label: "Rod ratio", value: rodRatio, unit: "ratio" },
+        { label: "Bore", value: bore, unit: "in3" },
+        { label: "Stroke", value: stroke, unit: "in3" }
+    ]);
+    lsText("ls-block-note", block.note + " Stock bore " + block.bore.toFixed(3) + " in, safe overbore " + block.safeBore.toFixed(3) + " in, sleeve limit " + block.maxBore.toFixed(3) + " in. Planning rating " + block.hp + " HP and " + block.boost + " PSI.");
+    lsText("ls-crank-note", crank.note + " Planning limit " + crank.hp + " HP.");
+    lsText("ls-rod-note", rod.note + " Planning limit " + rod.hp + " HP and " + rod.rpm.toLocaleString("en-US") + " RPM.");
+    lsText("ls-head-note", head.note);
+    lsText("ls-piston-note", piston.note);
+    const assess = document.getElementById("ls-assess");
+    if (assess) {
+        const intentName = intent === "turbo" ? "turbo" : (intent === "super" ? "supercharged" : "naturally aspirated");
+        const sentences = [cid.toFixed(0) + " ci " + intentName + " combination. " + strokeLabel + "."];
+        if (!realClearance) sentences.push("The piston is into the head. Add dish, gasket thickness, or deck clearance before the compression number means anything.");
+        else if (scrStatus === "Good" && dcrStatus === "Good") sentences.push("Static compression is " + scr.toFixed(2) + ":1 and dynamic is " + dcr.toFixed(2) + ":1. Both sit in the usual window for this fuel.");
+        else sentences.push("Static compression is " + scr.toFixed(2) + ":1 and dynamic is " + dcr.toFixed(2) + ":1. One of them sits outside the usual window for this fuel.");
+        sentences.push(chResult);
+        if (headStatus !== "Good") sentences.push(headResult);
+        sentences.push(powerResult);
+        sentences.push("Starting cam: " + cam.duration + " degrees at 0.050, " + cam.lift.toFixed(3) + " in lift, " + cam.lsa + " LSA, intake closing " + ivc + " degrees ABDC.");
+        assess.textContent = sentences.join(" ");
+    }
+    const body = document.getElementById("ls-matrix");
+    if (body) {
+        body.replaceChildren(
+            matrixRow("Bore", block.label, bore.toFixed(3) + " in. " + boreResult, boreStatus),
+            matrixRow("Stroke", crank.label, stroke.toFixed(3) + " in. " + strokeLabel + " versus the factory " + block.stockStroke.toFixed(3) + " in stroke.", "Good"),
+            matrixRow("Piston height", rodLen.toFixed(3) + " in rod", chResult, chStatus),
+            matrixRow("Rod ratio", rod.label, rrResult, rrStatus),
+            matrixRow("Wrist pin", pin === "floating" ? "Floating" : "Pressed", pinResult, pinStatus),
+            matrixRow("Heads", head.label, headResult, headStatus),
+            matrixRow("Static compression", chamber.toFixed(1) + " cc chamber", scrResult, scrStatus),
+            matrixRow("Dynamic compression", ivc + " deg ABDC", dcrResult, dcrStatus),
+            matrixRow("RPM", rod.label, Math.round(rpm).toLocaleString("en-US") + " RPM. Rod planning limit is " + rod.rpm.toLocaleString("en-US") + ".", rpmStatus),
+            matrixRow("Power", intent === "na" ? "Naturally aspirated" : (boost.toFixed(1) + " PSI"), powerResult, powerStatus),
+            matrixRow("Cam profile", intent === "na" ? "Naturally aspirated" : (intent === "turbo" ? "Turbo" : "Supercharged"), camResult, "Good")
+        );
+    }
+}
+const lsBlock = document.getElementById("ls-block");
+if (lsBlock) {
+    lsBlock.addEventListener("change", () => {
+        const next = LS.blocks[lsBlock.value];
+        if (next) document.getElementById("ls-bore").value = next.bore.toFixed(3);
+    });
+}
+const lsPiston = document.getElementById("ls-piston");
+if (lsPiston) {
+    lsPiston.addEventListener("change", () => {
+        const next = LS.pistons[lsPiston.value];
+        if (next) document.getElementById("ls-dish").value = next.dish;
+    });
+}
+bindCalc(calcLs, ["ls-block", "ls-bore", "ls-crank", "ls-rod", "ls-rodlen", "ls-pin", "ls-piston", "ls-head", "ls-intent", "ls-fuel", "ls-boost", "ls-rpm", "ls-gasket", "ls-deck", "ls-deck-height", "ls-dish", "ls-chamber", "ls-ivc", "dt-loss"]);
+"""
+LS_PAGE_SCRIPT = LS_SCRIPT.replace("%%LS%%", json.dumps(LS_CATALOG, separators=(",", ":")))
+
 WIDGETS = {
     "Transmission": (
         "Overall Ratio = Trans Ratio x Rear Gear. Shift Speed (MPH) = (RPM x (1 - Slip) x Tire) / (Overall x 336). Recovery RPM = Shift RPM x (1 - Slip) x (Next Ratio / Current Ratio).",
@@ -1750,6 +2201,11 @@ WIDGETS = {
         "Rated lb/hr = (Flywheel HP x BSFC) / (Injector Count x Max Duty x sqrt(Base PSI / 43.5)). cc/min = lb/hr x 10.5. Buy the smallest common size whose duty cycle stays inside your cap.",
         fuel_html,
         FUEL_SCRIPT,
+    ),
+    "LS": (
+        "CID = Bore x Bore x Stroke x 0.7854 x 8. SCR = (Swept volume + clearance volume) / clearance volume. Clearance volume is the chamber, the gasket, the deck, and the piston dish. DCR uses the piston position at intake-valve closing instead of the full stroke.",
+        ls_html,
+        LS_PAGE_SCRIPT,
     ),
     "Electrical": (
         "Load Amps = Watts / Voltage | Design Amps = Load x Duty Factor. Relay, fuse, and wire size sit above that current.",
@@ -1868,6 +2324,11 @@ TRACKSIDE_NOTES = {
         ("Why does base pressure change the rating?", "Flow scales with the square root of the pressure ratio versus the 43.5 PSI rating pressure. A higher base lets the same injector support more power."),
         ("What duty cycle is safe?", "A cap around 80% leaves room for the injector to open, close, and stay cool. Living at 90% or more is where lean spikes show up."),
     ),
+    "LS": (
+        ("How does a stroker change the inches?", "Displacement is bore times bore times stroke times 0.7854 times 8. A 4.000 inch crank in an iron 5.3 or 6.0 adds cubes without changing the bore, as long as the piston compression height still clears the rings."),
+        ("What is the difference between static and dynamic compression?", "Static compression uses the full stroke. Dynamic compression uses the piston position when the intake valve closes, so a later-closing cam bleeds some of that compression off."),
+        ("Why can a part fit the block and still be the wrong part?", "An LS7 crank shares the main journal, and an LS3 head bolts to a 6.0, but the piston height, the chamber versus the bore, and the power limit still have to match the combination."),
+    ),
     "Electrical": (
         ("How is the circuit current found?", "Load amps are watts divided by voltage. Size the wire, fuse, and relay above that, and apply a duty factor for a fan or pump that is not on full time."),
         ("Why size the wire for the run length?", "Voltage drop grows with current and length. A fuel pump at the back of the car needs a larger gauge than the same pump next to the battery."),
@@ -1969,8 +2430,8 @@ def index_page(pages, hubs):
         PAGE_TEMPLATE,
         TITLE=esc("Ultimate Drag Racing Master Suite | Drivetrain & Shift Calculator"),
         DESCRIPTION=esc(
-            "Drag racing calculators for gear ratios, turbo sizing, fuel injectors, "
-            "supercharger pulleys, tire growth, and chassis setup."
+            "Drag racing calculators for gear ratios, turbo sizing, LS engine builds, "
+            "fuel injectors, supercharger pulleys, tire growth, and chassis setup."
         ),
         CANONICAL=esc(f"{ORIGIN}/index.html"),
         VERIFICATION=VERIFICATION,
@@ -2066,6 +2527,9 @@ def sitemap(pages):
 
 def main():
     pages = load_pages(CSV_PATH)
+    missing_ls = [page["slug"] for page in pages if page["category"] == "LS" and page["slug"] not in LS_PRESETS]
+    if missing_ls:
+        raise SystemExit("LS pages missing presets: " + ", ".join(missing_ls))
     hubs = [page for page in pages if page["role"] == "hub"]
     hubs_by_category = {page["category"]: page for page in hubs}
     if not any(page["slug"] == "transmission-shift-recovery-calculator" for page in pages):

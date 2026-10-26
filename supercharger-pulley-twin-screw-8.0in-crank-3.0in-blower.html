@@ -22,7 +22,7 @@
 <body>
     <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
     <div class="layout-grid">
-        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item active" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item active" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
         <section class="sticky-calculator">
             <header class="master-header">
                 <h1>Twin-Screw Supercharger Pulley Calculator for an 8.0 Inch Crank and 3.0 Inch Blower</h1>
@@ -101,6 +101,8 @@ function formatUnit(value, unit) {
             return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
         case "in":
             return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "in3":
+            return metric ? { text: (n * 25.4).toFixed(2), suffix: "mm" } : { text: n.toFixed(3), suffix: "in" };
         case "psi":
             return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
         case "lbmin":
@@ -125,6 +127,8 @@ function formatUnit(value, unit) {
             return { text: n.toFixed(1), suffix: "%" };
         case "cc":
             return { text: Math.round(n).toLocaleString("en-US"), suffix: "cc/min" };
+        case "ci":
+            return metric ? { text: (n * 0.0163871).toFixed(2), suffix: "L" } : { text: n.toFixed(1), suffix: "ci" };
         case "gph":
             return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/h" } : { text: n.toFixed(1), suffix: "gal/hr" };
         case "amp":

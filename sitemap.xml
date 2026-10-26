@@ -26,6 +26,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://dragcalculators.com/ls-engine-builder.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://dragcalculators.com/four-link-suspension-calculator.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
@@ -1737,6 +1742,81 @@
     </url>
     <url>
         <loc>https://dragcalculators.com/zf8hp-5.13-gear-33.0-tire.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/lm7-5-3-iron-engine-build.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/lq4-6-0-iron-engine-build.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/lq9-6-0-iron-engine-build.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/ls1-aluminum-engine-build.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/ls2-aluminum-engine-build.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/ls3-376-engine-build.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/ls7-427-engine-build.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/iron-5-3-4-inch-stroker.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/iron-6-0-402-stroker.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/iron-6-0-4-125-stroker.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/iron-6-0-4-8-destroker.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/turbo-5-3-iron-build.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/supercharged-ls3-build.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/lq4-ls3-head-swap.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/aftermarket-lsx-engine-build.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
     </url>
