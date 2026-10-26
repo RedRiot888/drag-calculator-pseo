@@ -31,6 +31,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://dragcalculators.com/nitrous-shot-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://dragcalculators.com/four-link-suspension-calculator.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
@@ -1822,6 +1827,61 @@
     </url>
     <url>
         <loc>https://dragcalculators.com/aftermarket-lsx-engine-build.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/100-shot-gasoline-nitrous-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/150-shot-gasoline-nitrous-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/200-shot-gasoline-nitrous-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/250-shot-gasoline-nitrous-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/e85-nitrous-jet-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/methanol-nitrous-jet-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/direct-port-nitrous-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/two-stage-nitrous-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/dry-nitrous-efi-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/progressive-nitrous-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/fogger-nitrous-calculator.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
     </url>

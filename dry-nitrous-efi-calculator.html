@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dry Nitrous EFI Calculator | DragCalculators.com</title>
+    <meta name="description" content="Dry Nitrous EFI Calculator. Loaded defaults: 150 HP dry EFI shot, 60 lb/hr injectors.">
+    <link rel="canonical" href="https://dragcalculators.com/dry-nitrous-efi-calculator.html">
+    <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
+    <meta name="google-site-verification" content="google9e7c88791a3f2f72">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dragcalculators.com/dry-nitrous-efi-calculator.html">
+    <meta property="og:title" content="Dry Nitrous EFI Calculator | DragCalculators.com">
+    <meta property="og:description" content="Dry Nitrous EFI Calculator. Loaded defaults: 150 HP dry EFI shot, 60 lb/hr injectors.">
+    <meta property="og:image" content="https://dragcalculators.com/social-banner.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dry Nitrous EFI Calculator | DragCalculators.com">
+    <meta name="twitter:description" content="Dry Nitrous EFI Calculator. Loaded defaults: 150 HP dry EFI shot, 60 lb/hr injectors.">
+    <meta name="twitter:image" content="https://dragcalculators.com/social-banner.jpg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
+    <div class="layout-grid">
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item active" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
+        <section class="sticky-calculator">
+            <header class="master-header">
+                <h1>Dry Nitrous EFI Calculator</h1>
+                <p class="spec">Loaded defaults: 150 HP dry EFI shot, 60 lb/hr injectors.</p>
+            </header>
+            
+    <div class="field-stack">
+    <div class="grid-2">
+        <div class="field"><label for="nx-base">Base engine power</label><input type="number" id="nx-base" value="500" min="50" step="10"></div>
+        <div class="field"><label for="nx-shot">Stage 1 shot (HP)</label><input type="number" id="nx-shot" value="150" min="25" max="800" step="25"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="nx-system">System</label><select id="nx-system"><option value="plate">Wet plate</option>
+<option value="fogger">Wet fogger</option>
+<option value="direct">Direct port</option>
+<option value="dry" selected>Dry EFI</option></select></div>
+        <div class="field"><label for="nx-fuel">Fuel</label><select id="nx-fuel"><option value="gasoline" selected>Gasoline (91/93)</option>
+<option value="e85">E85</option>
+<option value="methanol">Methanol</option>
+<option value="race">Race gas</option></select></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="nx-stages">Stages</label><select id="nx-stages"><option value="1" selected>Single stage</option>
+<option value="2">Two stage</option></select></div>
+        <div class="field"><label for="nx-shot2">Stage 2 shot (HP)</label><input type="number" id="nx-shot2" value="100" min="0" max="600" step="25" disabled></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="nx-bottle">Bottle pressure (PSI)</label><input type="number" id="nx-bottle" value="950" min="300" max="1200" step="10"></div>
+        <div class="field"><label for="nx-fuelpsi">Fuel pressure (PSI)</label><input type="number" id="nx-fuelpsi" value="43.5" min="1" max="120" step="0.5"></div>
+    </div>
+    <p class="field-hint">Jets are starting orifices for this shot at the bottle pressure on the gauge. A 900 to 950 PSI bottle is the usual tune window. Wet fuel pressure is often about 6 PSI at the fuel solenoid. Dry EFI uses rail pressure.</p>
+    </div>
+    <details class="accordion">
+        <summary>Advanced / Conditions</summary>
+        <div class="accordion-body field-stack">
+    <div class="grid-2">
+        <div class="field"><label for="nx-cylinders">Cylinders</label><input type="number" id="nx-cylinders" value="8" min="4" max="16" step="1"></div>
+        <div class="field"><label for="nx-timing">Base timing (deg)</label><input type="number" id="nx-timing" value="34" min="10" max="50" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="nx-delivery">Controller</label><select id="nx-delivery"><option value="full" selected>Full hit</option>
+<option value="progressive">Progressive</option></select></div>
+        <div class="field"><label for="nx-ontime">Time on the button (sec)</label><input type="number" id="nx-ontime" value="6" min="0.5" max="20" step="0.1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="nx-start">Progressive start (%)</label><input type="number" id="nx-start" value="40" min="0" max="100" step="5"></div>
+        <div class="field"><label for="nx-end">Progressive end (%)</label><input type="number" id="nx-end" value="100" min="0" max="100" step="5"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="nx-ramp">Ramp time (sec)</label><input type="number" id="nx-ramp" value="2.0" min="0.2" max="8" step="0.1"></div>
+        <div class="field"><label for="nx-delay">Stage 2 delay (sec)</label><input type="number" id="nx-delay" value="1.2" min="0" max="8" step="0.1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="nx-inj">Injector size (lb/hr)</label><input type="number" id="nx-inj" value="60" min="10" max="500" step="1"></div>
+        <div class="field"><label for="nx-injcount">Injector count</label><input type="number" id="nx-injcount" value="8" min="1" max="16" step="1"></div>
+    </div>
+    <div class="field"><label for="nx-bottlelb">Bottle size (lb)</label><input type="number" id="nx-bottlelb" value="10" min="5" max="30" step="1"></div>
+    <p class="field-hint">A fogger here is two nozzles. Direct port uses one nozzle per cylinder. Leave the controller on Full hit unless a progressive box is ramping the solenoid.</p>
+    
+<p class="field-hint">BHP uses the power entry as flywheel power. WHP treats it as wheel power and converts with this drivetrain loss.</p>
+<div class="grid-2">
+    <div class="field"><label for="dt-loss">Drivetrain loss (%)</label><input type="number" id="dt-loss" value="15" min="0" max="40" step="1"></div>
+</div>
+
+    </div>
+    </details>
+    <div class="readout" id="results">
+        <div class="readout-top">
+            <span class="readout-kicker">Result</span>
+            <div class="pill-row">
+                <div class="pill-group" role="group" aria-label="Power unit">
+                    <button type="button" class="pill" data-unit-group="power" data-unit="whp">WHP</button>
+                    <button type="button" class="pill active" data-unit-group="power" data-unit="bhp">BHP</button>
+                </div>
+                <div class="pill-group" role="group" aria-label="Units">
+                    <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
+                    <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+                </div>
+            </div>
+        </div>
+        <div id="readout-body"></div>
+    </div>
+    
+    <p class="assess" id="nx-assess"></p>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>Check</th><th>Detail</th><th>Result</th><th>Status</th></tr></thead>
+            <tbody id="nx-matrix"></tbody>
+        </table>
+        <p class="field-hint">Hit horsepower is the base engine plus the full shot. Average horsepower is the button with a progressive ramp or a second-stage delay. Weigh the bottle after a timed hit before trusting the flow.</p>
+    </div>
+    
+    <button type="button" class="action-btn" onclick="window.print()">Print nitrous sheet</button>
+    
+
+        </section>
+        <div class="content-column">
+            <section class="content-box"><h2>Formula</h2><p class="formula">Nitrous lb/hr = Shot HP x 3.6 once the jet is sized for that shot. Jet diameter follows the shot per nozzle and the square root of bottle pressure over 900 PSI. The fuel jet feeds that nitrous at the fuel&#x27;s nitrous-to-fuel ratio. Gasoline timing pull is 2 degrees per 50 HP.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Dry Nitrous EFI Calculator. Loaded defaults: 150 HP dry EFI shot, 60 lb/hr injectors.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>Why does bottle pressure change the jet?</h3><p>A nitrous jet is a liquid orifice. More bottle pressure pushes more nitrous through the same hole, so the hit gets richer on nitrous and the fuel jet is suddenly small. Hold the bottle near 900 to 950 PSI.</p></div><div class="faq-item"><h3>How much timing does a shot want?</h3><p>Gasoline starts at about 2 degrees pulled for every 50 HP of nitrous. E85 and race gas want less, and methanol wants less again. The first hit on gasoline can stand another 2 degrees of reserve.</p></div><div class="faq-item"><h3>What is the difference between a wet plate and a dry shot?</h3><p>A wet system brings its own fuel through a fuel jet and a fuel solenoid. A dry system sprays only nitrous, and the injectors have to add the fuel. The duty cycle is the check on a dry car.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="nitrous-shot-calculator.html">Nitrous Shot Jet &amp; Timing Calculator</a></li><li><a href="e85-nitrous-jet-calculator.html">E85 Nitrous Jet Calculator</a></li><li><a href="fogger-nitrous-calculator.html">Fogger Nitrous Jet Calculator</a></li><li><a href="methanol-nitrous-jet-calculator.html">Methanol Nitrous Jet Calculator</a></li><li><a href="progressive-nitrous-calculator.html">Progressive Nitrous Controller Calculator</a></li><li><a href="two-stage-nitrous-calculator.html">Two Stage Nitrous Calculator</a></li><li><a href="100-shot-gasoline-nitrous-calculator.html">100 HP Nitrous Shot Jet Calculator</a></li></ul></div></div></details>
+        </div>
+    </div>
+    
+<footer class="site-footer">
+    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
+    <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
+</footer>
+
+    <script>
+
+const unitState = { power: "bhp", system: "imperial" };
+let lastReadout = [];
+
+function crankHorsepower(raw) {
+    const hp = parseFloat(raw);
+    const entered = Number.isFinite(hp) ? hp : 0;
+    if (unitState.power !== "whp") return entered;
+    const lossInput = document.getElementById("dt-loss");
+    const lossPct = lossInput ? parseFloat(lossInput.value) : 15;
+    const loss = Math.min(0.4, Math.max(0, (Number.isFinite(lossPct) ? lossPct : 15) / 100));
+    return entered / Math.max(0.05, 1 - loss);
+}
+
+function formatUnit(value, unit) {
+    const metric = unitState.system === "metric";
+    const n = Number(value);
+    if (unit === "text") return { text: String(value), suffix: "" };
+    if (!Number.isFinite(n)) return { text: "—", suffix: "" };
+    switch (unit) {
+        case "mph":
+            return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
+        case "in":
+            return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "in3":
+            return metric ? { text: (n * 25.4).toFixed(2), suffix: "mm" } : { text: n.toFixed(3), suffix: "in" };
+        case "psi":
+            return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
+        case "lbmin":
+            return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "cfm":
+            return metric ? { text: (n * 0.0283168).toFixed(2), suffix: "m3/min" } : { text: Math.round(n).toLocaleString("en-US"), suffix: "CFM" };
+        case "tempf":
+            return metric ? { text: ((n - 32) * 5 / 9).toFixed(0), suffix: "C" } : { text: Math.round(n).toString(), suffix: "F" };
+        case "lbhr":
+            return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
+        case "ft":
+            return metric ? { text: (n * 0.3048).toFixed(2), suffix: "m" } : { text: n.toFixed(1), suffix: "ft" };
+        case "rpm":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "RPM" };
+        case "ratio":
+            return { text: n.toFixed(2), suffix: ":1" };
+        case "sec":
+            return { text: n.toFixed(2), suffix: "s" };
+        case "pct":
+            return { text: Math.round(n).toString(), suffix: "%" };
+        case "pct1":
+            return { text: n.toFixed(1), suffix: "%" };
+        case "cc":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "cc/min" };
+        case "ci":
+            return metric ? { text: (n * 0.0163871).toFixed(2), suffix: "L" } : { text: n.toFixed(1), suffix: "ci" };
+        case "gph":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/h" } : { text: n.toFixed(1), suffix: "gal/hr" };
+        case "amp":
+            return { text: n.toFixed(1), suffix: "A" };
+        case "mm":
+            return { text: String(Math.round(n)), suffix: "mm" };
+        case "awg":
+            return { text: String(value), suffix: "AWG" };
+        default:
+            return { text: String(value), suffix: unit || "" };
+    }
+}
+
+function joinReading(shown) {
+    if (!shown.suffix) return shown.text;
+    if (shown.suffix.charAt(0) === ":") return shown.text + shown.suffix;
+    return shown.text + " " + shown.suffix;
+}
+
+function reading(value, unit) {
+    return joinReading(formatUnit(value, unit));
+}
+
+function publishReadout(items) {
+    lastReadout = items;
+    const body = document.getElementById("readout-body");
+    if (!body || !items.length) return;
+    const primary = items.find(item => item.primary) || items[0];
+    const rest = items.filter(item => item !== primary);
+    const main = formatUnit(primary.value, primary.unit);
+    const extras = rest.map(item => {
+        return '<div class="readout-extra"><span>' + item.label + '</span><strong>' + reading(item.value, item.unit) + '</strong></div>';
+    }).join("");
+    body.innerHTML = '<div class="readout-label">' + primary.label + '</div>'
+        + '<div class="readout-value">' + main.text + (main.suffix ? '<span class="readout-suffix">' + main.suffix + '</span>' : '') + '</div>'
+        + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
+}
+
+function bindCalc(fn, ids) {
+    window.refreshCalc = fn;
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", fn);
+        el.addEventListener("change", fn);
+    });
+    fn();
+}
+
+document.querySelectorAll(".pill").forEach(button => {
+    button.addEventListener("click", () => {
+        if (!button.dataset.unitGroup) return;
+        unitState[button.dataset.unitGroup] = button.dataset.unit;
+        button.parentElement.querySelectorAll(".pill").forEach(pill => {
+            pill.classList.toggle("active", pill === button);
+        });
+        if (typeof window.refreshCalc === "function") window.refreshCalc();
+        else if (lastReadout.length) publishReadout(lastReadout);
+    });
+});
+
+
+const N2O_FUEL = {
+    gasoline: { ratio: 5.8, density: 6.17, bsfc: 0.50, degPer50: 2.0, rho: 740 },
+    e85: { ratio: 3.85, density: 6.55, bsfc: 0.68, degPer50: 1.5, rho: 785 },
+    methanol: { ratio: 2.54, density: 6.63, bsfc: 0.95, degPer50: 1.0, rho: 795 },
+    race: { ratio: 5.8, density: 6.20, bsfc: 0.55, degPer50: 1.5, rho: 745 }
+};
+const BOTTLE_CHART = [[0, 283], [10, 335], [20, 387], [32, 460], [40, 520], [50, 590], [60, 675], [70, 760], [80, 865], [85, 950], [97, 1069]];
+
+function nxNum(id, fallback) {
+    const el = document.getElementById(id);
+    const value = el ? parseFloat(el.value) : NaN;
+    return Number.isFinite(value) ? value : fallback;
+}
+
+function nxClamp(value, lo, hi) {
+    return Math.min(hi, Math.max(lo, value));
+}
+
+function bottleTemp(psi) {
+    if (psi <= BOTTLE_CHART[0][1]) return BOTTLE_CHART[0][0];
+    for (let i = 1; i < BOTTLE_CHART.length; i++) {
+        if (psi <= BOTTLE_CHART[i][1]) {
+            const span = BOTTLE_CHART[i][1] - BOTTLE_CHART[i - 1][1];
+            const mix = span > 0 ? (psi - BOTTLE_CHART[i - 1][1]) / span : 0;
+            return BOTTLE_CHART[i - 1][0] + mix * (BOTTLE_CHART[i][0] - BOTTLE_CHART[i - 1][0]);
+        }
+    }
+    return BOTTLE_CHART[BOTTLE_CHART.length - 1][0];
+}
+
+function nozzleCount(system, cylinders) {
+    if (system === "direct") return Math.max(1, Math.round(cylinders));
+    if (system === "fogger") return 2;
+    return 1;
+}
+
+function nitrousJetInches(hp, nozzles, bottlePsi) {
+    const each = hp / Math.max(1, nozzles);
+    const factor = Math.sqrt(Math.max(300, bottlePsi) / 900);
+    if (!(each > 0) || !(factor > 0)) return 0;
+    return Math.sqrt(each / (70 * factor)) / 25.4;
+}
+
+function fuelJetInches(lbPerHr, psi, rho) {
+    if (!(lbPerHr > 0) || !(psi > 0) || !(rho > 0)) return 0;
+    const mass = lbPerHr * 0.45359237 / 3600;
+    const drop = psi * 6894.757;
+    const areaM2 = mass / (0.75 * Math.sqrt(2 * rho * drop));
+    const areaIn2 = areaM2 / 0.00064516;
+    return Math.sqrt(areaIn2 / 0.785398163);
+}
+
+function jetLabel(inches) {
+    if (!(inches > 0) || !Number.isFinite(inches)) return "—";
+    const thou = Math.max(10, Math.round(inches * 1000));
+    return "0." + String(thou).padStart(3, "0") + " in (" + thou + ")";
+}
+
+function averageFraction(delivery, start, end, ramp, onTime) {
+    if (delivery !== "progressive") return 1;
+    const time = Math.max(0.1, onTime);
+    const span = Math.max(0.1, ramp);
+    const open = nxClamp(start, 0, 100) / 100;
+    const close = nxClamp(end, 0, 100) / 100;
+    if (time <= span) {
+        const reached = open + (close - open) * (time / span);
+        return (open + reached) / 2;
+    }
+    return (span * (open + close) / 2 + (time - span) * close) / time;
+}
+
+function nxWheelScale() {
+    if (unitState.power !== "whp") return 1;
+    const loss = nxClamp(nxNum("dt-loss", 15) / 100, 0, 0.4);
+    return 1 - loss;
+}
+
+function nxRow(name, detail, result, status) {
+    const tr = document.createElement("tr");
+    if (status === "No") tr.className = "is-small";
+    const badge = status === "Good" ? "badge-ok" : (status === "Watch" ? "badge-tight" : "badge-no");
+    [name, detail, result].forEach(text => {
+        const td = document.createElement("td");
+        td.textContent = text;
+        tr.appendChild(td);
+    });
+    const statusCell = document.createElement("td");
+    const pill = document.createElement("span");
+    pill.className = "badge " + badge;
+    pill.textContent = status;
+    statusCell.appendChild(pill);
+    tr.appendChild(statusCell);
+    return tr;
+}
+
+function calcNitrous() {
+    const fuelKey = document.getElementById("nx-fuel").value || "gasoline";
+    const fuel = N2O_FUEL[fuelKey] || N2O_FUEL.gasoline;
+    const system = document.getElementById("nx-system").value || "plate";
+    const stages = document.getElementById("nx-stages").value || "1";
+    const delivery = document.getElementById("nx-delivery").value || "full";
+    const dry = system === "dry";
+    const shot2El = document.getElementById("nx-shot2");
+    if (shot2El) shot2El.disabled = stages !== "2";
+    const base = Math.max(1, crankHorsepower(document.getElementById("nx-base").value || 500));
+    const shot = nxClamp(nxNum("nx-shot", 150), 0, 800);
+    const shot2 = stages === "2" ? nxClamp(nxNum("nx-shot2", 0), 0, 600) : 0;
+    const totalShot = shot + shot2;
+    const bottle = nxClamp(nxNum("nx-bottle", 950), 300, 1200);
+    const fuelPsi = nxClamp(nxNum("nx-fuelpsi", dry ? 43.5 : 6), 1, 120);
+    const cylinders = nxClamp(nxNum("nx-cylinders", 8), 1, 16);
+    const nozzles = nozzleCount(system, cylinders);
+    const timing = nxClamp(nxNum("nx-timing", 34), 0, 60);
+    const onTime = nxClamp(nxNum("nx-ontime", 6), 0.2, 20);
+    const delay = nxClamp(nxNum("nx-delay", 0), 0, onTime);
+    const fraction = averageFraction(delivery, nxNum("nx-start", 40), nxNum("nx-end", 100), nxNum("nx-ramp", 2), onTime);
+    const stagedTime = stages === "2" ? Math.max(0, onTime - delay) : onTime;
+    const averageShot = stages === "2"
+        ? (delay * shot * fraction + stagedTime * totalShot * fraction) / Math.max(0.1, onTime)
+        : totalShot * fraction;
+    const hit = base + totalShot;
+    const average = base + averageShot;
+    const scale = nxWheelScale();
+    const n2oLbHr = totalShot * 3.6;
+    const fuelLbHr = n2oLbHr / fuel.ratio;
+    const jet1 = nitrousJetInches(shot, nozzles, bottle);
+    const jet2 = shot2 > 0 ? nitrousJetInches(shot2, nozzles, bottle) : 0;
+    const stageFuel = shot > 0 ? fuelJetInches((shot * 3.6 / fuel.ratio) / nozzles, fuelPsi, fuel.rho) : 0;
+    const stage2Fuel = shot2 > 0 ? fuelJetInches((shot2 * 3.6 / fuel.ratio) / nozzles, fuelPsi, fuel.rho) : 0;
+    const pull = totalShot / 50 * fuel.degPer50;
+    const suggested = timing - pull;
+    const firstHit = suggested - (fuelKey === "gasoline" ? 2 : 0);
+    const temp = bottleTemp(bottle);
+    const flowLbMin = n2oLbHr / 60;
+    const used = flowLbMin * (onTime / 60) * (averageShot / Math.max(1, totalShot));
+    const usable = Math.max(0, nxNum("nx-bottlelb", 10)) * 0.8;
+    const passes = used > 0 ? usable / used : 0;
+    const injCount = Math.max(1, nxNum("nx-injcount", 8));
+    const injRated = Math.max(1, nxNum("nx-inj", 60)) * Math.sqrt(fuelPsi / 43.5);
+    const baseFuel = base * fuel.bsfc;
+    const duty = dry ? ((baseFuel + fuelLbHr) / injCount) / injRated * 100 : 0;
+    const thou = Math.round(jet1 * 1000);
+    let bottleStatus = "Good";
+    let bottleResult = Math.round(temp) + " F bottle temperature sits on this pressure. The tune window is 900 to 950 PSI.";
+    if (bottle < 850 || bottle > 1050) {
+        bottleStatus = "No";
+        bottleResult = Math.round(bottle) + " PSI is outside the tune window. Flow, the fuel ratio, and the hit all move with pressure.";
+    } else if (bottle < 900 || bottle > 1000) {
+        bottleStatus = "Watch";
+        bottleResult = Math.round(temp) + " F is close. Hold 900 to 950 PSI if this jet is the one you want.";
+    }
+    let jetStatus = "Good";
+    let jetResult = jetLabel(jet1) + " nitrous, shared across " + nozzles + (nozzles === 1 ? " nozzle." : " nozzles.");
+    if (shot2 > 0) jetResult += " Stage 2 is " + jetLabel(jet2) + ".";
+    const sameAt900 = shot * Math.sqrt(900 / bottle);
+    jetResult += " This stage 1 jet is about a " + Math.round(sameAt900) + " HP shot if the bottle falls to 900 PSI.";
+    if (thou > 100 && nozzles < 4) {
+        jetStatus = "No";
+        jetResult = jetLabel(jet1) + " is past a normal single orifice. Split it across more nozzles or a second stage.";
+    } else if (thou > 80 && nozzles < 4) {
+        jetStatus = "Watch";
+        jetResult += " That orifice is getting large for one solenoid.";
+    }
+    let fuelStatus = "Good";
+    let fuelResult = "";
+    if (dry) {
+        fuelResult = "Dry system. The injectors add " + fuelLbHr.toFixed(0) + " lb/hr on top of the engine. Duty is about " + duty.toFixed(0) + "% at this rail pressure.";
+        if (duty > 95) {
+            fuelStatus = "No";
+            fuelResult += " The injectors are out of room.";
+        } else if (duty > 80) {
+            fuelStatus = "Watch";
+            fuelResult += " That is past an 80% duty ceiling.";
+        }
+    } else {
+        const each = nozzles > 1 ? " on each nozzle" : "";
+        fuelResult = jetLabel(stageFuel) + " fuel" + each + ".";
+        if (shot2 > 0) fuelResult += " Stage 2 fuel jet is " + jetLabel(stage2Fuel) + each + ".";
+        fuelResult += " The shot wants " + fuelLbHr.toFixed(0) + " lb/hr (" + (fuelLbHr / fuel.density).toFixed(1) + " gal/hr) from the fuel solenoid.";
+        if (fuelPsi < 4) {
+            fuelStatus = "No";
+            fuelResult += " Under about 5 PSI a carb-style fuel solenoid goes short on fuel.";
+        } else if (fuelPsi < 5.5 || (fuelPsi > 8 && fuelPsi < 30)) {
+            fuelStatus = "Watch";
+            fuelResult += " Confirm this is the pressure at the solenoid while it is open.";
+        }
+    }
+    let timeStatus = suggested >= 18 ? "Good" : "Watch";
+    let timeResult = "Pull " + pull.toFixed(1) + " degrees. " + suggested.toFixed(1) + " degrees on a tuned hit.";
+    if (fuelKey === "gasoline") timeResult += " A first hit at " + firstHit.toFixed(1) + " degrees leaves two degrees in reserve.";
+    if (shot2 > 0) {
+        const pull1 = shot / 50 * fuel.degPer50;
+        timeResult += " Stage 1 alone pulls " + pull1.toFixed(1) + " degrees.";
+    }
+    if (suggested < 16) {
+        timeStatus = "No";
+        timeResult += " That pull lands very low. The shot or the base timing needs another look.";
+    }
+    const colder = totalShot >= 50 ? Math.max(1, Math.round(totalShot / 100)) : 0;
+    const plugStatus = "Good";
+    const plugResult = colder > 0
+        ? colder + (colder === 1 ? " heat range colder" : " heat ranges colder") + ", gapped near 0.032 in, with a thick ground strap."
+        : "A small shot can stay on the current heat range. Keep the gap near 0.035 in.";
+    let feedStatus = "Good";
+    let feedResult = "One nitrous solenoid and a -4 feed cover this shot.";
+    if (nozzles >= 4) feedResult = "Direct port splits the shot across " + nozzles + " nozzles.";
+    else if (totalShot > 300) {
+        feedStatus = "No";
+        feedResult = "One plate solenoid is past this shot. Use two stages, two solenoids, or a direct port.";
+    } else if (totalShot > 175) {
+        feedStatus = "Watch";
+        feedResult = "A -6 feed or a second nitrous solenoid keeps the hit from leaning out as the solenoid runs out of flow.";
+    }
+    const passStatus = passes >= 4 ? "Good" : "Watch";
+    const passResult = used.toFixed(2) + " lb per button. About " + passes.toFixed(1) + " hits from " + Math.round(usable) + " usable pounds in the bottle.";
+    const powerLabel = unitState.power === "whp" ? "Power at the wheels" : "Power on the hit";
+    const powerValue = Math.round(hit * scale).toLocaleString("en-US") + (unitState.power === "whp" ? " WHP" : " HP");
+    publishReadout([
+        { label: powerLabel, value: powerValue, unit: "text", primary: true },
+        { label: "Average on the button", value: Math.round(average * scale).toLocaleString("en-US") + (unitState.power === "whp" ? " WHP" : " HP"), unit: "text" },
+        { label: "Nitrous flow", value: flowLbMin, unit: "lbmin" },
+        { label: "Stage 1 nitrous jet", value: jetLabel(jet1), unit: "text" },
+        { label: dry ? "Injector duty" : "Stage 1 fuel jet", value: dry ? duty.toFixed(0) + "%" : jetLabel(stageFuel), unit: "text" },
+        { label: "Timing on the hit", value: suggested.toFixed(1) + " deg", unit: "text" },
+        { label: "Bottle temperature", value: temp, unit: "tempf" },
+        { label: "Hits in the bottle", value: passes.toFixed(1), unit: "text" }
+    ]);
+    const assess = document.getElementById("nx-assess");
+    if (assess) {
+        const systemName = system === "direct" ? "direct-port" : (system === "fogger" ? "fogger" : (dry ? "dry EFI" : "plate"));
+        const sentences = [
+            Math.round(hit) + " HP on the hit from a " + Math.round(base) + " HP engine and a " + Math.round(totalShot) + " HP " + systemName + " shot."
+        ];
+        if (delivery === "progressive" || stages === "2") {
+            sentences.push("The button averages about " + Math.round(average) + " HP because the solenoid is not at the full shot the whole time.");
+        }
+        sentences.push(jetResult);
+        sentences.push(timeResult);
+        sentences.push(passResult);
+        assess.textContent = sentences.join(" ");
+    }
+    const body = document.getElementById("nx-matrix");
+    if (body) {
+        body.replaceChildren(
+            nxRow("Bottle", Math.round(bottle) + " PSI", bottleResult, bottleStatus),
+            nxRow("Nitrous jet", nozzles + (nozzles === 1 ? " nozzle" : " nozzles"), jetResult, jetStatus),
+            nxRow(dry ? "Injectors" : "Fuel jet", dry ? injCount + " injectors" : fuelPsi.toFixed(1) + " PSI", fuelResult, fuelStatus),
+            nxRow("Timing", Math.round(timing) + " deg base", timeResult, timeStatus),
+            nxRow("Spark plugs", Math.round(totalShot) + " HP shot", plugResult, plugStatus),
+            nxRow("Feed", system === "direct" ? "Direct port" : "Single feed", feedResult, feedStatus),
+            nxRow("Bottle", nxNum("nx-bottlelb", 10).toFixed(0) + " lb", passResult, passStatus)
+        );
+    }
+}
+bindCalc(calcNitrous, ["nx-base", "nx-shot", "nx-shot2", "nx-system", "nx-fuel", "nx-stages", "nx-bottle", "nx-fuelpsi", "nx-cylinders", "nx-timing", "nx-delivery", "nx-ontime", "nx-start", "nx-end", "nx-ramp", "nx-delay", "nx-inj", "nx-injcount", "nx-bottlelb", "dt-loss"]);
+
+    </script>
+</body>
+</html>
