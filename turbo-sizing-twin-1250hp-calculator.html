@@ -31,20 +31,75 @@
             
     <div class="field-stack">
     <div class="grid-2">
-        <div class="field"><label for="tu-hp">Power</label><input type="number" id="tu-hp" value="1250" step="50"></div>
-        <div class="field"><label for="tu-boost">Target boost (PSI)</label><input type="number" id="tu-boost" value="22" step="1"></div>
+        <div class="field"><label for="tu-hp">Target power</label><input type="number" id="tu-hp" value="1250" min="50" step="25"></div>
+        <div class="field"><label for="tu-boost">Target boost (PSI)</label><input type="number" id="tu-boost" value="22" min="0" step="0.5"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field">
+            <label for="tu-disp">Displacement</label>
+            <input type="number" id="tu-disp" value="364" min="30" step="1">
+            <div class="pill-group" role="group" aria-label="Displacement unit">
+                <button type="button" class="pill disp-unit active" data-disp="ci">CID</button>
+                <button type="button" class="pill disp-unit" data-disp="l">Liters</button>
+            </div>
+        </div>
+        <div class="field"><label for="tu-rpm">Peak power RPM</label><input type="number" id="tu-rpm" value="6500" min="2000" step="100"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="tu-fuel">Fuel</label><select id="tu-fuel"><option value="gasoline">Gasoline (91/93)</option>
+<option value="e85" selected>E85</option>
+<option value="methanol">Methanol</option>
+<option value="race">Race gas</option>
+<option value="diesel">Diesel</option></select></div>
+        <div class="field"><label for="tu-count">Turbo count</label><select id="tu-count"><option value="1">Single</option>
+<option value="2" selected>Twin</option></select></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="tu-valve">Valvetrain</label>
+            <select id="tu-valve">
+                <option value="ohv" selected>OHV / pushrod</option>
+                <option value="sohc">SOHC</option>
+                <option value="dohc">DOHC</option>
+                <option value="race">Race 4-valve</option>
+            </select>
+        </div>
+        <div class="field"><label for="tu-app">Use</label>
+            <select id="tu-app">
+                <option value="street">Street</option>
+                <option value="strip">Street-strip</option>
+                <option value="drag" selected>Drag racing</option>
+            </select>
+        </div>
     </div>
     </div>
     <details class="accordion">
         <summary>Advanced / Conditions</summary>
         <div class="accordion-body field-stack">
     <div class="grid-2">
-        <div class="field"><label for="tu-bsfc">Fuel BSFC</label><select id="tu-bsfc"><option value="0.60">Gasoline (0.60)</option>
-<option value="0.85" selected>E85 (0.85)</option>
-<option value="1.50">Methanol (1.50)</option></select></div>
-        <div class="field"><label for="tu-count">Turbo count</label><select id="tu-count"><option value="1">Single</option>
-<option value="2" selected>Twin</option></select></div>
+        <div class="field"><label for="tu-baro">Barometer (PSI)</label><input type="number" id="tu-baro" value="14.7" min="10" max="15.5" step="0.1"></div>
+        <div class="field"><label for="tu-temp">Ambient temp (F)</label><input type="number" id="tu-temp" value="75" min="-20" max="120" step="1"></div>
     </div>
+    <div class="field"><label for="tu-bsfc">Custom BSFC</label><input type="number" id="tu-bsfc" placeholder="Auto" min="0.2" max="2" step="0.01"></div>
+    <div class="grid-2">
+        <div class="field"><label for="tu-ic">Intercooler</label>
+            <select id="tu-ic">
+                <option value="0">None</option>
+                <option value="65">Air-to-air, small</option>
+                <option value="75">Air-to-air, standard</option>
+                <option value="82" selected>Air-to-air, large</option>
+                <option value="90">Water-to-air / ice box</option>
+            </select>
+        </div>
+        <div class="field"><label for="tu-ce">Compressor efficiency (%)</label>
+            <select id="tu-ce">
+                <option value="65">65, off the island</option>
+                <option value="72" selected>72, matched modern turbo</option>
+                <option value="76">76, efficient island</option>
+                <option value="80">80, peak island</option>
+            </select>
+        </div>
+    </div>
+    <p class="field-hint">Volumetric efficiency starts from the valvetrain and the use. Lower the barometer for elevation. Compressor temperature is calculated from the target boost.</p>
     
 <p class="field-hint">BHP uses the power entry as flywheel power. WHP treats it as wheel power and converts with this drivetrain loss.</p>
 <div class="grid-2">
@@ -70,12 +125,26 @@
         <div id="readout-body"></div>
     </div>
     
+    <div class="duty-card">
+        <div class="duty-head"><span>Compressor class</span><strong id="tu-class">—</strong></div>
+        <p class="field-hint" id="tu-class-desc"></p>
+    </div>
+    <p class="assess" id="tu-assess"></p>
+    <p class="assess" id="tu-thermal"></p>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>Point</th><th>RPM</th><th>NA flow</th><th>At your boost</th></tr></thead>
+            <tbody id="tu-rpm-rows"></tbody>
+        </table>
+        <p class="field-hint">Flow at your boost assumes the same volumetric efficiency from spool to peak. Match the per-turbo number to the compressor map at the pressure ratio.</p>
+    </div>
+    
     <button type="button" class="action-btn" onclick="window.print()">Print turbo match sheet</button>
     
 
         </section>
         <div class="content-column">
-            <section class="content-box"><h2>Formula</h2><p class="formula">Airflow (lb/min) = (HP x BSFC) / 6 | Pressure Ratio = (Boost PSI + 14.7) / 14.7</p></section><section class="content-box"><h2>Related calculators</h2><ul class="variant-list"><li><a href="turbo-sizing-calculator.html">Turbo Sizing &amp; Turbocharger Matching Calculator</a></li><li><a href="turbo-sizing-twin-1500hp-calculator.html">Twin Turbo 1500 HP Sizing Calculator</a></li><li><a href="turbo-sizing-twin-2000hp-calculator.html">Twin Turbo 2000 HP Sizing Calculator</a></li><li><a href="turbo-sizing-twin-500hp-calculator.html">Twin Turbo 500 HP Sizing Calculator</a></li><li><a href="turbo-sizing-twin-600hp-calculator.html">Twin Turbo 600 HP Sizing Calculator</a></li><li><a href="turbo-sizing-twin-750hp-calculator.html">Twin Turbo 750 HP Sizing Calculator</a></li><li><a href="turbo-sizing-twin-900hp-calculator.html">Twin Turbo 900 HP Sizing Calculator</a></li></ul></section>
+            <section class="content-box"><h2>Formula</h2><p class="formula">Air lb/min = (Flywheel HP x BSFC x Power AFR) / 60. Required boost comes from that airflow divided by the engine&#x27;s naturally aspirated flow at your RPM and volumetric efficiency.</p></section><section class="content-box"><h2>Related calculators</h2><ul class="variant-list"><li><a href="turbo-sizing-calculator.html">Turbo Sizing &amp; Turbocharger Matching Calculator</a></li><li><a href="turbo-sizing-twin-1500hp-calculator.html">Twin Turbo 1500 HP Sizing Calculator</a></li><li><a href="turbo-sizing-twin-2000hp-calculator.html">Twin Turbo 2000 HP Sizing Calculator</a></li><li><a href="turbo-sizing-twin-500hp-calculator.html">Twin Turbo 500 HP Sizing Calculator</a></li><li><a href="turbo-sizing-twin-600hp-calculator.html">Twin Turbo 600 HP Sizing Calculator</a></li><li><a href="turbo-sizing-twin-750hp-calculator.html">Twin Turbo 750 HP Sizing Calculator</a></li><li><a href="turbo-sizing-twin-900hp-calculator.html">Twin Turbo 900 HP Sizing Calculator</a></li></ul></section>
         </div>
     </div>
     
@@ -113,6 +182,10 @@ function formatUnit(value, unit) {
             return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
         case "lbmin":
             return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "cfm":
+            return metric ? { text: (n * 0.0283168).toFixed(2), suffix: "m3/min" } : { text: Math.round(n).toLocaleString("en-US"), suffix: "CFM" };
+        case "tempf":
+            return metric ? { text: ((n - 32) * 5 / 9).toFixed(0), suffix: "C" } : { text: Math.round(n).toString(), suffix: "F" };
         case "lbhr":
             return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
         case "ft":
@@ -180,6 +253,7 @@ function bindCalc(fn, ids) {
 
 document.querySelectorAll(".pill").forEach(button => {
     button.addEventListener("click", () => {
+        if (!button.dataset.unitGroup) return;
         unitState[button.dataset.unitGroup] = button.dataset.unit;
         button.parentElement.querySelectorAll(".pill").forEach(pill => {
             pill.classList.toggle("active", pill === button);
@@ -190,23 +264,172 @@ document.querySelectorAll(".pill").forEach(button => {
 });
 
 
+const TURBO_FUEL = {
+    gasoline: { bsfc: 0.55, afr: 11.8 },
+    e85: { bsfc: 0.78, afr: 8.8 },
+    methanol: { bsfc: 1.20, afr: 5.2 },
+    race: { bsfc: 0.58, afr: 11.5 },
+    diesel: { bsfc: 0.40, afr: 18.0 }
+};
+const VE_BASE = { ohv: 78, sohc: 85, dohc: 93, race: 100 };
+const VE_USE = { street: 0, strip: 4, drag: 8 };
+const CID_PER_LITER = 61.024;
+let dispUnit = "ci";
+
+function airDensity(baro, ambientF) {
+    const rankine = ambientF + 459.67;
+    return (baro * 144) / (53.3 * rankine);
+}
+
+function sizeBand(flow) {
+    if (flow < 13) return ["Micro", "Under 13 lb/min. Small three- and four-cylinder engines."];
+    if (flow < 22) return ["Small", "13–22 lb/min. Compact street engines."];
+    if (flow < 36) return ["Medium", "22–36 lb/min. A common street turbo class."];
+    if (flow < 52) return ["Large", "36–52 lb/min. High-output street and street-strip."];
+    if (flow < 72) return ["XL", "52–72 lb/min. Serious power from each compressor."];
+    if (flow < 95) return ["XXL", "72–95 lb/min. The top of a catalog compressor."];
+    return ["Race", "Over 95 lb/min. Match the wheel on a compressor map. A class label is not enough."];
+}
+
+function inducerRange(flow) {
+    if (flow < 25) return "40–50 mm";
+    if (flow < 40) return "50–60 mm";
+    if (flow < 55) return "60–67 mm";
+    if (flow < 75) return "70–76 mm";
+    if (flow < 100) return "76–83 mm";
+    if (flow < 140) return "83–88 mm";
+    return "88–94 mm+";
+}
+
 function calcTurbo() {
-    let hp = crankHorsepower(document.getElementById("tu-hp").value || 1000);
-    let boost = parseFloat(document.getElementById("tu-boost").value) || 22;
-    let bsfc = parseFloat(document.getElementById("tu-bsfc").value) || 0.85;
-    let count = parseInt(document.getElementById("tu-count").value, 10) || 1;
-    let totalAirflow = (hp * bsfc) / 6.0;
-    let perTurbo = totalAirflow / count;
-    let pr = (boost + 14.7) / 14.7;
-    let rec = perTurbo < 45 ? "T4 62-67mm class" : (perTurbo < 75 ? "T4 76-83mm class" : "T6 88-94mm+ class");
+    const hp = crankHorsepower(document.getElementById("tu-hp").value || 1000);
+    const boost = Math.max(0, parseFloat(document.getElementById("tu-boost").value) || 0);
+    let cid = parseFloat(document.getElementById("tu-disp").value);
+    if (!Number.isFinite(cid) || cid <= 0) cid = 364;
+    if (dispUnit === "l") cid *= CID_PER_LITER;
+    const rpm = Math.max(2000, parseFloat(document.getElementById("tu-rpm").value) || 6500);
+    const fuelKey = document.getElementById("tu-fuel").value || "gasoline";
+    const fuel = TURBO_FUEL[fuelKey] || TURBO_FUEL.gasoline;
+    const customBsfc = parseFloat(document.getElementById("tu-bsfc").value);
+    const bsfc = Number.isFinite(customBsfc) && customBsfc > 0 ? customBsfc : fuel.bsfc;
+    const count = Math.max(1, parseInt(document.getElementById("tu-count").value, 10) || 1);
+    const valve = document.getElementById("tu-valve").value || "ohv";
+    const use = document.getElementById("tu-app").value || "drag";
+    let baro = parseFloat(document.getElementById("tu-baro").value);
+    if (!Number.isFinite(baro) || baro <= 0) baro = 14.7;
+    let ambient = parseFloat(document.getElementById("tu-temp").value);
+    if (!Number.isFinite(ambient)) ambient = 75;
+    const icEff = Math.min(0.95, Math.max(0, (parseFloat(document.getElementById("tu-ic").value) || 0) / 100));
+    const compEff = Math.min(0.85, Math.max(0.5, (parseFloat(document.getElementById("tu-ce").value) || 72) / 100));
+    const ve = Math.min(1.05, ((VE_BASE[valve] || 78) + (VE_USE[use] || 0)) / 100);
+    const density = airDensity(baro, ambient);
+    const wNa = (cid / 1728) * (rpm / 2) * ve * density;
+    const wReq = (hp * bsfc * fuel.afr) / 60;
+    const prReq = wNa > 0 ? wReq / wNa : 1;
+    const boostReq = Math.max(0, (prReq - 1) * baro);
+    const prTarget = (boost + baro) / baro;
+    const flowAtTarget = wNa * prTarget;
+    const hpAtTarget = wReq > 0 ? hp * (flowAtTarget / wReq) : 0;
+    const perTurbo = wReq / count;
+    const band = sizeBand(perTurbo);
+    const inletR = ambient + 10 + 459.67;
+    const t2 = inletR * (1 + (Math.pow(Math.max(prTarget, 1), 0.286) - 1) / compEff) - 459.67;
+    const t3 = icEff > 0 ? t2 - icEff * (t2 - ambient) : t2;
+    const cfm = wReq / Math.max(density, 0.02);
     publishReadout([
         { label: "Airflow per turbo", value: perTurbo, unit: "lbmin", primary: true },
-        { label: "Total airflow", value: totalAirflow, unit: "lbmin" },
-        { label: "Pressure ratio", value: pr, unit: "ratio" },
-        { label: "Compressor class", value: rec, unit: "text" }
+        { label: "Total airflow", value: wReq, unit: "lbmin" },
+        { label: "Boost this power needs", value: boostReq, unit: "psi" },
+        { label: "Pressure ratio needed", value: prReq, unit: "ratio" },
+        { label: "PR at your boost", value: prTarget, unit: "ratio" },
+        { label: "Power at your boost", value: Math.round(hpAtTarget) + " HP", unit: "text" },
+        { label: "Volumetric efficiency", value: ve * 100, unit: "pct" },
+        { label: "NA airflow", value: wNa, unit: "lbmin" },
+        { label: "Compressor outlet", value: t2, unit: "tempf" },
+        { label: "After intercooler", value: t3, unit: "tempf" },
+        { label: "Standard flow", value: cfm, unit: "cfm" },
+        { label: "BSFC x AFR", value: bsfc.toFixed(2) + " x " + fuel.afr.toFixed(1), unit: "text" }
     ]);
+    const className = document.getElementById("tu-class");
+    const classDesc = document.getElementById("tu-class-desc");
+    if (className) className.textContent = band[0] + " · " + inducerRange(perTurbo);
+    if (classDesc) classDesc.textContent = band[1] + " Each turbo needs about " + reading(perTurbo, "lbmin") + ". Shop the inducer, then confirm the island on the map at " + prTarget.toFixed(2) + ":1.";
+    const assess = document.getElementById("tu-assess");
+    if (assess) {
+        const need = "This power target needs about " + reading(boostReq, "psi") + " (" + prReq.toFixed(2) + ":1) on this displacement and volumetric efficiency.";
+        let fit;
+        if (boost + 0.4 < boostReq) {
+            fit = " The boost you entered is short of that, so the engine runs out of air before the power number.";
+        } else if (boost > boostReq + 2) {
+            fit = " At " + reading(boost, "psi") + " the same engine can feed about " + Math.round(hpAtTarget) + " HP if the turbo and fuel system keep up.";
+        } else {
+            fit = " The boost you entered is in line with that airflow.";
+        }
+        const prBuild = Math.max(prReq, prTarget);
+        let build;
+        if (prBuild < 1.6) build = " That is mild boost for a stock block with fuel and a tune.";
+        else if (prBuild < 2.0) build = " Plan on a head gasket, studs, and a fuel system that can keep up.";
+        else if (prBuild < 2.5) build = " Forged pistons and rods are the honest short-block plan here.";
+        else build = " This is purpose-built short-block territory.";
+        assess.textContent = need + fit + build;
+    }
+    const thermal = document.getElementById("tu-thermal");
+    if (thermal) {
+        if (icEff === 0) {
+            thermal.textContent = "With no intercooler the manifold sees about " + reading(t2, "tempf") + " off the compressor. Add a cooler before treating this as a strip tune.";
+        } else if (t3 > 200) {
+            thermal.textContent = "Charge temperature is still about " + reading(t3, "tempf") + " after the intercooler. The cooler is undersized for this pressure ratio, or the turbo is off its efficiency island.";
+        } else if (t3 > 150) {
+            thermal.textContent = "Manifold temperature lands near " + reading(t3, "tempf") + ". A larger air-to-air or a water-to-air cooler gives the tune more room.";
+        } else {
+            thermal.textContent = "Manifold temperature lands near " + reading(t3, "tempf") + " with this intercooler. That is a usable range at the boost you entered.";
+        }
+    }
+    const body = document.getElementById("tu-rpm-rows");
+    if (body) {
+        body.replaceChildren();
+        const points = [
+            ["Spool", 0.35],
+            ["Mid", 0.50],
+            ["Upper mid", 0.65],
+            ["Power", 0.80],
+            ["Near peak", 0.90],
+            ["Peak", 1]
+        ];
+        points.forEach(point => {
+            const pointRpm = Math.round(rpm * point[1]);
+            const na = (cid / 1728) * (pointRpm / 2) * ve * density;
+            const boosted = na * prTarget;
+            const tr = document.createElement("tr");
+            if (point[1] === 1) tr.className = "is-rec";
+            const cells = [point[0], pointRpm.toLocaleString("en-US"), reading(na, "lbmin"), reading(boosted, "lbmin")];
+            cells.forEach(text => {
+                const td = document.createElement("td");
+                td.textContent = text;
+                tr.appendChild(td);
+            });
+            body.appendChild(tr);
+        });
+    }
 }
-bindCalc(calcTurbo, ["tu-hp", "tu-boost", "tu-bsfc", "tu-count", "dt-loss"]);
+document.querySelectorAll(".disp-unit").forEach(button => {
+    button.addEventListener("click", () => {
+        const next = button.dataset.disp;
+        const el = document.getElementById("tu-disp");
+        if (!el || next === dispUnit) return;
+        let value = parseFloat(el.value) || 0;
+        if (dispUnit === "ci" && next === "l") value = value / CID_PER_LITER;
+        if (dispUnit === "l" && next === "ci") value = value * CID_PER_LITER;
+        el.value = next === "l" ? value.toFixed(2) : value.toFixed(0);
+        el.step = next === "l" ? "0.1" : "1";
+        dispUnit = next;
+        button.parentElement.querySelectorAll(".disp-unit").forEach(pill => {
+            pill.classList.toggle("active", pill === button);
+        });
+        if (typeof window.refreshCalc === "function") window.refreshCalc();
+    });
+});
+bindCalc(calcTurbo, ["tu-hp", "tu-boost", "tu-disp", "tu-fuel", "tu-count", "tu-valve", "tu-app", "tu-rpm", "tu-bsfc", "tu-baro", "tu-temp", "tu-ic", "tu-ce", "dt-loss"]);
 
     </script>
 </body>

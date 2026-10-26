@@ -145,6 +145,10 @@ function formatUnit(value, unit) {
             return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
         case "lbmin":
             return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "cfm":
+            return metric ? { text: (n * 0.0283168).toFixed(2), suffix: "m3/min" } : { text: Math.round(n).toLocaleString("en-US"), suffix: "CFM" };
+        case "tempf":
+            return metric ? { text: ((n - 32) * 5 / 9).toFixed(0), suffix: "C" } : { text: Math.round(n).toString(), suffix: "F" };
         case "lbhr":
             return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
         case "ft":
@@ -212,6 +216,7 @@ function bindCalc(fn, ids) {
 
 document.querySelectorAll(".pill").forEach(button => {
     button.addEventListener("click", () => {
+        if (!button.dataset.unitGroup) return;
         unitState[button.dataset.unitGroup] = button.dataset.unit;
         button.parentElement.querySelectorAll(".pill").forEach(pill => {
             pill.classList.toggle("active", pill === button);
