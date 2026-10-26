@@ -91,6 +91,21 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://dragcalculators.com/drag-cooling-system-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/driveshaft-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/race-car-wiring-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://dragcalculators.com/transmission-gear-drop-calculator.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Race Car Alternator and Wire Size Calculator | DragCalculators.com</title>
+    <meta name="description" content="Race Car Alternator and Wire Size Calculator. Loaded defaults: dual in-tank pump, 16 in fan, 55 GPM water pump, battery in the trunk.">
+    <link rel="canonical" href="https://dragcalculators.com/race-car-wiring-calculator.html">
+    <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
+    <meta name="google-site-verification" content="google9e7c88791a3f2f72">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dragcalculators.com/race-car-wiring-calculator.html">
+    <meta property="og:title" content="Race Car Alternator and Wire Size Calculator | DragCalculators.com">
+    <meta property="og:description" content="Race Car Alternator and Wire Size Calculator. Loaded defaults: dual in-tank pump, 16 in fan, 55 GPM water pump, battery in the trunk.">
+    <meta property="og:image" content="https://dragcalculators.com/social-banner.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Race Car Alternator and Wire Size Calculator | DragCalculators.com">
+    <meta name="twitter:description" content="Race Car Alternator and Wire Size Calculator. Loaded defaults: dual in-tank pump, 16 in fan, 55 GPM water pump, battery in the trunk.">
+    <meta name="twitter:image" content="https://dragcalculators.com/social-banner.jpg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
+    <div class="layout-grid">
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="torque-converter-calculator.html">Torque Converter</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="drag-shock-calculator.html">Shocks</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a><a class="nav-item" href="drag-cooling-system-calculator.html">Cooling</a><a class="nav-item" href="driveshaft-calculator.html">Driveshaft</a><a class="nav-item active" href="race-car-wiring-calculator.html">Power Budget</a></nav></aside>
+        <section class="sticky-calculator">
+            <header class="master-header">
+                <h1>Race Car Alternator and Wire Size Calculator</h1>
+                <p class="spec">Loaded defaults: dual in-tank pump, 16 in fan, 55 GPM water pump, battery in the trunk.</p>
+            </header>
+            
+    <div class="field-stack">
+    
+<figure class="measure-fig">
+    <svg viewBox="0 0 720 280" role="img" aria-label="Trunk battery power distribution">
+        <rect x="40" y="90" width="110" height="70" rx="8" fill="#1c1c1c" stroke="#e50914" stroke-width="2"/>
+        <text x="95" y="122" fill="#f5f5f5" font-size="14" text-anchor="middle">Battery</text>
+        <text x="95" y="142" fill="#a3a3a3" font-size="12" text-anchor="middle">Trunk</text>
+        <rect x="190" y="104" width="70" height="42" rx="6" fill="none" stroke="#e50914" stroke-width="2"/>
+        <text id="pw-fig-fuse" x="225" y="130" fill="#f5f5f5" font-size="13" text-anchor="middle">100 A</text>
+        <line x1="150" y1="125" x2="190" y2="125" stroke="#e50914" stroke-width="3"/>
+        <line x1="260" y1="125" x2="360" y2="125" stroke="#e50914" stroke-width="3"/>
+        <rect x="360" y="86" width="130" height="78" rx="8" fill="#1c1c1c" stroke="#f5f5f5" stroke-width="2"/>
+        <text x="425" y="118" fill="#f5f5f5" font-size="14" text-anchor="middle">Fuse panel</text>
+        <text id="pw-fig-panel" x="425" y="140" fill="#a3a3a3" font-size="12" text-anchor="middle">6 AWG</text>
+        <line x1="95" y1="160" x2="95" y2="210" stroke="#f5f5f5" stroke-width="3"/>
+        <line x1="95" y1="210" x2="560" y2="210" stroke="#f5f5f5" stroke-width="3"/>
+        <rect x="560" y="176" width="120" height="68" rx="8" fill="#1c1c1c" stroke="#6f6f6f" stroke-width="2"/>
+        <text x="620" y="206" fill="#f5f5f5" font-size="14" text-anchor="middle">Alternator</text>
+        <text id="pw-fig-charge" x="620" y="226" fill="#a3a3a3" font-size="12" text-anchor="middle">1/0 charge</text>
+        <text x="40" y="260" fill="#a3a3a3" font-size="14">The main fuse is on the battery post. The starter cable is separate.</text>
+    </svg>
+    <figcaption>A trunk battery feeds the fuse panel on a short run and the alternator on a long run to the front. The fuse belongs at the battery, on the panel feed. The starter cable is a 1/0 or 2/0 for the inrush, and this page sizes the running loads rather than that hit.</figcaption>
+</figure>
+
+    <div class="grid-2">
+        <div class="field"><label for="pw-pump">Fuel pump</label>
+            <select id="pw-pump">
+                <option value="0">None, mechanical</option>
+                <option value="15">Single in-tank, about 15 A</option>
+                <option value="28" selected>Dual in-tank, about 28 A</option>
+                <option value="35">Large external, about 35 A</option>
+                <option value="60">Dual external, about 60 A</option>
+            </select>
+        </div>
+        <div class="field"><label for="pw-fan">Electric fan</label>
+            <select id="pw-fan">
+                <option value="0">None</option>
+                <option value="11">12 in, about 11 A</option>
+                <option value="16">14 in, about 16 A</option>
+                <option value="22" selected>16 in, about 22 A</option>
+                <option value="32">Dual 14 in, about 32 A</option>
+                <option value="44">Dual 16 in, about 44 A</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="pw-wp">Electric water pump</label>
+            <select id="pw-wp">
+                <option value="0">Mechanical only</option>
+                <option value="8">20 GPM class, about 8 A</option>
+                <option value="12">35 GPM class, about 12 A</option>
+                <option value="16" selected>55 GPM class, about 16 A</option>
+            </select>
+        </div>
+        <div class="field"><label for="pw-ign">Ignition (A)</label><input type="number" id="pw-ign" value="8" min="0" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="pw-ecu">ECU and sensors (A)</label><input type="number" id="pw-ecu" value="5" min="0" step="1"></div>
+        <div class="field"><label for="pw-brake">Trans brake solenoid (A)</label><input type="number" id="pw-brake" value="18" min="0" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="pw-charge-len">Alternator wire, one way (ft)</label><input type="number" id="pw-charge-len" value="15" min="1" step="1"></div>
+        <div class="field"><label for="pw-panel-len">Battery to fuse panel (ft)</label><input type="number" id="pw-panel-len" value="6" min="1" step="1"></div>
+    </div>
+    <p class="field-hint">Pump, fan, water pump, and ignition are on the whole time the engine is running. The trans brake, the nitrous, and the line lock are a few seconds on the battery. The alternator has to cover the running loads at idle.</p>
+    </div>
+    <details class="accordion">
+        <summary>Advanced / Conditions</summary>
+        <div class="accordion-body field-stack">
+    <div class="grid-2">
+        <div class="field"><label for="pw-nitrous">Nitrous solenoids (A)</label><input type="number" id="pw-nitrous" value="0" min="0" step="1"></div>
+        <div class="field"><label for="pw-lock">Line lock (A)</label><input type="number" id="pw-lock" value="0" min="0" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="pw-acc">Gauges, delay box, controller (A)</label><input type="number" id="pw-acc" value="3" min="0" step="1"></div>
+        <div class="field"><label for="pw-volts">Running voltage</label>
+            <select id="pw-volts">
+                <option value="13.8" selected>13.8V</option>
+                <option value="16">16V</option>
+            </select>
+        </div>
+    </div>
+    </div>
+    </details>
+    <div class="readout" id="results">
+        <div class="readout-top">
+            <span class="readout-kicker">Result</span>
+            <div class="pill-row">
+                <div class="pill-group" role="group" aria-label="Units">
+                    <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
+                    <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+                </div>
+            </div>
+        </div>
+        <div id="readout-body"></div>
+    </div>
+    
+    <div class="action-row">
+        <button type="button" class="action-btn" onclick="window.print()">Print wiring sheet</button>
+        <button type="button" class="action-btn action-secondary" id="copy-setup">Copy link to this setup</button>
+    </div>
+    <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
+    
+    <table>
+        <thead><tr><th>Load</th><th>Amps</th><th>When</th></tr></thead>
+        <tbody id="pw-body"></tbody>
+    </table>
+    <p class="assess" id="pw-assess"></p>
+    
+<div class="next-steps"><p class="field-hint">Next in the build</p><a href="automotive-relay-calculator.html">Size one circuit from this budget</a></div>
+        </section>
+        <div class="content-column">
+            <section class="content-box"><h2>Formula</h2><p class="formula">Running amps are the pump, fan, water pump, ignition, and ECU. Alternator idle output wants 1.2 times that. Cable circular mils = 10.75 x amps x one-way feet x 2 / (voltage x 0.03). The trans brake and the nitrous sit on the battery for the hit.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Race Car Alternator and Wire Size Calculator. Loaded defaults: dual in-tank pump, 16 in fan, 55 GPM water pump, battery in the trunk.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>Which amps does the alternator have to cover?</h3><p>The loads that stay on while the engine idles in the lanes: pump, fan, water pump, ignition, ECU. The trans brake and the nitrous are a few seconds, and the battery covers that hit.</p></div><div class="faq-item"><h3>Why size the wire from voltage drop?</h3><p>Circular mils equal 10.75 times the amps times the round-trip length, divided by a 3% voltage drop. A trunk battery makes the alternator wire the long one. High-strand battery cable is what carries it, not primary wire in a loom.</p></div><div class="faq-item"><h3>Where does the fuse go?</h3><p>On the battery post, ahead of the panel feed. The starter cable is its own 1/0 or 2/0 and is not fused like a running load.</p></div></section>
+        </div>
+    </div>
+    
+<footer class="site-footer">
+    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
+    <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
+</footer>
+
+
+    <script>
+
+const unitState = { power: "bhp", system: "imperial" };
+let lastReadout = [];
+
+function crankHorsepower(raw) {
+    const hp = parseFloat(raw);
+    const entered = Number.isFinite(hp) ? hp : 0;
+    if (unitState.power !== "whp") return entered;
+    const lossInput = document.getElementById("dt-loss");
+    const lossPct = lossInput ? parseFloat(lossInput.value) : 15;
+    const loss = Math.min(0.4, Math.max(0, (Number.isFinite(lossPct) ? lossPct : 15) / 100));
+    return entered / Math.max(0.05, 1 - loss);
+}
+
+function formatUnit(value, unit) {
+    const metric = unitState.system === "metric";
+    const n = Number(value);
+    if (unit === "text") return { text: String(value), suffix: "" };
+    if (!Number.isFinite(n)) return { text: "—", suffix: "" };
+    switch (unit) {
+        case "mph":
+            return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
+        case "in":
+            return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "in3":
+            return metric ? { text: (n * 25.4).toFixed(2), suffix: "mm" } : { text: n.toFixed(3), suffix: "in" };
+        case "psi":
+            return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
+        case "lbmin":
+            return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "cfm":
+            return metric ? { text: (n * 0.0283168).toFixed(2), suffix: "m3/min" } : { text: Math.round(n).toLocaleString("en-US"), suffix: "CFM" };
+        case "tempf":
+            return metric ? { text: ((n - 32) * 5 / 9).toFixed(0), suffix: "C" } : { text: Math.round(n).toString(), suffix: "F" };
+        case "deltaf":
+            return metric ? { text: (n * 5 / 9).toFixed(1), suffix: "C" } : { text: n.toFixed(1), suffix: "F" };
+        case "gpm":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/min" } : { text: n.toFixed(1), suffix: "GPM" };
+        case "deg":
+            return { text: n.toFixed(1) + "\u00b0", suffix: "" };
+        case "lbhr":
+            return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
+        case "ft":
+            return metric ? { text: (n * 0.3048).toFixed(2), suffix: "m" } : { text: n.toFixed(1), suffix: "ft" };
+        case "rpm":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "RPM" };
+        case "ratio":
+            return { text: n.toFixed(2), suffix: ":1" };
+        case "sec":
+            return { text: n.toFixed(2), suffix: "s" };
+        case "pct":
+            return { text: Math.round(n).toString(), suffix: "%" };
+        case "pct1":
+            return { text: n.toFixed(1), suffix: "%" };
+        case "cc":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "cc/min" };
+        case "ci":
+            return metric ? { text: (n * 0.0163871).toFixed(2), suffix: "L" } : { text: n.toFixed(1), suffix: "ci" };
+        case "gph":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/h" } : { text: n.toFixed(1), suffix: "gal/hr" };
+        case "amp":
+            return { text: n.toFixed(1), suffix: "A" };
+        case "mm":
+            return { text: String(Math.round(n)), suffix: "mm" };
+        case "awg":
+            return { text: String(value), suffix: "AWG" };
+        default:
+            return { text: String(value), suffix: unit || "" };
+    }
+}
+
+function joinReading(shown) {
+    if (!shown.suffix) return shown.text;
+    if (shown.suffix.charAt(0) === ":") return shown.text + shown.suffix;
+    return shown.text + " " + shown.suffix;
+}
+
+function reading(value, unit) {
+    return joinReading(formatUnit(value, unit));
+}
+
+function publishReadout(items) {
+    lastReadout = items;
+    const body = document.getElementById("readout-body");
+    if (!body || !items.length) return;
+    const primary = items.find(item => item.primary) || items[0];
+    const rest = items.filter(item => item !== primary);
+    const main = formatUnit(primary.value, primary.unit);
+    const extras = rest.map(item => {
+        return '<div class="readout-extra"><span>' + item.label + '</span><strong>' + reading(item.value, item.unit) + '</strong></div>';
+    }).join("");
+    body.innerHTML = '<div class="readout-label">' + primary.label + '</div>'
+        + '<div class="readout-value">' + main.text + (main.suffix ? '<span class="readout-suffix">' + main.suffix + '</span>' : '') + '</div>'
+        + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
+}
+
+function applySharedState(ids) {
+    const params = new URLSearchParams(location.search);
+    if (!params.toString()) return;
+    ids.forEach(id => {
+        if (!params.has(id)) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = params.get(id);
+    });
+    ["power", "system"].forEach(group => {
+        if (!params.has(group)) return;
+        unitState[group] = params.get(group);
+        document.querySelectorAll('[data-unit-group="' + group + '"]').forEach(pill => {
+            pill.classList.toggle("active", pill.dataset.unit === unitState[group]);
+        });
+    });
+}
+
+function setupSearch() {
+    const params = new URLSearchParams();
+    (window.shareIds || []).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.value === "") return;
+        params.set(id, el.value);
+    });
+    if (unitState.power !== "bhp") params.set("power", unitState.power);
+    if (unitState.system !== "imperial") params.set("system", unitState.system);
+    return params.toString();
+}
+
+function bindCalc(fn, ids) {
+    window.shareIds = ids;
+    applySharedState(ids);
+    const run = () => fn();
+    window.refreshCalc = run;
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", run);
+        el.addEventListener("change", run);
+    });
+    run();
+}
+
+document.querySelectorAll(".pill").forEach(button => {
+    button.addEventListener("click", () => {
+        if (!button.dataset.unitGroup) return;
+        unitState[button.dataset.unitGroup] = button.dataset.unit;
+        button.parentElement.querySelectorAll(".pill").forEach(pill => {
+            pill.classList.toggle("active", pill === button);
+        });
+        if (typeof window.refreshCalc === "function") window.refreshCalc();
+        else if (lastReadout.length) publishReadout(lastReadout);
+    });
+});
+
+function copyText(text) {
+    const legacy = () => {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "0";
+        area.style.left = "0";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+        area.remove();
+        return ok;
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(() => (legacy() ? undefined : Promise.reject()));
+    }
+    return legacy() ? Promise.resolve() : Promise.reject();
+}
+
+const copySetup = document.getElementById("copy-setup");
+if (copySetup) {
+    copySetup.addEventListener("click", () => {
+        const search = setupSearch();
+        const url = location.origin + location.pathname + (search ? "?" + search : "");
+        const done = (label) => {
+            copySetup.textContent = label;
+            setTimeout(() => { copySetup.textContent = "Copy link to this setup"; }, 1600);
+        };
+        copyText(url).then(() => done("Link copied")).catch(() => {
+            window.prompt("Copy this setup link", url);
+            done("Link ready");
+        });
+    });
+}
+
+
+const PW_ALTS = [60, 90, 120, 150, 200, 250];
+const PW_FUSES = [40, 60, 80, 100, 125, 150, 175, 200, 225, 250, 300];
+const PW_CABLE = [[2583, "16"], [4107, "14"], [6530, "12"], [10380, "10"], [16510, "8"], [26250, "6"], [41740, "4"], [66360, "2"], [83690, "1"], [105600, "1/0"], [133100, "2/0"], [167800, "3/0"], [211600, "4/0"]];
+function pwAmps(id) {
+    const n = parseFloat(document.getElementById(id).value);
+    return Number.isFinite(n) && n > 0 ? n : 0;
+}
+function pwCable(amps, length, volts) {
+    const drop = Math.max(volts, 12) * 0.03;
+    const cm = (10.75 * amps * length * 2) / drop;
+    let gauge = "4/0";
+    for (let i = 0; i < PW_CABLE.length; i++) {
+        if (PW_CABLE[i][0] >= cm) { gauge = PW_CABLE[i][1]; break; }
+    }
+    return gauge;
+}
+function pwStep(list, amps) {
+    for (let i = 0; i < list.length; i++) {
+        if (list[i] >= amps) return list[i];
+    }
+    return list[list.length - 1];
+}
+function calcPower() {
+    const pump = pwAmps("pw-pump");
+    const fan = pwAmps("pw-fan");
+    const wp = pwAmps("pw-wp");
+    const ign = pwAmps("pw-ign");
+    const ecu = pwAmps("pw-ecu");
+    const acc = pwAmps("pw-acc");
+    const brake = pwAmps("pw-brake");
+    const nitrous = pwAmps("pw-nitrous");
+    const lock = pwAmps("pw-lock");
+    const volts = parseFloat(document.getElementById("pw-volts").value) || 13.8;
+    let chargeLen = parseFloat(document.getElementById("pw-charge-len").value);
+    let panelLen = parseFloat(document.getElementById("pw-panel-len").value);
+    if (!Number.isFinite(chargeLen) || chargeLen < 1) chargeLen = 15;
+    if (!Number.isFinite(panelLen) || panelLen < 1) panelLen = 6;
+    const continuous = pump + fan + wp + ign + ecu + acc;
+    const hit = brake + nitrous + lock;
+    const altNeed = continuous * 1.2;
+    const alt = pwStep(PW_ALTS, altNeed);
+    const fuse = pwStep(PW_FUSES, continuous);
+    const panelGauge = pwCable(Math.max(continuous, 1), panelLen, volts);
+    const chargeGauge = pwCable(Math.max(alt, 1), chargeLen, volts);
+    const altLabel = altNeed > 250 ? "Over 250 A" : alt + " A";
+    publishReadout([
+        { label: "Running load", value: continuous, unit: "amp", primary: true },
+        { label: "Hit load on the battery", value: hit, unit: "amp" },
+        { label: "Alternator to order", value: altLabel, unit: "text" },
+        { label: "Main fuse at the battery", value: fuse + " A", unit: "text" },
+        { label: "Panel feed", value: panelGauge + " AWG", unit: "text" },
+        { label: "Alternator charge wire", value: chargeGauge + " AWG", unit: "text" }
+    ]);
+    const rows = [
+        ["Fuel pump", pump, "Running"],
+        ["Fan", fan, "Running"],
+        ["Water pump", wp, "Running"],
+        ["Ignition", ign, "Running"],
+        ["ECU", ecu, "Running"],
+        ["Gauges and controller", acc, "Running"],
+        ["Trans brake", brake, "Hit"],
+        ["Nitrous", nitrous, "Hit"],
+        ["Line lock", lock, "Hit"]
+    ];
+    let body = "";
+    rows.forEach(function (row) {
+        if (row[1] <= 0) return;
+        body += "<tr><td>" + row[0] + "</td><td>" + row[1].toFixed(0) + "</td><td>" + row[2] + "</td></tr>";
+    });
+    document.getElementById("pw-body").innerHTML = body;
+    const fuseEl = document.getElementById("pw-fig-fuse");
+    if (fuseEl) fuseEl.textContent = fuse + " A";
+    const panelEl = document.getElementById("pw-fig-panel");
+    if (panelEl) panelEl.textContent = panelGauge + " AWG";
+    const chargeEl = document.getElementById("pw-fig-charge");
+    if (chargeEl) chargeEl.textContent = chargeGauge + " charge";
+    let altLine = altNeed > 250
+        ? "The running load wants more than a 250 A alternator. That is two units, or a larger case, and the idle output is the number that matters."
+        : "Order an alternator that still makes " + alt + " A at idle. A cruise rating does not keep the fans and the pump alive in the lanes.";
+    const wireLine = " The panel feed is " + panelGauge + " AWG for " + panelLen.toFixed(0) + " ft. The charge wire is " + chargeGauge + " AWG for " + chargeLen.toFixed(0) + " ft. Both are high-strand battery cable, sized for a 3% drop. The starter cable stays a 1/0 or 2/0.";
+    document.getElementById("pw-assess").textContent = altLine + wireLine;
+}
+bindCalc(calcPower, ["pw-pump", "pw-fan", "pw-wp", "pw-ign", "pw-ecu", "pw-brake", "pw-charge-len", "pw-panel-len", "pw-nitrous", "pw-lock", "pw-acc", "pw-volts"]);
+
+    </script>
+</body>
+</html>

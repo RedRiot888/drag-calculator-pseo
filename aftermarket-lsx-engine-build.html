@@ -22,7 +22,7 @@
 <body>
     <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
     <div class="layout-grid">
-        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="torque-converter-calculator.html">Torque Converter</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item active" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="drag-shock-calculator.html">Shocks</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="torque-converter-calculator.html">Torque Converter</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item active" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="drag-shock-calculator.html">Shocks</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a><a class="nav-item" href="drag-cooling-system-calculator.html">Cooling</a><a class="nav-item" href="driveshaft-calculator.html">Driveshaft</a><a class="nav-item" href="race-car-wiring-calculator.html">Power Budget</a></nav></aside>
         <section class="sticky-calculator">
             <header class="master-header">
                 <h1>Aftermarket Iron LSX Engine Build Calculator</h1>
@@ -212,6 +212,12 @@ function formatUnit(value, unit) {
             return metric ? { text: (n * 0.0283168).toFixed(2), suffix: "m3/min" } : { text: Math.round(n).toLocaleString("en-US"), suffix: "CFM" };
         case "tempf":
             return metric ? { text: ((n - 32) * 5 / 9).toFixed(0), suffix: "C" } : { text: Math.round(n).toString(), suffix: "F" };
+        case "deltaf":
+            return metric ? { text: (n * 5 / 9).toFixed(1), suffix: "C" } : { text: n.toFixed(1), suffix: "F" };
+        case "gpm":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/min" } : { text: n.toFixed(1), suffix: "GPM" };
+        case "deg":
+            return { text: n.toFixed(1) + "\u00b0", suffix: "" };
         case "lbhr":
             return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
         case "ft":

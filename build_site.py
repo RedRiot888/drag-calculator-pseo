@@ -37,6 +37,13 @@ NEXT_STEPS = {
         ("fuel-pump-calculator", "Size the pump for this boost"),
         ("wastegate-sizing-calculator", "Size the wastegate for this power"),
     ),
+    "Cooling": (
+        ("race-car-wiring-calculator", "Add the fan and the water pump to the power budget"),
+        ("automotive-relay-calculator", "Size the relay and the wire for the fan"),
+    ),
+    "Power": (("automotive-relay-calculator", "Size one circuit from this budget"),),
+    "Electrical": (("race-car-wiring-calculator", "Add the whole car up before sizing one relay"),),
+    "Driveline": (("transmission-shift-recovery-calculator", "The top gear here is the shaft speed"),),
 }
 # Catalog ring-and-pinion sets. The ratio list is what that housing is actually sold in.
 # bands are (max ratio, carrier note). deep is an extra note at and above that ratio.
@@ -162,6 +169,9 @@ CATEGORY_FIELDS = {
     "Converter": [],
     "Electrical": [],
     "CAS": ["boost"],
+    "Cooling": ["hp"],
+    "Driveline": [],
+    "Power": [],
 }
 FUELS = {"gasoline", "e85", "methanol"}
 BLOWER_TYPES = {"roots", "twin-screw", "centrifugal"}
@@ -736,6 +746,13 @@ def spec_text(row):
         return "Loaded defaults: " + shock_preset(row["slug"])["spec"] + "."
     if row["category"] == "Converter":
         return "Loaded defaults: " + cv_preset(row["slug"])["spec"] + "."
+    if row["category"] == "Cooling":
+        hp = cell(row, "hp") or "1000"
+        return f"Loaded defaults: {hp} HP, water, engine running in the lanes."
+    if row["category"] == "Driveline":
+        return "Loaded defaults: 48 in center to center, 3.50 x 0.125 aluminum, 7,000 RPM in 1.00."
+    if row["category"] == "Power":
+        return "Loaded defaults: dual in-tank pump, 16 in fan, 55 GPM water pump, battery in the trunk."
     parts = []
     for key in CATEGORY_FIELDS[row["category"]]:
         value = cell(row, key)
@@ -820,6 +837,12 @@ function formatUnit(value, unit) {
             return metric ? { text: (n * 0.0283168).toFixed(2), suffix: "m3/min" } : { text: Math.round(n).toLocaleString("en-US"), suffix: "CFM" };
         case "tempf":
             return metric ? { text: ((n - 32) * 5 / 9).toFixed(0), suffix: "C" } : { text: Math.round(n).toString(), suffix: "F" };
+        case "deltaf":
+            return metric ? { text: (n * 5 / 9).toFixed(1), suffix: "C" } : { text: n.toFixed(1), suffix: "F" };
+        case "gpm":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/min" } : { text: n.toFixed(1), suffix: "GPM" };
+        case "deg":
+            return { text: n.toFixed(1) + "\u00b0", suffix: "" };
         case "lbhr":
             return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
         case "ft":
@@ -2118,6 +2141,559 @@ function calcRelay() {
     if (relayEl) relayEl.textContent = relay + " A relay";
 }
 bindCalc(calcRelay, ["rl-watts", "rl-volts", "rl-duty", "rl-len"]);
+"""
+
+
+COOLING_DIAGRAM = """
+<figure class="measure-fig">
+    <svg viewBox="0 0 720 280" role="img" aria-label="Cooling air and coolant path on a drag car">
+        <rect x="70" y="70" width="150" height="120" rx="8" fill="#1c1c1c" stroke="#f5f5f5" stroke-width="2"/>
+        <text x="145" y="124" fill="#f5f5f5" font-size="14" text-anchor="middle">Radiator</text>
+        <text x="145" y="146" fill="#a3a3a3" font-size="12" text-anchor="middle">Core face</text>
+        <circle cx="40" cy="130" r="18" fill="none" stroke="#e50914" stroke-width="3"/>
+        <text x="40" y="168" fill="#e50914" font-size="12" text-anchor="middle">Fan</text>
+        <line x1="58" y1="130" x2="70" y2="130" stroke="#e50914" stroke-width="3"/>
+        <rect x="300" y="78" width="200" height="104" rx="8" fill="#1c1c1c" stroke="#6f6f6f" stroke-width="2"/>
+        <text x="400" y="124" fill="#f5f5f5" font-size="14" text-anchor="middle">Engine</text>
+        <text x="400" y="146" fill="#a3a3a3" font-size="12" text-anchor="middle">Block and heads</text>
+        <circle cx="560" cy="200" r="28" fill="none" stroke="#e50914" stroke-width="3"/>
+        <text x="560" y="204" fill="#e50914" font-size="12" text-anchor="middle">Pump</text>
+        <line x1="220" y1="100" x2="300" y2="100" stroke="#e50914" stroke-width="3"/>
+        <line x1="500" y1="150" x2="532" y2="186" stroke="#f5f5f5" stroke-width="3"/>
+        <line x1="540" y1="176" x2="250" y2="160" stroke="#f5f5f5" stroke-width="3"/>
+        <text x="70" y="250" fill="#a3a3a3" font-size="14">The fan pulls only while the car is sitting. Ram air does the return road.</text>
+    </svg>
+    <figcaption>Air goes through the core, then the fan. Coolant leaves the bottom of the radiator, the pump pushes it through the block, and the hot water comes back to the top of the core. A shroud has to cover the core or the fan pulls air around it instead of through it.</figcaption>
+</figure>
+"""
+
+DRIVESHAFT_DIAGRAM = """
+<figure class="measure-fig">
+    <svg viewBox="0 0 720 300" role="img" aria-label="How to measure driveshaft length and angles">
+        <rect x="40" y="78" width="120" height="70" rx="6" fill="#1c1c1c" stroke="#6f6f6f" stroke-width="2"/>
+        <text x="100" y="110" fill="#f5f5f5" font-size="13" text-anchor="middle">Transmission</text>
+        <text x="100" y="128" fill="#a3a3a3" font-size="12" text-anchor="middle">Tail down</text>
+        <line x1="160" y1="130" x2="520" y2="168" stroke="#e50914" stroke-width="6"/>
+        <circle cx="175" cy="132" r="8" fill="none" stroke="#f5f5f5" stroke-width="2"/>
+        <circle cx="505" cy="166" r="8" fill="none" stroke="#f5f5f5" stroke-width="2"/>
+        <rect x="530" y="120" width="140" height="80" rx="6" fill="#1c1c1c" stroke="#6f6f6f" stroke-width="2"/>
+        <text x="600" y="156" fill="#f5f5f5" font-size="13" text-anchor="middle">Pinion yoke</text>
+        <text x="600" y="176" fill="#a3a3a3" font-size="12" text-anchor="middle">Nose angle</text>
+        <line x1="175" y1="200" x2="505" y2="200" stroke="#e50914" stroke-width="1.5"/>
+        <line x1="175" y1="190" x2="175" y2="210" stroke="#e50914" stroke-width="1.5"/>
+        <line x1="505" y1="190" x2="505" y2="210" stroke="#e50914" stroke-width="1.5"/>
+        <text x="250" y="222" fill="#e50914" font-size="13">Center of joint to center of joint</text>
+        <text x="40" y="262" fill="#f5f5f5" font-size="14">Angle finder on the tail, the tube, and the pinion yoke.</text>
+        <text x="40" y="284" fill="#a3a3a3" font-size="14">Same finder direction. Down toward the rear of the car is negative.</text>
+    </svg>
+    <figcaption>Measure at ride height with the driver in the car. The length a shop orders is the center of the front U-joint to the center of the rear U-joint. At ride the slip yoke wants about 3/4 in before it bottoms. At full droop about 1 in of the yoke should still be in the transmission.</figcaption>
+</figure>
+"""
+
+POWER_DIAGRAM = """
+<figure class="measure-fig">
+    <svg viewBox="0 0 720 280" role="img" aria-label="Trunk battery power distribution">
+        <rect x="40" y="90" width="110" height="70" rx="8" fill="#1c1c1c" stroke="#e50914" stroke-width="2"/>
+        <text x="95" y="122" fill="#f5f5f5" font-size="14" text-anchor="middle">Battery</text>
+        <text x="95" y="142" fill="#a3a3a3" font-size="12" text-anchor="middle">Trunk</text>
+        <rect x="190" y="104" width="70" height="42" rx="6" fill="none" stroke="#e50914" stroke-width="2"/>
+        <text id="pw-fig-fuse" x="225" y="130" fill="#f5f5f5" font-size="13" text-anchor="middle">100 A</text>
+        <line x1="150" y1="125" x2="190" y2="125" stroke="#e50914" stroke-width="3"/>
+        <line x1="260" y1="125" x2="360" y2="125" stroke="#e50914" stroke-width="3"/>
+        <rect x="360" y="86" width="130" height="78" rx="8" fill="#1c1c1c" stroke="#f5f5f5" stroke-width="2"/>
+        <text x="425" y="118" fill="#f5f5f5" font-size="14" text-anchor="middle">Fuse panel</text>
+        <text id="pw-fig-panel" x="425" y="140" fill="#a3a3a3" font-size="12" text-anchor="middle">6 AWG</text>
+        <line x1="95" y1="160" x2="95" y2="210" stroke="#f5f5f5" stroke-width="3"/>
+        <line x1="95" y1="210" x2="560" y2="210" stroke="#f5f5f5" stroke-width="3"/>
+        <rect x="560" y="176" width="120" height="68" rx="8" fill="#1c1c1c" stroke="#6f6f6f" stroke-width="2"/>
+        <text x="620" y="206" fill="#f5f5f5" font-size="14" text-anchor="middle">Alternator</text>
+        <text id="pw-fig-charge" x="620" y="226" fill="#a3a3a3" font-size="12" text-anchor="middle">1/0 charge</text>
+        <text x="40" y="260" fill="#a3a3a3" font-size="14">The main fuse is on the battery post. The starter cable is separate.</text>
+    </svg>
+    <figcaption>A trunk battery feeds the fuse panel on a short run and the alternator on a long run to the front. The fuse belongs at the battery, on the panel feed. The starter cable is a 1/0 or 2/0 for the inrush, and this page sizes the running loads rather than that hit.</figcaption>
+</figure>
+"""
+
+
+def cooling_html(row):
+    primary = f"""
+    {COOLING_DIAGRAM}
+    <div class="grid-2">
+        <div class="field"><label for="cl-hp">Power</label><input type="number" id="cl-hp" value="{esc(field(row, 'hp', '1000'))}" min="50" step="25"></div>
+        <div class="field"><label for="cl-fuel">Fuel</label>
+            <select id="cl-fuel">
+                <option value="gasoline" selected>Gasoline</option>
+                <option value="e85">E85</option>
+                <option value="methanol">Methanol</option>
+                <option value="race">Race gas</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cl-ind">Induction</label>
+            <select id="cl-ind">
+                <option value="na">Naturally aspirated</option>
+                <option value="boost" selected>Power adder</option>
+            </select>
+        </div>
+        <div class="field"><label for="cl-mix">Coolant</label>
+            <select id="cl-mix">
+                <option value="water" selected>Water</option>
+                <option value="5050">50/50 antifreeze</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cl-gal">Coolant in the system (gal)</label><input type="number" id="cl-gal" value="4" min="1" step="0.5"></div>
+        <div class="field"><label for="cl-block">Block</label>
+            <select id="cl-block">
+                <option value="iron" selected>Iron block, aluminum heads</option>
+                <option value="aluminum">Aluminum block and heads</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cl-pass">Pass length (seconds)</label><input type="number" id="cl-pass" value="10" min="4" step="0.5"></div>
+        <div class="field"><label for="cl-wait">Wait before the next hit (minutes)</label><input type="number" id="cl-wait" value="8" min="1" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cl-run">Engine in the lanes</label>
+            <select id="cl-run">
+                <option value="yes" selected>Left running</option>
+                <option value="no">Shut off</option>
+            </select>
+        </div>
+        <div class="field"><label for="cl-mode">Water pump</label>
+            <select id="cl-mode">
+                <option value="both" selected>Mechanical on the hit, electric in the lanes</option>
+                <option value="electric">Electric pump only</option>
+            </select>
+        </div>
+    </div>
+    <p class="field-hint">A 10-second pass does not put the dyno heat into the water. Most of that energy leaves in the exhaust. The fan's job is the heat that stayed, plus idle heat if the engine keeps running.</p>
+    """
+    advanced = """
+    <div class="grid-2">
+        <div class="field"><label for="cl-share">Pass heat, share of fuel energy</label><input type="number" id="cl-share" value="0.06" min="0.02" max="0.25" step="0.01"></div>
+        <div class="field"><label for="cl-idle-share">Idle heat, share of fuel energy</label><input type="number" id="cl-idle-share" value="0.40" min="0.1" max="0.7" step="0.05"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cl-rise">Coolant rise used to size the pump (°F)</label><input type="number" id="cl-rise" value="20" min="8" step="1"></div>
+        <div class="field"><label for="cl-air">Air rise across the core (°F)</label><input type="number" id="cl-air" value="25" min="10" step="1"></div>
+    </div>
+    <div class="field"><label for="cl-idle">Idle fuel (gal/hr)</label><input type="number" id="cl-idle" placeholder="Auto" min="0.4" step="0.1"></div>
+    <p class="field-hint">6% of the fuel energy into the metal and the water matches a car that climbs about 30°F on a 1,000 HP hit. A steady dyno pull is closer to 20%, and that number will oversize a drag radiator.</p>
+    """
+    assess = '<p class="assess" id="cl-assess"></p>'
+    return calculator_shell(primary, advanced, "Print cooling sheet", power_toggle=True, results_extra=assess)
+
+
+COOLING_SCRIPT = r"""
+const CL_FUEL = {
+    gasoline: { btu: 18500, dens: 6.17, na: 0.50, boost: 0.65 },
+    e85: { btu: 12560, dens: 6.55, na: 0.75, boost: 0.95 },
+    methanol: { btu: 8635, dens: 6.63, na: 0.95, boost: 1.20 },
+    race: { btu: 18500, dens: 6.20, na: 0.55, boost: 0.70 }
+};
+const CL_FANS = [
+    { cfm: 800, label: "10 in single", amps: 8 },
+    { cfm: 1250, label: "12 in single", amps: 11 },
+    { cfm: 1700, label: "14 in single", amps: 16 },
+    { cfm: 2100, label: "16 in single", amps: 22 },
+    { cfm: 3400, label: "Dual 14 in", amps: 32 },
+    { cfm: 4200, label: "Dual 16 in", amps: 44 }
+];
+const CL_PUMPS = [20, 35, 55];
+function clPumpClass(gpm) {
+    for (let i = 0; i < CL_PUMPS.length; i++) {
+        if (CL_PUMPS[i] >= gpm) return { gpm: CL_PUMPS[i], count: 1 };
+    }
+    if (gpm <= 110) return { gpm: 55, count: 2 };
+    return { gpm: 55, count: 3 };
+}
+function calcCooling() {
+    const fuel = CL_FUEL[document.getElementById("cl-fuel").value] || CL_FUEL.gasoline;
+    const boost = document.getElementById("cl-ind").value === "boost";
+    let hp = crankHorsepower(document.getElementById("cl-hp").value || 1000);
+    if (!Number.isFinite(hp) || hp < 50) hp = 1000;
+    const bsfc = boost ? fuel.boost : fuel.na;
+    let seconds = parseFloat(document.getElementById("cl-pass").value);
+    if (!Number.isFinite(seconds) || seconds < 4) seconds = 10;
+    let minutes = parseFloat(document.getElementById("cl-wait").value);
+    if (!Number.isFinite(minutes) || minutes < 1) minutes = 8;
+    let gallons = parseFloat(document.getElementById("cl-gal").value);
+    if (!Number.isFinite(gallons) || gallons < 1) gallons = 4;
+    let share = parseFloat(document.getElementById("cl-share").value);
+    if (!Number.isFinite(share)) share = 0.06;
+    share = Math.min(0.25, Math.max(0.02, share));
+    let idleShare = parseFloat(document.getElementById("cl-idle-share").value);
+    if (!Number.isFinite(idleShare)) idleShare = 0.40;
+    idleShare = Math.min(0.7, Math.max(0.1, idleShare));
+    let rise = parseFloat(document.getElementById("cl-rise").value);
+    if (!Number.isFinite(rise) || rise < 8) rise = 20;
+    let air = parseFloat(document.getElementById("cl-air").value);
+    if (!Number.isFinite(air) || air < 10) air = 25;
+    const water = document.getElementById("cl-mix").value === "water";
+    const lbGal = water ? 8.34 : 8.90;
+    const cp = water ? 1.00 : 0.85;
+    const metal = document.getElementById("cl-block").value === "aluminum" ? 33 : 30.4;
+    const running = document.getElementById("cl-run").value === "yes";
+    const electricOnly = document.getElementById("cl-mode").value === "electric";
+    let idleGph = parseFloat(document.getElementById("cl-idle").value);
+    if (!Number.isFinite(idleGph) || idleGph <= 0) idleGph = Math.max(1.2, hp / 800);
+    const passBtu = (hp * bsfc * fuel.btu * share * seconds) / 3600;
+    const idleLb = running ? idleGph * fuel.dens * (minutes / 60) : 0;
+    const idleBtu = idleLb * fuel.btu * idleShare;
+    const capacity = gallons * lbGal * cp + metal;
+    const delta = passBtu / capacity;
+    const btuHr = (passBtu + idleBtu) * (60 / minutes);
+    const cfm = btuHr / (1.08 * air);
+    let fan = CL_FANS[CL_FANS.length - 1];
+    for (let i = 0; i < CL_FANS.length; i++) {
+        if (CL_FANS[i].cfm >= cfm) { fan = CL_FANS[i]; break; }
+    }
+    const heatCap = rise * lbGal * cp;
+    const passGpm = (passBtu / (seconds / 60)) / heatCap;
+    const laneGpm = (running ? idleBtu / minutes : passBtu / minutes) / heatCap;
+    const lanePump = clPumpClass(Math.max(laneGpm, 8));
+    const passPump = clPumpClass(passGpm);
+    const ordered = electricOnly ? passPump : lanePump;
+    const pumpLabel = (ordered.count > 1 ? ordered.count + " x " : "") + ordered.gpm + " GPM electric";
+    publishReadout([
+        { label: "Coolant rise this pass", value: delta, unit: "deltaf", primary: true },
+        { label: "Fan to order", value: fan.label, unit: "text" },
+        { label: "Fan airflow", value: cfm, unit: "cfm" },
+        { label: "Water pump", value: pumpLabel, unit: "text" },
+        { label: "Flow the hit wants", value: passGpm, unit: "gpm" },
+        { label: "Flow the lanes want", value: laneGpm, unit: "gpm" }
+    ]);
+    let heatLine = "The pass puts about " + Math.round(delta) + "\u00b0F into the coolant.";
+    if (delta > 70) heatLine += " That is too much for this much water. Add capacity or the car will boil on a back-to-back.";
+    else if (delta > 40) heatLine += " That is a hard climb. More water or a longer wait is the fix.";
+    else heatLine += " The water and the metal can swallow that hit.";
+    let fanLine = " Order a " + fan.label + " fan, about " + fan.amps + " A, to pull " + Math.round(cfm) + " CFM while it sits.";
+    if (cfm > 4200) fanLine = " The wait is short for this much heat. Dual 16 in fans are the top of the usual list, and the car still wants more time or the engine shut off.";
+    let pumpLine;
+    if (electricOnly) {
+        pumpLine = passPump.count === 1
+            ? " An electric pump has to carry the hit, so order the " + passPump.gpm + " GPM class."
+            : " One electric pump does not cover the hit. Order " + passPump.count + " pumps in the 55 GPM class.";
+    } else if (passGpm > lanePump.gpm + 5) {
+        pumpLine = " The mechanical pump carries the hit at about " + passGpm.toFixed(0) + " GPM. The electric pump is for the lanes: the " + lanePump.gpm + " GPM class.";
+    } else {
+        pumpLine = " The " + lanePump.gpm + " GPM electric pump also covers the hit, so it can be the only pump.";
+    }
+    const idleLine = running
+        ? " Leaving it running adds the idle heat the fan has to pull."
+        : " Shutting it off drops the fan back to the heat from the pass alone.";
+    document.getElementById("cl-assess").textContent = heatLine + fanLine + pumpLine + idleLine;
+}
+bindCalc(calcCooling, ["cl-hp", "cl-fuel", "cl-ind", "cl-mix", "cl-gal", "cl-block", "cl-pass", "cl-wait", "cl-run", "cl-mode", "cl-share", "cl-idle-share", "cl-rise", "cl-air", "cl-idle", "dt-loss"]);
+"""
+
+
+def driveline_html(_row):
+    tubes = """
+                <option value="2.5|0.083|steel">2.50 x 0.083 steel</option>
+                <option value="3|0.083|steel">3.00 x 0.083 steel</option>
+                <option value="3|0.065|steel" >3.00 x 0.065 chromoly</option>
+                <option value="3.5|0.125|aluminum" selected>3.50 x 0.125 aluminum</option>
+                <option value="4|0.125|aluminum">4.00 x 0.125 aluminum</option>
+                <option value="custom">Custom tube</option>"""
+    primary = f"""
+    {DRIVESHAFT_DIAGRAM}
+    <div class="grid-2">
+        <div class="field"><label for="ds-len">Center-to-center length (in)</label><input type="number" id="ds-len" value="48" min="20" step="0.5"></div>
+        <div class="field"><label for="ds-tube">Tube</label><select id="ds-tube">{tubes}</select></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="ds-rpm">RPM at the stripe</label><input type="number" id="ds-rpm" value="7000" min="2000" step="100"></div>
+        <div class="field"><label for="ds-gear">Top gear ratio</label><input type="number" id="ds-gear" value="1.00" min="0.4" max="2" step="0.01"></div>
+    </div>
+    <p class="field-hint">Shaft speed is engine RPM divided by the gear it is in at the stripe. A 0.70 overdrive spins the shaft faster than the engine. Rear gear does not change shaft speed.</p>
+    <div class="grid-2">
+        <div class="field"><label for="ds-trans">Transmission angle (deg)</label><input type="number" id="ds-trans" value="-2" step="0.1"></div>
+        <div class="field"><label for="ds-shaft">Driveshaft angle (deg)</label><input type="number" id="ds-shaft" value="-1" step="0.1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="ds-pinion">Pinion angle (deg)</label><input type="number" id="ds-pinion" value="-2" step="0.1"></div>
+        <div class="field"><label for="ds-sus">Rear suspension</label>
+            <select id="ds-sus">
+                <option value="fourlink" selected>4-link or ladder bar</option>
+                <option value="leaf">Leaf spring</option>
+            </select>
+        </div>
+    </div>
+    <p class="field-hint">Use one angle finder, pointing the same way, on the tailhousing, the tube, and the pinion yoke. A slope down toward the rear of the car is a negative number.</p>
+    """
+    advanced = """
+    <div class="grid-2">
+        <div class="field"><label for="ds-od">Custom outside diameter (in)</label><input type="number" id="ds-od" value="3.5" min="1.5" step="0.125"></div>
+        <div class="field"><label for="ds-wall">Custom wall (in)</label><input type="number" id="ds-wall" value="0.083" min="0.035" step="0.005"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="ds-mat">Custom material</label>
+            <select id="ds-mat">
+                <option value="steel" selected>Steel or chromoly</option>
+                <option value="aluminum">Aluminum</option>
+            </select>
+        </div>
+        <div class="field"><label for="ds-street">Also driven on the street</label>
+            <select id="ds-street">
+                <option value="no" selected>Drag only</option>
+                <option value="yes">Street and strip</option>
+            </select>
+        </div>
+    </div>
+    """
+    assess = '<p class="assess" id="ds-assess"></p>'
+    return calculator_shell(primary, advanced, "Print driveshaft sheet", results_extra=assess)
+
+
+DRIVELINE_SCRIPT = r"""
+function dsTube() {
+    const pick = document.getElementById("ds-tube").value;
+    if (pick === "custom") {
+        let od = parseFloat(document.getElementById("ds-od").value);
+        let wall = parseFloat(document.getElementById("ds-wall").value);
+        if (!Number.isFinite(od) || od < 1.5) od = 3.5;
+        if (!Number.isFinite(wall) || wall < 0.035) wall = 0.083;
+        wall = Math.min(wall, od / 2 - 0.2);
+        return { od: od, wall: wall, mat: document.getElementById("ds-mat").value, label: od.toFixed(2) + " x " + wall.toFixed(3) };
+    }
+    const parts = pick.split("|");
+    return { od: parseFloat(parts[0]), wall: parseFloat(parts[1]), mat: parts[2], label: "" };
+}
+function dsCritical(od, wall, mat, length) {
+    const id = od - 2 * wall;
+    const factor = mat === "aluminum" ? 0.981 : 1;
+    const k = 4770000 * factor * Math.sqrt(od * od + id * id);
+    return { critical: k / (length * length), k: k };
+}
+function calcDriveline() {
+    let length = parseFloat(document.getElementById("ds-len").value);
+    if (!Number.isFinite(length) || length < 20) length = 48;
+    let rpm = parseFloat(document.getElementById("ds-rpm").value);
+    if (!Number.isFinite(rpm) || rpm < 2000) rpm = 7000;
+    let gear = parseFloat(document.getElementById("ds-gear").value);
+    if (!Number.isFinite(gear) || gear < 0.4) gear = 1;
+    const tube = dsTube();
+    const speed = dsCritical(tube.od, tube.wall, tube.mat, length);
+    const shaftRpm = rpm / gear;
+    const safe = speed.critical * 0.75;
+    const safeLen = Math.sqrt(speed.k * 0.75 / shaftRpm);
+    let trans = parseFloat(document.getElementById("ds-trans").value);
+    let shaft = parseFloat(document.getElementById("ds-shaft").value);
+    let pinion = parseFloat(document.getElementById("ds-pinion").value);
+    if (!Number.isFinite(trans)) trans = -2;
+    if (!Number.isFinite(shaft)) shaft = -1;
+    if (!Number.isFinite(pinion)) pinion = -2;
+    const front = Math.abs(trans - shaft);
+    const rear = Math.abs(pinion - shaft);
+    const noseDown = pinion - shaft;
+    const leaf = document.getElementById("ds-sus").value === "leaf";
+    const street = document.getElementById("ds-street").value === "yes";
+    let speedLabel = "Under the 75% line";
+    if (shaftRpm > speed.critical) speedLabel = "Over critical speed";
+    else if (shaftRpm > safe) speedLabel = "Over the 75% line";
+    publishReadout([
+        { label: "Shaft speed", value: Math.round(shaftRpm), unit: "rpm", primary: true },
+        { label: "Critical speed", value: Math.round(speed.critical), unit: "rpm" },
+        { label: "75% of critical", value: Math.round(safe), unit: "rpm" },
+        { label: "Tube at this RPM", value: speedLabel, unit: "text" },
+        { label: "Front working angle", value: front, unit: "deg" },
+        { label: "Rear working angle", value: rear, unit: "deg" }
+    ]);
+    let speedLine;
+    if (shaftRpm > speed.critical) {
+        speedLine = "This tube is past the first bending speed at " + Math.round(shaftRpm) + " RPM. It is safe out to about " + safeLen.toFixed(1) + " in, or it needs a larger diameter.";
+    } else if (shaftRpm > safe) {
+        speedLine = "Critical speed is " + Math.round(speed.critical) + " RPM. The planning line is 75% of that, " + Math.round(safe) + " RPM. Shorten it to about " + safeLen.toFixed(1) + " in or go up a tube size.";
+    } else {
+        speedLine = "Critical speed is " + Math.round(speed.critical) + " RPM. At " + Math.round(shaftRpm) + " the shaft is under the 75% line, and this tube can run out to about " + safeLen.toFixed(1) + " in.";
+    }
+    let angleLine;
+    if (leaf) {
+        if (noseDown >= 1.5 && noseDown <= 3.5) {
+            angleLine = " The pinion is " + noseDown.toFixed(1) + "\u00b0 nose down from the tube, which is the wrap a leaf spring wants at rest.";
+        } else if (noseDown > 0) {
+            angleLine = " The pinion is " + noseDown.toFixed(1) + "\u00b0 nose down. A leaf spring wants about 2\u00b0 so the joint straightens when the axle wraps.";
+        } else {
+            angleLine = " The pinion is nose up from the tube. A leaf spring wants it about 2\u00b0 nose down at rest.";
+        }
+    } else {
+        const cancel = Math.abs(front - rear);
+        if (front <= 1.5 && rear <= 1.5 && cancel <= 0.5) {
+            angleLine = " The working angles are " + front.toFixed(1) + "\u00b0 and " + rear.toFixed(1) + "\u00b0. A 4-link wants them small and equal.";
+        } else if (front > 3 || rear > 3) {
+            angleLine = " A working angle over 3\u00b0 will vibrate. Point the pinion at the driveshaft and keep the tail and the pinion parallel.";
+        } else {
+            angleLine = " The working angles are " + front.toFixed(1) + "\u00b0 and " + rear.toFixed(1) + "\u00b0. A 4-link wants both under 1.5\u00b0 and within half a degree of each other.";
+        }
+    }
+    if (street && Math.min(front, rear) < 0.5) {
+        angleLine += " A shaft that also drives on the street wants at least half a degree so the U-joint needles roll.";
+    }
+    document.getElementById("ds-assess").textContent = speedLine + angleLine;
+}
+bindCalc(calcDriveline, ["ds-len", "ds-tube", "ds-rpm", "ds-gear", "ds-trans", "ds-shaft", "ds-pinion", "ds-sus", "ds-od", "ds-wall", "ds-mat", "ds-street"]);
+"""
+
+
+def power_html(_row):
+    primary = f"""
+    {POWER_DIAGRAM}
+    <div class="grid-2">
+        <div class="field"><label for="pw-pump">Fuel pump</label>
+            <select id="pw-pump">
+                <option value="0">None, mechanical</option>
+                <option value="15">Single in-tank, about 15 A</option>
+                <option value="28" selected>Dual in-tank, about 28 A</option>
+                <option value="35">Large external, about 35 A</option>
+                <option value="60">Dual external, about 60 A</option>
+            </select>
+        </div>
+        <div class="field"><label for="pw-fan">Electric fan</label>
+            <select id="pw-fan">
+                <option value="0">None</option>
+                <option value="11">12 in, about 11 A</option>
+                <option value="16">14 in, about 16 A</option>
+                <option value="22" selected>16 in, about 22 A</option>
+                <option value="32">Dual 14 in, about 32 A</option>
+                <option value="44">Dual 16 in, about 44 A</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="pw-wp">Electric water pump</label>
+            <select id="pw-wp">
+                <option value="0">Mechanical only</option>
+                <option value="8">20 GPM class, about 8 A</option>
+                <option value="12">35 GPM class, about 12 A</option>
+                <option value="16" selected>55 GPM class, about 16 A</option>
+            </select>
+        </div>
+        <div class="field"><label for="pw-ign">Ignition (A)</label><input type="number" id="pw-ign" value="8" min="0" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="pw-ecu">ECU and sensors (A)</label><input type="number" id="pw-ecu" value="5" min="0" step="1"></div>
+        <div class="field"><label for="pw-brake">Trans brake solenoid (A)</label><input type="number" id="pw-brake" value="18" min="0" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="pw-charge-len">Alternator wire, one way (ft)</label><input type="number" id="pw-charge-len" value="15" min="1" step="1"></div>
+        <div class="field"><label for="pw-panel-len">Battery to fuse panel (ft)</label><input type="number" id="pw-panel-len" value="6" min="1" step="1"></div>
+    </div>
+    <p class="field-hint">Pump, fan, water pump, and ignition are on the whole time the engine is running. The trans brake, the nitrous, and the line lock are a few seconds on the battery. The alternator has to cover the running loads at idle.</p>
+    """
+    advanced = """
+    <div class="grid-2">
+        <div class="field"><label for="pw-nitrous">Nitrous solenoids (A)</label><input type="number" id="pw-nitrous" value="0" min="0" step="1"></div>
+        <div class="field"><label for="pw-lock">Line lock (A)</label><input type="number" id="pw-lock" value="0" min="0" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="pw-acc">Gauges, delay box, controller (A)</label><input type="number" id="pw-acc" value="3" min="0" step="1"></div>
+        <div class="field"><label for="pw-volts">Running voltage</label>
+            <select id="pw-volts">
+                <option value="13.8" selected>13.8V</option>
+                <option value="16">16V</option>
+            </select>
+        </div>
+    </div>
+    """
+    table = """
+    <table>
+        <thead><tr><th>Load</th><th>Amps</th><th>When</th></tr></thead>
+        <tbody id="pw-body"></tbody>
+    </table>
+    <p class="assess" id="pw-assess"></p>
+    """
+    return calculator_shell(primary, advanced, "Print wiring sheet", table)
+
+
+POWER_SCRIPT = r"""
+const PW_ALTS = [60, 90, 120, 150, 200, 250];
+const PW_FUSES = [40, 60, 80, 100, 125, 150, 175, 200, 225, 250, 300];
+const PW_CABLE = [[2583, "16"], [4107, "14"], [6530, "12"], [10380, "10"], [16510, "8"], [26250, "6"], [41740, "4"], [66360, "2"], [83690, "1"], [105600, "1/0"], [133100, "2/0"], [167800, "3/0"], [211600, "4/0"]];
+function pwAmps(id) {
+    const n = parseFloat(document.getElementById(id).value);
+    return Number.isFinite(n) && n > 0 ? n : 0;
+}
+function pwCable(amps, length, volts) {
+    const drop = Math.max(volts, 12) * 0.03;
+    const cm = (10.75 * amps * length * 2) / drop;
+    let gauge = "4/0";
+    for (let i = 0; i < PW_CABLE.length; i++) {
+        if (PW_CABLE[i][0] >= cm) { gauge = PW_CABLE[i][1]; break; }
+    }
+    return gauge;
+}
+function pwStep(list, amps) {
+    for (let i = 0; i < list.length; i++) {
+        if (list[i] >= amps) return list[i];
+    }
+    return list[list.length - 1];
+}
+function calcPower() {
+    const pump = pwAmps("pw-pump");
+    const fan = pwAmps("pw-fan");
+    const wp = pwAmps("pw-wp");
+    const ign = pwAmps("pw-ign");
+    const ecu = pwAmps("pw-ecu");
+    const acc = pwAmps("pw-acc");
+    const brake = pwAmps("pw-brake");
+    const nitrous = pwAmps("pw-nitrous");
+    const lock = pwAmps("pw-lock");
+    const volts = parseFloat(document.getElementById("pw-volts").value) || 13.8;
+    let chargeLen = parseFloat(document.getElementById("pw-charge-len").value);
+    let panelLen = parseFloat(document.getElementById("pw-panel-len").value);
+    if (!Number.isFinite(chargeLen) || chargeLen < 1) chargeLen = 15;
+    if (!Number.isFinite(panelLen) || panelLen < 1) panelLen = 6;
+    const continuous = pump + fan + wp + ign + ecu + acc;
+    const hit = brake + nitrous + lock;
+    const altNeed = continuous * 1.2;
+    const alt = pwStep(PW_ALTS, altNeed);
+    const fuse = pwStep(PW_FUSES, continuous);
+    const panelGauge = pwCable(Math.max(continuous, 1), panelLen, volts);
+    const chargeGauge = pwCable(Math.max(alt, 1), chargeLen, volts);
+    const altLabel = altNeed > 250 ? "Over 250 A" : alt + " A";
+    publishReadout([
+        { label: "Running load", value: continuous, unit: "amp", primary: true },
+        { label: "Hit load on the battery", value: hit, unit: "amp" },
+        { label: "Alternator to order", value: altLabel, unit: "text" },
+        { label: "Main fuse at the battery", value: fuse + " A", unit: "text" },
+        { label: "Panel feed", value: panelGauge + " AWG", unit: "text" },
+        { label: "Alternator charge wire", value: chargeGauge + " AWG", unit: "text" }
+    ]);
+    const rows = [
+        ["Fuel pump", pump, "Running"],
+        ["Fan", fan, "Running"],
+        ["Water pump", wp, "Running"],
+        ["Ignition", ign, "Running"],
+        ["ECU", ecu, "Running"],
+        ["Gauges and controller", acc, "Running"],
+        ["Trans brake", brake, "Hit"],
+        ["Nitrous", nitrous, "Hit"],
+        ["Line lock", lock, "Hit"]
+    ];
+    let body = "";
+    rows.forEach(function (row) {
+        if (row[1] <= 0) return;
+        body += "<tr><td>" + row[0] + "</td><td>" + row[1].toFixed(0) + "</td><td>" + row[2] + "</td></tr>";
+    });
+    document.getElementById("pw-body").innerHTML = body;
+    const fuseEl = document.getElementById("pw-fig-fuse");
+    if (fuseEl) fuseEl.textContent = fuse + " A";
+    const panelEl = document.getElementById("pw-fig-panel");
+    if (panelEl) panelEl.textContent = panelGauge + " AWG";
+    const chargeEl = document.getElementById("pw-fig-charge");
+    if (chargeEl) chargeEl.textContent = chargeGauge + " charge";
+    let altLine = altNeed > 250
+        ? "The running load wants more than a 250 A alternator. That is two units, or a larger case, and the idle output is the number that matters."
+        : "Order an alternator that still makes " + alt + " A at idle. A cruise rating does not keep the fans and the pump alive in the lanes.";
+    const wireLine = " The panel feed is " + panelGauge + " AWG for " + panelLen.toFixed(0) + " ft. The charge wire is " + chargeGauge + " AWG for " + chargeLen.toFixed(0) + " ft. Both are high-strand battery cable, sized for a 3% drop. The starter cable stays a 1/0 or 2/0.";
+    document.getElementById("pw-assess").textContent = altLine + wireLine;
+}
+bindCalc(calcPower, ["pw-pump", "pw-fan", "pw-wp", "pw-ign", "pw-ecu", "pw-brake", "pw-charge-len", "pw-panel-len", "pw-nitrous", "pw-lock", "pw-acc", "pw-volts"]);
 """
 
 
@@ -4212,6 +4788,21 @@ WIDGETS = {
         electrical_html,
         ELECTRICAL_SCRIPT,
     ),
+    "Cooling": (
+        "Pass heat = HP x BSFC x fuel BTU/lb x 0.06 x seconds / 3600. That 6% is the share that stays in the metal and the water on a short pass. Fan CFM = BTU/hr / (1.08 x air rise). Pump GPM = BTU/min / (coolant rise x lb/gal x specific heat).",
+        cooling_html,
+        COOLING_SCRIPT,
+    ),
+    "Driveline": (
+        "Critical RPM = 4,770,000 x material x square root(OD^2 + ID^2) / length^2, for a steel tube. Aluminum uses 0.981 of that, from the modulus and the density. The planning limit is 75% of critical. Shaft RPM = engine RPM / top gear. Working angle is the difference between the tube and the transmission, and between the tube and the pinion.",
+        driveline_html,
+        DRIVELINE_SCRIPT,
+    ),
+    "Power": (
+        "Running amps are the pump, fan, water pump, ignition, and ECU. Alternator idle output wants 1.2 times that. Cable circular mils = 10.75 x amps x one-way feet x 2 / (voltage x 0.03). The trans brake and the nitrous sit on the battery for the hit.",
+        power_html,
+        POWER_SCRIPT,
+    ),
     "CAS": (
         "Pressure Ratio = (Boost PSI + Barometric PSI) / Barometric PSI",
         cas_html,
@@ -4382,6 +4973,21 @@ TRACKSIDE_NOTES = {
         ("What does the relay protect?", "The relay lets a small switch current close a high-current path. The fuse protects the wire, and it belongs at the power source."),
         ("Which pin is which?", "Pin 30 is battery power through the fuse. Pin 87 goes to the pump or fan on the same gauge. Pin 86 is the switch, on 18 AWG. Pin 85 is ground. A diode inside the relay wants 86 on power and 85 on ground."),
     ),
+    "Cooling": (
+        ("Why is a drag radiator not sized like a dyno?", "A dyno pull holds the power. A pass is about 10 seconds, and most of the fuel energy leaves in the exhaust before it ever reaches the water. The temperature climb on one hit is the check."),
+        ("When does the fan actually work?", "Ram air does the return road. The fan works in the lanes, and only if a shroud makes it pull through the core. Leaving the engine running is a bigger load than the pass itself."),
+        ("Why an electric water pump if the car already has one?", "A mechanical pump moves the most water at RPM, which is the hit. It moves little at idle. The electric pump is there so the fans still have flow while the car sits."),
+    ),
+    "Driveline": (
+        ("Where is the driveshaft measured?", "At ride height, center of the front U-joint to center of the rear U-joint. The slip yoke wants about 3/4 in before it bottoms at ride, and about 1 in still engaged at full droop."),
+        ("What is critical speed?", "It is the RPM where the tube's first bending mode lines up with the shaft speed. The constant 4,770,000 is the steel modulus and density in that formula. Stay under 75% of it. A bigger diameter raises it. A longer tube lowers it by the length squared."),
+        ("Why can the pinion angle look wrong at rest?", "A 4-link barely wraps, so the pinion should already point along the tube. A leaf spring wraps on the launch, so it wants about 2 degrees nose down at rest and straight once the axle winds up."),
+    ),
+    "Power": (
+        ("Which amps does the alternator have to cover?", "The loads that stay on while the engine idles in the lanes: pump, fan, water pump, ignition, ECU. The trans brake and the nitrous are a few seconds, and the battery covers that hit."),
+        ("Why size the wire from voltage drop?", "Circular mils equal 10.75 times the amps times the round-trip length, divided by a 3% voltage drop. A trunk battery makes the alternator wire the long one. High-strand battery cable is what carries it, not primary wire in a loom."),
+        ("Where does the fuse go?", "On the battery post, ahead of the panel feed. The starter cable is its own 1/0 or 2/0 and is not fused like a running load."),
+    ),
     "Converter": (
         ("What is K-factor?", "K-factor is brake stall RPM divided by the square root of engine torque at that RPM. The same converter stalls higher behind an engine with more torque. Give the shop the K, the stall, and the torque, not a stall number with no engine attached."),
         ("Where should the stall sit?", "Brake stall wants to land about 500 to 700 RPM under the torque peak so the engine accelerates through the converter instead of starting above it. A no-prep tire wants it lower. An unlocked street converter also has to stall under cruise RPM."),
@@ -4470,11 +5076,14 @@ def index_page(pages, hubs):
         {"slug": "nitrous-shot-calculator", "target_keyword": "Nitrous jet and timing"},
         {"slug": "drag-shock-calculator", "target_keyword": "Shock to order"},
         {"slug": "torque-converter-calculator", "target_keyword": "Torque converter stall"},
+        {"slug": "drag-cooling-system-calculator", "target_keyword": "Cooling, fan, and water pump"},
+        {"slug": "driveshaft-calculator", "target_keyword": "Driveshaft length and angles"},
+        {"slug": "race-car-wiring-calculator", "target_keyword": "Alternator and wire size"},
     ])
     content = (
         content_box(
             "Start a build",
-            "<p>These five end in a part. The gear calculator on the left is where the setup goes once the converter stall is chosen.</p>"
+            "<p>These end in a part. The gear calculator on the left is where the setup goes once the converter stall is chosen.</p>"
             + start,
         )
         + content_box("Calculators", directory)

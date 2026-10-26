@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driveshaft Length Critical Speed and Pinion Angle Calculator | DragCalculators.com</title>
+    <meta name="description" content="Driveshaft Length Critical Speed and Pinion Angle Calculator. Loaded defaults: 48 in center to center, 3.50 x 0.125 aluminum, 7,000 RPM in 1.00.">
+    <link rel="canonical" href="https://dragcalculators.com/driveshaft-calculator.html">
+    <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
+    <meta name="google-site-verification" content="google9e7c88791a3f2f72">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dragcalculators.com/driveshaft-calculator.html">
+    <meta property="og:title" content="Driveshaft Length Critical Speed and Pinion Angle Calculator | DragCalculators.com">
+    <meta property="og:description" content="Driveshaft Length Critical Speed and Pinion Angle Calculator. Loaded defaults: 48 in center to center, 3.50 x 0.125 aluminum, 7,000 RPM in 1.00.">
+    <meta property="og:image" content="https://dragcalculators.com/social-banner.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Driveshaft Length Critical Speed and Pinion Angle Calculator | DragCalculators.com">
+    <meta name="twitter:description" content="Driveshaft Length Critical Speed and Pinion Angle Calculator. Loaded defaults: 48 in center to center, 3.50 x 0.125 aluminum, 7,000 RPM in 1.00.">
+    <meta name="twitter:image" content="https://dragcalculators.com/social-banner.jpg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
+    <div class="layout-grid">
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="torque-converter-calculator.html">Torque Converter</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="drag-shock-calculator.html">Shocks</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a><a class="nav-item" href="drag-cooling-system-calculator.html">Cooling</a><a class="nav-item active" href="driveshaft-calculator.html">Driveshaft</a><a class="nav-item" href="race-car-wiring-calculator.html">Power Budget</a></nav></aside>
+        <section class="sticky-calculator">
+            <header class="master-header">
+                <h1>Driveshaft Length Critical Speed and Pinion Angle Calculator</h1>
+                <p class="spec">Loaded defaults: 48 in center to center, 3.50 x 0.125 aluminum, 7,000 RPM in 1.00.</p>
+            </header>
+            
+    <div class="field-stack">
+    
+<figure class="measure-fig">
+    <svg viewBox="0 0 720 300" role="img" aria-label="How to measure driveshaft length and angles">
+        <rect x="40" y="78" width="120" height="70" rx="6" fill="#1c1c1c" stroke="#6f6f6f" stroke-width="2"/>
+        <text x="100" y="110" fill="#f5f5f5" font-size="13" text-anchor="middle">Transmission</text>
+        <text x="100" y="128" fill="#a3a3a3" font-size="12" text-anchor="middle">Tail down</text>
+        <line x1="160" y1="130" x2="520" y2="168" stroke="#e50914" stroke-width="6"/>
+        <circle cx="175" cy="132" r="8" fill="none" stroke="#f5f5f5" stroke-width="2"/>
+        <circle cx="505" cy="166" r="8" fill="none" stroke="#f5f5f5" stroke-width="2"/>
+        <rect x="530" y="120" width="140" height="80" rx="6" fill="#1c1c1c" stroke="#6f6f6f" stroke-width="2"/>
+        <text x="600" y="156" fill="#f5f5f5" font-size="13" text-anchor="middle">Pinion yoke</text>
+        <text x="600" y="176" fill="#a3a3a3" font-size="12" text-anchor="middle">Nose angle</text>
+        <line x1="175" y1="200" x2="505" y2="200" stroke="#e50914" stroke-width="1.5"/>
+        <line x1="175" y1="190" x2="175" y2="210" stroke="#e50914" stroke-width="1.5"/>
+        <line x1="505" y1="190" x2="505" y2="210" stroke="#e50914" stroke-width="1.5"/>
+        <text x="250" y="222" fill="#e50914" font-size="13">Center of joint to center of joint</text>
+        <text x="40" y="262" fill="#f5f5f5" font-size="14">Angle finder on the tail, the tube, and the pinion yoke.</text>
+        <text x="40" y="284" fill="#a3a3a3" font-size="14">Same finder direction. Down toward the rear of the car is negative.</text>
+    </svg>
+    <figcaption>Measure at ride height with the driver in the car. The length a shop orders is the center of the front U-joint to the center of the rear U-joint. At ride the slip yoke wants about 3/4 in before it bottoms. At full droop about 1 in of the yoke should still be in the transmission.</figcaption>
+</figure>
+
+    <div class="grid-2">
+        <div class="field"><label for="ds-len">Center-to-center length (in)</label><input type="number" id="ds-len" value="48" min="20" step="0.5"></div>
+        <div class="field"><label for="ds-tube">Tube</label><select id="ds-tube">
+                <option value="2.5|0.083|steel">2.50 x 0.083 steel</option>
+                <option value="3|0.083|steel">3.00 x 0.083 steel</option>
+                <option value="3|0.065|steel" >3.00 x 0.065 chromoly</option>
+                <option value="3.5|0.125|aluminum" selected>3.50 x 0.125 aluminum</option>
+                <option value="4|0.125|aluminum">4.00 x 0.125 aluminum</option>
+                <option value="custom">Custom tube</option></select></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="ds-rpm">RPM at the stripe</label><input type="number" id="ds-rpm" value="7000" min="2000" step="100"></div>
+        <div class="field"><label for="ds-gear">Top gear ratio</label><input type="number" id="ds-gear" value="1.00" min="0.4" max="2" step="0.01"></div>
+    </div>
+    <p class="field-hint">Shaft speed is engine RPM divided by the gear it is in at the stripe. A 0.70 overdrive spins the shaft faster than the engine. Rear gear does not change shaft speed.</p>
+    <div class="grid-2">
+        <div class="field"><label for="ds-trans">Transmission angle (deg)</label><input type="number" id="ds-trans" value="-2" step="0.1"></div>
+        <div class="field"><label for="ds-shaft">Driveshaft angle (deg)</label><input type="number" id="ds-shaft" value="-1" step="0.1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="ds-pinion">Pinion angle (deg)</label><input type="number" id="ds-pinion" value="-2" step="0.1"></div>
+        <div class="field"><label for="ds-sus">Rear suspension</label>
+            <select id="ds-sus">
+                <option value="fourlink" selected>4-link or ladder bar</option>
+                <option value="leaf">Leaf spring</option>
+            </select>
+        </div>
+    </div>
+    <p class="field-hint">Use one angle finder, pointing the same way, on the tailhousing, the tube, and the pinion yoke. A slope down toward the rear of the car is a negative number.</p>
+    </div>
+    <details class="accordion">
+        <summary>Advanced / Conditions</summary>
+        <div class="accordion-body field-stack">
+    <div class="grid-2">
+        <div class="field"><label for="ds-od">Custom outside diameter (in)</label><input type="number" id="ds-od" value="3.5" min="1.5" step="0.125"></div>
+        <div class="field"><label for="ds-wall">Custom wall (in)</label><input type="number" id="ds-wall" value="0.083" min="0.035" step="0.005"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="ds-mat">Custom material</label>
+            <select id="ds-mat">
+                <option value="steel" selected>Steel or chromoly</option>
+                <option value="aluminum">Aluminum</option>
+            </select>
+        </div>
+        <div class="field"><label for="ds-street">Also driven on the street</label>
+            <select id="ds-street">
+                <option value="no" selected>Drag only</option>
+                <option value="yes">Street and strip</option>
+            </select>
+        </div>
+    </div>
+    </div>
+    </details>
+    <div class="readout" id="results">
+        <div class="readout-top">
+            <span class="readout-kicker">Result</span>
+            <div class="pill-row">
+                <div class="pill-group" role="group" aria-label="Units">
+                    <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
+                    <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+                </div>
+            </div>
+        </div>
+        <div id="readout-body"></div>
+    </div>
+    <p class="assess" id="ds-assess"></p>
+    <div class="action-row">
+        <button type="button" class="action-btn" onclick="window.print()">Print driveshaft sheet</button>
+        <button type="button" class="action-btn action-secondary" id="copy-setup">Copy link to this setup</button>
+    </div>
+    <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
+    
+<div class="next-steps"><p class="field-hint">Next in the build</p><a href="transmission-shift-recovery-calculator.html">The top gear here is the shaft speed</a></div>
+        </section>
+        <div class="content-column">
+            <section class="content-box"><h2>Formula</h2><p class="formula">Critical RPM = 4,770,000 x material x square root(OD^2 + ID^2) / length^2, for a steel tube. Aluminum uses 0.981 of that, from the modulus and the density. The planning limit is 75% of critical. Shaft RPM = engine RPM / top gear. Working angle is the difference between the tube and the transmission, and between the tube and the pinion.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Driveshaft Length Critical Speed and Pinion Angle Calculator. Loaded defaults: 48 in center to center, 3.50 x 0.125 aluminum, 7,000 RPM in 1.00.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>Where is the driveshaft measured?</h3><p>At ride height, center of the front U-joint to center of the rear U-joint. The slip yoke wants about 3/4 in before it bottoms at ride, and about 1 in still engaged at full droop.</p></div><div class="faq-item"><h3>What is critical speed?</h3><p>It is the RPM where the tube&#x27;s first bending mode lines up with the shaft speed. The constant 4,770,000 is the steel modulus and density in that formula. Stay under 75% of it. A bigger diameter raises it. A longer tube lowers it by the length squared.</p></div><div class="faq-item"><h3>Why can the pinion angle look wrong at rest?</h3><p>A 4-link barely wraps, so the pinion should already point along the tube. A leaf spring wraps on the launch, so it wants about 2 degrees nose down at rest and straight once the axle winds up.</p></div></section>
+        </div>
+    </div>
+    
+<footer class="site-footer">
+    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
+    <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
+</footer>
+
+
+    <script>
+
+const unitState = { power: "bhp", system: "imperial" };
+let lastReadout = [];
+
+function crankHorsepower(raw) {
+    const hp = parseFloat(raw);
+    const entered = Number.isFinite(hp) ? hp : 0;
+    if (unitState.power !== "whp") return entered;
+    const lossInput = document.getElementById("dt-loss");
+    const lossPct = lossInput ? parseFloat(lossInput.value) : 15;
+    const loss = Math.min(0.4, Math.max(0, (Number.isFinite(lossPct) ? lossPct : 15) / 100));
+    return entered / Math.max(0.05, 1 - loss);
+}
+
+function formatUnit(value, unit) {
+    const metric = unitState.system === "metric";
+    const n = Number(value);
+    if (unit === "text") return { text: String(value), suffix: "" };
+    if (!Number.isFinite(n)) return { text: "—", suffix: "" };
+    switch (unit) {
+        case "mph":
+            return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
+        case "in":
+            return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "in3":
+            return metric ? { text: (n * 25.4).toFixed(2), suffix: "mm" } : { text: n.toFixed(3), suffix: "in" };
+        case "psi":
+            return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
+        case "lbmin":
+            return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "cfm":
+            return metric ? { text: (n * 0.0283168).toFixed(2), suffix: "m3/min" } : { text: Math.round(n).toLocaleString("en-US"), suffix: "CFM" };
+        case "tempf":
+            return metric ? { text: ((n - 32) * 5 / 9).toFixed(0), suffix: "C" } : { text: Math.round(n).toString(), suffix: "F" };
+        case "deltaf":
+            return metric ? { text: (n * 5 / 9).toFixed(1), suffix: "C" } : { text: n.toFixed(1), suffix: "F" };
+        case "gpm":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/min" } : { text: n.toFixed(1), suffix: "GPM" };
+        case "deg":
+            return { text: n.toFixed(1) + "\u00b0", suffix: "" };
+        case "lbhr":
+            return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
+        case "ft":
+            return metric ? { text: (n * 0.3048).toFixed(2), suffix: "m" } : { text: n.toFixed(1), suffix: "ft" };
+        case "rpm":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "RPM" };
+        case "ratio":
+            return { text: n.toFixed(2), suffix: ":1" };
+        case "sec":
+            return { text: n.toFixed(2), suffix: "s" };
+        case "pct":
+            return { text: Math.round(n).toString(), suffix: "%" };
+        case "pct1":
+            return { text: n.toFixed(1), suffix: "%" };
+        case "cc":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "cc/min" };
+        case "ci":
+            return metric ? { text: (n * 0.0163871).toFixed(2), suffix: "L" } : { text: n.toFixed(1), suffix: "ci" };
+        case "gph":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/h" } : { text: n.toFixed(1), suffix: "gal/hr" };
+        case "amp":
+            return { text: n.toFixed(1), suffix: "A" };
+        case "mm":
+            return { text: String(Math.round(n)), suffix: "mm" };
+        case "awg":
+            return { text: String(value), suffix: "AWG" };
+        default:
+            return { text: String(value), suffix: unit || "" };
+    }
+}
+
+function joinReading(shown) {
+    if (!shown.suffix) return shown.text;
+    if (shown.suffix.charAt(0) === ":") return shown.text + shown.suffix;
+    return shown.text + " " + shown.suffix;
+}
+
+function reading(value, unit) {
+    return joinReading(formatUnit(value, unit));
+}
+
+function publishReadout(items) {
+    lastReadout = items;
+    const body = document.getElementById("readout-body");
+    if (!body || !items.length) return;
+    const primary = items.find(item => item.primary) || items[0];
+    const rest = items.filter(item => item !== primary);
+    const main = formatUnit(primary.value, primary.unit);
+    const extras = rest.map(item => {
+        return '<div class="readout-extra"><span>' + item.label + '</span><strong>' + reading(item.value, item.unit) + '</strong></div>';
+    }).join("");
+    body.innerHTML = '<div class="readout-label">' + primary.label + '</div>'
+        + '<div class="readout-value">' + main.text + (main.suffix ? '<span class="readout-suffix">' + main.suffix + '</span>' : '') + '</div>'
+        + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
+}
+
+function applySharedState(ids) {
+    const params = new URLSearchParams(location.search);
+    if (!params.toString()) return;
+    ids.forEach(id => {
+        if (!params.has(id)) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = params.get(id);
+    });
+    ["power", "system"].forEach(group => {
+        if (!params.has(group)) return;
+        unitState[group] = params.get(group);
+        document.querySelectorAll('[data-unit-group="' + group + '"]').forEach(pill => {
+            pill.classList.toggle("active", pill.dataset.unit === unitState[group]);
+        });
+    });
+}
+
+function setupSearch() {
+    const params = new URLSearchParams();
+    (window.shareIds || []).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.value === "") return;
+        params.set(id, el.value);
+    });
+    if (unitState.power !== "bhp") params.set("power", unitState.power);
+    if (unitState.system !== "imperial") params.set("system", unitState.system);
+    return params.toString();
+}
+
+function bindCalc(fn, ids) {
+    window.shareIds = ids;
+    applySharedState(ids);
+    const run = () => fn();
+    window.refreshCalc = run;
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", run);
+        el.addEventListener("change", run);
+    });
+    run();
+}
+
+document.querySelectorAll(".pill").forEach(button => {
+    button.addEventListener("click", () => {
+        if (!button.dataset.unitGroup) return;
+        unitState[button.dataset.unitGroup] = button.dataset.unit;
+        button.parentElement.querySelectorAll(".pill").forEach(pill => {
+            pill.classList.toggle("active", pill === button);
+        });
+        if (typeof window.refreshCalc === "function") window.refreshCalc();
+        else if (lastReadout.length) publishReadout(lastReadout);
+    });
+});
+
+function copyText(text) {
+    const legacy = () => {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "0";
+        area.style.left = "0";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+        area.remove();
+        return ok;
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(() => (legacy() ? undefined : Promise.reject()));
+    }
+    return legacy() ? Promise.resolve() : Promise.reject();
+}
+
+const copySetup = document.getElementById("copy-setup");
+if (copySetup) {
+    copySetup.addEventListener("click", () => {
+        const search = setupSearch();
+        const url = location.origin + location.pathname + (search ? "?" + search : "");
+        const done = (label) => {
+            copySetup.textContent = label;
+            setTimeout(() => { copySetup.textContent = "Copy link to this setup"; }, 1600);
+        };
+        copyText(url).then(() => done("Link copied")).catch(() => {
+            window.prompt("Copy this setup link", url);
+            done("Link ready");
+        });
+    });
+}
+
+
+function dsTube() {
+    const pick = document.getElementById("ds-tube").value;
+    if (pick === "custom") {
+        let od = parseFloat(document.getElementById("ds-od").value);
+        let wall = parseFloat(document.getElementById("ds-wall").value);
+        if (!Number.isFinite(od) || od < 1.5) od = 3.5;
+        if (!Number.isFinite(wall) || wall < 0.035) wall = 0.083;
+        wall = Math.min(wall, od / 2 - 0.2);
+        return { od: od, wall: wall, mat: document.getElementById("ds-mat").value, label: od.toFixed(2) + " x " + wall.toFixed(3) };
+    }
+    const parts = pick.split("|");
+    return { od: parseFloat(parts[0]), wall: parseFloat(parts[1]), mat: parts[2], label: "" };
+}
+function dsCritical(od, wall, mat, length) {
+    const id = od - 2 * wall;
+    const factor = mat === "aluminum" ? 0.981 : 1;
+    const k = 4770000 * factor * Math.sqrt(od * od + id * id);
+    return { critical: k / (length * length), k: k };
+}
+function calcDriveline() {
+    let length = parseFloat(document.getElementById("ds-len").value);
+    if (!Number.isFinite(length) || length < 20) length = 48;
+    let rpm = parseFloat(document.getElementById("ds-rpm").value);
+    if (!Number.isFinite(rpm) || rpm < 2000) rpm = 7000;
+    let gear = parseFloat(document.getElementById("ds-gear").value);
+    if (!Number.isFinite(gear) || gear < 0.4) gear = 1;
+    const tube = dsTube();
+    const speed = dsCritical(tube.od, tube.wall, tube.mat, length);
+    const shaftRpm = rpm / gear;
+    const safe = speed.critical * 0.75;
+    const safeLen = Math.sqrt(speed.k * 0.75 / shaftRpm);
+    let trans = parseFloat(document.getElementById("ds-trans").value);
+    let shaft = parseFloat(document.getElementById("ds-shaft").value);
+    let pinion = parseFloat(document.getElementById("ds-pinion").value);
+    if (!Number.isFinite(trans)) trans = -2;
+    if (!Number.isFinite(shaft)) shaft = -1;
+    if (!Number.isFinite(pinion)) pinion = -2;
+    const front = Math.abs(trans - shaft);
+    const rear = Math.abs(pinion - shaft);
+    const noseDown = pinion - shaft;
+    const leaf = document.getElementById("ds-sus").value === "leaf";
+    const street = document.getElementById("ds-street").value === "yes";
+    let speedLabel = "Under the 75% line";
+    if (shaftRpm > speed.critical) speedLabel = "Over critical speed";
+    else if (shaftRpm > safe) speedLabel = "Over the 75% line";
+    publishReadout([
+        { label: "Shaft speed", value: Math.round(shaftRpm), unit: "rpm", primary: true },
+        { label: "Critical speed", value: Math.round(speed.critical), unit: "rpm" },
+        { label: "75% of critical", value: Math.round(safe), unit: "rpm" },
+        { label: "Tube at this RPM", value: speedLabel, unit: "text" },
+        { label: "Front working angle", value: front, unit: "deg" },
+        { label: "Rear working angle", value: rear, unit: "deg" }
+    ]);
+    let speedLine;
+    if (shaftRpm > speed.critical) {
+        speedLine = "This tube is past the first bending speed at " + Math.round(shaftRpm) + " RPM. It is safe out to about " + safeLen.toFixed(1) + " in, or it needs a larger diameter.";
+    } else if (shaftRpm > safe) {
+        speedLine = "Critical speed is " + Math.round(speed.critical) + " RPM. The planning line is 75% of that, " + Math.round(safe) + " RPM. Shorten it to about " + safeLen.toFixed(1) + " in or go up a tube size.";
+    } else {
+        speedLine = "Critical speed is " + Math.round(speed.critical) + " RPM. At " + Math.round(shaftRpm) + " the shaft is under the 75% line, and this tube can run out to about " + safeLen.toFixed(1) + " in.";
+    }
+    let angleLine;
+    if (leaf) {
+        if (noseDown >= 1.5 && noseDown <= 3.5) {
+            angleLine = " The pinion is " + noseDown.toFixed(1) + "\u00b0 nose down from the tube, which is the wrap a leaf spring wants at rest.";
+        } else if (noseDown > 0) {
+            angleLine = " The pinion is " + noseDown.toFixed(1) + "\u00b0 nose down. A leaf spring wants about 2\u00b0 so the joint straightens when the axle wraps.";
+        } else {
+            angleLine = " The pinion is nose up from the tube. A leaf spring wants it about 2\u00b0 nose down at rest.";
+        }
+    } else {
+        const cancel = Math.abs(front - rear);
+        if (front <= 1.5 && rear <= 1.5 && cancel <= 0.5) {
+            angleLine = " The working angles are " + front.toFixed(1) + "\u00b0 and " + rear.toFixed(1) + "\u00b0. A 4-link wants them small and equal.";
+        } else if (front > 3 || rear > 3) {
+            angleLine = " A working angle over 3\u00b0 will vibrate. Point the pinion at the driveshaft and keep the tail and the pinion parallel.";
+        } else {
+            angleLine = " The working angles are " + front.toFixed(1) + "\u00b0 and " + rear.toFixed(1) + "\u00b0. A 4-link wants both under 1.5\u00b0 and within half a degree of each other.";
+        }
+    }
+    if (street && Math.min(front, rear) < 0.5) {
+        angleLine += " A shaft that also drives on the street wants at least half a degree so the U-joint needles roll.";
+    }
+    document.getElementById("ds-assess").textContent = speedLine + angleLine;
+}
+bindCalc(calcDriveline, ["ds-len", "ds-tube", "ds-rpm", "ds-gear", "ds-trans", "ds-shaft", "ds-pinion", "ds-sus", "ds-od", "ds-wall", "ds-mat", "ds-street"]);
+
+    </script>
+</body>
+</html>

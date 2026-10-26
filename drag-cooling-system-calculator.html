@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag Cooling System Fan and Water Pump Calculator | DragCalculators.com</title>
+    <meta name="description" content="Drag Cooling System Fan and Water Pump Calculator. Loaded defaults: 1000 HP, water, engine running in the lanes.">
+    <link rel="canonical" href="https://dragcalculators.com/drag-cooling-system-calculator.html">
+    <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
+    <meta name="google-site-verification" content="google9e7c88791a3f2f72">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dragcalculators.com/drag-cooling-system-calculator.html">
+    <meta property="og:title" content="Drag Cooling System Fan and Water Pump Calculator | DragCalculators.com">
+    <meta property="og:description" content="Drag Cooling System Fan and Water Pump Calculator. Loaded defaults: 1000 HP, water, engine running in the lanes.">
+    <meta property="og:image" content="https://dragcalculators.com/social-banner.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Drag Cooling System Fan and Water Pump Calculator | DragCalculators.com">
+    <meta name="twitter:description" content="Drag Cooling System Fan and Water Pump Calculator. Loaded defaults: 1000 HP, water, engine running in the lanes.">
+    <meta name="twitter:image" content="https://dragcalculators.com/social-banner.jpg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
+    <div class="layout-grid">
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="torque-converter-calculator.html">Torque Converter</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="drag-shock-calculator.html">Shocks</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a><a class="nav-item active" href="drag-cooling-system-calculator.html">Cooling</a><a class="nav-item" href="driveshaft-calculator.html">Driveshaft</a><a class="nav-item" href="race-car-wiring-calculator.html">Power Budget</a></nav></aside>
+        <section class="sticky-calculator">
+            <header class="master-header">
+                <h1>Drag Cooling System Fan and Water Pump Calculator</h1>
+                <p class="spec">Loaded defaults: 1000 HP, water, engine running in the lanes.</p>
+            </header>
+            
+    <div class="field-stack">
+    
+<figure class="measure-fig">
+    <svg viewBox="0 0 720 280" role="img" aria-label="Cooling air and coolant path on a drag car">
+        <rect x="70" y="70" width="150" height="120" rx="8" fill="#1c1c1c" stroke="#f5f5f5" stroke-width="2"/>
+        <text x="145" y="124" fill="#f5f5f5" font-size="14" text-anchor="middle">Radiator</text>
+        <text x="145" y="146" fill="#a3a3a3" font-size="12" text-anchor="middle">Core face</text>
+        <circle cx="40" cy="130" r="18" fill="none" stroke="#e50914" stroke-width="3"/>
+        <text x="40" y="168" fill="#e50914" font-size="12" text-anchor="middle">Fan</text>
+        <line x1="58" y1="130" x2="70" y2="130" stroke="#e50914" stroke-width="3"/>
+        <rect x="300" y="78" width="200" height="104" rx="8" fill="#1c1c1c" stroke="#6f6f6f" stroke-width="2"/>
+        <text x="400" y="124" fill="#f5f5f5" font-size="14" text-anchor="middle">Engine</text>
+        <text x="400" y="146" fill="#a3a3a3" font-size="12" text-anchor="middle">Block and heads</text>
+        <circle cx="560" cy="200" r="28" fill="none" stroke="#e50914" stroke-width="3"/>
+        <text x="560" y="204" fill="#e50914" font-size="12" text-anchor="middle">Pump</text>
+        <line x1="220" y1="100" x2="300" y2="100" stroke="#e50914" stroke-width="3"/>
+        <line x1="500" y1="150" x2="532" y2="186" stroke="#f5f5f5" stroke-width="3"/>
+        <line x1="540" y1="176" x2="250" y2="160" stroke="#f5f5f5" stroke-width="3"/>
+        <text x="70" y="250" fill="#a3a3a3" font-size="14">The fan pulls only while the car is sitting. Ram air does the return road.</text>
+    </svg>
+    <figcaption>Air goes through the core, then the fan. Coolant leaves the bottom of the radiator, the pump pushes it through the block, and the hot water comes back to the top of the core. A shroud has to cover the core or the fan pulls air around it instead of through it.</figcaption>
+</figure>
+
+    <div class="grid-2">
+        <div class="field"><label for="cl-hp">Power</label><input type="number" id="cl-hp" value="1000" min="50" step="25"></div>
+        <div class="field"><label for="cl-fuel">Fuel</label>
+            <select id="cl-fuel">
+                <option value="gasoline" selected>Gasoline</option>
+                <option value="e85">E85</option>
+                <option value="methanol">Methanol</option>
+                <option value="race">Race gas</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cl-ind">Induction</label>
+            <select id="cl-ind">
+                <option value="na">Naturally aspirated</option>
+                <option value="boost" selected>Power adder</option>
+            </select>
+        </div>
+        <div class="field"><label for="cl-mix">Coolant</label>
+            <select id="cl-mix">
+                <option value="water" selected>Water</option>
+                <option value="5050">50/50 antifreeze</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cl-gal">Coolant in the system (gal)</label><input type="number" id="cl-gal" value="4" min="1" step="0.5"></div>
+        <div class="field"><label for="cl-block">Block</label>
+            <select id="cl-block">
+                <option value="iron" selected>Iron block, aluminum heads</option>
+                <option value="aluminum">Aluminum block and heads</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cl-pass">Pass length (seconds)</label><input type="number" id="cl-pass" value="10" min="4" step="0.5"></div>
+        <div class="field"><label for="cl-wait">Wait before the next hit (minutes)</label><input type="number" id="cl-wait" value="8" min="1" step="1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cl-run">Engine in the lanes</label>
+            <select id="cl-run">
+                <option value="yes" selected>Left running</option>
+                <option value="no">Shut off</option>
+            </select>
+        </div>
+        <div class="field"><label for="cl-mode">Water pump</label>
+            <select id="cl-mode">
+                <option value="both" selected>Mechanical on the hit, electric in the lanes</option>
+                <option value="electric">Electric pump only</option>
+            </select>
+        </div>
+    </div>
+    <p class="field-hint">A 10-second pass does not put the dyno heat into the water. Most of that energy leaves in the exhaust. The fan's job is the heat that stayed, plus idle heat if the engine keeps running.</p>
+    </div>
+    <details class="accordion">
+        <summary>Advanced / Conditions</summary>
+        <div class="accordion-body field-stack">
+    <div class="grid-2">
+        <div class="field"><label for="cl-share">Pass heat, share of fuel energy</label><input type="number" id="cl-share" value="0.06" min="0.02" max="0.25" step="0.01"></div>
+        <div class="field"><label for="cl-idle-share">Idle heat, share of fuel energy</label><input type="number" id="cl-idle-share" value="0.40" min="0.1" max="0.7" step="0.05"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cl-rise">Coolant rise used to size the pump (°F)</label><input type="number" id="cl-rise" value="20" min="8" step="1"></div>
+        <div class="field"><label for="cl-air">Air rise across the core (°F)</label><input type="number" id="cl-air" value="25" min="10" step="1"></div>
+    </div>
+    <div class="field"><label for="cl-idle">Idle fuel (gal/hr)</label><input type="number" id="cl-idle" placeholder="Auto" min="0.4" step="0.1"></div>
+    <p class="field-hint">6% of the fuel energy into the metal and the water matches a car that climbs about 30°F on a 1,000 HP hit. A steady dyno pull is closer to 20%, and that number will oversize a drag radiator.</p>
+    </div>
+    </details>
+    <div class="readout" id="results">
+        <div class="readout-top">
+            <span class="readout-kicker">Result</span>
+            <div class="pill-row">
+                <div class="pill-group" role="group" aria-label="Power unit">
+                    <button type="button" class="pill" data-unit-group="power" data-unit="whp">WHP</button>
+                    <button type="button" class="pill active" data-unit-group="power" data-unit="bhp">BHP</button>
+                </div>
+                <div class="pill-group" role="group" aria-label="Units">
+                    <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
+                    <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+                </div>
+            </div>
+        </div>
+        <div id="readout-body"></div>
+    </div>
+    <p class="assess" id="cl-assess"></p>
+    <div class="action-row">
+        <button type="button" class="action-btn" onclick="window.print()">Print cooling sheet</button>
+        <button type="button" class="action-btn action-secondary" id="copy-setup">Copy link to this setup</button>
+    </div>
+    <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
+    
+<div class="next-steps"><p class="field-hint">Next in the build</p><a href="race-car-wiring-calculator.html">Add the fan and the water pump to the power budget</a><a href="automotive-relay-calculator.html">Size the relay and the wire for the fan</a></div>
+        </section>
+        <div class="content-column">
+            <section class="content-box"><h2>Formula</h2><p class="formula">Pass heat = HP x BSFC x fuel BTU/lb x 0.06 x seconds / 3600. That 6% is the share that stays in the metal and the water on a short pass. Fan CFM = BTU/hr / (1.08 x air rise). Pump GPM = BTU/min / (coolant rise x lb/gal x specific heat).</p></section><section class="content-box"><h2>Trackside notes</h2><p>Drag Cooling System Fan and Water Pump Calculator. Loaded defaults: 1000 HP, water, engine running in the lanes.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>Why is a drag radiator not sized like a dyno?</h3><p>A dyno pull holds the power. A pass is about 10 seconds, and most of the fuel energy leaves in the exhaust before it ever reaches the water. The temperature climb on one hit is the check.</p></div><div class="faq-item"><h3>When does the fan actually work?</h3><p>Ram air does the return road. The fan works in the lanes, and only if a shroud makes it pull through the core. Leaving the engine running is a bigger load than the pass itself.</p></div><div class="faq-item"><h3>Why an electric water pump if the car already has one?</h3><p>A mechanical pump moves the most water at RPM, which is the hit. It moves little at idle. The electric pump is there so the fans still have flow while the car sits.</p></div></section>
+        </div>
+    </div>
+    
+<footer class="site-footer">
+    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
+    <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
+</footer>
+
+
+    <script>
+
+const unitState = { power: "bhp", system: "imperial" };
+let lastReadout = [];
+
+function crankHorsepower(raw) {
+    const hp = parseFloat(raw);
+    const entered = Number.isFinite(hp) ? hp : 0;
+    if (unitState.power !== "whp") return entered;
+    const lossInput = document.getElementById("dt-loss");
+    const lossPct = lossInput ? parseFloat(lossInput.value) : 15;
+    const loss = Math.min(0.4, Math.max(0, (Number.isFinite(lossPct) ? lossPct : 15) / 100));
+    return entered / Math.max(0.05, 1 - loss);
+}
+
+function formatUnit(value, unit) {
+    const metric = unitState.system === "metric";
+    const n = Number(value);
+    if (unit === "text") return { text: String(value), suffix: "" };
+    if (!Number.isFinite(n)) return { text: "—", suffix: "" };
+    switch (unit) {
+        case "mph":
+            return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
+        case "in":
+            return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "in3":
+            return metric ? { text: (n * 25.4).toFixed(2), suffix: "mm" } : { text: n.toFixed(3), suffix: "in" };
+        case "psi":
+            return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
+        case "lbmin":
+            return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "cfm":
+            return metric ? { text: (n * 0.0283168).toFixed(2), suffix: "m3/min" } : { text: Math.round(n).toLocaleString("en-US"), suffix: "CFM" };
+        case "tempf":
+            return metric ? { text: ((n - 32) * 5 / 9).toFixed(0), suffix: "C" } : { text: Math.round(n).toString(), suffix: "F" };
+        case "deltaf":
+            return metric ? { text: (n * 5 / 9).toFixed(1), suffix: "C" } : { text: n.toFixed(1), suffix: "F" };
+        case "gpm":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/min" } : { text: n.toFixed(1), suffix: "GPM" };
+        case "deg":
+            return { text: n.toFixed(1) + "\u00b0", suffix: "" };
+        case "lbhr":
+            return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
+        case "ft":
+            return metric ? { text: (n * 0.3048).toFixed(2), suffix: "m" } : { text: n.toFixed(1), suffix: "ft" };
+        case "rpm":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "RPM" };
+        case "ratio":
+            return { text: n.toFixed(2), suffix: ":1" };
+        case "sec":
+            return { text: n.toFixed(2), suffix: "s" };
+        case "pct":
+            return { text: Math.round(n).toString(), suffix: "%" };
+        case "pct1":
+            return { text: n.toFixed(1), suffix: "%" };
+        case "cc":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "cc/min" };
+        case "ci":
+            return metric ? { text: (n * 0.0163871).toFixed(2), suffix: "L" } : { text: n.toFixed(1), suffix: "ci" };
+        case "gph":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/h" } : { text: n.toFixed(1), suffix: "gal/hr" };
+        case "amp":
+            return { text: n.toFixed(1), suffix: "A" };
+        case "mm":
+            return { text: String(Math.round(n)), suffix: "mm" };
+        case "awg":
+            return { text: String(value), suffix: "AWG" };
+        default:
+            return { text: String(value), suffix: unit || "" };
+    }
+}
+
+function joinReading(shown) {
+    if (!shown.suffix) return shown.text;
+    if (shown.suffix.charAt(0) === ":") return shown.text + shown.suffix;
+    return shown.text + " " + shown.suffix;
+}
+
+function reading(value, unit) {
+    return joinReading(formatUnit(value, unit));
+}
+
+function publishReadout(items) {
+    lastReadout = items;
+    const body = document.getElementById("readout-body");
+    if (!body || !items.length) return;
+    const primary = items.find(item => item.primary) || items[0];
+    const rest = items.filter(item => item !== primary);
+    const main = formatUnit(primary.value, primary.unit);
+    const extras = rest.map(item => {
+        return '<div class="readout-extra"><span>' + item.label + '</span><strong>' + reading(item.value, item.unit) + '</strong></div>';
+    }).join("");
+    body.innerHTML = '<div class="readout-label">' + primary.label + '</div>'
+        + '<div class="readout-value">' + main.text + (main.suffix ? '<span class="readout-suffix">' + main.suffix + '</span>' : '') + '</div>'
+        + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
+}
+
+function applySharedState(ids) {
+    const params = new URLSearchParams(location.search);
+    if (!params.toString()) return;
+    ids.forEach(id => {
+        if (!params.has(id)) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = params.get(id);
+    });
+    ["power", "system"].forEach(group => {
+        if (!params.has(group)) return;
+        unitState[group] = params.get(group);
+        document.querySelectorAll('[data-unit-group="' + group + '"]').forEach(pill => {
+            pill.classList.toggle("active", pill.dataset.unit === unitState[group]);
+        });
+    });
+}
+
+function setupSearch() {
+    const params = new URLSearchParams();
+    (window.shareIds || []).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.value === "") return;
+        params.set(id, el.value);
+    });
+    if (unitState.power !== "bhp") params.set("power", unitState.power);
+    if (unitState.system !== "imperial") params.set("system", unitState.system);
+    return params.toString();
+}
+
+function bindCalc(fn, ids) {
+    window.shareIds = ids;
+    applySharedState(ids);
+    const run = () => fn();
+    window.refreshCalc = run;
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", run);
+        el.addEventListener("change", run);
+    });
+    run();
+}
+
+document.querySelectorAll(".pill").forEach(button => {
+    button.addEventListener("click", () => {
+        if (!button.dataset.unitGroup) return;
+        unitState[button.dataset.unitGroup] = button.dataset.unit;
+        button.parentElement.querySelectorAll(".pill").forEach(pill => {
+            pill.classList.toggle("active", pill === button);
+        });
+        if (typeof window.refreshCalc === "function") window.refreshCalc();
+        else if (lastReadout.length) publishReadout(lastReadout);
+    });
+});
+
+function copyText(text) {
+    const legacy = () => {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "0";
+        area.style.left = "0";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+        area.remove();
+        return ok;
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(() => (legacy() ? undefined : Promise.reject()));
+    }
+    return legacy() ? Promise.resolve() : Promise.reject();
+}
+
+const copySetup = document.getElementById("copy-setup");
+if (copySetup) {
+    copySetup.addEventListener("click", () => {
+        const search = setupSearch();
+        const url = location.origin + location.pathname + (search ? "?" + search : "");
+        const done = (label) => {
+            copySetup.textContent = label;
+            setTimeout(() => { copySetup.textContent = "Copy link to this setup"; }, 1600);
+        };
+        copyText(url).then(() => done("Link copied")).catch(() => {
+            window.prompt("Copy this setup link", url);
+            done("Link ready");
+        });
+    });
+}
+
+
+const CL_FUEL = {
+    gasoline: { btu: 18500, dens: 6.17, na: 0.50, boost: 0.65 },
+    e85: { btu: 12560, dens: 6.55, na: 0.75, boost: 0.95 },
+    methanol: { btu: 8635, dens: 6.63, na: 0.95, boost: 1.20 },
+    race: { btu: 18500, dens: 6.20, na: 0.55, boost: 0.70 }
+};
+const CL_FANS = [
+    { cfm: 800, label: "10 in single", amps: 8 },
+    { cfm: 1250, label: "12 in single", amps: 11 },
+    { cfm: 1700, label: "14 in single", amps: 16 },
+    { cfm: 2100, label: "16 in single", amps: 22 },
+    { cfm: 3400, label: "Dual 14 in", amps: 32 },
+    { cfm: 4200, label: "Dual 16 in", amps: 44 }
+];
+const CL_PUMPS = [20, 35, 55];
+function clPumpClass(gpm) {
+    for (let i = 0; i < CL_PUMPS.length; i++) {
+        if (CL_PUMPS[i] >= gpm) return { gpm: CL_PUMPS[i], count: 1 };
+    }
+    if (gpm <= 110) return { gpm: 55, count: 2 };
+    return { gpm: 55, count: 3 };
+}
+function calcCooling() {
+    const fuel = CL_FUEL[document.getElementById("cl-fuel").value] || CL_FUEL.gasoline;
+    const boost = document.getElementById("cl-ind").value === "boost";
+    let hp = crankHorsepower(document.getElementById("cl-hp").value || 1000);
+    if (!Number.isFinite(hp) || hp < 50) hp = 1000;
+    const bsfc = boost ? fuel.boost : fuel.na;
+    let seconds = parseFloat(document.getElementById("cl-pass").value);
+    if (!Number.isFinite(seconds) || seconds < 4) seconds = 10;
+    let minutes = parseFloat(document.getElementById("cl-wait").value);
+    if (!Number.isFinite(minutes) || minutes < 1) minutes = 8;
+    let gallons = parseFloat(document.getElementById("cl-gal").value);
+    if (!Number.isFinite(gallons) || gallons < 1) gallons = 4;
+    let share = parseFloat(document.getElementById("cl-share").value);
+    if (!Number.isFinite(share)) share = 0.06;
+    share = Math.min(0.25, Math.max(0.02, share));
+    let idleShare = parseFloat(document.getElementById("cl-idle-share").value);
+    if (!Number.isFinite(idleShare)) idleShare = 0.40;
+    idleShare = Math.min(0.7, Math.max(0.1, idleShare));
+    let rise = parseFloat(document.getElementById("cl-rise").value);
+    if (!Number.isFinite(rise) || rise < 8) rise = 20;
+    let air = parseFloat(document.getElementById("cl-air").value);
+    if (!Number.isFinite(air) || air < 10) air = 25;
+    const water = document.getElementById("cl-mix").value === "water";
+    const lbGal = water ? 8.34 : 8.90;
+    const cp = water ? 1.00 : 0.85;
+    const metal = document.getElementById("cl-block").value === "aluminum" ? 33 : 30.4;
+    const running = document.getElementById("cl-run").value === "yes";
+    const electricOnly = document.getElementById("cl-mode").value === "electric";
+    let idleGph = parseFloat(document.getElementById("cl-idle").value);
+    if (!Number.isFinite(idleGph) || idleGph <= 0) idleGph = Math.max(1.2, hp / 800);
+    const passBtu = (hp * bsfc * fuel.btu * share * seconds) / 3600;
+    const idleLb = running ? idleGph * fuel.dens * (minutes / 60) : 0;
+    const idleBtu = idleLb * fuel.btu * idleShare;
+    const capacity = gallons * lbGal * cp + metal;
+    const delta = passBtu / capacity;
+    const btuHr = (passBtu + idleBtu) * (60 / minutes);
+    const cfm = btuHr / (1.08 * air);
+    let fan = CL_FANS[CL_FANS.length - 1];
+    for (let i = 0; i < CL_FANS.length; i++) {
+        if (CL_FANS[i].cfm >= cfm) { fan = CL_FANS[i]; break; }
+    }
+    const heatCap = rise * lbGal * cp;
+    const passGpm = (passBtu / (seconds / 60)) / heatCap;
+    const laneGpm = (running ? idleBtu / minutes : passBtu / minutes) / heatCap;
+    const lanePump = clPumpClass(Math.max(laneGpm, 8));
+    const passPump = clPumpClass(passGpm);
+    const ordered = electricOnly ? passPump : lanePump;
+    const pumpLabel = (ordered.count > 1 ? ordered.count + " x " : "") + ordered.gpm + " GPM electric";
+    publishReadout([
+        { label: "Coolant rise this pass", value: delta, unit: "deltaf", primary: true },
+        { label: "Fan to order", value: fan.label, unit: "text" },
+        { label: "Fan airflow", value: cfm, unit: "cfm" },
+        { label: "Water pump", value: pumpLabel, unit: "text" },
+        { label: "Flow the hit wants", value: passGpm, unit: "gpm" },
+        { label: "Flow the lanes want", value: laneGpm, unit: "gpm" }
+    ]);
+    let heatLine = "The pass puts about " + Math.round(delta) + "\u00b0F into the coolant.";
+    if (delta > 70) heatLine += " That is too much for this much water. Add capacity or the car will boil on a back-to-back.";
+    else if (delta > 40) heatLine += " That is a hard climb. More water or a longer wait is the fix.";
+    else heatLine += " The water and the metal can swallow that hit.";
+    let fanLine = " Order a " + fan.label + " fan, about " + fan.amps + " A, to pull " + Math.round(cfm) + " CFM while it sits.";
+    if (cfm > 4200) fanLine = " The wait is short for this much heat. Dual 16 in fans are the top of the usual list, and the car still wants more time or the engine shut off.";
+    let pumpLine;
+    if (electricOnly) {
+        pumpLine = passPump.count === 1
+            ? " An electric pump has to carry the hit, so order the " + passPump.gpm + " GPM class."
+            : " One electric pump does not cover the hit. Order " + passPump.count + " pumps in the 55 GPM class.";
+    } else if (passGpm > lanePump.gpm + 5) {
+        pumpLine = " The mechanical pump carries the hit at about " + passGpm.toFixed(0) + " GPM. The electric pump is for the lanes: the " + lanePump.gpm + " GPM class.";
+    } else {
+        pumpLine = " The " + lanePump.gpm + " GPM electric pump also covers the hit, so it can be the only pump.";
+    }
+    const idleLine = running
+        ? " Leaving it running adds the idle heat the fan has to pull."
+        : " Shutting it off drops the fan back to the heat from the pass alone.";
+    document.getElementById("cl-assess").textContent = heatLine + fanLine + pumpLine + idleLine;
+}
+bindCalc(calcCooling, ["cl-hp", "cl-fuel", "cl-ind", "cl-mix", "cl-gal", "cl-block", "cl-pass", "cl-wait", "cl-run", "cl-mode", "cl-share", "cl-idle-share", "cl-rise", "cl-air", "cl-idle", "dt-loss"]);
+
+    </script>
+</body>
+</html>
