@@ -5794,12 +5794,10 @@ TRACKSIDE_NOTES = {
         ("Why does a thicker gasket drop the ratio?", "A thicker gasket, or a larger gasket bore, adds clearance volume. The same piston in a bigger chamber does the same thing."),
     ),
     "Cam": (
-        ("Why is there no custom duration?", "Every result is a published cam card with a part number. Intake duration, exhaust duration, lift, and lobe separation come from that card. The page does not grind a lobe."),
-        ("Why does a turbo engine not get the factory cam?", "A factory LS3 or LS6 card is about 204 degrees at 0.050 and it is not published as a turbo cam. A large turbo at high RPM uses the Brian Tooley Stage 4 card, which is published past 8,000 RPM on a stock-stroke engine. A single small turbo uses the Summit turbo cards, which keep overlap near zero so exhaust pressure does not blow back into the intake."),
-        ("What does cubic inches change?", "Comp splits the naturally aspirated LSR cards into under 360 cubic inches, 360 to 399, and 400 and up. The Comp turbo cards are published for a 4.8 or 5.3. A bigger turbo engine moves to the Summit or Brian Tooley card."),
-        ("What does street or drag change?", "Street orders the shortest published card that still covers the RPM, and it skips the race cards when a milder one covers. Drag orders the longest card whose published range is aimed at that RPM. Street/strip keeps the tightest ceiling."),
-        ("Where are the nitrous cams?", "A mild nitrous build uses Summit Stage 1, which Summit says works with nitrous and a stock converter. A 5.3 at higher RPM uses the Brian Tooley 5.3 nitrous card, 233/250 at 0.050. A 400-cube nitrous engine uses the Brian Tooley 400-plus card. Exhaust duration printed as 27X is left unpublished."),
-        ("What happens past the published RPM?", "Hydraulic-roller cards on this list stop where the maker printed the range, about 7,200 RPM for the naturally aspirated LSR cams and 7,200 to 7,400 for the Comp and Summit turbo cams. Above that, the page says so instead of stretching a shorter card."),
+        ("Will the converter pull it?", "Street stays on the shorter cam so a tighter converter can leave. Drag, with the stall already in the power, can run the longer card. A 364 with a cathedral head at 7,000 RPM is Comp 54-459-11 on the street, 231/239, and 54-462-11 at the track, 243/251. Summit Stage 1, 222/233, is the largest of their stages that still works with a stock converter."),
+        ("Why does the turbo pick the cam?", "A small single turbo usually has more pressure in the exhaust than in the intake. Close the exhaust valve early and keep overlap near zero. Those are the Summit turbo cards. A large turbo or a pair with low drive pressure can use more overlap. Brian Tooley Stage 4 is the card for a stock-stroke engine over 8,000 RPM, and it needs the valvetrain sold with it. A factory 204-degree LS3 or LS6 cam is the wrong lobe for either one."),
+        ("What does a nitrous cam change?", "The exhaust lobe is longer than the intake so the shot has a way out. The BTR 5.3 card is 233/250 at 0.050, with a rough idle and a high stall. The 400-cube card is 247 on the intake and prints the exhaust as 27X. BTR calls 7,500 RPM with SP010 springs and valves under 105 grams, and 8,000 with SK703 springs and light valves. A 1-bolt engine needs the 3-bolt conversion."),
+        ("Where does it stop making RPM?", "Comp's hydraulic LSR cams are published to about 7,200 RPM. The 4.8 and 5.3 turbo cams, 54-330-11 and 54-332-11, go to about 7,400, and they are the wrong cam in a 6.0. Past the number on the card the lifter or the spring is done. A 408 uses the 400-cube cards."),
     ),
     "Converter": (
         ("What is K-factor?", "K-factor is brake stall RPM divided by the square root of engine torque at that RPM. The same converter stalls higher behind an engine with more torque. Give the shop the K, the stall, and the torque, not a stall number with no engine attached."),
@@ -5814,17 +5812,28 @@ TRACKSIDE_NOTES = {
 }
 
 
+CHEAT_ITEMS = {
+    "Cam": (
+        "Degree the cam and check piston-to-valve with clay. On a nitrous grind the longer exhaust lobe is the one that hits.",
+        "The spring has to match the lift and the RPM on the card. A stock truck spring will not hold a .600 lobe at 7,000.",
+        "The stall has to sit where the cam makes power. A stock converter and a cam that comes in around 2,600 leaves flat.",
+    ),
+}
+
+
 def notes_box(page):
     keyword = page["target_keyword"].rstrip(".")
     spec = spec_text(page)
-    lead = f"{keyword}. {spec}" if spec else f"{keyword}. The inputs above are the starting point for this combination."
-    cheat = (
-        '<ul class="cheat-list">'
-        "<li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li>"
-        "<li>Converter slip at the finish is often kept around 5% to 8%.</li>"
-        "<li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li>"
-        "</ul>"
-    )
+    if page["category"] == "Cam":
+        lead = "Degree it, check piston-to-valve, and match the spring and the converter to the card before you order."
+    else:
+        lead = f"{keyword}. {spec}" if spec else f"{keyword}. The inputs above are the starting point for this combination."
+    bullets = CHEAT_ITEMS.get(page["category"], (
+        "Density altitude: about 3% naturally aspirated power per 1,000 feet.",
+        "Converter slip at the finish is often kept around 5% to 8%.",
+        "On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.",
+    ))
+    cheat = '<ul class="cheat-list">' + "".join(f"<li>{esc(item)}</li>" for item in bullets) + "</ul>"
     items = []
     for question, answer in TRACKSIDE_NOTES[page["category"]]:
         items.append(f'<div class="faq-item"><h3>{esc(question)}</h3><p>{esc(answer)}</p></div>')
