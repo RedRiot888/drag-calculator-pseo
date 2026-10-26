@@ -29,27 +29,55 @@
                 <p class="spec">Loaded defaults: 1000 HP, 22 PSI boost.</p>
             </header>
             
-    <p class="tool-note">External wastegate diameter and bypass flow</p>
+    <div class="field-stack">
     <div class="grid-2">
-        <div><label for="wg-hp">Target Flywheel HP</label><input type="number" id="wg-hp" value="1000" step="50"></div>
-        <div><label for="wg-boost">Target Boost (PSI)</label><input type="number" id="wg-boost" value="22" step="1"></div>
+        <div class="field"><label for="wg-hp">Power</label><input type="number" id="wg-hp" value="1000" step="50"></div>
+        <div class="field"><label for="wg-boost">Target boost (PSI)</label><input type="number" id="wg-boost" value="22" step="1"></div>
     </div>
+    </div>
+    <details class="accordion">
+        <summary>Advanced / Conditions</summary>
+        <div class="accordion-body field-stack">
     <div class="grid-2">
-        <div><label for="wg-count">Number of Gates</label>
+        <div class="field"><label for="wg-count">Number of gates</label>
             <select id="wg-count">
-                <option value="1" selected>Single Gate</option>
-                <option value="2">Twin Gates</option>
+                <option value="1" selected>Single gate</option>
+                <option value="2">Twin gates</option>
             </select>
         </div>
-        <div><label for="wg-style">Gate Style</label>
+        <div class="field"><label for="wg-style">Gate style</label>
             <select id="wg-style">
-                <option value="1.00">Internal WG (restricted)</option>
-                <option value="1.25" selected>External WG</option>
+                <option value="1.00">Internal wastegate</option>
+                <option value="1.25" selected>External wastegate</option>
             </select>
         </div>
     </div>
-    <div class="results-box" id="results">Adjust parameters above.</div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Wastegate Spec Sheet</button>
+    
+<p class="field-hint">BHP uses the power entry as flywheel power. WHP treats it as wheel power and converts with this drivetrain loss.</p>
+<div class="grid-2">
+    <div class="field"><label for="dt-loss">Drivetrain loss (%)</label><input type="number" id="dt-loss" value="15" min="0" max="40" step="1"></div>
+</div>
+
+    </div>
+    </details>
+    <div class="readout" id="results">
+        <div class="readout-top">
+            <span class="readout-kicker">Result</span>
+            <div class="pill-row">
+                <div class="pill-group" role="group" aria-label="Power unit">
+                    <button type="button" class="pill" data-unit-group="power" data-unit="whp">WHP</button>
+                    <button type="button" class="pill active" data-unit-group="power" data-unit="bhp">BHP</button>
+                </div>
+                <div class="pill-group" role="group" aria-label="Units">
+                    <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
+                    <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+                </div>
+            </div>
+        </div>
+        <div id="readout-body"></div>
+    </div>
+    <button type="button" class="action-btn" onclick="window.print()">Print wastegate spec sheet</button>
+    
 
         </section>
         <div class="content-column">
@@ -64,8 +92,108 @@
 
     <script>
 
+const unitState = { power: "bhp", system: "imperial" };
+let lastReadout = [];
+
+function crankHorsepower(raw) {
+    const hp = parseFloat(raw);
+    const entered = Number.isFinite(hp) ? hp : 0;
+    if (unitState.power !== "whp") return entered;
+    const lossInput = document.getElementById("dt-loss");
+    const lossPct = lossInput ? parseFloat(lossInput.value) : 15;
+    const loss = Math.min(0.4, Math.max(0, (Number.isFinite(lossPct) ? lossPct : 15) / 100));
+    return entered / Math.max(0.05, 1 - loss);
+}
+
+function formatUnit(value, unit) {
+    const metric = unitState.system === "metric";
+    const n = Number(value);
+    if (unit === "text") return { text: String(value), suffix: "" };
+    if (!Number.isFinite(n)) return { text: "—", suffix: "" };
+    switch (unit) {
+        case "mph":
+            return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
+        case "in":
+            return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "psi":
+            return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
+        case "lbmin":
+            return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "lbhr":
+            return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
+        case "ft":
+            return metric ? { text: (n * 0.3048).toFixed(2), suffix: "m" } : { text: n.toFixed(1), suffix: "ft" };
+        case "rpm":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "RPM" };
+        case "ratio":
+            return { text: n.toFixed(2), suffix: ":1" };
+        case "sec":
+            return { text: n.toFixed(2), suffix: "s" };
+        case "pct":
+            return { text: Math.round(n).toString(), suffix: "%" };
+        case "cc":
+            return { text: n.toFixed(1), suffix: "cc/min" };
+        case "amp":
+            return { text: n.toFixed(1), suffix: "A" };
+        case "mm":
+            return { text: String(Math.round(n)), suffix: "mm" };
+        case "awg":
+            return { text: String(value), suffix: "AWG" };
+        default:
+            return { text: String(value), suffix: unit || "" };
+    }
+}
+
+function joinReading(shown) {
+    if (!shown.suffix) return shown.text;
+    if (shown.suffix.charAt(0) === ":") return shown.text + shown.suffix;
+    return shown.text + " " + shown.suffix;
+}
+
+function reading(value, unit) {
+    return joinReading(formatUnit(value, unit));
+}
+
+function publishReadout(items) {
+    lastReadout = items;
+    const body = document.getElementById("readout-body");
+    if (!body || !items.length) return;
+    const primary = items.find(item => item.primary) || items[0];
+    const rest = items.filter(item => item !== primary);
+    const main = formatUnit(primary.value, primary.unit);
+    const extras = rest.map(item => {
+        return '<div class="readout-extra"><span>' + item.label + '</span><strong>' + reading(item.value, item.unit) + '</strong></div>';
+    }).join("");
+    body.innerHTML = '<div class="readout-label">' + primary.label + '</div>'
+        + '<div class="readout-value">' + main.text + (main.suffix ? '<span class="readout-suffix">' + main.suffix + '</span>' : '') + '</div>'
+        + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
+}
+
+function bindCalc(fn, ids) {
+    window.refreshCalc = fn;
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", fn);
+        el.addEventListener("change", fn);
+    });
+    fn();
+}
+
+document.querySelectorAll(".pill").forEach(button => {
+    button.addEventListener("click", () => {
+        unitState[button.dataset.unitGroup] = button.dataset.unit;
+        button.parentElement.querySelectorAll(".pill").forEach(pill => {
+            pill.classList.toggle("active", pill === button);
+        });
+        if (typeof window.refreshCalc === "function") window.refreshCalc();
+        else if (lastReadout.length) publishReadout(lastReadout);
+    });
+});
+
+
 function calcWastegate() {
-    let hp = parseFloat(document.getElementById("wg-hp").value) || 1000;
+    let hp = crankHorsepower(document.getElementById("wg-hp").value || 1000);
     let boost = parseFloat(document.getElementById("wg-boost").value) || 22;
     let count = parseInt(document.getElementById("wg-count").value, 10) || 1;
     let style = parseFloat(document.getElementById("wg-style").value) || 1.25;
@@ -77,13 +205,14 @@ function calcWastegate() {
     if (diaMm > 42) rec = 44;
     if (diaMm > 48) rec = 50;
     if (diaMm > 56) rec = 60;
-    document.getElementById("results").innerHTML = "Bypass Fraction: <strong>" + (bypassFrac * 100).toFixed(0) + "%</strong> | Flow per Gate: <strong>" + wgFlow.toFixed(1) + " lb/min</strong><br>Recommended Gate: <strong>" + rec + " mm</strong> (" + count + " x " + rec + " mm)";
+    publishReadout([
+        { label: "Recommended gate", value: rec, unit: "mm", primary: true },
+        { label: "Bypass fraction", value: bypassFrac * 100, unit: "pct" },
+        { label: "Flow per gate", value: wgFlow, unit: "lbmin" },
+        { label: "Gate count", value: count + " x " + rec + " mm", unit: "text" }
+    ]);
 }
-["wg-hp", "wg-boost", "wg-count", "wg-style"].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) { el.addEventListener("input", calcWastegate); el.addEventListener("change", calcWastegate); }
-});
-calcWastegate();
+bindCalc(calcWastegate, ["wg-hp", "wg-boost", "wg-count", "wg-style", "dt-loss"]);
 
     </script>
 </body>

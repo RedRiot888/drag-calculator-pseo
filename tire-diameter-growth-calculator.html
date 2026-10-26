@@ -29,17 +29,35 @@
                 <p class="spec">Loaded defaults: 28.0 inch tire, 3.42 rear gear.</p>
             </header>
             
-    <p class="tool-note">Slick growth, dynamic diameter, and finish RPM</p>
+    <div class="field-stack">
     <div class="grid-2">
-        <div><label for="tg-dia">Static Tire Dia (in)</label><input type="number" id="tg-dia" value="28.0" step="0.1"></div>
-        <div><label for="tg-trap">Trap Speed (MPH)</label><input type="number" id="tg-trap" value="150" step="1"></div>
+        <div class="field"><label for="tg-dia">Static tire diameter (in)</label><input type="number" id="tg-dia" value="28.0" step="0.1"></div>
+        <div class="field"><label for="tg-growth">Growth factor (%)</label><input type="number" id="tg-growth" value="4.5" step="0.1"></div>
     </div>
+    </div>
+    <details class="accordion">
+        <summary>Advanced / Conditions</summary>
+        <div class="accordion-body field-stack">
     <div class="grid-2">
-        <div><label for="tg-growth">Growth Factor (%)</label><input type="number" id="tg-growth" value="4.5" step="0.1"></div>
-        <div><label for="tg-gear">Rear Gear Ratio</label><input type="number" id="tg-gear" value="3.42" step="0.01"></div>
+        <div class="field"><label for="tg-trap">Trap speed (MPH)</label><input type="number" id="tg-trap" value="150" step="1"></div>
+        <div class="field"><label for="tg-gear">Rear gear</label><input type="number" id="tg-gear" value="3.42" step="0.01"></div>
     </div>
-    <div class="results-box" id="results">Adjust parameters above.</div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Tire Growth Sheet</button>
+    </div>
+    </details>
+    <div class="readout" id="results">
+        <div class="readout-top">
+            <span class="readout-kicker">Result</span>
+            <div class="pill-row">
+                <div class="pill-group" role="group" aria-label="Units">
+                    <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
+                    <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+                </div>
+            </div>
+        </div>
+        <div id="readout-body"></div>
+    </div>
+    <button type="button" class="action-btn" onclick="window.print()">Print tire growth sheet</button>
+    
 
         </section>
         <div class="content-column">
@@ -54,22 +72,123 @@
 
     <script>
 
+const unitState = { power: "bhp", system: "imperial" };
+let lastReadout = [];
+
+function crankHorsepower(raw) {
+    const hp = parseFloat(raw);
+    const entered = Number.isFinite(hp) ? hp : 0;
+    if (unitState.power !== "whp") return entered;
+    const lossInput = document.getElementById("dt-loss");
+    const lossPct = lossInput ? parseFloat(lossInput.value) : 15;
+    const loss = Math.min(0.4, Math.max(0, (Number.isFinite(lossPct) ? lossPct : 15) / 100));
+    return entered / Math.max(0.05, 1 - loss);
+}
+
+function formatUnit(value, unit) {
+    const metric = unitState.system === "metric";
+    const n = Number(value);
+    if (unit === "text") return { text: String(value), suffix: "" };
+    if (!Number.isFinite(n)) return { text: "—", suffix: "" };
+    switch (unit) {
+        case "mph":
+            return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
+        case "in":
+            return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "psi":
+            return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
+        case "lbmin":
+            return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "lbhr":
+            return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
+        case "ft":
+            return metric ? { text: (n * 0.3048).toFixed(2), suffix: "m" } : { text: n.toFixed(1), suffix: "ft" };
+        case "rpm":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "RPM" };
+        case "ratio":
+            return { text: n.toFixed(2), suffix: ":1" };
+        case "sec":
+            return { text: n.toFixed(2), suffix: "s" };
+        case "pct":
+            return { text: Math.round(n).toString(), suffix: "%" };
+        case "cc":
+            return { text: n.toFixed(1), suffix: "cc/min" };
+        case "amp":
+            return { text: n.toFixed(1), suffix: "A" };
+        case "mm":
+            return { text: String(Math.round(n)), suffix: "mm" };
+        case "awg":
+            return { text: String(value), suffix: "AWG" };
+        default:
+            return { text: String(value), suffix: unit || "" };
+    }
+}
+
+function joinReading(shown) {
+    if (!shown.suffix) return shown.text;
+    if (shown.suffix.charAt(0) === ":") return shown.text + shown.suffix;
+    return shown.text + " " + shown.suffix;
+}
+
+function reading(value, unit) {
+    return joinReading(formatUnit(value, unit));
+}
+
+function publishReadout(items) {
+    lastReadout = items;
+    const body = document.getElementById("readout-body");
+    if (!body || !items.length) return;
+    const primary = items.find(item => item.primary) || items[0];
+    const rest = items.filter(item => item !== primary);
+    const main = formatUnit(primary.value, primary.unit);
+    const extras = rest.map(item => {
+        return '<div class="readout-extra"><span>' + item.label + '</span><strong>' + reading(item.value, item.unit) + '</strong></div>';
+    }).join("");
+    body.innerHTML = '<div class="readout-label">' + primary.label + '</div>'
+        + '<div class="readout-value">' + main.text + (main.suffix ? '<span class="readout-suffix">' + main.suffix + '</span>' : '') + '</div>'
+        + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
+}
+
+function bindCalc(fn, ids) {
+    window.refreshCalc = fn;
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", fn);
+        el.addEventListener("change", fn);
+    });
+    fn();
+}
+
+document.querySelectorAll(".pill").forEach(button => {
+    button.addEventListener("click", () => {
+        unitState[button.dataset.unitGroup] = button.dataset.unit;
+        button.parentElement.querySelectorAll(".pill").forEach(pill => {
+            pill.classList.toggle("active", pill === button);
+        });
+        if (typeof window.refreshCalc === "function") window.refreshCalc();
+        else if (lastReadout.length) publishReadout(lastReadout);
+    });
+});
+
+
 function calcTireGrowth() {
     let staticDia = parseFloat(document.getElementById("tg-dia").value) || 28;
     let trap = parseFloat(document.getElementById("tg-trap").value) || 150;
     let growth = parseFloat(document.getElementById("tg-growth").value) || 4.5;
     let gear = parseFloat(document.getElementById("tg-gear").value) || 3.42;
     let dynamicDia = staticDia * (1 + (growth / 100));
-    let staticRollout = (staticDia * Math.PI).toFixed(1);
-    let dynamicRollout = (dynamicDia * Math.PI).toFixed(1);
-    let estFinishRpm = Math.round((trap * gear * 336) / dynamicDia);
-    document.getElementById("results").innerHTML = "Static Rollout: <strong>" + staticRollout + " in</strong> | Dynamic Dia: <strong>" + dynamicDia.toFixed(2) + " in</strong><br>Dynamic Rollout: <strong>" + dynamicRollout + " in</strong> | Est. Finish RPM: <strong>" + estFinishRpm + " RPM</strong>";
+    let staticRollout = staticDia * Math.PI;
+    let dynamicRollout = dynamicDia * Math.PI;
+    let estFinishRpm = (trap * gear * 336) / dynamicDia;
+    publishReadout([
+        { label: "Dynamic diameter", value: dynamicDia, unit: "in", primary: true },
+        { label: "Static rollout", value: staticRollout, unit: "in" },
+        { label: "Dynamic rollout", value: dynamicRollout, unit: "in" },
+        { label: "Finish RPM", value: estFinishRpm, unit: "rpm" }
+    ]);
 }
-["tg-dia", "tg-trap", "tg-growth", "tg-gear"].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) { el.addEventListener("input", calcTireGrowth); el.addEventListener("change", calcTireGrowth); }
-});
-calcTireGrowth();
+bindCalc(calcTireGrowth, ["tg-dia", "tg-trap", "tg-growth", "tg-gear"]);
 
     </script>
 </body>

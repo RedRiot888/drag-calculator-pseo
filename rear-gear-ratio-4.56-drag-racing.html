@@ -29,17 +29,35 @@
                 <p class="spec">Loaded defaults: 4.56 rear gear, 32.0 inch tire.</p>
             </header>
             
-    <p class="tool-note">Finish RPM and trap speed from ring and pinion</p>
+    <div class="field-stack">
     <div class="grid-2">
-        <div><label for="rg-trap">Target Trap Speed (MPH)</label><input type="number" id="rg-trap" value="125" step="1"></div>
-        <div><label for="rg-gear">Rear Gear Ratio</label><input type="number" id="rg-gear" value="4.56" step="0.01"></div>
+        <div class="field"><label for="rg-gear">Rear gear</label><input type="number" id="rg-gear" value="4.56" step="0.01"></div>
+        <div class="field"><label for="rg-tire">Tire diameter (in)</label><input type="number" id="rg-tire" value="32.0" step="0.1"></div>
     </div>
+    </div>
+    <details class="accordion">
+        <summary>Advanced / Conditions</summary>
+        <div class="accordion-body field-stack">
     <div class="grid-2">
-        <div><label for="rg-tire">Tire Diameter (in)</label><input type="number" id="rg-tire" value="32.0" step="0.1"></div>
-        <div><label for="rg-final">Trans Final Ratio</label><input type="number" id="rg-final" value="1.00" step="0.01"></div>
+        <div class="field"><label for="rg-trap">Target trap speed (MPH)</label><input type="number" id="rg-trap" value="125" step="1"></div>
+        <div class="field"><label for="rg-final">Trans final ratio</label><input type="number" id="rg-final" value="1.00" step="0.01"></div>
     </div>
-    <div class="results-box" id="results">Adjust parameters above.</div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Rear Gear Sheet</button>
+    </div>
+    </details>
+    <div class="readout" id="results">
+        <div class="readout-top">
+            <span class="readout-kicker">Result</span>
+            <div class="pill-row">
+                <div class="pill-group" role="group" aria-label="Units">
+                    <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
+                    <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+                </div>
+            </div>
+        </div>
+        <div id="readout-body"></div>
+    </div>
+    <button type="button" class="action-btn" onclick="window.print()">Print rear gear sheet</button>
+    
 
         </section>
         <div class="content-column">
@@ -54,6 +72,106 @@
 
     <script>
 
+const unitState = { power: "bhp", system: "imperial" };
+let lastReadout = [];
+
+function crankHorsepower(raw) {
+    const hp = parseFloat(raw);
+    const entered = Number.isFinite(hp) ? hp : 0;
+    if (unitState.power !== "whp") return entered;
+    const lossInput = document.getElementById("dt-loss");
+    const lossPct = lossInput ? parseFloat(lossInput.value) : 15;
+    const loss = Math.min(0.4, Math.max(0, (Number.isFinite(lossPct) ? lossPct : 15) / 100));
+    return entered / Math.max(0.05, 1 - loss);
+}
+
+function formatUnit(value, unit) {
+    const metric = unitState.system === "metric";
+    const n = Number(value);
+    if (unit === "text") return { text: String(value), suffix: "" };
+    if (!Number.isFinite(n)) return { text: "—", suffix: "" };
+    switch (unit) {
+        case "mph":
+            return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
+        case "in":
+            return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "psi":
+            return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
+        case "lbmin":
+            return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "lbhr":
+            return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
+        case "ft":
+            return metric ? { text: (n * 0.3048).toFixed(2), suffix: "m" } : { text: n.toFixed(1), suffix: "ft" };
+        case "rpm":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "RPM" };
+        case "ratio":
+            return { text: n.toFixed(2), suffix: ":1" };
+        case "sec":
+            return { text: n.toFixed(2), suffix: "s" };
+        case "pct":
+            return { text: Math.round(n).toString(), suffix: "%" };
+        case "cc":
+            return { text: n.toFixed(1), suffix: "cc/min" };
+        case "amp":
+            return { text: n.toFixed(1), suffix: "A" };
+        case "mm":
+            return { text: String(Math.round(n)), suffix: "mm" };
+        case "awg":
+            return { text: String(value), suffix: "AWG" };
+        default:
+            return { text: String(value), suffix: unit || "" };
+    }
+}
+
+function joinReading(shown) {
+    if (!shown.suffix) return shown.text;
+    if (shown.suffix.charAt(0) === ":") return shown.text + shown.suffix;
+    return shown.text + " " + shown.suffix;
+}
+
+function reading(value, unit) {
+    return joinReading(formatUnit(value, unit));
+}
+
+function publishReadout(items) {
+    lastReadout = items;
+    const body = document.getElementById("readout-body");
+    if (!body || !items.length) return;
+    const primary = items.find(item => item.primary) || items[0];
+    const rest = items.filter(item => item !== primary);
+    const main = formatUnit(primary.value, primary.unit);
+    const extras = rest.map(item => {
+        return '<div class="readout-extra"><span>' + item.label + '</span><strong>' + reading(item.value, item.unit) + '</strong></div>';
+    }).join("");
+    body.innerHTML = '<div class="readout-label">' + primary.label + '</div>'
+        + '<div class="readout-value">' + main.text + (main.suffix ? '<span class="readout-suffix">' + main.suffix + '</span>' : '') + '</div>'
+        + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
+}
+
+function bindCalc(fn, ids) {
+    window.refreshCalc = fn;
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", fn);
+        el.addEventListener("change", fn);
+    });
+    fn();
+}
+
+document.querySelectorAll(".pill").forEach(button => {
+    button.addEventListener("click", () => {
+        unitState[button.dataset.unitGroup] = button.dataset.unit;
+        button.parentElement.querySelectorAll(".pill").forEach(pill => {
+            pill.classList.toggle("active", pill === button);
+        });
+        if (typeof window.refreshCalc === "function") window.refreshCalc();
+        else if (lastReadout.length) publishReadout(lastReadout);
+    });
+});
+
+
 function calcRearGear() {
     let trap = parseFloat(document.getElementById("rg-trap").value) || 125;
     let gear = parseFloat(document.getElementById("rg-gear").value) || 4.11;
@@ -61,15 +179,16 @@ function calcRearGear() {
     let transFinal = parseFloat(document.getElementById("rg-final").value) || 1.00;
     let overall = gear * transFinal;
     let finishRpm = (trap * overall * 336) / Math.max(tire, 0.1);
-    let rollout = (tire * Math.PI).toFixed(1);
+    let rollout = tire * Math.PI;
     let mphAt7500 = (7500 * tire) / (overall * 336);
-    document.getElementById("results").innerHTML = "Overall Ratio: <strong>" + overall.toFixed(2) + ":1</strong> | Rollout: <strong>" + rollout + " in</strong><br>Finish RPM: <strong>" + Math.round(finishRpm) + " RPM</strong> | 7500 RPM Trap: <strong>" + mphAt7500.toFixed(1) + " MPH</strong>";
+    publishReadout([
+        { label: "Finish RPM", value: finishRpm, unit: "rpm", primary: true },
+        { label: "Overall ratio", value: overall, unit: "ratio" },
+        { label: "Rollout", value: rollout, unit: "in" },
+        { label: "Speed at 7,500 RPM", value: mphAt7500, unit: "mph" }
+    ]);
 }
-["rg-trap", "rg-gear", "rg-tire", "rg-final"].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) { el.addEventListener("input", calcRearGear); el.addEventListener("change", calcRearGear); }
-});
-calcRearGear();
+bindCalc(calcRearGear, ["rg-trap", "rg-gear", "rg-tire", "rg-final"]);
 
     </script>
 </body>
