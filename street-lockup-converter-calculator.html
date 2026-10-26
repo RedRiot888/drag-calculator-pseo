@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Street Lockup Torque Converter Calculator | DragCalculators.com</title>
+    <meta name="description" content="Street Lockup Torque Converter Calculator. Loaded defaults: 4L80E lockup, 400 lb-ft at 3,600 RPM, street.">
+    <link rel="canonical" href="https://dragcalculators.com/street-lockup-converter-calculator.html">
+    <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
+    <meta name="google-site-verification" content="google9e7c88791a3f2f72">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dragcalculators.com/street-lockup-converter-calculator.html">
+    <meta property="og:title" content="Street Lockup Torque Converter Calculator | DragCalculators.com">
+    <meta property="og:description" content="Street Lockup Torque Converter Calculator. Loaded defaults: 4L80E lockup, 400 lb-ft at 3,600 RPM, street.">
+    <meta property="og:image" content="https://dragcalculators.com/social-banner.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Street Lockup Torque Converter Calculator | DragCalculators.com">
+    <meta name="twitter:description" content="Street Lockup Torque Converter Calculator. Loaded defaults: 4L80E lockup, 400 lb-ft at 3,600 RPM, street.">
+    <meta name="twitter:image" content="https://dragcalculators.com/social-banner.jpg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
+    <div class="layout-grid">
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item active" href="torque-converter-calculator.html">Torque Converter</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="drag-shock-calculator.html">Shocks</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
+        <section class="sticky-calculator">
+            <header class="master-header">
+                <h1>Street Lockup Torque Converter Calculator</h1>
+                <p class="spec">Loaded defaults: 4L80E lockup, 400 lb-ft at 3,600 RPM, street.</p>
+            </header>
+            
+    <div class="field-stack">
+    <div class="grid-2">
+        <div class="field"><label for="cv-use">Car</label><select id="cv-use"><option value="street" selected>Street</option>
+<option value="strip">Street-strip</option>
+<option value="drag">Drag</option></select></div>
+        <div class="field"><label for="cv-track">Surface</label><select id="cv-track"><option value="street" selected>Street tire</option>
+<option value="radial">Radial prep</option>
+<option value="prepped">Prepped slick</option>
+<option value="noprep">No prep</option></select></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cv-trans">Transmission</label><select id="cv-trans"><option value="powerglide">Powerglide (1.76 / 1.00)</option>
+<option value="th350">TH350 (2.52 / 1.52 / 1.00)</option>
+<option value="th400">TH400 (2.48 / 1.48 / 1.00)</option>
+<option value="4l60e">4L60E / 4L70E (3.06, lockup 0.70)</option>
+<option value="4l80e" selected>4L80E (2.48, lockup 0.75)</option>
+<option value="6l80">6L80 (4.03, lockup 0.67)</option>
+<option value="8l90">8L90 (4.56, lockup 0.65)</option>
+<option value="10r80">10R80 (4.70, lockup 0.64)</option>
+<option value="c4">C4 (2.46 / 1.46 / 1.00)</option>
+<option value="c6">C6 (2.46 / 1.46 / 1.00)</option>
+<option value="727">Torqueflite 727 (2.45 / 1.45 / 1.00)</option>
+<option value="904">Torqueflite 904 (2.74 / 1.54 / 1.00)</option>
+<option value="zf8hp">8HP70 / 8HP90 (4.71, lockup 0.67)</option></select></div>
+        <div class="field"><label for="cv-hold">How it is held</label><select id="cv-hold"><option value="foot" selected>Foot brake</option>
+<option value="transbrake">Trans brake</option></select></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cv-tq">Peak torque (lb-ft)</label><input type="number" id="cv-tq" value="400" min="100" max="2500" step="10"></div>
+        <div class="field"><label for="cv-tqrpm">Torque peak (RPM)</label><input type="number" id="cv-tqrpm" value="3600" min="1500" max="9000" step="50"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cv-hp">Peak power</label><input type="number" id="cv-hp" value="420" min="100" max="4000" step="10"></div>
+        <div class="field"><label for="cv-hprpm">Power peak (RPM)</label><input type="number" id="cv-hprpm" value="5400" min="2000" max="10000" step="50"></div>
+    </div>
+    <p class="field-hint">Brake stall is the RPM with the turbine held. It follows the torque at that RPM and the converter's K-factor. Weight does not change it. The tire and the gear decide whether that stall hooks.</p>
+    </div>
+    <details class="accordion">
+        <summary>Advanced / Conditions</summary>
+        <div class="accordion-body field-stack">
+    <div class="grid-2">
+        <div class="field"><label for="cv-rear">Rear gear</label><input type="number" id="cv-rear" value="3.55" min="2" max="6.5" step="0.01"></div>
+        <div class="field"><label for="cv-tire">Tire diameter (in)</label><input type="number" id="cv-tire" value="28.0" min="18" max="40" step="0.1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cv-shift">Shift RPM</label><input type="number" id="cv-shift" value="5600" min="2000" max="11000" step="50"></div>
+        <div class="field"><label for="cv-mph">Cruise (MPH)</label><input type="number" id="cv-mph" value="70" min="30" max="100" step="1"></div>
+    </div>
+    
+<p class="field-hint">BHP uses the power entry as flywheel power. WHP treats it as wheel power and converts with this drivetrain loss.</p>
+<div class="grid-2">
+    <div class="field"><label for="dt-loss">Drivetrain loss (%)</label><input type="number" id="dt-loss" value="15" min="0" max="40" step="1"></div>
+</div>
+
+    </div>
+    </details>
+    <div class="readout" id="results">
+        <div class="readout-top">
+            <span class="readout-kicker">Result</span>
+            <div class="pill-row">
+                <div class="pill-group" role="group" aria-label="Power unit">
+                    <button type="button" class="pill" data-unit-group="power" data-unit="whp">WHP</button>
+                    <button type="button" class="pill active" data-unit-group="power" data-unit="bhp">BHP</button>
+                </div>
+                <div class="pill-group" role="group" aria-label="Units">
+                    <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
+                    <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+                </div>
+            </div>
+        </div>
+        <div id="readout-body"></div>
+    </div>
+    
+    <p class="assess" id="cv-assess"></p>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>Check</th><th>Number</th><th>What to order</th><th>Status</th></tr></thead>
+            <tbody id="cv-matrix"></tbody>
+        </table>
+        <p class="field-hint">K-factor is brake stall divided by the square root of the torque at that RPM. Give the shop the stall, the torque, the K, and the stall torque ratio. The core diameter is the usual can for that stall. The stator and the vane angle are what set it.</p>
+    </div>
+    
+    <button type="button" class="action-btn" onclick="window.print()">Print converter sheet</button>
+    
+
+        </section>
+        <div class="content-column">
+            <section class="content-box"><h2>Formula</h2><p class="formula">K = Brake stall RPM / sqrt(torque at that RPM). Brake stall is set under the torque peak so the engine can accelerate through it. Stall torque ratio is as high as the tire can take. Cruise RPM = (MPH x top gear x rear gear x 336) / tire diameter, and an unlocked converter has to stall under that.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Street Lockup Torque Converter Calculator. Loaded defaults: 4L80E lockup, 400 lb-ft at 3,600 RPM, street.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>What is K-factor?</h3><p>K-factor is brake stall RPM divided by the square root of engine torque at that RPM. The same converter stalls higher behind an engine with more torque. Give the shop the K, the stall, and the torque, not a stall number with no engine attached.</p></div><div class="faq-item"><h3>Where should the stall sit?</h3><p>Brake stall wants to land about 500 to 700 RPM under the torque peak so the engine accelerates through the converter instead of starting above it. A no-prep tire wants it lower. An unlocked street converter also has to stall under cruise RPM.</p></div><div class="faq-item"><h3>Why is the car weight not in the stall?</h3><p>Brake stall is engine torque against the converter with the turbine held. Weight, the tire, and the gear decide whether that stall hooks. They do not change the RPM.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="torque-converter-calculator.html">Torque Converter Stall and K-Factor Calculator</a></li><li><a href="street-strip-converter-calculator.html">Street Strip Torque Converter Calculator</a></li><li><a href="th400-converter-calculator.html">TH400 Torque Converter Calculator</a></li><li><a href="trans-brake-converter-calculator.html">Trans Brake Torque Converter Calculator</a></li><li><a href="footbrake-converter-calculator.html">Foot Brake Torque Converter Calculator</a></li><li><a href="no-prep-converter-calculator.html">No Prep Torque Converter Calculator</a></li><li><a href="powerglide-converter-calculator.html">Powerglide Torque Converter Calculator</a></li></ul></div></div></details>
+        </div>
+    </div>
+    
+<footer class="site-footer">
+    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
+    <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
+</footer>
+
+    <script>
+
+const unitState = { power: "bhp", system: "imperial" };
+let lastReadout = [];
+
+function crankHorsepower(raw) {
+    const hp = parseFloat(raw);
+    const entered = Number.isFinite(hp) ? hp : 0;
+    if (unitState.power !== "whp") return entered;
+    const lossInput = document.getElementById("dt-loss");
+    const lossPct = lossInput ? parseFloat(lossInput.value) : 15;
+    const loss = Math.min(0.4, Math.max(0, (Number.isFinite(lossPct) ? lossPct : 15) / 100));
+    return entered / Math.max(0.05, 1 - loss);
+}
+
+function formatUnit(value, unit) {
+    const metric = unitState.system === "metric";
+    const n = Number(value);
+    if (unit === "text") return { text: String(value), suffix: "" };
+    if (!Number.isFinite(n)) return { text: "—", suffix: "" };
+    switch (unit) {
+        case "mph":
+            return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
+        case "in":
+            return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "in3":
+            return metric ? { text: (n * 25.4).toFixed(2), suffix: "mm" } : { text: n.toFixed(3), suffix: "in" };
+        case "psi":
+            return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
+        case "lbmin":
+            return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "cfm":
+            return metric ? { text: (n * 0.0283168).toFixed(2), suffix: "m3/min" } : { text: Math.round(n).toLocaleString("en-US"), suffix: "CFM" };
+        case "tempf":
+            return metric ? { text: ((n - 32) * 5 / 9).toFixed(0), suffix: "C" } : { text: Math.round(n).toString(), suffix: "F" };
+        case "lbhr":
+            return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
+        case "ft":
+            return metric ? { text: (n * 0.3048).toFixed(2), suffix: "m" } : { text: n.toFixed(1), suffix: "ft" };
+        case "rpm":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "RPM" };
+        case "ratio":
+            return { text: n.toFixed(2), suffix: ":1" };
+        case "sec":
+            return { text: n.toFixed(2), suffix: "s" };
+        case "pct":
+            return { text: Math.round(n).toString(), suffix: "%" };
+        case "pct1":
+            return { text: n.toFixed(1), suffix: "%" };
+        case "cc":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "cc/min" };
+        case "ci":
+            return metric ? { text: (n * 0.0163871).toFixed(2), suffix: "L" } : { text: n.toFixed(1), suffix: "ci" };
+        case "gph":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/h" } : { text: n.toFixed(1), suffix: "gal/hr" };
+        case "amp":
+            return { text: n.toFixed(1), suffix: "A" };
+        case "mm":
+            return { text: String(Math.round(n)), suffix: "mm" };
+        case "awg":
+            return { text: String(value), suffix: "AWG" };
+        default:
+            return { text: String(value), suffix: unit || "" };
+    }
+}
+
+function joinReading(shown) {
+    if (!shown.suffix) return shown.text;
+    if (shown.suffix.charAt(0) === ":") return shown.text + shown.suffix;
+    return shown.text + " " + shown.suffix;
+}
+
+function reading(value, unit) {
+    return joinReading(formatUnit(value, unit));
+}
+
+function publishReadout(items) {
+    lastReadout = items;
+    const body = document.getElementById("readout-body");
+    if (!body || !items.length) return;
+    const primary = items.find(item => item.primary) || items[0];
+    const rest = items.filter(item => item !== primary);
+    const main = formatUnit(primary.value, primary.unit);
+    const extras = rest.map(item => {
+        return '<div class="readout-extra"><span>' + item.label + '</span><strong>' + reading(item.value, item.unit) + '</strong></div>';
+    }).join("");
+    body.innerHTML = '<div class="readout-label">' + primary.label + '</div>'
+        + '<div class="readout-value">' + main.text + (main.suffix ? '<span class="readout-suffix">' + main.suffix + '</span>' : '') + '</div>'
+        + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
+}
+
+function bindCalc(fn, ids) {
+    window.refreshCalc = fn;
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", fn);
+        el.addEventListener("change", fn);
+    });
+    fn();
+}
+
+document.querySelectorAll(".pill").forEach(button => {
+    button.addEventListener("click", () => {
+        if (!button.dataset.unitGroup) return;
+        unitState[button.dataset.unitGroup] = button.dataset.unit;
+        button.parentElement.querySelectorAll(".pill").forEach(pill => {
+            pill.classList.toggle("active", pill === button);
+        });
+        if (typeof window.refreshCalc === "function") window.refreshCalc();
+        else if (lastReadout.length) publishReadout(lastReadout);
+    });
+});
+
+
+const CV_TRANS = {
+    powerglide: { name: "Powerglide", first: 1.76, top: 1.00, lock: false },
+    th350: { name: "TH350", first: 2.52, top: 1.00, lock: false },
+    th400: { name: "TH400", first: 2.48, top: 1.00, lock: false },
+    "4l60e": { name: "4L60E", first: 3.06, top: 0.70, lock: true },
+    "4l80e": { name: "4L80E", first: 2.48, top: 0.75, lock: true },
+    "6l80": { name: "6L80", first: 4.027, top: 0.667, lock: true },
+    "8l90": { name: "8L90", first: 4.56, top: 0.65, lock: true },
+    "10r80": { name: "10R80", first: 4.696, top: 0.636, lock: true },
+    c4: { name: "C4", first: 2.46, top: 1.00, lock: false },
+    c6: { name: "C6", first: 2.46, top: 1.00, lock: false },
+    "727": { name: "727", first: 2.45, top: 1.00, lock: false },
+    "904": { name: "904", first: 2.74, top: 1.00, lock: false },
+    zf8hp: { name: "8HP", first: 4.714, top: 0.667, lock: true }
+};
+
+function cvNum(id, fallback) {
+    const el = document.getElementById(id);
+    const value = el ? parseFloat(el.value) : NaN;
+    return Number.isFinite(value) ? value : fallback;
+}
+
+function cvCore(stall) {
+    if (stall < 2600) return "12 in";
+    if (stall < 3400) return "11 in";
+    if (stall < 4300) return "10 in";
+    if (stall < 5000) return "9.5 in";
+    if (stall < 5600) return "9 in";
+    return "8 in";
+}
+
+function cvRow(name, detail, result, status) {
+    const tr = document.createElement("tr");
+    if (status === "No") tr.className = "is-small";
+    const badge = status === "Good" ? "badge-ok" : (status === "Watch" ? "badge-tight" : "badge-no");
+    [name, detail, result].forEach(text => {
+        const td = document.createElement("td");
+        td.textContent = text;
+        tr.appendChild(td);
+    });
+    const statusCell = document.createElement("td");
+    const pill = document.createElement("span");
+    pill.className = "badge " + badge;
+    pill.textContent = status;
+    statusCell.appendChild(pill);
+    tr.appendChild(statusCell);
+    return tr;
+}
+
+function cvTorqueAt(stall, tq, tqRpm, hpTorque, hpRpm) {
+    if (stall >= hpRpm) return hpTorque;
+    if (stall >= tqRpm) {
+        const span = Math.max(1, hpRpm - tqRpm);
+        return tq + (hpTorque - tq) * ((stall - tqRpm) / span);
+    }
+    return tq * Math.pow(Math.max(0.35, stall / tqRpm), 0.4);
+}
+
+function calcConverter() {
+    const use = document.getElementById("cv-use").value || "drag";
+    const track = document.getElementById("cv-track").value || "prepped";
+    const trans = CV_TRANS[document.getElementById("cv-trans").value] || CV_TRANS.th400;
+    const hold = document.getElementById("cv-hold").value || "transbrake";
+    const hpTyped = cvNum("cv-hp", 750);
+    const hp = Math.max(50, crankHorsepower(hpTyped));
+    const scale = hp / Math.max(50, hpTyped);
+    const tq = Math.max(80, cvNum("cv-tq", 500) * scale);
+    let tqRpm = Math.max(1500, cvNum("cv-tqrpm", 4800));
+    let hpRpm = Math.max(2000, cvNum("cv-hprpm", 6800));
+    if (hpRpm <= tqRpm + 100) hpRpm = tqRpm + 800;
+    const rear = Math.max(2, cvNum("cv-rear", 3.73));
+    const tire = Math.max(18, cvNum("cv-tire", 28));
+    const shift = Math.max(2000, cvNum("cv-shift", 7000));
+    const mph = Math.max(30, cvNum("cv-mph", 70));
+    const hpTorque = hp * 5252 / hpRpm;
+    let offset = 600;
+    if (use === "street") offset = 400;
+    else if (use === "strip") offset = 450;
+    if (track === "noprep") offset = Math.max(offset, 900);
+    let stall = Math.max(1400, tqRpm - offset);
+    const cruise = (mph * trans.top * rear * 336) / tire;
+    let cruiseStatus = "Good";
+    let cruiseDetail = "Cruise in top gear is " + Math.round(cruise).toLocaleString("en-US") + " RPM. The stall sits under it.";
+    if (use === "drag" && stall > cruise - 200) {
+        cruiseStatus = "Watch";
+        cruiseDetail = "At " + Math.round(mph) + " MPH in high gear the engine is at " + Math.round(cruise).toLocaleString("en-US") + " RPM. This stall is for the track, and it will slip if the car is driven there unlocked.";
+    } else if (!trans.lock && stall > cruise - 500) {
+        stall = Math.max(1400, cruise - 500);
+        cruiseStatus = "Watch";
+        cruiseDetail = "Unlocked cruise is " + Math.round(cruise).toLocaleString("en-US") + " RPM, so the stall is held about 500 RPM under it. A later cam needs a lockup gear or a shorter top gear.";
+    } else if (trans.lock && stall > cruise - 200) {
+        cruiseStatus = "Watch";
+        cruiseDetail = "Cruise is " + Math.round(cruise).toLocaleString("en-US") + " RPM. Lock the converter there. Unlocked, this stall slips on the highway.";
+    }
+    const torque = Math.max(40, cvTorqueAt(stall, tq, tqRpm, hpTorque, hpRpm));
+    const kFactor = stall / Math.sqrt(torque);
+    let str = 2.15;
+    if (use === "street" || track === "street") str = 1.9;
+    else if (track === "noprep") str = 1.85;
+    else if (use === "drag" && track === "prepped") str = 2.35;
+    else if (use === "strip") str = 2.05;
+    const core = cvCore(stall);
+    const coreIn = parseFloat(core);
+    let holdStatus = "Good";
+    let holdDetail = hold === "transbrake"
+        ? "A trans brake holds the turbine, so the engine can reach this brake stall."
+        : "The foot brake has to hold the torque this converter multiplies. If the car pushes through it, the stall you see is short of this number.";
+    if (hold === "foot" && coreIn <= 9 && str >= 2.2) {
+        holdStatus = "Watch";
+        holdDetail = "A small core with a high stall torque ratio can push through the foot brake before the engine reaches this stall. A trans brake holds the turbine so it can.";
+    }
+    let shiftStatus = "Good";
+    let shiftDetail = "The shift is " + (shift / stall).toFixed(2) + " times the stall, so the converter is coupling before the gear change.";
+    if (shift < stall) {
+        shiftStatus = "No";
+        shiftDetail = "The shift is under the stall, so the converter is still at stall when the gear changes.";
+    } else if (shift < stall * 1.15) {
+        shiftStatus = "Watch";
+        shiftDetail = "The shift is barely above the stall. Raise the shift or tighten the converter so it couples first.";
+    }
+    let slip = 6;
+    if (use === "street") slip = 5;
+    if (use === "drag" && track === "prepped") slip = 7;
+    if (shift < stall * 1.15) slip = 9;
+    const axle = torque * str * trans.first * rear;
+    const underPeak = tqRpm - stall;
+    publishReadout([
+        { label: "Brake stall", value: Math.round(stall), unit: "rpm", primary: true },
+        { label: "K-factor", value: kFactor.toFixed(0), unit: "text" },
+        { label: "Stall torque ratio", value: str.toFixed(2), unit: "text" },
+        { label: "Core", value: core, unit: "text" },
+        { label: "Torque at stall", value: Math.round(torque) + " lb-ft", unit: "text" },
+        { label: "Axle torque at stall", value: Math.round(axle).toLocaleString("en-US") + " lb-ft", unit: "text" }
+    ]);
+    const assess = document.getElementById("cv-assess");
+    if (assess) {
+        const lockNote = trans.lock ? " This transmission can lock the converter in top gear." : " This transmission does not lock the converter.";
+        assess.textContent = "Order a " + trans.name + " converter with a brake stall of " + Math.round(stall).toLocaleString("en-US") + " RPM at " + Math.round(torque) + " lb-ft. That is a K-factor of " + kFactor.toFixed(0) + " and a stall torque ratio near " + str.toFixed(2) + ". The stall is " + Math.round(underPeak).toLocaleString("en-US") + " RPM under the torque peak so the engine can accelerate through it. The usual core is " + core + ". The stator and the vane angle set the stall." + lockNote + " At the shift, type about " + slip + "% slip into the gear calculator. A locked gear is 0%.";
+    }
+    const body = document.getElementById("cv-matrix");
+    if (body) {
+        body.replaceChildren(
+            cvRow("Brake stall", Math.round(stall).toLocaleString("en-US") + " RPM", Math.round(tqRpm - stall).toLocaleString("en-US") + " RPM under the torque peak. An unlocked street converter is also held under cruise.", "Good"),
+            cvRow("K-factor", kFactor.toFixed(0), "Stall RPM divided by the square root of " + Math.round(torque) + " lb-ft. This is the number the shop builds to.", "Good"),
+            cvRow("Stall torque ratio", str.toFixed(2), track === "noprep" || track === "street" ? "Kept down so the hit does not shock the tire." : "As high as this surface can take. More multiplies the hit and makes the car harder to hold.", "Good"),
+            cvRow("Core", core, "A smaller can can stall higher, and it can also foot-brake lower when the torque ratio pushes the car. Order the K-factor, not the can by itself.", "Good"),
+            cvRow("Cruise", Math.round(cruise).toLocaleString("en-US") + " RPM", cruiseDetail, cruiseStatus),
+            cvRow("Shift", Math.round(shift).toLocaleString("en-US") + " RPM", shiftDetail, shiftStatus),
+            cvRow(hold === "transbrake" ? "Trans brake" : "Foot brake", trans.first.toFixed(2) + " first gear", holdDetail, holdStatus),
+            cvRow("Gear calculator", slip + "% at the shift", "That is the slip to type into the transmission calculator. Lockup in top gear is 0% once it is locked.", "Good")
+        );
+    }
+}
+bindCalc(calcConverter, ["cv-use", "cv-track", "cv-trans", "cv-hold", "cv-tq", "cv-tqrpm", "cv-hp", "cv-hprpm", "cv-rear", "cv-tire", "cv-shift", "cv-mph", "dt-loss"]);
+
+    </script>
+</body>
+</html>

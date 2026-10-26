@@ -22,7 +22,7 @@
 <body>
     <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
     <div class="layout-grid">
-        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item active" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="drag-shock-calculator.html">Shocks</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="torque-converter-calculator.html">Torque Converter</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item active" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="drag-shock-calculator.html">Shocks</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
         <section class="sticky-calculator">
             <header class="master-header">
                 <h1>Four Link Suspension &amp; Instant Center Drag Calculator</h1>
@@ -30,6 +30,37 @@
             </header>
             
     <div class="field-stack">
+<figure class="measure-fig">
+    <svg viewBox="0 0 720 340" role="img" aria-label="Where to measure a four link">
+        <line x1="40" y1="280" x2="690" y2="280" stroke="#3a3a3a" stroke-width="2"/>
+        <circle cx="110" cy="230" r="48" fill="none" stroke="#6f6f6f" stroke-width="3"/>
+        <circle cx="110" cy="230" r="8" fill="#f5f5f5"/>
+        <circle cx="560" cy="210" r="62" fill="none" stroke="#6f6f6f" stroke-width="3"/>
+        <circle cx="560" cy="210" r="10" fill="#f5f5f5"/>
+        <text x="92" y="168" fill="#a3a3a3" font-size="13">Front</text>
+        <text x="536" y="130" fill="#a3a3a3" font-size="13">Rear axle</text>
+        <line x1="250" y1="168" x2="430" y2="150" stroke="#e50914" stroke-width="4"/>
+        <line x1="250" y1="214" x2="430" y2="196" stroke="#f5f5f5" stroke-width="4"/>
+        <circle cx="520" cy="146" r="5" fill="#e50914"/>
+        <circle cx="520" cy="198" r="5" fill="#f5f5f5"/>
+        <circle cx="250" cy="168" r="5" fill="#e50914"/>
+        <circle cx="250" cy="214" r="5" fill="#f5f5f5"/>
+        <line x1="560" y1="210" x2="520" y2="146" stroke="#e50914" stroke-width="1"/>
+        <line x1="560" y1="210" x2="520" y2="198" stroke="#f5f5f5" stroke-width="1"/>
+        <text x="470" y="78" fill="#e50914" font-size="13">Rear top hole</text>
+        <text x="470" y="96" fill="#a3a3a3" font-size="12">Forward of the axle, and up from the ground</text>
+        <text x="150" y="78" fill="#e50914" font-size="13">Front top hole</text>
+        <text x="150" y="96" fill="#a3a3a3" font-size="12">Forward of the axle, and up from the ground</text>
+        <text x="150" y="318" fill="#f5f5f5" font-size="13">Front bottom hole is the lower bar. Rear bottom hole is at the axle.</text>
+        <line x1="110" y1="292" x2="560" y2="292" stroke="#e50914" stroke-width="1.5"/>
+        <text x="280" y="310" fill="#e50914" font-size="13">Wheelbase, spindle to axle</text>
+        <line x1="300" y1="280" x2="300" y2="188" stroke="#a3a3a3" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <circle cx="300" cy="188" r="4" fill="#a3a3a3"/>
+        <text x="308" y="186" fill="#a3a3a3" font-size="13">Crank height, off the ground</text>
+    </svg>
+    <figcaption>Every hole gets two numbers. One is how far it sits forward of the rear-axle center. The other is how far it sits off the ground. Take both with the car at ride height. The red bar is the top link. The white bar is the bottom link.</figcaption>
+</figure>
+
     <div class="grid-2">
         <div class="field"><label for="l1">Wheelbase (in)</label><input type="number" id="l1" value="110.0" step="0.5"></div>
         <div class="field"><label for="l2">Crankshaft height (in)</label><input type="number" id="l2" value="24.0" step="0.5"></div>

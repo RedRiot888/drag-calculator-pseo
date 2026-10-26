@@ -58,6 +58,7 @@ CATEGORY_FIELDS = {
     "FuelPump": ["hp", "boost", "fuel"],
     "Nitrous": [],
     "Shock": [],
+    "Converter": [],
     "Electrical": [],
     "CAS": ["boost"],
 }
@@ -337,6 +338,9 @@ input[type="range"] {
 .duty-scale { display: flex; justify-content: space-between; margin-top: 6px; color: #6f6f6f; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.04em; }
 .assess { color: var(--text-main); font-size: 0.88rem; }
 .assess strong { color: #fff; }
+.measure-fig { margin: 0 0 14px; }
+.measure-fig svg { width: 100%; height: auto; display: block; background: #141414; border: 1px solid var(--border-color); border-radius: 10px; }
+.measure-fig figcaption { margin-top: 8px; color: var(--text-muted); font-size: 0.8rem; line-height: 1.45; }
 .table-scroll { overflow-x: auto; max-width: 100%; padding: 8px; }
 .size-sub { color: var(--text-muted); font-size: 0.68rem; margin-top: 2px; }
 tr.is-rec td { background: rgba(229, 9, 20, 0.14); }
@@ -611,6 +615,8 @@ def spec_text(row):
         return "Loaded defaults: " + n2o_preset(row["slug"])["spec"] + "."
     if row["category"] == "Shock":
         return "Loaded defaults: " + shock_preset(row["slug"])["spec"] + "."
+    if row["category"] == "Converter":
+        return "Loaded defaults: " + cv_preset(row["slug"])["spec"] + "."
     parts = []
     for key in CATEGORY_FIELDS[row["category"]]:
         value = cell(row, key)
@@ -1188,6 +1194,88 @@ bindCalc(calcTurbo, ["tu-hp", "tu-boost", "tu-disp", "tu-fuel", "tu-count", "tu-
 
 
 
+FOUR_LINK_DIAGRAM = """
+<figure class="measure-fig">
+    <svg viewBox="0 0 720 340" role="img" aria-label="Where to measure a four link">
+        <line x1="40" y1="280" x2="690" y2="280" stroke="#3a3a3a" stroke-width="2"/>
+        <circle cx="110" cy="230" r="48" fill="none" stroke="#6f6f6f" stroke-width="3"/>
+        <circle cx="110" cy="230" r="8" fill="#f5f5f5"/>
+        <circle cx="560" cy="210" r="62" fill="none" stroke="#6f6f6f" stroke-width="3"/>
+        <circle cx="560" cy="210" r="10" fill="#f5f5f5"/>
+        <text x="92" y="168" fill="#a3a3a3" font-size="13">Front</text>
+        <text x="536" y="130" fill="#a3a3a3" font-size="13">Rear axle</text>
+        <line x1="250" y1="168" x2="430" y2="150" stroke="#e50914" stroke-width="4"/>
+        <line x1="250" y1="214" x2="430" y2="196" stroke="#f5f5f5" stroke-width="4"/>
+        <circle cx="520" cy="146" r="5" fill="#e50914"/>
+        <circle cx="520" cy="198" r="5" fill="#f5f5f5"/>
+        <circle cx="250" cy="168" r="5" fill="#e50914"/>
+        <circle cx="250" cy="214" r="5" fill="#f5f5f5"/>
+        <line x1="560" y1="210" x2="520" y2="146" stroke="#e50914" stroke-width="1"/>
+        <line x1="560" y1="210" x2="520" y2="198" stroke="#f5f5f5" stroke-width="1"/>
+        <text x="470" y="78" fill="#e50914" font-size="13">Rear top hole</text>
+        <text x="470" y="96" fill="#a3a3a3" font-size="12">Forward of the axle, and up from the ground</text>
+        <text x="150" y="78" fill="#e50914" font-size="13">Front top hole</text>
+        <text x="150" y="96" fill="#a3a3a3" font-size="12">Forward of the axle, and up from the ground</text>
+        <text x="150" y="318" fill="#f5f5f5" font-size="13">Front bottom hole is the lower bar. Rear bottom hole is at the axle.</text>
+        <line x1="110" y1="292" x2="560" y2="292" stroke="#e50914" stroke-width="1.5"/>
+        <text x="280" y="310" fill="#e50914" font-size="13">Wheelbase, spindle to axle</text>
+        <line x1="300" y1="280" x2="300" y2="188" stroke="#a3a3a3" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <circle cx="300" cy="188" r="4" fill="#a3a3a3"/>
+        <text x="308" y="186" fill="#a3a3a3" font-size="13">Crank height, off the ground</text>
+    </svg>
+    <figcaption>Every hole gets two numbers. One is how far it sits forward of the rear-axle center. The other is how far it sits off the ground. Take both with the car at ride height. The red bar is the top link. The white bar is the bottom link.</figcaption>
+</figure>
+"""
+
+SHOCK_DIAGRAM = """
+<figure class="measure-fig">
+    <svg viewBox="0 0 720 300" role="img" aria-label="How to measure a shock">
+        <circle cx="120" cy="42" r="16" fill="none" stroke="#f5f5f5" stroke-width="3"/>
+        <line x1="120" y1="58" x2="120" y2="214" stroke="#e50914" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="120" cy="232" r="16" fill="none" stroke="#f5f5f5" stroke-width="3"/>
+        <text x="156" y="48" fill="#f5f5f5" font-size="16">Extended</text>
+        <text x="156" y="130" fill="#a3a3a3" font-size="14">Center of the top eye</text>
+        <text x="156" y="150" fill="#a3a3a3" font-size="14">to center of the bottom eye</text>
+        <circle cx="430" cy="78" r="16" fill="none" stroke="#f5f5f5" stroke-width="3"/>
+        <line x1="430" y1="94" x2="430" y2="176" stroke="#e50914" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="430" cy="194" r="16" fill="none" stroke="#f5f5f5" stroke-width="3"/>
+        <text x="466" y="84" fill="#f5f5f5" font-size="16">Collapsed</text>
+        <text x="466" y="140" fill="#a3a3a3" font-size="14">Same two centers,</text>
+        <text x="466" y="160" fill="#a3a3a3" font-size="14">shock fully short</text>
+        <text x="40" y="276" fill="#a3a3a3" font-size="14">Ride height is the same measurement with the car at race weight.</text>
+    </svg>
+    <figcaption>Measure the mounts, not the tire. Full bump is the short length against the bump stop. Full droop is the long length on the strap or at full hang. The shock you order stays 1/2 in short of bump and 1/2 in longer than droop, so the shock is not the travel stop.</figcaption>
+</figure>
+"""
+
+RELAY_DIAGRAM = """
+<figure class="measure-fig">
+    <svg viewBox="0 0 720 340" role="img" aria-label="Four pin and five pin relay wiring">
+        <rect x="270" y="70" width="180" height="150" rx="12" fill="#1c1c1c" stroke="#e50914" stroke-width="2"/>
+        <text id="rl-fig-relay" x="360" y="108" fill="#f5f5f5" font-size="16" text-anchor="middle">30 A relay</text>
+        <text x="300" y="150" fill="#a3a3a3" font-size="13">85 ground</text>
+        <text x="300" y="172" fill="#a3a3a3" font-size="13">86 switch</text>
+        <text x="390" y="150" fill="#e50914" font-size="13">30 power</text>
+        <text x="390" y="172" fill="#f5f5f5" font-size="13">87 load</text>
+        <text x="330" y="200" fill="#6f6f6f" font-size="12">87a unused</text>
+        <line x1="80" y1="146" x2="270" y2="146" stroke="#e50914" stroke-width="3"/>
+        <rect x="150" y="128" width="70" height="36" rx="6" fill="none" stroke="#e50914" stroke-width="2"/>
+        <text id="rl-fig-fuse" x="185" y="151" fill="#f5f5f5" font-size="13" text-anchor="middle">30 A</text>
+        <text x="40" y="120" fill="#f5f5f5" font-size="14">Battery</text>
+        <line x1="450" y1="168" x2="620" y2="168" stroke="#f5f5f5" stroke-width="3"/>
+        <text x="560" y="150" fill="#f5f5f5" font-size="14">Pump or fan</text>
+        <text id="rl-fig-load" x="560" y="204" fill="#a3a3a3" font-size="13">20 A load</text>
+        <line x1="300" y1="220" x2="300" y2="280" stroke="#6f6f6f" stroke-width="2"/>
+        <text x="250" y="300" fill="#a3a3a3" font-size="13">Chassis ground</text>
+        <line x1="340" y1="220" x2="340" y2="260" stroke="#a3a3a3" stroke-width="2"/>
+        <text x="360" y="268" fill="#a3a3a3" font-size="13">Small switch, 18 AWG</text>
+        <text id="rl-fig-wire" x="360" y="40" fill="#e50914" font-size="15" text-anchor="middle">12 AWG on pins 30 and 87</text>
+    </svg>
+    <figcaption>Pin 30 is battery power, and the fuse sits at the source on that wire. Pin 87 feeds the pump or fan with the same gauge. Pin 86 is the switch. Pin 85 is ground. A relay with a diode inside wants 86 on power and 85 on ground. Pin 87a is the normally closed pin and stays empty on a fan or a pump.</figcaption>
+</figure>
+"""
+
+
 def suspension_html(_row):
     primary = """
     <div class="grid-2">
@@ -1213,7 +1301,7 @@ def suspension_html(_row):
         <div class="field"><label for="l10">Ground to front bottom hole (in)</label><input type="number" id="l10" value="11.0" step="0.5"></div>
     </div>
     """
-    return calculator_shell(primary, advanced, "Print chassis setup sheet")
+    return calculator_shell(FOUR_LINK_DIAGRAM + primary, advanced, "Print chassis setup sheet")
 
 
 SUSPENSION_SCRIPT = """
@@ -1654,7 +1742,7 @@ bindCalc(calcInjector, ["fi-hp", "fi-inj", "fi-ind", "fi-fuel", "fi-dc", "fi-dc-
 
 
 def electrical_html(_row):
-    primary = """
+    primary = RELAY_DIAGRAM + """
     <div class="grid-2">
         <div class="field"><label for="rl-watts">Load power (watts)</label><input type="number" id="rl-watts" value="240" step="10"></div>
         <div class="field"><label for="rl-volts">System voltage</label>
@@ -1710,6 +1798,14 @@ function calcRelay() {
         { label: "Wire", value: awg, unit: "awg" },
         { label: "One-way length", value: len, unit: "ft" }
     ]);
+    const fuseEl = document.getElementById("rl-fig-fuse");
+    if (fuseEl) fuseEl.textContent = fuse + " A";
+    const wireEl = document.getElementById("rl-fig-wire");
+    if (wireEl) wireEl.textContent = awg + " AWG on pins 30 and 87";
+    const loadEl = document.getElementById("rl-fig-load");
+    if (loadEl) loadEl.textContent = amps.toFixed(1) + " A load";
+    const relayEl = document.getElementById("rl-fig-relay");
+    if (relayEl) relayEl.textContent = relay + " A relay";
 }
 bindCalc(calcRelay, ["rl-watts", "rl-volts", "rl-duty", "rl-len"]);
 """
@@ -3043,13 +3139,34 @@ def shock_preset(slug):
 
 def shock_html(row):
     preset = shock_preset(row["slug"])
-    primary = f"""
+    primary = SHOCK_DIAGRAM + f"""
     <div class="grid-2">
-        <div class="field"><label for="sk-use">Car</label><select id="sk-use">{options(SHOCK_USES, preset["use"])}</select></div>
-        <div class="field"><label for="sk-surface">Surface</label><select id="sk-surface">{options(SHOCK_SURFACES, preset["surface"])}</select></div>
+        <div class="field"><label for="sk-fr">Front, ride height (in)</label><input type="number" id="sk-fr" value="14.0" min="4" max="30" step="0.05"></div>
+        <div class="field"><label for="sk-fb">Front, full bump (in)</label><input type="number" id="sk-fb" value="12.5" min="4" max="30" step="0.05"></div>
     </div>
     <div class="grid-2">
+        <div class="field"><label for="sk-fd">Front, full droop (in)</label><input type="number" id="sk-fd" value="17.0" min="4" max="36" step="0.05"></div>
+        <div class="field"><label for="sk-measure">How it was measured</label>
+            <select id="sk-measure">
+                <option value="eye" selected>Eye center to eye center</option>
+                <option value="pad">Pad face to pad face</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="sk-rr">Rear, ride height (in)</label><input type="number" id="sk-rr" value="14.5" min="4" max="30" step="0.05"></div>
+        <div class="field"><label for="sk-rb">Rear, full bump (in)</label><input type="number" id="sk-rb" value="12.0" min="4" max="30" step="0.05"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="sk-rd">Rear, full droop (in)</label><input type="number" id="sk-rd" value="16.0" min="4" max="36" step="0.05"></div>
+        <div class="field"><label for="sk-use">Car</label><select id="sk-use">{options(SHOCK_USES, preset["use"])}</select></div>
+    </div>
+    <p class="field-hint">Full bump is the short center-to-center length. Full droop is the long one. Ride height is the car at race weight. Pad face to pad face takes 5/8 in off each end before the shock is chosen.</p>
+    <div class="grid-2">
+        <div class="field"><label for="sk-surface">Surface</label><select id="sk-surface">{options(SHOCK_SURFACES, preset["surface"])}</select></div>
         <div class="field"><label for="sk-tire">Tire</label><select id="sk-tire">{options(SHOCK_TIRES, preset["tire"])}</select></div>
+    </div>
+    <div class="grid-2">
         <div class="field"><label for="sk-style">Shock</label><select id="sk-style">{options(SHOCK_STYLES, preset["style"])}</select></div>
     </div>
     <div class="field"><label for="sk-brand">Adjuster scale</label><select id="sk-brand">{options(SHOCK_BRANDS, preset["brand"])}</select></div>
@@ -3070,6 +3187,13 @@ def shock_html(row):
     """
     results = """
     <p class="assess" id="sk-assess"></p>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>End</th><th>Order</th><th>Lengths</th><th>Status</th></tr></thead>
+            <tbody id="sk-order"></tbody>
+        </table>
+        <p class="field-hint">Collapsed is the longest shock body that still has 1/2 in before the bump measurement. Extended is the shortest open length that still has 1/2 in past full droop. Drag wants more of that stroke in front extension and in rear compression at ride height.</p>
+    </div>
     <div class="table-scroll">
         <table>
             <thead><tr><th>Knob</th><th>Start</th><th>What it does</th><th>Status</th></tr></thead>
@@ -3217,6 +3341,42 @@ function skMoveRow(cells) {
     return tr;
 }
 
+function skInches(value) {
+    if (unitState.system === "metric") return (value * 25.4).toFixed(1) + " mm";
+    return value.toFixed(2) + " in";
+}
+
+function skMeasured(id, fallback) {
+    let value = skNum(id, fallback);
+    const how = document.getElementById("sk-measure");
+    if (how && how.value === "pad") value -= 1.25;
+    return value;
+}
+
+function skFit(ride, bump, droop) {
+    if (!(droop > ride + 0.2 && ride > bump + 0.2)) {
+        return {
+            ok: false,
+            status: "No",
+            lengths: "Measure again",
+            detail: "Bump, ride, and droop are out of order. Bump is the short length and droop is the long length."
+        };
+    }
+    const collapsed = bump - 0.5;
+    const extended = droop + 0.5;
+    return {
+        ok: true,
+        status: "Good",
+        collapsed: collapsed,
+        extended: extended,
+        stroke: extended - collapsed,
+        compression: ride - collapsed,
+        extension: extended - ride,
+        lengths: skInches(collapsed) + " collapsed, " + skInches(extended) + " extended",
+        detail: ""
+    };
+}
+
 function calcShock() {
     const plan = skPlan();
     const brand = plan.brand;
@@ -3340,8 +3500,330 @@ function calcShock() {
             skNext(plan.rearExt, row[4], brand, true)
         ])));
     }
+    const frontFit = skFit(skMeasured("sk-fr", 14), skMeasured("sk-fb", 12.5), skMeasured("sk-fd", 17));
+    const rearFit = skFit(skMeasured("sk-rr", 14.5), skMeasured("sk-rb", 12), skMeasured("sk-rd", 16));
+    const frontBuy = (plan.double || plan.symptom === "wheelie") ? "Double adjustable" : ("Single, " + frontValve + " valve");
+    const rearBuy = (plan.double || rearWantsDouble) ? "Double adjustable" : "Single, 50/50 valve";
+    function skLengthNote(fit, end) {
+        if (!fit.ok) return fit;
+        const drag = plan.use !== "street";
+        let status = "Good";
+        let detail = "At ride, " + skInches(fit.compression) + " of compression and " + skInches(fit.extension) + " of extension are left. Stroke is " + skInches(fit.stroke) + ".";
+        if (end === "front" && drag && fit.extension + 0.05 < fit.compression) {
+            status = "Watch";
+            detail += " The front has more compression than extension. Drag wants the extra travel in extension so the nose can rise.";
+        }
+        if (end === "rear" && drag && fit.compression + 0.05 < fit.extension) {
+            status = "Watch";
+            detail += " The rear has more extension than compression. The hit needs the compression travel.";
+        }
+        if (fit.compression < 0.75 || fit.extension < 0.75) {
+            status = "Watch";
+            detail += " One end of the shaft is inside 3/4 in at ride height.";
+        }
+        return { ok: true, status: status, lengths: fit.lengths, detail: detail };
+    }
+    const frontOrder = skLengthNote(frontFit, "front");
+    const rearOrder = skLengthNote(rearFit, "rear");
+    if (!plan.double && rearWantsDouble && rearOrder.ok && rearOrder.status === "Good") rearOrder.status = "Watch";
+    if (assess && frontOrder.ok && rearOrder.ok) {
+        assess.textContent += " Order the front " + frontBuy.toLowerCase() + ", collapsed at or under " + skInches(frontFit.collapsed) + " and extended at or over " + skInches(frontFit.extended) + ". Order the rear " + rearBuy.toLowerCase() + ", collapsed at or under " + skInches(rearFit.collapsed) + " and extended at or over " + skInches(rearFit.extended) + ".";
+    }
+    const order = document.getElementById("sk-order");
+    if (order) {
+        const frontDetail = frontOrder.detail + (frontBuy.indexOf("Single") === 0 && plan.symptom === "wheelie" ? " A wheelstand is easier to bring down with a compression knob." : "");
+        const rearDetail = rearOrder.detail + (!plan.double && rearWantsDouble ? " This hit wants a compression knob, so order a double even if the clicks above are for a single." : "");
+        order.replaceChildren(
+            skRow("Front", frontBuy, frontOrder.ok ? frontOrder.lengths + ". " + frontDetail : frontOrder.detail, frontOrder.status),
+            skRow("Rear", rearBuy, rearOrder.ok ? rearOrder.lengths + ". " + rearDetail : rearOrder.detail, rearOrder.status)
+        );
+    }
 }
-bindCalc(calcShock, ["sk-use", "sk-surface", "sk-tire", "sk-style", "sk-brand", "sk-hp", "sk-weight", "sk-hit", "sk-rear", "sk-symptom", "dt-loss"]);
+bindCalc(calcShock, ["sk-use", "sk-surface", "sk-tire", "sk-style", "sk-brand", "sk-hp", "sk-weight", "sk-hit", "sk-rear", "sk-symptom", "sk-fr", "sk-fb", "sk-fd", "sk-rr", "sk-rb", "sk-rd", "sk-measure", "dt-loss"]);
+"""
+
+CV_TRANSMISSIONS = (
+    ("powerglide", "Powerglide (1.76 / 1.00)"),
+    ("th350", "TH350 (2.52 / 1.52 / 1.00)"),
+    ("th400", "TH400 (2.48 / 1.48 / 1.00)"),
+    ("4l60e", "4L60E / 4L70E (3.06, lockup 0.70)"),
+    ("4l80e", "4L80E (2.48, lockup 0.75)"),
+    ("6l80", "6L80 (4.03, lockup 0.67)"),
+    ("8l90", "8L90 (4.56, lockup 0.65)"),
+    ("10r80", "10R80 (4.70, lockup 0.64)"),
+    ("c4", "C4 (2.46 / 1.46 / 1.00)"),
+    ("c6", "C6 (2.46 / 1.46 / 1.00)"),
+    ("727", "Torqueflite 727 (2.45 / 1.45 / 1.00)"),
+    ("904", "Torqueflite 904 (2.74 / 1.54 / 1.00)"),
+    ("zf8hp", "8HP70 / 8HP90 (4.71, lockup 0.67)"),
+)
+CV_USES = (("street", "Street"), ("strip", "Street-strip"), ("drag", "Drag"))
+CV_TRACKS = (("street", "Street tire"), ("radial", "Radial prep"), ("prepped", "Prepped slick"), ("noprep", "No prep"))
+CV_HOLDS = (("foot", "Foot brake"), ("transbrake", "Trans brake"))
+
+
+def _cv(**overrides):
+    preset = {
+        "use": "drag",
+        "track": "prepped",
+        "trans": "th400",
+        "hold": "transbrake",
+        "tq": "500",
+        "tqrpm": "4800",
+        "hp": "750",
+        "hprpm": "6800",
+        "rear": "3.73",
+        "tire": "28.0",
+        "shift": "7000",
+        "mph": "70",
+        "spec": "TH400, 500 lb-ft at 4,800 RPM, prepped slick, trans brake",
+    }
+    preset.update(overrides)
+    return preset
+
+
+CV_PRESETS = {
+    "torque-converter-calculator": _cv(),
+    "street-lockup-converter-calculator": _cv(
+        use="street", track="street", trans="4l80e", hold="foot",
+        tq="400", tqrpm="3600", hp="420", hprpm="5400", rear="3.55", tire="28.0", shift="5600",
+        spec="4L80E lockup, 400 lb-ft at 3,600 RPM, street",
+    ),
+    "powerglide-converter-calculator": _cv(
+        trans="powerglide", tq="620", tqrpm="5600", hp="900", hprpm="7400", rear="4.10", tire="28.0", shift="7600",
+        spec="Powerglide, 620 lb-ft at 5,600 RPM, prepped slick, trans brake",
+    ),
+    "th400-converter-calculator": _cv(
+        spec="TH400, 500 lb-ft at 4,800 RPM, prepped slick, trans brake",
+    ),
+    "no-prep-converter-calculator": _cv(
+        track="noprep", hold="foot", tq="700", tqrpm="5200", hp="1100", hprpm="7000", rear="3.50", tire="29.0", shift="7200",
+        spec="no prep, 700 lb-ft at 5,200 RPM, foot brake",
+    ),
+    "radial-converter-calculator": _cv(
+        use="strip", track="radial", hold="foot", tq="550", tqrpm="4600", hp="800", hprpm="6400", rear="3.73", tire="28.0", shift="6800",
+        spec="radial prep, 550 lb-ft at 4,600 RPM, foot brake",
+    ),
+    "trans-brake-converter-calculator": _cv(
+        tq="640", tqrpm="6000", hp="1000", hprpm="7600", rear="4.10", tire="28.0", shift="7800",
+        spec="trans brake, 640 lb-ft at 6,000 RPM, prepped slick",
+    ),
+    "footbrake-converter-calculator": _cv(
+        hold="foot", tq="450", tqrpm="6400", hp="900", hprpm="7800", rear="4.10", tire="28.0", shift="8000",
+        spec="foot brake, 450 lb-ft at 6,400 RPM, small-core stall",
+    ),
+    "street-strip-converter-calculator": _cv(
+        use="strip", track="radial", trans="4l60e", hold="foot",
+        tq="450", tqrpm="4200", hp="550", hprpm="6000", rear="3.73", tire="28.0", shift="6200",
+        spec="4L60E lockup, street-strip, 450 lb-ft at 4,200 RPM",
+    ),
+}
+
+
+def cv_preset(slug):
+    return CV_PRESETS.get(slug, CV_PRESETS["torque-converter-calculator"])
+
+
+def converter_html(row):
+    preset = cv_preset(row["slug"])
+    primary = f"""
+    <div class="grid-2">
+        <div class="field"><label for="cv-use">Car</label><select id="cv-use">{options(CV_USES, preset["use"])}</select></div>
+        <div class="field"><label for="cv-track">Surface</label><select id="cv-track">{options(CV_TRACKS, preset["track"])}</select></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cv-trans">Transmission</label><select id="cv-trans">{options(CV_TRANSMISSIONS, preset["trans"])}</select></div>
+        <div class="field"><label for="cv-hold">How it is held</label><select id="cv-hold">{options(CV_HOLDS, preset["hold"])}</select></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cv-tq">Peak torque (lb-ft)</label><input type="number" id="cv-tq" value="{esc(preset["tq"])}" min="100" max="2500" step="10"></div>
+        <div class="field"><label for="cv-tqrpm">Torque peak (RPM)</label><input type="number" id="cv-tqrpm" value="{esc(preset["tqrpm"])}" min="1500" max="9000" step="50"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cv-hp">Peak power</label><input type="number" id="cv-hp" value="{esc(preset["hp"])}" min="100" max="4000" step="10"></div>
+        <div class="field"><label for="cv-hprpm">Power peak (RPM)</label><input type="number" id="cv-hprpm" value="{esc(preset["hprpm"])}" min="2000" max="10000" step="50"></div>
+    </div>
+    <p class="field-hint">Brake stall is the RPM with the turbine held. It follows the torque at that RPM and the converter's K-factor. Weight does not change it. The tire and the gear decide whether that stall hooks.</p>
+    """
+    advanced = f"""
+    <div class="grid-2">
+        <div class="field"><label for="cv-rear">Rear gear</label><input type="number" id="cv-rear" value="{esc(preset["rear"])}" min="2" max="6.5" step="0.01"></div>
+        <div class="field"><label for="cv-tire">Tire diameter (in)</label><input type="number" id="cv-tire" value="{esc(preset["tire"])}" min="18" max="40" step="0.1"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="cv-shift">Shift RPM</label><input type="number" id="cv-shift" value="{esc(preset["shift"])}" min="2000" max="11000" step="50"></div>
+        <div class="field"><label for="cv-mph">Cruise (MPH)</label><input type="number" id="cv-mph" value="{esc(preset["mph"])}" min="30" max="100" step="1"></div>
+    </div>
+    {LOSS_FIELDS}
+    """
+    results = """
+    <p class="assess" id="cv-assess"></p>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>Check</th><th>Number</th><th>What to order</th><th>Status</th></tr></thead>
+            <tbody id="cv-matrix"></tbody>
+        </table>
+        <p class="field-hint">K-factor is brake stall divided by the square root of the torque at that RPM. Give the shop the stall, the torque, the K, and the stall torque ratio. The core diameter is the usual can for that stall. The stator and the vane angle are what set it.</p>
+    </div>
+    """
+    return calculator_shell(primary, advanced, "Print converter sheet", power_toggle=True, results_extra=results)
+
+
+CONVERTER_SCRIPT = r"""
+const CV_TRANS = {
+    powerglide: { name: "Powerglide", first: 1.76, top: 1.00, lock: false },
+    th350: { name: "TH350", first: 2.52, top: 1.00, lock: false },
+    th400: { name: "TH400", first: 2.48, top: 1.00, lock: false },
+    "4l60e": { name: "4L60E", first: 3.06, top: 0.70, lock: true },
+    "4l80e": { name: "4L80E", first: 2.48, top: 0.75, lock: true },
+    "6l80": { name: "6L80", first: 4.027, top: 0.667, lock: true },
+    "8l90": { name: "8L90", first: 4.56, top: 0.65, lock: true },
+    "10r80": { name: "10R80", first: 4.696, top: 0.636, lock: true },
+    c4: { name: "C4", first: 2.46, top: 1.00, lock: false },
+    c6: { name: "C6", first: 2.46, top: 1.00, lock: false },
+    "727": { name: "727", first: 2.45, top: 1.00, lock: false },
+    "904": { name: "904", first: 2.74, top: 1.00, lock: false },
+    zf8hp: { name: "8HP", first: 4.714, top: 0.667, lock: true }
+};
+
+function cvNum(id, fallback) {
+    const el = document.getElementById(id);
+    const value = el ? parseFloat(el.value) : NaN;
+    return Number.isFinite(value) ? value : fallback;
+}
+
+function cvCore(stall) {
+    if (stall < 2600) return "12 in";
+    if (stall < 3400) return "11 in";
+    if (stall < 4300) return "10 in";
+    if (stall < 5000) return "9.5 in";
+    if (stall < 5600) return "9 in";
+    return "8 in";
+}
+
+function cvRow(name, detail, result, status) {
+    const tr = document.createElement("tr");
+    if (status === "No") tr.className = "is-small";
+    const badge = status === "Good" ? "badge-ok" : (status === "Watch" ? "badge-tight" : "badge-no");
+    [name, detail, result].forEach(text => {
+        const td = document.createElement("td");
+        td.textContent = text;
+        tr.appendChild(td);
+    });
+    const statusCell = document.createElement("td");
+    const pill = document.createElement("span");
+    pill.className = "badge " + badge;
+    pill.textContent = status;
+    statusCell.appendChild(pill);
+    tr.appendChild(statusCell);
+    return tr;
+}
+
+function cvTorqueAt(stall, tq, tqRpm, hpTorque, hpRpm) {
+    if (stall >= hpRpm) return hpTorque;
+    if (stall >= tqRpm) {
+        const span = Math.max(1, hpRpm - tqRpm);
+        return tq + (hpTorque - tq) * ((stall - tqRpm) / span);
+    }
+    return tq * Math.pow(Math.max(0.35, stall / tqRpm), 0.4);
+}
+
+function calcConverter() {
+    const use = document.getElementById("cv-use").value || "drag";
+    const track = document.getElementById("cv-track").value || "prepped";
+    const trans = CV_TRANS[document.getElementById("cv-trans").value] || CV_TRANS.th400;
+    const hold = document.getElementById("cv-hold").value || "transbrake";
+    const hpTyped = cvNum("cv-hp", 750);
+    const hp = Math.max(50, crankHorsepower(hpTyped));
+    const scale = hp / Math.max(50, hpTyped);
+    const tq = Math.max(80, cvNum("cv-tq", 500) * scale);
+    let tqRpm = Math.max(1500, cvNum("cv-tqrpm", 4800));
+    let hpRpm = Math.max(2000, cvNum("cv-hprpm", 6800));
+    if (hpRpm <= tqRpm + 100) hpRpm = tqRpm + 800;
+    const rear = Math.max(2, cvNum("cv-rear", 3.73));
+    const tire = Math.max(18, cvNum("cv-tire", 28));
+    const shift = Math.max(2000, cvNum("cv-shift", 7000));
+    const mph = Math.max(30, cvNum("cv-mph", 70));
+    const hpTorque = hp * 5252 / hpRpm;
+    let offset = 600;
+    if (use === "street") offset = 400;
+    else if (use === "strip") offset = 450;
+    if (track === "noprep") offset = Math.max(offset, 900);
+    let stall = Math.max(1400, tqRpm - offset);
+    const cruise = (mph * trans.top * rear * 336) / tire;
+    let cruiseStatus = "Good";
+    let cruiseDetail = "Cruise in top gear is " + Math.round(cruise).toLocaleString("en-US") + " RPM. The stall sits under it.";
+    if (use === "drag" && stall > cruise - 200) {
+        cruiseStatus = "Watch";
+        cruiseDetail = "At " + Math.round(mph) + " MPH in high gear the engine is at " + Math.round(cruise).toLocaleString("en-US") + " RPM. This stall is for the track, and it will slip if the car is driven there unlocked.";
+    } else if (!trans.lock && stall > cruise - 500) {
+        stall = Math.max(1400, cruise - 500);
+        cruiseStatus = "Watch";
+        cruiseDetail = "Unlocked cruise is " + Math.round(cruise).toLocaleString("en-US") + " RPM, so the stall is held about 500 RPM under it. A later cam needs a lockup gear or a shorter top gear.";
+    } else if (trans.lock && stall > cruise - 200) {
+        cruiseStatus = "Watch";
+        cruiseDetail = "Cruise is " + Math.round(cruise).toLocaleString("en-US") + " RPM. Lock the converter there. Unlocked, this stall slips on the highway.";
+    }
+    const torque = Math.max(40, cvTorqueAt(stall, tq, tqRpm, hpTorque, hpRpm));
+    const kFactor = stall / Math.sqrt(torque);
+    let str = 2.15;
+    if (use === "street" || track === "street") str = 1.9;
+    else if (track === "noprep") str = 1.85;
+    else if (use === "drag" && track === "prepped") str = 2.35;
+    else if (use === "strip") str = 2.05;
+    const core = cvCore(stall);
+    const coreIn = parseFloat(core);
+    let holdStatus = "Good";
+    let holdDetail = hold === "transbrake"
+        ? "A trans brake holds the turbine, so the engine can reach this brake stall."
+        : "The foot brake has to hold the torque this converter multiplies. If the car pushes through it, the stall you see is short of this number.";
+    if (hold === "foot" && coreIn <= 9 && str >= 2.2) {
+        holdStatus = "Watch";
+        holdDetail = "A small core with a high stall torque ratio can push through the foot brake before the engine reaches this stall. A trans brake holds the turbine so it can.";
+    }
+    let shiftStatus = "Good";
+    let shiftDetail = "The shift is " + (shift / stall).toFixed(2) + " times the stall, so the converter is coupling before the gear change.";
+    if (shift < stall) {
+        shiftStatus = "No";
+        shiftDetail = "The shift is under the stall, so the converter is still at stall when the gear changes.";
+    } else if (shift < stall * 1.15) {
+        shiftStatus = "Watch";
+        shiftDetail = "The shift is barely above the stall. Raise the shift or tighten the converter so it couples first.";
+    }
+    let slip = 6;
+    if (use === "street") slip = 5;
+    if (use === "drag" && track === "prepped") slip = 7;
+    if (shift < stall * 1.15) slip = 9;
+    const axle = torque * str * trans.first * rear;
+    const underPeak = tqRpm - stall;
+    publishReadout([
+        { label: "Brake stall", value: Math.round(stall), unit: "rpm", primary: true },
+        { label: "K-factor", value: kFactor.toFixed(0), unit: "text" },
+        { label: "Stall torque ratio", value: str.toFixed(2), unit: "text" },
+        { label: "Core", value: core, unit: "text" },
+        { label: "Torque at stall", value: Math.round(torque) + " lb-ft", unit: "text" },
+        { label: "Axle torque at stall", value: Math.round(axle).toLocaleString("en-US") + " lb-ft", unit: "text" }
+    ]);
+    const assess = document.getElementById("cv-assess");
+    if (assess) {
+        const lockNote = trans.lock ? " This transmission can lock the converter in top gear." : " This transmission does not lock the converter.";
+        assess.textContent = "Order a " + trans.name + " converter with a brake stall of " + Math.round(stall).toLocaleString("en-US") + " RPM at " + Math.round(torque) + " lb-ft. That is a K-factor of " + kFactor.toFixed(0) + " and a stall torque ratio near " + str.toFixed(2) + ". The stall is " + Math.round(underPeak).toLocaleString("en-US") + " RPM under the torque peak so the engine can accelerate through it. The usual core is " + core + ". The stator and the vane angle set the stall." + lockNote + " At the shift, type about " + slip + "% slip into the gear calculator. A locked gear is 0%.";
+    }
+    const body = document.getElementById("cv-matrix");
+    if (body) {
+        body.replaceChildren(
+            cvRow("Brake stall", Math.round(stall).toLocaleString("en-US") + " RPM", Math.round(tqRpm - stall).toLocaleString("en-US") + " RPM under the torque peak. An unlocked street converter is also held under cruise.", "Good"),
+            cvRow("K-factor", kFactor.toFixed(0), "Stall RPM divided by the square root of " + Math.round(torque) + " lb-ft. This is the number the shop builds to.", "Good"),
+            cvRow("Stall torque ratio", str.toFixed(2), track === "noprep" || track === "street" ? "Kept down so the hit does not shock the tire." : "As high as this surface can take. More multiplies the hit and makes the car harder to hold.", "Good"),
+            cvRow("Core", core, "A smaller can can stall higher, and it can also foot-brake lower when the torque ratio pushes the car. Order the K-factor, not the can by itself.", "Good"),
+            cvRow("Cruise", Math.round(cruise).toLocaleString("en-US") + " RPM", cruiseDetail, cruiseStatus),
+            cvRow("Shift", Math.round(shift).toLocaleString("en-US") + " RPM", shiftDetail, shiftStatus),
+            cvRow(hold === "transbrake" ? "Trans brake" : "Foot brake", trans.first.toFixed(2) + " first gear", holdDetail, holdStatus),
+            cvRow("Gear calculator", slip + "% at the shift", "That is the slip to type into the transmission calculator. Lockup in top gear is 0% once it is locked.", "Good")
+        );
+    }
+}
+bindCalc(calcConverter, ["cv-use", "cv-track", "cv-trans", "cv-hold", "cv-tq", "cv-tqrpm", "cv-hp", "cv-hprpm", "cv-rear", "cv-tire", "cv-shift", "cv-mph", "dt-loss"]);
 """
 
 WIDGETS = {
@@ -3406,12 +3888,17 @@ WIDGETS = {
         N2O_SCRIPT,
     ),
     "Shock": (
-        "Front extension slows the rise. Rear compression softens the hit. A single adjustable moves rebound only. A double adjustable adds compression, which is the rear hit and the speed the nose comes back down. Clicks count from full soft toward firm.",
+        "Front extension slows the rise. Rear compression softens the hit. A single adjustable moves rebound only. A double adjustable adds compression, which is the rear hit and the speed the nose comes back down. Clicks count from full soft toward firm. Order the shock 1/2 in short of the bump measurement and 1/2 in longer than full droop.",
         shock_html,
         SHOCK_SCRIPT,
     ),
+    "Converter": (
+        "K = Brake stall RPM / sqrt(torque at that RPM). Brake stall is set under the torque peak so the engine can accelerate through it. Stall torque ratio is as high as the tire can take. Cruise RPM = (MPH x top gear x rear gear x 336) / tire diameter, and an unlocked converter has to stall under that.",
+        converter_html,
+        CONVERTER_SCRIPT,
+    ),
     "Electrical": (
-        "Load Amps = Watts / Voltage | Design Amps = Load x Duty Factor. Relay, fuse, and wire size sit above that current.",
+        "Load Amps = Watts / Voltage | Design Amps = Load x Duty Factor. Relay, fuse, and wire size sit above that current. Pin 30 is the fused battery feed, pin 87 feeds the load, pin 86 is the switch, and pin 85 is ground.",
         electrical_html,
         ELECTRICAL_SCRIPT,
     ),
@@ -3547,11 +4034,18 @@ TRACKSIDE_NOTES = {
         ("What does the front extension knob do?", "On the launch the front shock gets longer. That circuit is extension. More extension slows the rise and softens the hit. Less extension lets the nose come up faster and plants the tire harder."),
         ("Why is rear compression the hit knob?", "The rear shock gets shorter as the car squats. More compression keeps the tire from getting shocked. Rear extension is the recovery and the gear change, not the first hit. A single adjustable cannot move compression."),
         ("How do prepped, radial prep, and no prep differ?", "A prepped slick can take a faster hit, so front extension and rear compression stay softer. Radial prep is the middle. No prep breaks loose if the hit is sharp, so those two knobs go firmer. The shock cannot invent grip the track does not have."),
+        ("Which shock do I order?", "Measure center to center at ride, at full bump, and at full droop. Order a collapsed length at least 1/2 in shorter than the bump measurement and an extended length at least 1/2 in longer than droop. The front wants more of that stroke in extension. The rear wants more of it in compression."),
     ),
     "Electrical": (
         ("How is the circuit current found?", "Load amps are watts divided by voltage. Size the wire, fuse, and relay above that, and apply a duty factor for a fan or pump that is not on full time."),
         ("Why size the wire for the run length?", "Voltage drop grows with current and length. A fuel pump at the back of the car needs a larger gauge than the same pump next to the battery."),
         ("What does the relay protect?", "The relay lets a small switch current close a high-current path. The fuse protects the wire, and it belongs at the power source."),
+        ("Which pin is which?", "Pin 30 is battery power through the fuse. Pin 87 goes to the pump or fan on the same gauge. Pin 86 is the switch, on 18 AWG. Pin 85 is ground. A diode inside the relay wants 86 on power and 85 on ground."),
+    ),
+    "Converter": (
+        ("What is K-factor?", "K-factor is brake stall RPM divided by the square root of engine torque at that RPM. The same converter stalls higher behind an engine with more torque. Give the shop the K, the stall, and the torque, not a stall number with no engine attached."),
+        ("Where should the stall sit?", "Brake stall wants to land about 500 to 700 RPM under the torque peak so the engine accelerates through the converter instead of starting above it. A no-prep tire wants it lower. An unlocked street converter also has to stall under cruise RPM."),
+        ("Why is the car weight not in the stall?", "Brake stall is engine torque against the converter with the turbine held. Weight, the tire, and the gear decide whether that stall hooks. They do not change the RPM."),
     ),
     "CAS": (
         ("What is a compressed-air supercharger doing?", "A stored-air system raises manifold pressure from a bottle. Pressure ratio is boost plus barometer, divided by barometer."),
@@ -3650,7 +4144,7 @@ def index_page(pages, hubs):
         TITLE=esc("Ultimate Drag Racing Master Suite | Drivetrain & Shift Calculator"),
         DESCRIPTION=esc(
             "Drag racing calculators for gear ratios, turbo sizing, LS engine builds, "
-            "nitrous jetting, shock adjustments, fuel injectors, fuel pumps, supercharger pulleys, tire growth, and chassis setup."
+            "nitrous jetting, shock selection, torque converter stall, fuel injectors, fuel pumps, supercharger pulleys, tire growth, and chassis setup."
         ),
         CANONICAL=esc(f"{ORIGIN}/index.html"),
         VERIFICATION=VERIFICATION,
@@ -3755,6 +4249,9 @@ def main():
     missing_shock = [page["slug"] for page in pages if page["category"] == "Shock" and page["slug"] not in SHOCK_PRESETS]
     if missing_shock:
         raise SystemExit("Shock pages missing presets: " + ", ".join(missing_shock))
+    missing_cv = [page["slug"] for page in pages if page["category"] == "Converter" and page["slug"] not in CV_PRESETS]
+    if missing_cv:
+        raise SystemExit("Converter pages missing presets: " + ", ".join(missing_cv))
     hubs = [page for page in pages if page["role"] == "hub"]
     hubs_by_category = {page["category"]: page for page in hubs}
     if not any(page["slug"] == "transmission-shift-recovery-calculator" for page in pages):

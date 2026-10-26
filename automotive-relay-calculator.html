@@ -22,7 +22,7 @@
 <body>
     <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
     <div class="layout-grid">
-        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="drag-shock-calculator.html">Shocks</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item active" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="torque-converter-calculator.html">Torque Converter</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item" href="drag-shock-calculator.html">Shocks</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item active" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
         <section class="sticky-calculator">
             <header class="master-header">
                 <h1>Automotive Relay &amp; Circuit Sizing Calculator</h1>
@@ -30,6 +30,31 @@
             </header>
             
     <div class="field-stack">
+<figure class="measure-fig">
+    <svg viewBox="0 0 720 340" role="img" aria-label="Four pin and five pin relay wiring">
+        <rect x="270" y="70" width="180" height="150" rx="12" fill="#1c1c1c" stroke="#e50914" stroke-width="2"/>
+        <text id="rl-fig-relay" x="360" y="108" fill="#f5f5f5" font-size="16" text-anchor="middle">30 A relay</text>
+        <text x="300" y="150" fill="#a3a3a3" font-size="13">85 ground</text>
+        <text x="300" y="172" fill="#a3a3a3" font-size="13">86 switch</text>
+        <text x="390" y="150" fill="#e50914" font-size="13">30 power</text>
+        <text x="390" y="172" fill="#f5f5f5" font-size="13">87 load</text>
+        <text x="330" y="200" fill="#6f6f6f" font-size="12">87a unused</text>
+        <line x1="80" y1="146" x2="270" y2="146" stroke="#e50914" stroke-width="3"/>
+        <rect x="150" y="128" width="70" height="36" rx="6" fill="none" stroke="#e50914" stroke-width="2"/>
+        <text id="rl-fig-fuse" x="185" y="151" fill="#f5f5f5" font-size="13" text-anchor="middle">30 A</text>
+        <text x="40" y="120" fill="#f5f5f5" font-size="14">Battery</text>
+        <line x1="450" y1="168" x2="620" y2="168" stroke="#f5f5f5" stroke-width="3"/>
+        <text x="560" y="150" fill="#f5f5f5" font-size="14">Pump or fan</text>
+        <text id="rl-fig-load" x="560" y="204" fill="#a3a3a3" font-size="13">20 A load</text>
+        <line x1="300" y1="220" x2="300" y2="280" stroke="#6f6f6f" stroke-width="2"/>
+        <text x="250" y="300" fill="#a3a3a3" font-size="13">Chassis ground</text>
+        <line x1="340" y1="220" x2="340" y2="260" stroke="#a3a3a3" stroke-width="2"/>
+        <text x="360" y="268" fill="#a3a3a3" font-size="13">Small switch, 18 AWG</text>
+        <text id="rl-fig-wire" x="360" y="40" fill="#e50914" font-size="15" text-anchor="middle">12 AWG on pins 30 and 87</text>
+    </svg>
+    <figcaption>Pin 30 is battery power, and the fuse sits at the source on that wire. Pin 87 feeds the pump or fan with the same gauge. Pin 86 is the switch. Pin 85 is ground. A relay with a diode inside wants 86 on power and 85 on ground. Pin 87a is the normally closed pin and stays empty on a fan or a pump.</figcaption>
+</figure>
+
     <div class="grid-2">
         <div class="field"><label for="rl-watts">Load power (watts)</label><input type="number" id="rl-watts" value="240" step="10"></div>
         <div class="field"><label for="rl-volts">System voltage</label>
@@ -73,7 +98,7 @@
 
         </section>
         <div class="content-column">
-            <section class="content-box"><h2>Formula</h2><p class="formula">Load Amps = Watts / Voltage | Design Amps = Load x Duty Factor. Relay, fuse, and wire size sit above that current.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Automotive Relay &amp; Circuit Sizing Calculator. The inputs above are the starting point for this combination.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>How is the circuit current found?</h3><p>Load amps are watts divided by voltage. Size the wire, fuse, and relay above that, and apply a duty factor for a fan or pump that is not on full time.</p></div><div class="faq-item"><h3>Why size the wire for the run length?</h3><p>Voltage drop grows with current and length. A fuel pump at the back of the car needs a larger gauge than the same pump next to the battery.</p></div><div class="faq-item"><h3>What does the relay protect?</h3><p>The relay lets a small switch current close a high-current path. The fuse protects the wire, and it belongs at the power source.</p></div></section>
+            <section class="content-box"><h2>Formula</h2><p class="formula">Load Amps = Watts / Voltage | Design Amps = Load x Duty Factor. Relay, fuse, and wire size sit above that current. Pin 30 is the fused battery feed, pin 87 feeds the load, pin 86 is the switch, and pin 85 is ground.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Automotive Relay &amp; Circuit Sizing Calculator. The inputs above are the starting point for this combination.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>How is the circuit current found?</h3><p>Load amps are watts divided by voltage. Size the wire, fuse, and relay above that, and apply a duty factor for a fan or pump that is not on full time.</p></div><div class="faq-item"><h3>Why size the wire for the run length?</h3><p>Voltage drop grows with current and length. A fuel pump at the back of the car needs a larger gauge than the same pump next to the battery.</p></div><div class="faq-item"><h3>What does the relay protect?</h3><p>The relay lets a small switch current close a high-current path. The fuse protects the wire, and it belongs at the power source.</p></div><div class="faq-item"><h3>Which pin is which?</h3><p>Pin 30 is battery power through the fuse. Pin 87 goes to the pump or fan on the same gauge. Pin 86 is the switch, on 18 AWG. Pin 85 is ground. A diode inside the relay wants 86 on power and 85 on ground.</p></div></section>
         </div>
     </div>
     
@@ -226,6 +251,14 @@ function calcRelay() {
         { label: "Wire", value: awg, unit: "awg" },
         { label: "One-way length", value: len, unit: "ft" }
     ]);
+    const fuseEl = document.getElementById("rl-fig-fuse");
+    if (fuseEl) fuseEl.textContent = fuse + " A";
+    const wireEl = document.getElementById("rl-fig-wire");
+    if (wireEl) wireEl.textContent = awg + " AWG on pins 30 and 87";
+    const loadEl = document.getElementById("rl-fig-load");
+    if (loadEl) loadEl.textContent = amps.toFixed(1) + " A load";
+    const relayEl = document.getElementById("rl-fig-relay");
+    if (relayEl) relayEl.textContent = relay + " A relay";
 }
 bindCalc(calcRelay, ["rl-watts", "rl-volts", "rl-duty", "rl-len"]);
 

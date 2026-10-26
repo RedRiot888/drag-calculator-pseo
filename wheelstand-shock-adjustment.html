@@ -22,7 +22,7 @@
 <body>
     <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
     <div class="layout-grid">
-        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item active" href="drag-shock-calculator.html">Shocks</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="torque-converter-calculator.html">Torque Converter</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item active" href="drag-shock-calculator.html">Shocks</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
         <section class="sticky-calculator">
             <header class="master-header">
                 <h1>Wheelstand Shock Adjustment Calculator</h1>
@@ -30,18 +30,58 @@
             </header>
             
     <div class="field-stack">
+<figure class="measure-fig">
+    <svg viewBox="0 0 720 300" role="img" aria-label="How to measure a shock">
+        <circle cx="120" cy="42" r="16" fill="none" stroke="#f5f5f5" stroke-width="3"/>
+        <line x1="120" y1="58" x2="120" y2="214" stroke="#e50914" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="120" cy="232" r="16" fill="none" stroke="#f5f5f5" stroke-width="3"/>
+        <text x="156" y="48" fill="#f5f5f5" font-size="16">Extended</text>
+        <text x="156" y="130" fill="#a3a3a3" font-size="14">Center of the top eye</text>
+        <text x="156" y="150" fill="#a3a3a3" font-size="14">to center of the bottom eye</text>
+        <circle cx="430" cy="78" r="16" fill="none" stroke="#f5f5f5" stroke-width="3"/>
+        <line x1="430" y1="94" x2="430" y2="176" stroke="#e50914" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="430" cy="194" r="16" fill="none" stroke="#f5f5f5" stroke-width="3"/>
+        <text x="466" y="84" fill="#f5f5f5" font-size="16">Collapsed</text>
+        <text x="466" y="140" fill="#a3a3a3" font-size="14">Same two centers,</text>
+        <text x="466" y="160" fill="#a3a3a3" font-size="14">shock fully short</text>
+        <text x="40" y="276" fill="#a3a3a3" font-size="14">Ride height is the same measurement with the car at race weight.</text>
+    </svg>
+    <figcaption>Measure the mounts, not the tire. Full bump is the short length against the bump stop. Full droop is the long length on the strap or at full hang. The shock you order stays 1/2 in short of bump and 1/2 in longer than droop, so the shock is not the travel stop.</figcaption>
+</figure>
+
     <div class="grid-2">
+        <div class="field"><label for="sk-fr">Front, ride height (in)</label><input type="number" id="sk-fr" value="14.0" min="4" max="30" step="0.05"></div>
+        <div class="field"><label for="sk-fb">Front, full bump (in)</label><input type="number" id="sk-fb" value="12.5" min="4" max="30" step="0.05"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="sk-fd">Front, full droop (in)</label><input type="number" id="sk-fd" value="17.0" min="4" max="36" step="0.05"></div>
+        <div class="field"><label for="sk-measure">How it was measured</label>
+            <select id="sk-measure">
+                <option value="eye" selected>Eye center to eye center</option>
+                <option value="pad">Pad face to pad face</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="sk-rr">Rear, ride height (in)</label><input type="number" id="sk-rr" value="14.5" min="4" max="30" step="0.05"></div>
+        <div class="field"><label for="sk-rb">Rear, full bump (in)</label><input type="number" id="sk-rb" value="12.0" min="4" max="30" step="0.05"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="sk-rd">Rear, full droop (in)</label><input type="number" id="sk-rd" value="16.0" min="4" max="36" step="0.05"></div>
         <div class="field"><label for="sk-use">Car</label><select id="sk-use"><option value="strip">Street-strip</option>
 <option value="drag" selected>Drag car</option>
 <option value="street">Street car</option></select></div>
+    </div>
+    <p class="field-hint">Full bump is the short center-to-center length. Full droop is the long one. Ride height is the car at race weight. Pad face to pad face takes 5/8 in off each end before the shock is chosen.</p>
+    <div class="grid-2">
         <div class="field"><label for="sk-surface">Surface</label><select id="sk-surface"><option value="radial">Radial prep</option>
 <option value="prepped" selected>Prepped</option>
 <option value="noprep">No prep</option></select></div>
-    </div>
-    <div class="grid-2">
         <div class="field"><label for="sk-tire">Tire</label><select id="sk-tire"><option value="radial">Drag radial</option>
 <option value="slick" selected>Bias slick</option>
 <option value="street">Street tire</option></select></div>
+    </div>
+    <div class="grid-2">
         <div class="field"><label for="sk-style">Shock</label><select id="sk-style"><option value="double" selected>Double adjustable</option>
 <option value="single">Single adjustable</option></select></div>
     </div>
@@ -104,6 +144,13 @@
     <p class="assess" id="sk-assess"></p>
     <div class="table-scroll">
         <table>
+            <thead><tr><th>End</th><th>Order</th><th>Lengths</th><th>Status</th></tr></thead>
+            <tbody id="sk-order"></tbody>
+        </table>
+        <p class="field-hint">Collapsed is the longest shock body that still has 1/2 in before the bump measurement. Extended is the shortest open length that still has 1/2 in past full droop. Drag wants more of that stroke in front extension and in rear compression at ride height.</p>
+    </div>
+    <div class="table-scroll">
+        <table>
             <thead><tr><th>Knob</th><th>Start</th><th>What it does</th><th>Status</th></tr></thead>
             <tbody id="sk-matrix"></tbody>
         </table>
@@ -121,7 +168,7 @@
 
         </section>
         <div class="content-column">
-            <section class="content-box"><h2>Formula</h2><p class="formula">Front extension slows the rise. Rear compression softens the hit. A single adjustable moves rebound only. A double adjustable adds compression, which is the rear hit and the speed the nose comes back down. Clicks count from full soft toward firm.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Wheelstand Shock Adjustment Calculator. Loaded defaults: wheelstand correction, prepped slick, on the brake.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>What does the front extension knob do?</h3><p>On the launch the front shock gets longer. That circuit is extension. More extension slows the rise and softens the hit. Less extension lets the nose come up faster and plants the tire harder.</p></div><div class="faq-item"><h3>Why is rear compression the hit knob?</h3><p>The rear shock gets shorter as the car squats. More compression keeps the tire from getting shocked. Rear extension is the recovery and the gear change, not the first hit. A single adjustable cannot move compression.</p></div><div class="faq-item"><h3>How do prepped, radial prep, and no prep differ?</h3><p>A prepped slick can take a faster hit, so front extension and rear compression stay softer. Radial prep is the middle. No prep breaks loose if the hit is sharp, so those two knobs go firmer. The shock cannot invent grip the track does not have.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="drag-shock-calculator.html">Drag Racing Shock Adjustment Calculator</a></li><li><a href="afco-drag-shock-calculator.html">Afco Drag Shock Adjustment Calculator</a></li><li><a href="double-adjustable-drag-shock-calculator.html">Double Adjustable Drag Shock Calculator</a></li><li><a href="four-link-shock-calculator.html">Four Link Drag Shock Calculator</a></li><li><a href="ladder-bar-shock-calculator.html">Ladder Bar Drag Shock Calculator</a></li><li><a href="no-prep-shock-calculator.html">No Prep Shock Calculator</a></li><li><a href="prepped-slick-shock-calculator.html">Prepped Surface Drag Shock Calculator</a></li></ul></div></div></details>
+            <section class="content-box"><h2>Formula</h2><p class="formula">Front extension slows the rise. Rear compression softens the hit. A single adjustable moves rebound only. A double adjustable adds compression, which is the rear hit and the speed the nose comes back down. Clicks count from full soft toward firm. Order the shock 1/2 in short of the bump measurement and 1/2 in longer than full droop.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Wheelstand Shock Adjustment Calculator. Loaded defaults: wheelstand correction, prepped slick, on the brake.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>What does the front extension knob do?</h3><p>On the launch the front shock gets longer. That circuit is extension. More extension slows the rise and softens the hit. Less extension lets the nose come up faster and plants the tire harder.</p></div><div class="faq-item"><h3>Why is rear compression the hit knob?</h3><p>The rear shock gets shorter as the car squats. More compression keeps the tire from getting shocked. Rear extension is the recovery and the gear change, not the first hit. A single adjustable cannot move compression.</p></div><div class="faq-item"><h3>How do prepped, radial prep, and no prep differ?</h3><p>A prepped slick can take a faster hit, so front extension and rear compression stay softer. Radial prep is the middle. No prep breaks loose if the hit is sharp, so those two knobs go firmer. The shock cannot invent grip the track does not have.</p></div><div class="faq-item"><h3>Which shock do I order?</h3><p>Measure center to center at ride, at full bump, and at full droop. Order a collapsed length at least 1/2 in shorter than the bump measurement and an extended length at least 1/2 in longer than droop. The front wants more of that stroke in extension. The rear wants more of it in compression.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="drag-shock-calculator.html">Drag Racing Shock Adjustment Calculator</a></li><li><a href="afco-drag-shock-calculator.html">Afco Drag Shock Adjustment Calculator</a></li><li><a href="double-adjustable-drag-shock-calculator.html">Double Adjustable Drag Shock Calculator</a></li><li><a href="four-link-shock-calculator.html">Four Link Drag Shock Calculator</a></li><li><a href="ladder-bar-shock-calculator.html">Ladder Bar Drag Shock Calculator</a></li><li><a href="no-prep-shock-calculator.html">No Prep Shock Calculator</a></li><li><a href="prepped-slick-shock-calculator.html">Prepped Surface Drag Shock Calculator</a></li></ul></div></div></details>
         </div>
     </div>
     
@@ -374,6 +421,42 @@ function skMoveRow(cells) {
     return tr;
 }
 
+function skInches(value) {
+    if (unitState.system === "metric") return (value * 25.4).toFixed(1) + " mm";
+    return value.toFixed(2) + " in";
+}
+
+function skMeasured(id, fallback) {
+    let value = skNum(id, fallback);
+    const how = document.getElementById("sk-measure");
+    if (how && how.value === "pad") value -= 1.25;
+    return value;
+}
+
+function skFit(ride, bump, droop) {
+    if (!(droop > ride + 0.2 && ride > bump + 0.2)) {
+        return {
+            ok: false,
+            status: "No",
+            lengths: "Measure again",
+            detail: "Bump, ride, and droop are out of order. Bump is the short length and droop is the long length."
+        };
+    }
+    const collapsed = bump - 0.5;
+    const extended = droop + 0.5;
+    return {
+        ok: true,
+        status: "Good",
+        collapsed: collapsed,
+        extended: extended,
+        stroke: extended - collapsed,
+        compression: ride - collapsed,
+        extension: extended - ride,
+        lengths: skInches(collapsed) + " collapsed, " + skInches(extended) + " extended",
+        detail: ""
+    };
+}
+
 function calcShock() {
     const plan = skPlan();
     const brand = plan.brand;
@@ -497,8 +580,46 @@ function calcShock() {
             skNext(plan.rearExt, row[4], brand, true)
         ])));
     }
+    const frontFit = skFit(skMeasured("sk-fr", 14), skMeasured("sk-fb", 12.5), skMeasured("sk-fd", 17));
+    const rearFit = skFit(skMeasured("sk-rr", 14.5), skMeasured("sk-rb", 12), skMeasured("sk-rd", 16));
+    const frontBuy = (plan.double || plan.symptom === "wheelie") ? "Double adjustable" : ("Single, " + frontValve + " valve");
+    const rearBuy = (plan.double || rearWantsDouble) ? "Double adjustable" : "Single, 50/50 valve";
+    function skLengthNote(fit, end) {
+        if (!fit.ok) return fit;
+        const drag = plan.use !== "street";
+        let status = "Good";
+        let detail = "At ride, " + skInches(fit.compression) + " of compression and " + skInches(fit.extension) + " of extension are left. Stroke is " + skInches(fit.stroke) + ".";
+        if (end === "front" && drag && fit.extension + 0.05 < fit.compression) {
+            status = "Watch";
+            detail += " The front has more compression than extension. Drag wants the extra travel in extension so the nose can rise.";
+        }
+        if (end === "rear" && drag && fit.compression + 0.05 < fit.extension) {
+            status = "Watch";
+            detail += " The rear has more extension than compression. The hit needs the compression travel.";
+        }
+        if (fit.compression < 0.75 || fit.extension < 0.75) {
+            status = "Watch";
+            detail += " One end of the shaft is inside 3/4 in at ride height.";
+        }
+        return { ok: true, status: status, lengths: fit.lengths, detail: detail };
+    }
+    const frontOrder = skLengthNote(frontFit, "front");
+    const rearOrder = skLengthNote(rearFit, "rear");
+    if (!plan.double && rearWantsDouble && rearOrder.ok && rearOrder.status === "Good") rearOrder.status = "Watch";
+    if (assess && frontOrder.ok && rearOrder.ok) {
+        assess.textContent += " Order the front " + frontBuy.toLowerCase() + ", collapsed at or under " + skInches(frontFit.collapsed) + " and extended at or over " + skInches(frontFit.extended) + ". Order the rear " + rearBuy.toLowerCase() + ", collapsed at or under " + skInches(rearFit.collapsed) + " and extended at or over " + skInches(rearFit.extended) + ".";
+    }
+    const order = document.getElementById("sk-order");
+    if (order) {
+        const frontDetail = frontOrder.detail + (frontBuy.indexOf("Single") === 0 && plan.symptom === "wheelie" ? " A wheelstand is easier to bring down with a compression knob." : "");
+        const rearDetail = rearOrder.detail + (!plan.double && rearWantsDouble ? " This hit wants a compression knob, so order a double even if the clicks above are for a single." : "");
+        order.replaceChildren(
+            skRow("Front", frontBuy, frontOrder.ok ? frontOrder.lengths + ". " + frontDetail : frontOrder.detail, frontOrder.status),
+            skRow("Rear", rearBuy, rearOrder.ok ? rearOrder.lengths + ". " + rearDetail : rearOrder.detail, rearOrder.status)
+        );
+    }
 }
-bindCalc(calcShock, ["sk-use", "sk-surface", "sk-tire", "sk-style", "sk-brand", "sk-hp", "sk-weight", "sk-hit", "sk-rear", "sk-symptom", "dt-loss"]);
+bindCalc(calcShock, ["sk-use", "sk-surface", "sk-tire", "sk-style", "sk-brand", "sk-hp", "sk-weight", "sk-hit", "sk-rear", "sk-symptom", "sk-fr", "sk-fb", "sk-fd", "sk-rr", "sk-rb", "sk-rd", "sk-measure", "dt-loss"]);
 
     </script>
 </body>

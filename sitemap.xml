@@ -21,6 +21,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://dragcalculators.com/torque-converter-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://dragcalculators.com/turbo-sizing-calculator.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
@@ -1972,6 +1977,46 @@
     </url>
     <url>
         <loc>https://dragcalculators.com/shift-unload-shock-adjustment.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/street-lockup-converter-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/powerglide-converter-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/th400-converter-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/no-prep-converter-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/radial-converter-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/trans-brake-converter-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/footbrake-converter-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/street-strip-converter-calculator.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
     </url>
