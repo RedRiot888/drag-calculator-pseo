@@ -11,14 +11,15 @@ import re
 ROOT = os.path.dirname(os.path.abspath(__file__))
 CSV_PATH = os.path.join(ROOT, "pseo_pages_list.csv")
 ORIGIN = "https://dragcalculators.com"
-# Paste a measurement ID here when analytics is ready. Empty stays off the pages.
-ANALYTICS_ID = ""
+# GA4 measurement ID. Empty keeps the tag off every page.
+ANALYTICS_ID = "G-VXS2PPLZ20"
 # One line on the printed setup sheet. Empty keeps the sheet as a planning printout.
 SPONSOR_LINE = ""
 # Merchant URLs by category, filled in after an affiliate program approves the site.
 # Example: "FuelPump": (("Dual 450 class", "https://example.com/pump"),)
 AFFILIATE_LINKS = {}
 PRINT_LINE = SPONSOR_LINE or "Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order."
+SITE_BANNER = ""
 NEXT_STEPS = {
     "Fuel": (("fuel-pump-calculator", "Size the pump for this power"),),
     "FuelPump": (
@@ -286,18 +287,102 @@ STYLES = """:root {
 }
 * { box-sizing: border-box; }
 body {
+    --page-pad: 20px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg-dark);
     color: var(--text-main);
     margin: 0;
-    padding: 20px;
+    padding: 0 var(--page-pad) 20px;
     line-height: 1.5;
+}
+.site-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 calc(var(--page-pad) * -1) 16px;
+    padding: 12px var(--page-pad);
+    background: #0e0e0e;
+    border-bottom: 3px solid var(--accent-red);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+}
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    color: var(--text-main);
+    text-decoration: none;
+}
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--accent-red);
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+}
+.brand-copy { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.brand-copy strong { font-size: 1.05rem; letter-spacing: 0.01em; }
+.brand-copy em { margin-top: 2px; font-style: normal; color: var(--text-muted); font-size: 0.72rem; }
+.site-search { position: relative; flex: 1; min-width: 140px; max-width: 440px; margin-left: auto; }
+.search-results {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #1c1c1c;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+.search-results a {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    color: var(--text-main);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-color);
+}
+.search-results a strong { font-size: 0.86rem; font-weight: 650; }
+.search-results a span { color: var(--text-muted); font-size: 0.72rem; }
+.search-results a:hover, .search-results a.active { background: #242424; }
+.search-empty { margin: 0; padding: 12px; color: var(--text-muted); font-size: 0.85rem; }
+.banner-cta {
+    flex: none;
+    color: #fff;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+.banner-cta:hover { border-color: var(--accent-red); color: #fff; }
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
 }
 .back-row { max-width: 1350px; margin: 0 auto; }
 .back-link { color: var(--accent-red); font-weight: 700; font-size: 0.85rem; text-decoration: none; }
 .layout-grid {
     max-width: 1350px;
-    margin: 16px auto 0;
+    margin: 0 auto;
     display: grid;
     grid-template-columns: 240px minmax(340px, 520px) 1fr;
     gap: 25px;
@@ -305,7 +390,7 @@ body {
 }
 .nexus-sidebar {
     position: sticky;
-    top: 20px;
+    top: 78px;
     max-height: 90vh;
     overflow: auto;
     background: var(--card-bg);
@@ -494,6 +579,10 @@ tr.is-small td { color: #8d8d8d; }
 }
 .action-btn:hover { background: #c40812; }
 .action-row { display: flex; flex-direction: column; gap: 8px; }
+.setup-mail { display: flex; flex-direction: column; gap: 8px; }
+.setup-mail-row { display: flex; gap: 8px; align-items: center; }
+.setup-mail-row input { flex: 1; }
+.setup-mail-row .action-btn { width: auto; margin: 0; padding: 0 16px; height: 42px; }
 .action-secondary { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
 .action-secondary:hover { background: #242424; }
 .next-steps { display: flex; flex-direction: column; gap: 8px; }
@@ -506,7 +595,7 @@ tr.is-small td { color: #8d8d8d; }
 .shop-note { color: var(--text-muted); font-size: 0.78rem; }
 .print-sheet { display: none; }
 @media print {
-    .nexus-sidebar, .content-column, .back-row, .site-footer, .action-row, .pill-row, .next-steps, .accordion { display: none !important; }
+    .site-banner, .nexus-sidebar, .content-column, .back-row, .site-footer, .action-row, .setup-mail, .pill-row, .next-steps, .accordion { display: none !important; }
     .gear-shop, .gear-shop a, .gear-shop .shop-note { color: #111 !important; }
     .print-sheet { display: block; margin-top: 18px; color: #111; font-size: 0.85rem; }
     body, .sticky-calculator, .readout, .table-scroll, .assess, th, td { background: #fff !important; color: #111 !important; }
@@ -555,7 +644,7 @@ th { background: #202020; color: var(--accent-red); text-transform: uppercase; f
 }
 .site-footer a { color: var(--text-muted); text-decoration: none; }
 .site-footer a.accent { color: var(--accent-red); font-weight: 700; }
-.narrow { max-width: 720px; margin: 20px auto; }
+.narrow { max-width: 720px; margin: 0 auto 20px; }
 .narrow-card h1 { color: var(--text-main); font-size: 1.3rem; text-transform: uppercase; margin-top: 0; }
 .narrow-card h2 {
     color: var(--text-main);
@@ -571,8 +660,12 @@ th { background: #202020; color: var(--accent-red); text-transform: uppercase; f
     .nexus-sidebar { position: static; max-height: none; }
 }
 @media (max-width: 700px) {
-    body { padding: 12px; }
-    .grid-2, .readout-grid { grid-template-columns: 1fr; }
+    body { --page-pad: 12px; padding: 0 var(--page-pad) 12px; }
+    .site-banner { flex-wrap: wrap; }
+    .site-search { order: 3; flex-basis: 100%; max-width: none; margin-left: 0; }
+    .grid-2, .readout-grid, .setup-mail-row { grid-template-columns: 1fr; }
+    .setup-mail-row { display: grid; }
+    .setup-mail-row .action-btn { width: 100%; }
     .sticky-calculator, .content-box, .narrow-card { padding: 16px; }
     .readout-value { font-size: 2rem; }
 }
@@ -581,7 +674,7 @@ th { background: #202020; color: var(--accent-red); text-transform: uppercase; f
 PAGE_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+{{ANALYTICS}}    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{TITLE}}</title>
     <meta name="description" content="{{DESCRIPTION}}">
@@ -599,6 +692,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    {{BANNER}}
     {{BACK_ROW}}
     <div class="layout-grid">
         <aside class="nexus-sidebar">{{SIDEBAR}}</aside>
@@ -624,7 +718,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 NARROW_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+{{ANALYTICS}}    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{TITLE}}</title>
     <meta name="description" content="{{DESCRIPTION}}">
@@ -638,6 +732,7 @@ NARROW_TEMPLATE = """<!DOCTYPE html>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    {{BANNER}}
     <div class="narrow">
         <a href="index.html" class="back-link">&larr; Back to Master Hub</a>
         <article class="narrow-card">
@@ -993,6 +1088,52 @@ if (copySetup) {
         });
     });
 }
+
+function setupSummary() {
+    const lines = [];
+    const title = document.querySelector(".master-header h1");
+    if (title) lines.push(title.textContent.trim());
+    lastReadout.forEach(item => {
+        lines.push(item.label + ": " + reading(item.value, item.unit));
+    });
+    const search = setupSearch();
+    const url = location.origin + location.pathname + (search ? "?" + search : "");
+    lines.push(url);
+    return { url: url, text: lines.join("\n") };
+}
+
+const setupMail = document.getElementById("setup-mail");
+if (setupMail) {
+    setupMail.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const email = document.getElementById("setup-email");
+        const note = document.getElementById("setup-mail-note");
+        const button = setupMail.querySelector("button");
+        const summary = setupSummary();
+        const address = email ? email.value.trim() : "";
+        if (!address || !button) return;
+        button.disabled = true;
+        fetch("https://formspree.io/f/xqppzgab", {
+            method: "POST",
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: address,
+                inquiry_type: "Setup sheet",
+                setup_url: summary.url,
+                message: summary.text,
+                _subject: "Setup sheet from dragcalculators.com"
+            })
+        }).then(response => {
+            if (!response.ok) throw new Error("send failed");
+            if (note) note.textContent = "Sent. This setup is in the DragCalculators inbox with your email on it.";
+            setupMail.reset();
+        }).catch(() => {
+            if (note) note.textContent = "That send did not go through. The contact page takes the same setup.";
+        }).finally(() => {
+            button.disabled = false;
+        });
+    });
+}
 """
 
 LOSS_FIELDS = """
@@ -1034,6 +1175,14 @@ def calculator_shell(primary, advanced, print_label, extra="", power_toggle=Fals
         <button type="button" class="action-btn" onclick="window.print()">{esc(print_label)}</button>
         <button type="button" class="action-btn action-secondary" id="copy-setup">Copy link to this setup</button>
     </div>
+    <form class="setup-mail" id="setup-mail">
+        <label for="setup-email">Email this setup</label>
+        <div class="setup-mail-row">
+            <input id="setup-email" type="email" name="email" required placeholder="you@example.com" autocomplete="email">
+            <button type="submit" class="action-btn">Send</button>
+        </div>
+        <p class="field-hint" id="setup-mail-note">Sends the numbers on this page, and the address above, to DragCalculators.</p>
+    </form>
     <p class="print-sheet">{esc(PRINT_LINE)}</p>
     {extra}
 """
@@ -4830,21 +4979,145 @@ def follow_on(category):
     return "".join(parts)
 
 
+def analytics_tag():
+    if not ANALYTICS_ID:
+        return ""
+    tag = esc(ANALYTICS_ID)
+    return (
+        f'    <script async src="https://www.googletagmanager.com/gtag/js?id={tag}"></script>\n'
+        "    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}"
+        f"gtag('js',new Date());gtag('config','{tag}');</script>\n"
+    )
+
+
 def footer():
-    analytics = ""
-    if ANALYTICS_ID:
-        tag = esc(ANALYTICS_ID)
-        analytics = (
-            f'<script async src="https://www.googletagmanager.com/gtag/js?id={tag}"></script>'
-            "<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}"
-            f"gtag('js',new Date());gtag('config','{tag}');</script>"
-        )
-    return f"""
+    return """
 <footer class="site-footer">
     <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
     <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
 </footer>
-{analytics}
+"""
+
+
+SEARCH_SCRIPT = r"""
+(function () {
+    const input = document.getElementById("site-search");
+    const list = document.getElementById("site-search-results");
+    const raw = document.getElementById("site-search-data");
+    if (!input || !list || !raw) return;
+    let records = [];
+    try { records = JSON.parse(raw.textContent); } catch (err) { records = []; }
+    let active = -1;
+
+    function escapeHtml(value) {
+        return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function rank(record, query) {
+        const title = record.title.toLowerCase();
+        const group = record.group.toLowerCase();
+        const slug = record.slug.replace(/-/g, " ");
+        if ((title + " " + group + " " + slug).indexOf(query) === -1) return 99;
+        let score = record.hub ? 0 : 5;
+        if (title.indexOf(query) === 0) score -= 2;
+        else if (group.indexOf(query) === 0) score -= 1;
+        return score;
+    }
+
+    function hits() {
+        const query = input.value.trim().toLowerCase();
+        if (!query) return [];
+        return records.map(record => ({ record: record, score: rank(record, query) }))
+            .filter(item => item.score < 99)
+            .sort((a, b) => a.score - b.score || a.record.title.localeCompare(b.record.title))
+            .slice(0, 8);
+    }
+
+    function render() {
+        const found = hits();
+        active = -1;
+        if (!input.value.trim()) {
+            list.hidden = true;
+            list.innerHTML = "";
+            return;
+        }
+        list.hidden = false;
+        if (!found.length) {
+            list.innerHTML = '<p class="search-empty">No calculator matches that.</p>';
+            return;
+        }
+        list.innerHTML = found.map(item => {
+            const record = item.record;
+            return '<a href="' + record.slug + '.html"><strong>' + escapeHtml(record.title) + '</strong><span>' + escapeHtml(record.group) + '</span></a>';
+        }).join("");
+    }
+
+    function move(step) {
+        const links = list.querySelectorAll("a");
+        if (!links.length) return;
+        active = Math.max(0, Math.min(links.length - 1, active + step));
+        links.forEach((link, index) => link.classList.toggle("active", index === active));
+        links[active].scrollIntoView({ block: "nearest" });
+    }
+
+    input.addEventListener("input", render);
+    input.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowDown") {
+            event.preventDefault();
+            move(1);
+        } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+            move(-1);
+        } else if (event.key === "Enter") {
+            const links = list.querySelectorAll("a");
+            const pick = links[active] || links[0];
+            if (pick) {
+                event.preventDefault();
+                location.href = pick.getAttribute("href");
+            }
+        } else if (event.key === "Escape") {
+            list.hidden = true;
+        }
+    });
+    document.addEventListener("click", (event) => {
+        if (!event.target.closest(".site-search")) list.hidden = true;
+    });
+    input.form.addEventListener("submit", (event) => event.preventDefault());
+})();
+"""
+
+
+def search_records(pages, hubs_by_category):
+    records = []
+    for page in pages:
+        hub = hubs_by_category.get(page["category"], {})
+        records.append({
+            "slug": page["slug"],
+            "title": page["target_keyword"],
+            "group": hub.get("nav_label") or page["category"],
+            "hub": page["role"] == "hub",
+        })
+    return records
+
+
+def site_banner(records):
+    payload = json.dumps(records, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+    return f"""<header class="site-banner">
+    <a class="brand" href="index.html">
+        <span class="brand-mark">DC</span>
+        <span class="brand-copy"><strong>DragCalculators</strong><em>Setup sheets for the pass</em></span>
+    </a>
+    <form class="site-search" role="search">
+        <label class="sr-only" for="site-search">Search calculators</label>
+        <input id="site-search" type="search" placeholder="Search calculators" autocomplete="off" enterkeyhint="search">
+        <div id="site-search-results" class="search-results" hidden></div>
+    </form>
+    <a class="banner-cta" href="contact.html">Advertise</a>
+</header>
+<script type="application/json" id="site-search-data">{payload}</script>
+<script>
+{SEARCH_SCRIPT}
+</script>
 """
 
 
@@ -5055,6 +5328,8 @@ def page_tokens(page, pages, hubs, hubs_by_category):
         "CANONICAL": esc(canonical),
         "VERIFICATION": VERIFICATION,
         "ORIGIN": ORIGIN,
+        "ANALYTICS": analytics_tag(),
+        "BANNER": SITE_BANNER,
         "BACK_ROW": '<div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>',
         "SIDEBAR": sidebar(active, hubs),
         "H1": esc(page["target_keyword"]),
@@ -5089,9 +5364,9 @@ def index_page(pages, hubs):
         + content_box("Calculators", directory)
         + content_box(
             "Track sponsorships",
-            '<p class="sponsor">A sponsor line can sit on the printed setup sheet. '
-            'Advertising and partnership inquiries go through the '
-            '<a href="contact.html">contact form</a>.</p>',
+            '<p class="sponsor">A shop can take the banner across the top, the line on the printed setup sheet, '
+            'or the part links under one calculator. Tell us which tool your customer is already using. '
+            'Inquiries go through the <a href="contact.html">contact form</a>.</p>',
         )
         + content_box(
             "Track-side notes",
@@ -5111,6 +5386,8 @@ def index_page(pages, hubs):
         CANONICAL=esc(f"{ORIGIN}/index.html"),
         VERIFICATION=VERIFICATION,
         ORIGIN=ORIGIN,
+        ANALYTICS=analytics_tag(),
+        BANNER=SITE_BANNER,
         BACK_ROW="",
         SIDEBAR=sidebar("index", hubs),
         H1=esc("Ultimate Drag Racing Master Suite"),
@@ -5125,7 +5402,8 @@ def index_page(pages, hubs):
 def contact_page():
     content = """
 <h1>Contact &amp; Track Sponsorships</h1>
-<p>Advertising rates, calculator feedback, and partnership inquiries.</p>
+<p>A shop can buy the banner across the top, the line on every printed setup sheet, or the part links under one calculator: converter, shocks, fuel system, or rear gear. Rates follow the visits on that page.</p>
+<p>Calculator feedback and other partnership inquiries use the same form.</p>
 <form action="https://formspree.io/f/xqppzgab" method="POST">
     <div><label for="name">Your Name / Shop Name</label><input id="name" type="text" name="name" required placeholder="e.g. Pro Line Racing"></div>
     <div><label for="email">Your Email Address</label><input id="email" type="email" name="email" required placeholder="e.g. yourname@domain.com"></div>
@@ -5147,6 +5425,8 @@ def contact_page():
         CANONICAL=esc(f"{ORIGIN}/contact.html"),
         VERIFICATION=VERIFICATION,
         ORIGIN=ORIGIN,
+        ANALYTICS=analytics_tag(),
+        BANNER=SITE_BANNER,
         CONTENT=content,
         FOOTER=footer(),
     )
@@ -5159,7 +5439,7 @@ def privacy_page():
 <h2>1. FTC Affiliate Disclosure</h2>
 <p>In compliance with FTC guidelines, please assume that any links leading to products or services on this website are affiliate links. Ultimate Drag Racing Calculator Suite may receive monetary compensation from merchants (such as Summit Racing, Jegs, or Amazon) when visitors click on these links and complete a qualifying purchase, at no additional cost to the buyer.</p>
 <h2>2. Information We Collect</h2>
-<p>Our calculators operate entirely client-side in your web browser. Numerical values you enter (such as horsepower, gear ratios, and tire diameters) are processed locally by JavaScript and are never stored or transmitted to our servers.</p>
+<p>The calculators run in your browser. Horsepower, gear ratios, tire diameters, and the rest of the inputs stay on the page unless you choose Email this setup or the contact form. Those forms send the address you enter, and the setup or message you submit, to DragCalculators through Formspree.</p>
 <h2>3. Cookies &amp; Analytics</h2>
 <p>We may use standard analytics tools or hosting providers (such as GitHub Pages) that collect anonymous telemetry data (such as browser type, referral URLs, and visit timestamps) to help us improve site speed and performance.</p>
 """
@@ -5170,6 +5450,8 @@ def privacy_page():
         CANONICAL=esc(f"{ORIGIN}/privacy.html"),
         VERIFICATION=VERIFICATION,
         ORIGIN=ORIGIN,
+        ANALYTICS=analytics_tag(),
+        BANNER=SITE_BANNER,
         CONTENT=content,
         FOOTER=footer(),
     )
@@ -5192,6 +5474,8 @@ def not_found_page():
         CANONICAL=esc(f"{ORIGIN}/404.html"),
         VERIFICATION=VERIFICATION,
         ORIGIN=ORIGIN,
+        ANALYTICS=analytics_tag(),
+        BANNER=SITE_BANNER,
         CONTENT=content,
         FOOTER=footer(),
     )
@@ -5258,6 +5542,8 @@ def main():
         raise SystemExit("Converter pages missing presets: " + ", ".join(missing_cv))
     hubs = [page for page in pages if page["role"] == "hub"]
     hubs_by_category = {page["category"]: page for page in hubs}
+    global SITE_BANNER
+    SITE_BANNER = site_banner(search_records(pages, hubs_by_category))
     if not any(page["slug"] == "transmission-shift-recovery-calculator" for page in pages):
         raise SystemExit("CSV is missing transmission-shift-recovery-calculator, which the master hub embeds")
 
