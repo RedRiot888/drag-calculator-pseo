@@ -49,6 +49,7 @@ NEXT_STEPS = {
     "Carb": (("fuel-pump-calculator", "Size the mechanical pump for this carburetor"),),
     "Compression": (("ls-engine-builder", "Put this compression on the LS build"),),
     "Cam": (("ls-engine-builder", "Match the head and the RPM on the LS build"),),
+    "LS": (("ls-camshaft-calculator", "Order the cam for this head, RPM, and power adder"),),
 }
 # Catalog ring-and-pinion sets. The ratio list is what that housing is actually sold in.
 # bands are (max ratio, carrier note). deep is an extra note at and above that ratio.
@@ -3061,7 +3062,7 @@ def ls_html(row):
         <div class="field"><label for="ls-chamber">Chamber volume (cc)</label><input type="number" id="ls-chamber" placeholder="Auto" min="40" max="120" step="0.5"></div>
         <div class="field"><label for="ls-ivc">Intake close (deg ABDC)</label><input type="number" id="ls-ivc" placeholder="Auto" min="20" max="70" step="1"></div>
     </div>
-    <p class="field-hint">Positive dish adds volume and lowers compression. A dome is a negative number. Leave chamber and intake closing blank to use the selected head and the cam profile.</p>
+    <p class="field-hint">Positive dish adds volume and lowers compression. A dome is a negative number. Leave the chamber blank to use the selected head. Intake close stays at 40 degrees after bottom dead center until you type the number off the cam card.</p>
     {LOSS_FIELDS}
     """
     results = """
@@ -3071,7 +3072,7 @@ def ls_html(row):
             <thead><tr><th>Check</th><th>Detail</th><th>Result</th><th>Status</th></tr></thead>
             <tbody id="ls-matrix"></tbody>
         </table>
-        <p class="field-hint">Horsepower is the airflow estimate, plus the nitrous shot when that adder is selected. The power row flags a part rated below that number. The cam row is a starting profile.</p>
+        <p class="field-hint">Horsepower is the airflow estimate, plus the nitrous shot when that adder is selected. The power row flags a part rated below that number. Intake close stays at 40 degrees until you type the number from the cam card.</p>
     </div>
     """
     return calculator_shell(primary, advanced, "Print build sheet", power_toggle=True, results_extra=results)
@@ -3112,25 +3113,7 @@ function pistonFromTdc(stroke, rod, theta) {
     return half * (1 - Math.cos(theta)) + rod * (1 - Math.sqrt(inside));
 }
 
-function camPlan(intent, cid) {
-    if (intent === "turbo") {
-        return { duration: clamp(Math.round(214 + (cid - 346) * 0.04), 212, 228), lsa: 115, lift: 0.595, ivc: 34 };
-    }
-    if (intent === "super") {
-        return { duration: clamp(Math.round(216 + (cid - 346) * 0.04), 214, 230), lsa: 114, lift: 0.585, ivc: 36 };
-    }
-    if (intent === "nitrous") {
-        return { duration: clamp(Math.round(212 + (cid - 346) * 0.035), 210, 226), lsa: 113, lift: 0.570, ivc: 40 };
-    }
-    const duration = clamp(Math.round(208 + (cid - 330) * 0.07), 206, 238);
-    const lift = Math.min(0.65, 0.54 + Math.max(0, cid - 330) * 0.00045);
-    return {
-        duration: duration,
-        lsa: cid >= 400 ? 112 : 113,
-        lift: Math.round(lift * 1000) / 1000,
-        ivc: clamp(Math.round(36 + (duration - 214) * 0.45), 34, 52)
-    };
-}
+const ASSUMED_IVC = 40;
 
 function compressionBand(intent, fuel) {
     const boosted = intent !== "na";
@@ -3209,10 +3192,9 @@ function calcLs() {
     const scr = realClearance ? (swept + clearance) / clearance : 0;
     const ch = deckHeight - stroke / 2 - rodLen - deckClear;
     const rodRatio = rodLen / stroke;
-    const cam = camPlan(intent, cid);
     const ivcEl = document.getElementById("ls-ivc");
     const ivcRaw = ivcEl && ivcEl.value.trim();
-    const ivc = ivcRaw ? clamp(parseFloat(ivcRaw) || cam.ivc, 20, 70) : cam.ivc;
+    const ivc = ivcRaw ? clamp(parseFloat(ivcRaw) || ASSUMED_IVC, 20, 70) : ASSUMED_IVC;
     const effective = pistonFromTdc(stroke, rodLen, (180 + ivc) * Math.PI / 180);
     const dcr = realClearance ? (volCc(bore, effective) + clearance) / clearance : 0;
     const ve = head.cfm >= 300 ? 0.93 : (head.cfm >= 240 ? 0.88 : 0.84);
@@ -3298,7 +3280,6 @@ function calcLs() {
     const dcrResult = realClearance
         ? dcr.toFixed(2) + ":1 at " + ivc + " deg ABDC. Target " + band.dcrLo.toFixed(1) + " to " + band.dcrHi.toFixed(1) + "."
         : "No intake-closing compression until the piston clears the head.";
-    const camResult = cam.duration + " deg at 0.050, " + cam.lift.toFixed(3) + " in lift, " + cam.lsa + " LSA, intake closes " + (ivcRaw ? ivc + " deg ABDC typed" : cam.ivc + " deg ABDC") + ".";
     publishReadout([
         { label: "Displacement", value: cid, unit: "ci", primary: true },
         { label: "Stroke class", value: strokeLabel, unit: "text" },
@@ -3325,7 +3306,9 @@ function calcLs() {
         sentences.push(chResult);
         if (headStatus !== "Good") sentences.push(headResult);
         sentences.push(powerResult);
-        sentences.push("Starting cam: " + cam.duration + " degrees at 0.050, " + cam.lift.toFixed(3) + " in lift, " + cam.lsa + " LSA, intake closing " + ivc + " degrees ABDC.");
+        sentences.push(ivcRaw
+            ? "Intake closes " + ivc + " degrees ABDC from the card you typed."
+            : "Intake close is 40 degrees ABDC until you type the number from the cam card. Order that card on the LS camshaft calculator.");
         assess.textContent = sentences.join(" ");
     }
     const body = document.getElementById("ls-matrix");
@@ -3341,7 +3324,7 @@ function calcLs() {
             matrixRow("Dynamic compression", ivc + " deg ABDC", dcrResult, dcrStatus),
             matrixRow("RPM", rod.label, Math.round(rpm).toLocaleString("en-US") + " RPM. Rod planning limit is " + rod.rpm.toLocaleString("en-US") + ".", rpmStatus),
             matrixRow("Power", nitrous ? (Math.round(shot) + " HP shot") : (boosted ? (boost.toFixed(1) + " PSI") : "Naturally aspirated"), powerResult, powerStatus),
-            matrixRow("Cam profile", nitrous ? "Nitrous" : (intent === "turbo" ? "Turbo" : (intent === "super" ? "Supercharged" : "Naturally aspirated")), camResult, "Good")
+            matrixRow("Intake close", ivcRaw ? "From the card" : "40 deg until typed", ivcRaw ? (ivc + " deg ABDC, typed from the cam card.") : "40 deg ABDC is only here so dynamic compression has a number. Type the intake close from the cam card.", ivcRaw ? "Good" : "Watch")
         );
     }
 }
@@ -5393,7 +5376,7 @@ WIDGETS = {
         COMPRESSION_SCRIPT,
     ),
     "Cam": (
-        "The page orders the published cam card whose RPM range covers this cubic inch, head port, power adder, and use. Street takes the shortest card that still covers the RPM. Drag takes the longest card aimed at that RPM. Overlap at 0.050 = (intake duration + exhaust duration) / 2 - (2 x lobe separation). Nitrous, turbo, and supercharger cards are separate lists.",
+        "Overlap at 0.050 = (intake duration + exhaust duration) / 2 - (2 x lobe separation). Street uses the shorter card that still covers the RPM. Drag uses the longer card aimed at that RPM. An exhaust digit printed as 24X or 27X is left out of the overlap.",
         cam_html,
         CAM_SCRIPT,
     ),
@@ -5727,7 +5710,7 @@ TRACKSIDE_NOTES = {
     "Tire": (
         ("Why do drag tires grow?", "Centrifugal force stretches the carcass, so the rolling diameter is larger than the static measurement."),
         ("How does growth change the gear?", "A larger dynamic diameter lowers engine RPM at trap speed. The rollout and the gear chart should use that grown number."),
-        ("What growth is typical?", "A radial might grow a few percent. A slick at speed can grow more. The percentage on this page is the estimate to test, not a measured rollout."),
+        ("What growth is typical?", "A radial might grow a few percent. A slick at speed can grow more. The percent you type is the estimate to test, not a measured rollout."),
     ),
     "Wastegate": (
         ("What sets wastegate size?", "The gate has to bypass the exhaust the turbine does not swallow at the target boost. Airflow, boost, and drive pressure decide the valve area."),
@@ -5743,6 +5726,7 @@ TRACKSIDE_NOTES = {
         ("How does a stroker change the inches?", "Displacement is bore times bore times stroke times 0.7854 times 8. A 4.000 inch crank in an iron 5.3 or 6.0 adds cubes without changing the bore, as long as the piston compression height still clears the rings."),
         ("What is the difference between static and dynamic compression?", "Static compression uses the full stroke. Dynamic compression uses the piston position when the intake valve closes, so a later-closing cam bleeds some of that compression off."),
         ("Why can a part fit the block and still be the wrong part?", "An LS7 crank shares the main journal, and an LS3 head bolts to a 6.0, but the piston height, the chamber versus the bore, and the power limit still have to match the combination."),
+        ("Where is the cam?", "This build does not pick a lobe. Dynamic compression uses 40 degrees after bottom dead center until you type the intake close from the cam card. The cam calculator orders the card for the head, the cubic inches, and the power adder."),
     ),
     "FuelPump": (
         ("Why does boost change the pump and not just the injector?", "A 1:1 regulator raises rail pressure with manifold pressure, so the pump outlet is base pressure plus boost. The injector differential stays near the base, which is why injector size uses base pressure and the pump uses the higher number."),
@@ -5790,7 +5774,7 @@ TRACKSIDE_NOTES = {
     ),
     "Compression": (
         ("How is static compression calculated?", "Swept volume plus clearance volume, divided by clearance volume. Clearance is the chamber, the head gasket, the deck, and the piston dish. A dome is entered as a negative dish."),
-        ("What dish hits a target ratio?", "The page solves the dish that lands on the target once the bore, stroke, chamber, gasket, and deck are fixed. It does not pick a piston part number."),
+        ("What dish hits a target ratio?", "The dish is the volume that lands on the target once the bore, stroke, chamber, gasket, and deck are fixed. That volume is not a piston part number."),
         ("Why does a thicker gasket drop the ratio?", "A thicker gasket, or a larger gasket bore, adds clearance volume. The same piston in a bigger chamber does the same thing."),
     ),
     "Cam": (
@@ -5812,11 +5796,141 @@ TRACKSIDE_NOTES = {
 }
 
 
+NOTE_LEADS = {
+    "Transmission": "Recovery RPM has to land above the stall, and the tire in the chart is the one at the stripe.",
+    "Turbo": "Match the compressor to the pounds per minute you will run, then see if the intercooler can pull the outlet temperature down.",
+    "Suspension": "Measure from the axle center and the ground, then move one hole.",
+    "Exhaust": "Primary size follows horsepower per cylinder and where you want the torque.",
+    "Supercharger": "Pulley ratio is crank diameter divided by blower diameter. The gauge is the real boost.",
+    "RearGear": "Buy the gear for the housing you have, and size it with the tire at speed.",
+    "Tire": "The diameter that matters is the one at speed, not the number on the sidewall.",
+    "Wastegate": "The gate has to dump what the turbine will not swallow at the boost you want.",
+    "Fuel": "Buy the smallest injector that stays under about 80 percent duty at the pressure you run.",
+    "LS": "The bore, the stroke, and the piston height have to clear. The cam is a separate card.",
+    "FuelPump": "The pump has to make the flow at base pressure plus boost, not at the 40 PSI catalog number.",
+    "Nitrous": "Hold the bottle, pull the timing, then jet it.",
+    "Shock": "Front extension is the hit. Rear compression keeps the tire from getting shocked.",
+    "Electrical": "The fuse sits at the battery. The wire is sized for the amps and the length of the run.",
+    "Cooling": "A pass is about 10 seconds. Size the radiator for the temperature climb, and the fan for the lanes.",
+    "Driveline": "Measure the shaft at ride height, and stay under 75 percent of critical speed.",
+    "Power": "The alternator covers what stays on at idle. The battery covers the hit.",
+    "Carb": "A blow-through carb uses engine CFM. A draw-through carb uses that CFM times the pressure ratio.",
+    "Compression": "Compression is swept plus clearance, divided by clearance. A dome is a negative dish.",
+    "Cam": "Degree it, check piston-to-valve, and match the spring and the converter to the card before you order.",
+    "Converter": "Give the shop the torque at stall, not a stall number with no engine on it.",
+    "CAS": "The bottle, the regulator, and the nozzles have to pass the shot for the whole gear.",
+}
+
 CHEAT_ITEMS = {
+    "Transmission": (
+        "Recovery under the stall is a dead gear. The engine falls out of the converter instead of pulling.",
+        "Use the grown tire. A 28 on the sidewall that is 29 at the stripe is a different gear.",
+        "Finish-line slip on a tight converter is usually 5 to 8 percent. A loose converter is more. Zero slip is a manual or a locked gear.",
+    ),
+    "Turbo": (
+        "Read the compressor map at the boost you race, not at the choke line.",
+        "A boost number that is short of the horsepower target means the engine runs out of air first.",
+        "Outlet temperature is what the intercooler has to pull out. Pressure ratio and efficiency set it.",
+    ),
+    "Suspension": (
+        "Door cars that hook usually land around 100 to 140 percent anti-squat.",
+        "An inch at a front or rear mount moves the instant center a lot.",
+        "Anti-squat that unloads the front too early picks the tires up and then spins.",
+    ),
+    "Exhaust": (
+        "Bigger primaries move the peak up and give away the bottom.",
+        "On a turbo the downpipe has to pass the turbine discharge. A giant collector does not fix a small pipe.",
+        "Drive pressure above boost is heat, and it makes the same boost harder to hold.",
+    ),
+    "Supercharger": (
+        "A smaller blower pulley raises rotor speed and boost.",
+        "Roots and screws move a fixed volume per turn. A centrifugal comes on with shaft speed.",
+        "The boost factor is a planning number. Inlet temperature and the gauge decide what you make.",
+    ),
+    "RearGear": (
+        "A higher number raises RPM at the same trap speed.",
+        "The stripe wants the engine near peak power without an extra shift. A street gear gives that RPM away for cruise.",
+        "A Ford 9-inch 4.10 is the 4.11 set. A Dana 60 4.56 needs the 4.56-and-up carrier.",
+    ),
+    "Tire": (
+        "A slick grows more than a radial. The percent you type is what you are testing, not a measured rollout.",
+        "Growth lowers RPM at the stripe. The gear chart has to use that taller number.",
+        "Measure rollout when you can. A typed percent is only a stand-in.",
+    ),
+    "Wastegate": (
+        "Creep means the valve or the dump is still driving the turbine after the gate is open.",
+        "Each turbo, or each side of a divided housing, needs its own path.",
+        "A gate that is big enough with a crushed discharge pipe still creeps.",
+    ),
+    "Fuel": (
+        "Flow scales with the square root of rail pressure versus the 43.5 PSI rating.",
+        "Living near 90 percent duty is where the injector runs out of time and the plug goes lean.",
+        "E85 needs more pounds per hour than gasoline at the same horsepower.",
+    ),
+    "LS": (
+        "A 4.000 inch crank in an iron 5.3 or 6.0 is the budget stroker, if the compression height still clears the rings.",
+        "Dynamic compression uses the piston position when the intake valve closes. Blank stays at 40 degrees so the ratio has a number.",
+        "An LS7 crank shares the mains, and an LS3 head bolts to a 6.0. The chamber versus the bore still has to match.",
+    ),
+    "FuelPump": (
+        "A 1:1 regulator raises rail pressure with boost. Injector size uses the base. The pump uses the higher number.",
+        "Leave about 25 percent for voltage drop, a dirty filter, and hot fuel.",
+        "A cam-driven diaphragm pump is a carb pump, about 7 to 17 PSI. EFI pressure wants an in-tank pump or a belt-driven gear pump.",
+    ),
+    "Nitrous": (
+        "A nitrous jet flows more as bottle pressure rises. Hold it near 900 to 950 PSI or the fuel jet is suddenly small.",
+        "Gasoline wants about 2 degrees out for every 50 horsepower of shot. E85 and methanol want less.",
+        "A wet plate brings its own fuel. A dry shot only sprays nitrous, and the injectors have to cover it.",
+    ),
+    "Shock": (
+        "More front extension slows the rise. Less lets the nose come up and plants the tire harder.",
+        "More rear compression softens the hit on the tire. Rear extension is the gear change.",
+        "Prepped can take a faster hit. No prep spins if that hit is sharp. The shock cannot invent grip.",
+    ),
+    "Electrical": (
+        "Amps are watts divided by voltage.",
+        "A pump at the back of the car needs a heavier gauge than the same pump beside the battery.",
+        "Pin 30 is battery through the fuse. Pin 87 is the load. Pin 86 is the switch. Pin 85 is ground.",
+    ),
+    "Cooling": (
+        "Most of the fuel energy leaves in the exhaust. The water only sees a share of one pass.",
+        "The fan works in the lanes, and only with a shroud. Ram air does the return road.",
+        "A mechanical pump moves water at RPM. The electric pump keeps flow while the car sits.",
+    ),
+    "Driveline": (
+        "Measure center to center at ride. The slip yoke wants about 3/4 inch before it bottoms, and about an inch still engaged at full droop.",
+        "A longer tube lowers critical speed by the length squared. A bigger diameter raises it.",
+        "A 4-link pinion points along the tube at rest. A leaf spring wants about 2 degrees nose down so it is straight after it wraps.",
+    ),
+    "Power": (
+        "Pump, fan, water pump, ignition, and the ECU are the idle load. The trans brake and the nitrous are seconds.",
+        "Size the long wire from a 3 percent voltage drop. Battery cable carries it, not primary wire.",
+        "The fuse for the panel feed is on the battery post. The starter cable is its own 1/0 or 2/0.",
+    ),
+    "Carb": (
+        "Street uses a vacuum secondary, at the flow or one step under. Drag uses a mechanical secondary, at or above the flow.",
+        "Blow-through sits in the hat. Boost does not raise the CFM. It needs a solid float, sealed bowls, and a boost-referenced regulator.",
+        "Draw-through sits ahead of the blower, so multiply by the pressure ratio. Past about 900 CFM, split it across two carbs.",
+    ),
+    "Compression": (
+        "A thicker gasket, a bigger gasket bore, or a deeper dish all drop the ratio.",
+        "The dish number is the volume that hits the target. Order the piston that has that volume.",
+        "Measure the chamber. A published head cc and the chamber you have are often different.",
+    ),
     "Cam": (
         "Degree the cam and check piston-to-valve with clay. On a nitrous grind the longer exhaust lobe is the one that hits.",
         "The spring has to match the lift and the RPM on the card. A stock truck spring will not hold a .600 lobe at 7,000.",
         "The stall has to sit where the cam makes power. A stock converter and a cam that comes in around 2,600 leaves flat.",
+    ),
+    "Converter": (
+        "K-factor is stall RPM divided by the square root of torque at that RPM. More torque stalls the same converter higher.",
+        "Brake stall wants to land about 500 to 700 RPM under the torque peak.",
+        "A no-prep tire wants the stall lower. An unlocked street converter also has to stall under cruise RPM.",
+    ),
+    "CAS": (
+        "Pressure ratio is boost plus barometer, divided by barometer.",
+        "A bigger shot or a longer gear empties the bottle sooner.",
+        "A restriction after the regulator is boost you paid for and did not get.",
     ),
 }
 
@@ -5824,15 +5938,10 @@ CHEAT_ITEMS = {
 def notes_box(page):
     keyword = page["target_keyword"].rstrip(".")
     spec = spec_text(page)
-    if page["category"] == "Cam":
-        lead = "Degree it, check piston-to-valve, and match the spring and the converter to the card before you order."
-    else:
-        lead = f"{keyword}. {spec}" if spec else f"{keyword}. The inputs above are the starting point for this combination."
-    bullets = CHEAT_ITEMS.get(page["category"], (
-        "Density altitude: about 3% naturally aspirated power per 1,000 feet.",
-        "Converter slip at the finish is often kept around 5% to 8%.",
-        "On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.",
-    ))
+    lead = NOTE_LEADS.get(page["category"])
+    if not lead:
+        lead = f"{keyword}. {spec}" if spec else keyword
+    bullets = CHEAT_ITEMS.get(page["category"], ())
     cheat = '<ul class="cheat-list">' + "".join(f"<li>{esc(item)}</li>" for item in bullets) + "</ul>"
     items = []
     for question, answer in TRACKSIDE_NOTES[page["category"]]:
@@ -5922,9 +6031,9 @@ def index_page(pages, hubs):
         )
         + content_box(
             "Track-side notes",
-            "<p>Density altitude: about 3% naturally aspirated power per 1,000 feet. "
-            "Converter slip at the finish is often kept around 5% to 8%. "
-            "On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</p>",
+            "<p>Size the gear with the tire at speed. Give the converter shop the torque at stall, not a stall with no engine on it. "
+            "Order the cam from the card. A naturally aspirated engine loses about 3 percent for every 1,000 feet of density altitude, "
+            "and a gasoline nitrous shot wants about 2 degrees out for every 50 horsepower.</p>",
         )
     )
     spec = spec_text(transmission)

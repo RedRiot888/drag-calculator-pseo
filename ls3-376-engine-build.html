@@ -232,7 +232,7 @@
         <div class="field"><label for="ls-chamber">Chamber volume (cc)</label><input type="number" id="ls-chamber" placeholder="Auto" min="40" max="120" step="0.5"></div>
         <div class="field"><label for="ls-ivc">Intake close (deg ABDC)</label><input type="number" id="ls-ivc" placeholder="Auto" min="20" max="70" step="1"></div>
     </div>
-    <p class="field-hint">Positive dish adds volume and lowers compression. A dome is a negative number. Leave chamber and intake closing blank to use the selected head and the cam profile.</p>
+    <p class="field-hint">Positive dish adds volume and lowers compression. A dome is a negative number. Leave the chamber blank to use the selected head. Intake close stays at 40 degrees after bottom dead center until you type the number off the cam card.</p>
     
 <p class="field-hint">BHP uses the power entry as flywheel power. WHP treats it as wheel power and converts with this drivetrain loss.</p>
 <div class="grid-2">
@@ -264,7 +264,7 @@
             <thead><tr><th>Check</th><th>Detail</th><th>Result</th><th>Status</th></tr></thead>
             <tbody id="ls-matrix"></tbody>
         </table>
-        <p class="field-hint">Horsepower is the airflow estimate, plus the nitrous shot when that adder is selected. The power row flags a part rated below that number. The cam row is a starting profile.</p>
+        <p class="field-hint">Horsepower is the airflow estimate, plus the nitrous shot when that adder is selected. The power row flags a part rated below that number. Intake close stays at 40 degrees until you type the number from the cam card.</p>
     </div>
     
     <div class="action-row">
@@ -281,10 +281,10 @@
     </form>
     <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
-
+<div class="next-steps"><p class="field-hint">Next in the build</p><a href="ls-camshaft-calculator.html">Order the cam for this head, RPM, and power adder</a></div>
         </section>
         <div class="content-column">
-            <section class="content-box"><h2>Formula</h2><p class="formula">CID = Bore x Bore x Stroke x 0.7854 x 8. SCR = (Swept volume + clearance volume) / clearance volume. Clearance volume is the chamber, the gasket, the deck, and the piston dish. DCR uses the piston position at intake-valve closing instead of the full stroke.</p></section><section class="content-box"><h2>Trackside notes</h2><p>LS3 376 Engine Build Calculator. Loaded defaults: LS3 aluminum, rectangular heads.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>How does a stroker change the inches?</h3><p>Displacement is bore times bore times stroke times 0.7854 times 8. A 4.000 inch crank in an iron 5.3 or 6.0 adds cubes without changing the bore, as long as the piston compression height still clears the rings.</p></div><div class="faq-item"><h3>What is the difference between static and dynamic compression?</h3><p>Static compression uses the full stroke. Dynamic compression uses the piston position when the intake valve closes, so a later-closing cam bleeds some of that compression off.</p></div><div class="faq-item"><h3>Why can a part fit the block and still be the wrong part?</h3><p>An LS7 crank shares the main journal, and an LS3 head bolts to a 6.0, but the piston height, the chamber versus the bore, and the power limit still have to match the combination.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="ls-engine-builder.html">LS Engine Builder &amp; Factory/Aftermarket Interchange Matrix</a></li><li><a href="ls7-427-engine-build.html">LS7 427 Engine Build Calculator</a></li><li><a href="supercharged-ls3-build.html">Supercharged LS3 Build Calculator</a></li><li><a href="turbo-5-3-iron-build.html">Turbo 5.3 Iron LS Build Calculator</a></li><li><a href="aftermarket-lsx-engine-build.html">Aftermarket Iron LSX Engine Build Calculator</a></li><li><a href="iron-5-3-4-inch-stroker.html">5.3 LS 4.000 Stroke Stroker Calculator</a></li><li><a href="iron-6-0-4-125-stroker.html">6.0 LS 4.125 Stroker Calculator</a></li></ul></div></div></details>
+            <section class="content-box"><h2>Formula</h2><p class="formula">CID = Bore x Bore x Stroke x 0.7854 x 8. SCR = (Swept volume + clearance volume) / clearance volume. Clearance volume is the chamber, the gasket, the deck, and the piston dish. DCR uses the piston position at intake-valve closing instead of the full stroke.</p></section><section class="content-box"><h2>Trackside notes</h2><p>The bore, the stroke, and the piston height have to clear. The cam is a separate card.</p><ul class="cheat-list"><li>A 4.000 inch crank in an iron 5.3 or 6.0 is the budget stroker, if the compression height still clears the rings.</li><li>Dynamic compression uses the piston position when the intake valve closes. Blank stays at 40 degrees so the ratio has a number.</li><li>An LS7 crank shares the mains, and an LS3 head bolts to a 6.0. The chamber versus the bore still has to match.</li></ul><div class="faq-item"><h3>How does a stroker change the inches?</h3><p>Displacement is bore times bore times stroke times 0.7854 times 8. A 4.000 inch crank in an iron 5.3 or 6.0 adds cubes without changing the bore, as long as the piston compression height still clears the rings.</p></div><div class="faq-item"><h3>What is the difference between static and dynamic compression?</h3><p>Static compression uses the full stroke. Dynamic compression uses the piston position when the intake valve closes, so a later-closing cam bleeds some of that compression off.</p></div><div class="faq-item"><h3>Why can a part fit the block and still be the wrong part?</h3><p>An LS7 crank shares the main journal, and an LS3 head bolts to a 6.0, but the piston height, the chamber versus the bore, and the power limit still have to match the combination.</p></div><div class="faq-item"><h3>Where is the cam?</h3><p>This build does not pick a lobe. Dynamic compression uses 40 degrees after bottom dead center until you type the intake close from the cam card. The cam calculator orders the card for the head, the cubic inches, and the power adder.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="ls-engine-builder.html">LS Engine Builder &amp; Factory/Aftermarket Interchange Matrix</a></li><li><a href="ls7-427-engine-build.html">LS7 427 Engine Build Calculator</a></li><li><a href="supercharged-ls3-build.html">Supercharged LS3 Build Calculator</a></li><li><a href="turbo-5-3-iron-build.html">Turbo 5.3 Iron LS Build Calculator</a></li><li><a href="aftermarket-lsx-engine-build.html">Aftermarket Iron LSX Engine Build Calculator</a></li><li><a href="iron-5-3-4-inch-stroker.html">5.3 LS 4.000 Stroke Stroker Calculator</a></li><li><a href="iron-6-0-4-125-stroker.html">6.0 LS 4.125 Stroker Calculator</a></li></ul></div></div></details>
         </div>
     </div>
     
@@ -566,25 +566,7 @@ function pistonFromTdc(stroke, rod, theta) {
     return half * (1 - Math.cos(theta)) + rod * (1 - Math.sqrt(inside));
 }
 
-function camPlan(intent, cid) {
-    if (intent === "turbo") {
-        return { duration: clamp(Math.round(214 + (cid - 346) * 0.04), 212, 228), lsa: 115, lift: 0.595, ivc: 34 };
-    }
-    if (intent === "super") {
-        return { duration: clamp(Math.round(216 + (cid - 346) * 0.04), 214, 230), lsa: 114, lift: 0.585, ivc: 36 };
-    }
-    if (intent === "nitrous") {
-        return { duration: clamp(Math.round(212 + (cid - 346) * 0.035), 210, 226), lsa: 113, lift: 0.570, ivc: 40 };
-    }
-    const duration = clamp(Math.round(208 + (cid - 330) * 0.07), 206, 238);
-    const lift = Math.min(0.65, 0.54 + Math.max(0, cid - 330) * 0.00045);
-    return {
-        duration: duration,
-        lsa: cid >= 400 ? 112 : 113,
-        lift: Math.round(lift * 1000) / 1000,
-        ivc: clamp(Math.round(36 + (duration - 214) * 0.45), 34, 52)
-    };
-}
+const ASSUMED_IVC = 40;
 
 function compressionBand(intent, fuel) {
     const boosted = intent !== "na";
@@ -663,10 +645,9 @@ function calcLs() {
     const scr = realClearance ? (swept + clearance) / clearance : 0;
     const ch = deckHeight - stroke / 2 - rodLen - deckClear;
     const rodRatio = rodLen / stroke;
-    const cam = camPlan(intent, cid);
     const ivcEl = document.getElementById("ls-ivc");
     const ivcRaw = ivcEl && ivcEl.value.trim();
-    const ivc = ivcRaw ? clamp(parseFloat(ivcRaw) || cam.ivc, 20, 70) : cam.ivc;
+    const ivc = ivcRaw ? clamp(parseFloat(ivcRaw) || ASSUMED_IVC, 20, 70) : ASSUMED_IVC;
     const effective = pistonFromTdc(stroke, rodLen, (180 + ivc) * Math.PI / 180);
     const dcr = realClearance ? (volCc(bore, effective) + clearance) / clearance : 0;
     const ve = head.cfm >= 300 ? 0.93 : (head.cfm >= 240 ? 0.88 : 0.84);
@@ -752,7 +733,6 @@ function calcLs() {
     const dcrResult = realClearance
         ? dcr.toFixed(2) + ":1 at " + ivc + " deg ABDC. Target " + band.dcrLo.toFixed(1) + " to " + band.dcrHi.toFixed(1) + "."
         : "No intake-closing compression until the piston clears the head.";
-    const camResult = cam.duration + " deg at 0.050, " + cam.lift.toFixed(3) + " in lift, " + cam.lsa + " LSA, intake closes " + (ivcRaw ? ivc + " deg ABDC typed" : cam.ivc + " deg ABDC") + ".";
     publishReadout([
         { label: "Displacement", value: cid, unit: "ci", primary: true },
         { label: "Stroke class", value: strokeLabel, unit: "text" },
@@ -779,7 +759,9 @@ function calcLs() {
         sentences.push(chResult);
         if (headStatus !== "Good") sentences.push(headResult);
         sentences.push(powerResult);
-        sentences.push("Starting cam: " + cam.duration + " degrees at 0.050, " + cam.lift.toFixed(3) + " in lift, " + cam.lsa + " LSA, intake closing " + ivc + " degrees ABDC.");
+        sentences.push(ivcRaw
+            ? "Intake closes " + ivc + " degrees ABDC from the card you typed."
+            : "Intake close is 40 degrees ABDC until you type the number from the cam card. Order that card on the LS camshaft calculator.");
         assess.textContent = sentences.join(" ");
     }
     const body = document.getElementById("ls-matrix");
@@ -795,7 +777,7 @@ function calcLs() {
             matrixRow("Dynamic compression", ivc + " deg ABDC", dcrResult, dcrStatus),
             matrixRow("RPM", rod.label, Math.round(rpm).toLocaleString("en-US") + " RPM. Rod planning limit is " + rod.rpm.toLocaleString("en-US") + ".", rpmStatus),
             matrixRow("Power", nitrous ? (Math.round(shot) + " HP shot") : (boosted ? (boost.toFixed(1) + " PSI") : "Naturally aspirated"), powerResult, powerStatus),
-            matrixRow("Cam profile", nitrous ? "Nitrous" : (intent === "turbo" ? "Turbo" : (intent === "super" ? "Supercharged" : "Naturally aspirated")), camResult, "Good")
+            matrixRow("Intake close", ivcRaw ? "From the card" : "40 deg until typed", ivcRaw ? (ivc + " deg ABDC, typed from the cam card.") : "40 deg ABDC is only here so dynamic compression has a number. Type the intake close from the cam card.", ivcRaw ? "Good" : "Watch")
         );
     }
 }
