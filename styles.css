@@ -62,8 +62,8 @@ body {
     border-radius: 10px;
     padding: 22px;
 }
-.sticky-calculator { display: flex; flex-direction: column; gap: 15px; }
-.content-column { display: flex; flex-direction: column; gap: 20px; }
+.sticky-calculator { display: flex; flex-direction: column; gap: 15px; min-width: 0; }
+.content-column { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 .content-box h2 {
     color: var(--accent-red);
     font-size: 0.95rem;
@@ -174,7 +174,7 @@ input[type="range"] {
 .duty-scale { display: flex; justify-content: space-between; margin-top: 6px; color: #6f6f6f; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.04em; }
 .assess { color: var(--text-main); font-size: 0.88rem; }
 .assess strong { color: #fff; }
-.table-scroll { overflow-x: auto; padding: 8px; }
+.table-scroll { overflow-x: auto; max-width: 100%; padding: 8px; }
 .size-sub { color: var(--text-muted); font-size: 0.68rem; margin-top: 2px; }
 tr.is-rec td { background: rgba(229, 9, 20, 0.14); }
 tr.is-small td { color: #8d8d8d; }

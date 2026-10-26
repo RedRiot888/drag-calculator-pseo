@@ -57,6 +57,7 @@ CATEGORY_FIELDS = {
     "LS": [],
     "FuelPump": ["hp", "boost", "fuel"],
     "Nitrous": [],
+    "Shock": [],
     "Electrical": [],
     "CAS": ["boost"],
 }
@@ -222,8 +223,8 @@ body {
     border-radius: 10px;
     padding: 22px;
 }
-.sticky-calculator { display: flex; flex-direction: column; gap: 15px; }
-.content-column { display: flex; flex-direction: column; gap: 20px; }
+.sticky-calculator { display: flex; flex-direction: column; gap: 15px; min-width: 0; }
+.content-column { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 .content-box h2 {
     color: var(--accent-red);
     font-size: 0.95rem;
@@ -334,7 +335,7 @@ input[type="range"] {
 .duty-scale { display: flex; justify-content: space-between; margin-top: 6px; color: #6f6f6f; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.04em; }
 .assess { color: var(--text-main); font-size: 0.88rem; }
 .assess strong { color: #fff; }
-.table-scroll { overflow-x: auto; padding: 8px; }
+.table-scroll { overflow-x: auto; max-width: 100%; padding: 8px; }
 .size-sub { color: var(--text-muted); font-size: 0.68rem; margin-top: 2px; }
 tr.is-rec td { background: rgba(229, 9, 20, 0.14); }
 tr.is-small td { color: #8d8d8d; }
@@ -606,6 +607,8 @@ def spec_text(row):
         return "Loaded defaults: " + ls_preset(row["slug"])["spec"] + "."
     if row["category"] == "Nitrous":
         return "Loaded defaults: " + n2o_preset(row["slug"])["spec"] + "."
+    if row["category"] == "Shock":
+        return "Loaded defaults: " + shock_preset(row["slug"])["spec"] + "."
     parts = []
     for key in CATEGORY_FIELDS[row["category"]]:
         value = cell(row, key)
@@ -2768,6 +2771,433 @@ function calcNitrous() {
 bindCalc(calcNitrous, ["nx-base", "nx-shot", "nx-shot2", "nx-system", "nx-fuel", "nx-stages", "nx-bottle", "nx-fuelpsi", "nx-cylinders", "nx-timing", "nx-delivery", "nx-ontime", "nx-start", "nx-end", "nx-ramp", "nx-delay", "nx-inj", "nx-injcount", "nx-bottlelb", "dt-loss"]);
 """
 
+SHOCK_USES = (("strip", "Street-strip"), ("drag", "Drag car"), ("street", "Street car"))
+SHOCK_SURFACES = (("radial", "Radial prep"), ("prepped", "Prepped"), ("noprep", "No prep"))
+SHOCK_TIRES = (("radial", "Drag radial"), ("slick", "Bias slick"), ("street", "Street tire"))
+SHOCK_STYLES = (("double", "Double adjustable"), ("single", "Single adjustable"))
+SHOCK_BRANDS = (
+    ("qa1", "QA1 (0-18, higher is firmer)"),
+    ("strange", "Strange (0-16, higher is firmer)"),
+    ("viking", "Viking (0-24, higher is firmer)"),
+    ("afco", "Afco (0-12, higher is firmer)"),
+    ("generic", "Generic (0-18, higher is firmer)"),
+)
+SHOCK_HITS = (
+    ("power", "Power adder comes in"),
+    ("na", "Naturally aspirated"),
+    ("brake", "On the brake or transbrake"),
+)
+SHOCK_REARS = (
+    ("fourlink", "4-link"),
+    ("ladder", "Ladder bar"),
+    ("torquearm", "Torque arm"),
+    ("coilover", "Coilover"),
+    ("stock", "Stock arms or leaf"),
+)
+SHOCK_SYMPTOMS = (
+    ("baseline", "Baseline"),
+    ("spin", "Spins on the hit"),
+    ("dead", "No bite"),
+    ("wheelie", "Wheelstands"),
+    ("unload", "Unloads on the shift"),
+    ("shake", "Shakes the tire"),
+)
+
+
+def _shock(**overrides):
+    preset = {
+        "use": "strip",
+        "surface": "radial",
+        "tire": "radial",
+        "style": "double",
+        "brand": "qa1",
+        "hp": "650",
+        "weight": "3400",
+        "hit": "power",
+        "rear": "fourlink",
+        "symptom": "baseline",
+        "spec": "street-strip, radial prep, drag radial, double-adjustable QA1",
+    }
+    preset.update(overrides)
+    return preset
+
+
+SHOCK_PRESETS = {
+    "drag-shock-calculator": _shock(),
+    "prepped-slick-shock-calculator": _shock(
+        use="drag", surface="prepped", tire="slick", hp="1000", weight="3200", hit="brake",
+        spec="prepped slick, on the brake, double-adjustable QA1",
+    ),
+    "radial-prep-shock-calculator": _shock(
+        hp="700", spec="radial prep, 700 HP drag radial, double-adjustable QA1",
+    ),
+    "no-prep-shock-calculator": _shock(
+        surface="noprep", hp="700", weight="3300",
+        spec="no prep, 700 HP drag radial, double-adjustable QA1",
+    ),
+    "street-car-shock-calculator": _shock(
+        use="street", surface="noprep", tire="street", style="single", hp="400", weight="3600", hit="na", rear="stock",
+        spec="street car, street tire, single-adjustable QA1",
+    ),
+    "street-strip-shock-calculator": _shock(
+        hp="600", weight="3500", rear="coilover",
+        spec="street-strip coilover, radial prep, double-adjustable QA1",
+    ),
+    "single-adjustable-drag-shock-calculator": _shock(
+        use="drag", surface="prepped", tire="slick", style="single", brand="strange", hp="800", weight="3200",
+        spec="prepped slick, single-adjustable Strange",
+    ),
+    "double-adjustable-drag-shock-calculator": _shock(
+        use="drag", surface="prepped", tire="slick", brand="viking", hp="1000", weight="3100", hit="brake",
+        spec="prepped slick, on the brake, double-adjustable Viking",
+    ),
+    "qa1-drag-shock-calculator": _shock(spec="radial prep, double-adjustable QA1, 0 to 18"),
+    "strange-drag-shock-calculator": _shock(
+        use="drag", surface="prepped", tire="slick", brand="strange", hp="900", weight="3200",
+        spec="prepped slick, double-adjustable Strange, 0 to 16",
+    ),
+    "viking-drag-shock-calculator": _shock(
+        surface="noprep", brand="viking", hp="750", weight="3300",
+        spec="no prep, double-adjustable Viking, 0 to 24",
+    ),
+    "afco-drag-shock-calculator": _shock(
+        use="drag", surface="prepped", tire="slick", brand="afco", hp="850", weight="3150",
+        spec="prepped slick, double-adjustable Afco, 0 to 12",
+    ),
+    "four-link-shock-calculator": _shock(
+        use="drag", surface="prepped", tire="slick", hp="900", weight="3000",
+        spec="4-link, prepped slick, double-adjustable QA1",
+    ),
+    "ladder-bar-shock-calculator": _shock(
+        use="drag", surface="prepped", tire="slick", hp="800", weight="2800", rear="ladder",
+        spec="ladder bar, prepped slick, double-adjustable QA1",
+    ),
+    "torque-arm-shock-calculator": _shock(
+        hp="700", weight="3600", rear="torquearm",
+        spec="torque arm, radial prep, double-adjustable QA1",
+    ),
+    "wheelstand-shock-adjustment": _shock(
+        use="drag", surface="prepped", tire="slick", hp="1100", weight="3000", hit="brake", symptom="wheelie",
+        spec="wheelstand correction, prepped slick, on the brake",
+    ),
+    "spin-on-hit-shock-adjustment": _shock(
+        surface="noprep", hp="800", weight="3300", hit="brake", symptom="spin",
+        spec="spin-on-the-hit correction, no prep, on the brake",
+    ),
+    "shift-unload-shock-adjustment": _shock(
+        use="drag", surface="prepped", hp="900", weight="3200", symptom="unload",
+        spec="shift-unload correction, prepped drag radial",
+    ),
+}
+
+
+def shock_preset(slug):
+    return SHOCK_PRESETS.get(slug, SHOCK_PRESETS["drag-shock-calculator"])
+
+
+def shock_html(row):
+    preset = shock_preset(row["slug"])
+    primary = f"""
+    <div class="grid-2">
+        <div class="field"><label for="sk-use">Car</label><select id="sk-use">{options(SHOCK_USES, preset["use"])}</select></div>
+        <div class="field"><label for="sk-surface">Surface</label><select id="sk-surface">{options(SHOCK_SURFACES, preset["surface"])}</select></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="sk-tire">Tire</label><select id="sk-tire">{options(SHOCK_TIRES, preset["tire"])}</select></div>
+        <div class="field"><label for="sk-style">Shock</label><select id="sk-style">{options(SHOCK_STYLES, preset["style"])}</select></div>
+    </div>
+    <div class="field"><label for="sk-brand">Adjuster scale</label><select id="sk-brand">{options(SHOCK_BRANDS, preset["brand"])}</select></div>
+    <p class="field-hint">Prepped can take a fast hit. Radial prep is the middle. No prep spins if the hit is sharp. A single adjustable moves rebound only. A double adjustable adds a compression knob, which is the rear hit and the front return.</p>
+    """
+    advanced = f"""
+    <div class="grid-2">
+        <div class="field"><label for="sk-hp">Power</label><input type="number" id="sk-hp" value="{esc(preset["hp"])}" min="100" max="4000" step="25"></div>
+        <div class="field"><label for="sk-weight">Race weight (lb)</label><input type="number" id="sk-weight" value="{esc(preset["weight"])}" min="1400" max="7000" step="50"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="sk-hit">How it hits</label><select id="sk-hit">{options(SHOCK_HITS, preset["hit"])}</select></div>
+        <div class="field"><label for="sk-rear">Rear suspension</label><select id="sk-rear">{options(SHOCK_REARS, preset["rear"])}</select></div>
+    </div>
+    <div class="field"><label for="sk-symptom">What it is doing</label><select id="sk-symptom">{options(SHOCK_SYMPTOMS, preset["symptom"])}</select></div>
+    <p class="field-hint">Count clicks from the soft stop toward firm. Set both fronts the same and both rears the same. Change two clicks on one end, make one pass, and write down the 60-foot.</p>
+    {LOSS_FIELDS}
+    """
+    results = """
+    <p class="assess" id="sk-assess"></p>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>Knob</th><th>Start</th><th>What it does</th><th>Status</th></tr></thead>
+            <tbody id="sk-matrix"></tbody>
+        </table>
+    </div>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>If the next pass</th><th>Front extension</th><th>Front compression</th><th>Rear compression</th><th>Rear extension</th></tr></thead>
+            <tbody id="sk-moves"></tbody>
+        </table>
+        <p class="field-hint">The pass table is the next change from the clicks above, not a second setup. Turn one row. A cell that says Valve is built into a single-adjustable shock and does not have its own knob. Leave extension travel in the front shaft at ride height, and compression travel in the rear. A shock that is already at the end of its stroke will not do what the click says.</p>
+    </div>
+    """
+    return calculator_shell(primary, advanced, "Print shock sheet", power_toggle=True, results_extra=results)
+
+
+SHOCK_SCRIPT = r"""
+const SK_BRAND = {
+    qa1: { name: "QA1", max: 18 },
+    strange: { name: "Strange", max: 16 },
+    viking: { name: "Viking", max: 24 },
+    afco: { name: "Afco", max: 12 },
+    generic: { name: "Generic", max: 18 }
+};
+const SK_BITE = { prepped: 1, radial: 0.72, noprep: 0.38 };
+const SK_TIRE = { slick: 1, radial: 0.74, street: 0.42 };
+const SK_PLANT = { drag: 1, strip: 0.72, street: 0.35 };
+const SK_SEP = { fourlink: 1, ladder: 0.88, torquearm: 0.55, coilover: 0.48, stock: 0.4 };
+const SK_HIT = { na: 0.85, power: 1, brake: 1.22 };
+const SK_SHIFT = {
+    baseline: [0, 0, 0, 0],
+    spin: [12, 0, 12, 0],
+    dead: [-12, 0, -12, 0],
+    wheelie: [14, -12, 6, 0],
+    unload: [0, -10, 0, -14],
+    shake: [6, 0, 14, 0]
+};
+
+function skClamp(value, lo, hi) {
+    return Math.min(hi, Math.max(lo, value));
+}
+
+function skNum(id, fallback) {
+    const el = document.getElementById(id);
+    const value = el ? parseFloat(el.value) : NaN;
+    return Number.isFinite(value) ? value : fallback;
+}
+
+function skClicks(percent, max) {
+    return Math.round(skClamp(percent, 0, 100) / 100 * max);
+}
+
+function skPlan() {
+    const use = document.getElementById("sk-use").value || "strip";
+    const surface = document.getElementById("sk-surface").value || "radial";
+    const tire = document.getElementById("sk-tire").value || "radial";
+    const style = document.getElementById("sk-style").value || "double";
+    const brandKey = document.getElementById("sk-brand").value || "qa1";
+    const brand = SK_BRAND[brandKey] || SK_BRAND.qa1;
+    const hit = document.getElementById("sk-hit").value || "power";
+    const rear = document.getElementById("sk-rear").value || "fourlink";
+    const symptom = document.getElementById("sk-symptom").value || "baseline";
+    const hp = Math.max(100, crankHorsepower(skNum("sk-hp", 650)));
+    const weight = skClamp(skNum("sk-weight", 3400), 1400, 7000);
+    const ptw = hp / weight * 1000;
+    const bite = (SK_BITE[surface] || 0.7) * (SK_TIRE[tire] || 0.7);
+    const plant = SK_PLANT[use] || 0.7;
+    const demand = skClamp(ptw / 200, 0.35, 1.85) * (SK_HIT[hit] || 1);
+    let smooth = skClamp((demand - bite * 1.15) / 1.1, 0, 1);
+    if (use === "street") smooth = Math.max(smooth, 0.72);
+    else if (use === "strip") smooth = Math.max(smooth, 0.28);
+    let frontExt = 26 + smooth * 48 - Math.max(0, bite - 0.55) * 18;
+    let frontComp = 18 + plant * 22 + bite * 10 - (use === "street" ? 12 : 0);
+    let rearComp = 18 + smooth * 46 - bite * 8 + (rear === "torquearm" ? 8 : 0);
+    let rearExt = 16 + (1 - bite) * 28 + (1 - (SK_SEP[rear] || 0.5)) * 14 - plant * 6;
+    const shift = SK_SHIFT[symptom] || SK_SHIFT.baseline;
+    frontExt += shift[0];
+    frontComp += shift[1];
+    rearComp += shift[2];
+    rearExt += shift[3];
+    return {
+        use: use,
+        surface: surface,
+        tire: tire,
+        style: style,
+        brandKey: brandKey,
+        brand: brand,
+        hit: hit,
+        rear: rear,
+        symptom: symptom,
+        hp: hp,
+        weight: weight,
+        ptw: ptw,
+        bite: bite,
+        smooth: smooth,
+        double: style === "double",
+        frontExt: skClamp(frontExt, 6, 90),
+        frontComp: skClamp(frontComp, 6, 80),
+        rearComp: skClamp(rearComp, 6, 88),
+        rearExt: skClamp(rearExt, 6, 80)
+    };
+}
+
+function skStart(percent, brand, enabled) {
+    const pct = Math.round(percent) + "% from full soft";
+    if (!enabled) return "In the valve · " + pct;
+    return skClicks(percent, brand.max) + " of " + brand.max + " · " + pct;
+}
+
+function skNext(percent, delta, brand, enabled) {
+    if (!enabled) return "Valve";
+    const base = skClicks(percent, brand.max);
+    if (!delta) return "leave";
+    const next = skClamp(base + delta, 0, brand.max);
+    if (next === base) return base + " (at the stop)";
+    return String(next);
+}
+
+function skRow(name, detail, result, status) {
+    const tr = document.createElement("tr");
+    if (status === "No") tr.className = "is-small";
+    const badge = status === "Good" ? "badge-ok" : (status === "Watch" ? "badge-tight" : "badge-no");
+    [name, detail, result].forEach(text => {
+        const td = document.createElement("td");
+        td.textContent = text;
+        tr.appendChild(td);
+    });
+    const statusCell = document.createElement("td");
+    const pill = document.createElement("span");
+    pill.className = "badge " + badge;
+    pill.textContent = status;
+    statusCell.appendChild(pill);
+    tr.appendChild(statusCell);
+    return tr;
+}
+
+function skMoveRow(cells) {
+    const tr = document.createElement("tr");
+    cells.forEach(text => {
+        const td = document.createElement("td");
+        td.textContent = text;
+        tr.appendChild(td);
+    });
+    return tr;
+}
+
+function calcShock() {
+    const plan = skPlan();
+    const brand = plan.brand;
+    const step = Math.max(1, Math.round(brand.max / 9));
+    const frontValve = (plan.use === "street" || plan.tire === "street") ? "50/50" : (plan.surface === "noprep" ? "80/20" : "90/10");
+    const rearWantsDouble = plan.tire !== "street" && plan.use !== "street" && (plan.rearComp >= 40 || plan.ptw >= 160 || plan.smooth >= 0.55);
+    const frontCompOn = plan.double;
+    const rearCompOn = plan.double;
+    const travel = plan.use === "drag" ? 2 : (plan.use === "strip" ? 1.5 : 1);
+    const rearTravel = plan.use === "street" ? 1 : 1.5;
+    const fe = skClicks(plan.frontExt, brand.max);
+    const fc = skClicks(plan.frontComp, brand.max);
+    const rc = skClicks(plan.rearComp, brand.max);
+    const re = skClicks(plan.rearExt, brand.max);
+    const feLabel = fe + " of " + brand.max;
+    const fcLabel = frontCompOn ? fc + " of " + brand.max : frontValve + " valve";
+    const rcLabel = rearCompOn ? rc + " of " + brand.max : "50/50 valve";
+    const reLabel = re + " of " + brand.max;
+    let frontCompStatus = "Good";
+    let frontCompResult = "Holds the nose up. Less of it lets a wheelstand come back down.";
+    if (!frontCompOn && plan.symptom === "wheelie") {
+        frontCompStatus = "Watch";
+        frontCompResult = "A single front is already light on compression. Slow the rise with extension. If it still stands up, the shaft is out of travel or the power is ahead of the shock.";
+    } else if (!frontCompOn) {
+        frontCompResult = "Built into the " + frontValve + " valve. The knob on this shock is extension.";
+    }
+    let rearCompStatus = "Good";
+    let rearCompResult = "Softens the hit. More of it keeps the tire from getting shocked.";
+    if (!rearCompOn && rearWantsDouble) {
+        rearCompStatus = "Watch";
+        rearCompResult = "This hit wants a compression knob. A single rear only moves rebound, so it cannot soften the hit.";
+    } else if (!rearCompOn) {
+        rearCompResult = "The 50/50 valve is the compression. The knob only changes how the rear recovers.";
+    }
+    let frontPartStatus = "Good";
+    let frontPart = frontValve + " front. Use a double if you need the nose to come down on its own knob.";
+    if (plan.use === "street") {
+        frontPart = "50/50 street front. A drag 90/10 will float on the street.";
+    } else if (plan.double) {
+        frontPart = "Double adjustable front, or a " + frontValve + " single if extension is the only knob you need.";
+    }
+    if (!plan.double && plan.symptom === "wheelie") frontPartStatus = "Watch";
+    let rearPartStatus = "Good";
+    let rearPart = "Double adjustable rear. Compression is the hit. Extension is the recovery and the gear change.";
+    if (!plan.double && rearWantsDouble) {
+        rearPartStatus = "Watch";
+        rearPart = "Plan on a double adjustable rear. Leave the single at the rebound click until that shock is on the car.";
+    } else if (!plan.double) {
+        rearPart = "50/50 single is enough here. The knob is rebound, not the hit.";
+    }
+    const directionStatus = plan.brandKey === "afco" ? "Watch" : "Good";
+    const directionResult = plan.brandKey === "afco"
+        ? "This scale counts 0 soft to " + brand.max + " firm. If the arrow on the Afco body points the other way, count back from the firm stop."
+        : "0 is full soft and " + brand.max + " is full firm on this " + brand.name + " scale. Higher slows that circuit.";
+    const rearNote = {
+        fourlink: "Rear extension stays loose so the 4-link can separate.",
+        ladder: "A ladder bar hits quickly, so the rear starts a little tighter than a 4-link.",
+        torquearm: "A torque arm hits harder than a 4-link, so rear compression starts firmer.",
+        coilover: "A coilover shaft moves less than the wheel, so leave extra travel in the shock.",
+        stock: "Stock arms and leaf springs do not separate like a 4-link, so rear rebound starts closer to the middle."
+    }[plan.rear] || "";
+    let surfaceNote = "The surface can take a hit.";
+    if (plan.use === "street") {
+        surfaceNote = "A street tire wants the 50/50 valve and a controlled nose, not a drag 90/10.";
+    } else if (plan.surface === "noprep") {
+        surfaceNote = "The power is ahead of this surface. Firmer front extension and rear compression make the spin smoother. They do not add grip the track does not have.";
+    } else if (plan.smooth >= 0.35) {
+        surfaceNote = "The hit is slowed so the tire is planted instead of shocked.";
+    }
+    const symptomNote = {
+        baseline: "",
+        spin: " The starting clicks are already firmer on front extension and rear compression for a car that spins on the hit.",
+        dead: " The starting clicks are already softer on front extension and rear compression for a car that will not transfer.",
+        wheelie: " The starting clicks already slow the rise and let the nose come back down.",
+        unload: " The starting clicks already let the nose down and loosen rear extension for a car that unloads on the shift.",
+        shake: " The starting clicks already add rear compression for a tire that shakes."
+    }[plan.symptom] || "";
+    publishReadout([
+        { label: "Front extension", value: feLabel, unit: "text", primary: true },
+        { label: "Front compression", value: fcLabel, unit: "text" },
+        { label: "Rear compression", value: rcLabel, unit: "text" },
+        { label: "Rear extension", value: reLabel, unit: "text" },
+        { label: "Front valve", value: frontValve, unit: "text" },
+        { label: "Front travel left", value: travel, unit: "in" },
+        { label: "Power to weight", value: Math.round(plan.ptw) + " HP / 1,000 lb", unit: "text" }
+    ]);
+    const assess = document.getElementById("sk-assess");
+    if (assess) {
+        const rearGap = (!plan.double && rearWantsDouble)
+            ? " The rear hit wants a compression knob, and a single adjustable does not have one."
+            : "";
+        assess.textContent = "Start the " + brand.name + " fronts at " + feLabel + " extension and " + fcLabel + " compression. Start the rears at " + rcLabel + " compression and " + reLabel + " extension. Higher is firmer. Front extension slows the rise. Rear compression softens the hit. " + surfaceNote + " " + rearNote + symptomNote + rearGap + " Leave about " + travel.toFixed(1) + " in of front extension and " + rearTravel.toFixed(1) + " in of rear compression in the shafts at ride height.";
+    }
+    const body = document.getElementById("sk-matrix");
+    if (body) {
+        body.replaceChildren(
+            skRow("Front extension", skStart(plan.frontExt, brand, true), "Slows the rise. More is a softer hit. Less plants the tire harder.", "Good"),
+            skRow("Front compression", skStart(plan.frontComp, brand, frontCompOn), frontCompResult, frontCompStatus),
+            skRow("Rear compression", skStart(plan.rearComp, brand, rearCompOn), rearCompResult, rearCompStatus),
+            skRow("Rear extension", skStart(plan.rearExt, brand, true), "Loose lets the housing separate. Tight keeps the tire loaded when the surface goes away.", "Good"),
+            skRow("Front shock", frontValve, frontPart, frontPartStatus),
+            skRow("Rear shock", plan.double ? "Double" : "Single", rearPart, rearPartStatus),
+            skRow("Scale", brand.name, directionResult, directionStatus)
+        );
+    }
+    const moves = document.getElementById("sk-moves");
+    if (moves) {
+        const rows = [
+            ["Spins on the hit", step, 0, step, 0],
+            ["No bite, nose barely rises", -step, 0, -step, 0],
+            ["Wheelstands", step, -step, 0, 0],
+            ["Unloads on the shift", 0, -step, 0, -step],
+            ["Shakes the tire", 0, 0, step, 0],
+            ["Greasy or cold track", step, 0, step, 0]
+        ];
+        moves.replaceChildren(...rows.map(row => skMoveRow([
+            row[0],
+            skNext(plan.frontExt, row[1], brand, true),
+            skNext(plan.frontComp, row[2], brand, frontCompOn),
+            skNext(plan.rearComp, row[3], brand, rearCompOn),
+            skNext(plan.rearExt, row[4], brand, true)
+        ])));
+    }
+}
+bindCalc(calcShock, ["sk-use", "sk-surface", "sk-tire", "sk-style", "sk-brand", "sk-hp", "sk-weight", "sk-hit", "sk-rear", "sk-symptom", "dt-loss"]);
+"""
+
 WIDGETS = {
     "Transmission": (
         "Overall Ratio = Trans Ratio x Rear Gear. Shift Speed (MPH) = (RPM x (1 - Slip) x Tire) / (Overall x 336). Recovery RPM = Shift RPM x (1 - Slip) x (Next Ratio / Current Ratio).",
@@ -2828,6 +3258,11 @@ WIDGETS = {
         "Nitrous lb/hr = Shot HP x 3.6 once the jet is sized for that shot. Jet diameter follows the shot per nozzle and the square root of bottle pressure over 900 PSI. The fuel jet feeds that nitrous at the fuel's nitrous-to-fuel ratio. Gasoline timing pull is 2 degrees per 50 HP.",
         n2o_html,
         N2O_SCRIPT,
+    ),
+    "Shock": (
+        "Front extension slows the rise. Rear compression softens the hit. A single adjustable moves rebound only. A double adjustable adds compression, which is the rear hit and the speed the nose comes back down. Clicks count from full soft toward firm.",
+        shock_html,
+        SHOCK_SCRIPT,
     ),
     "Electrical": (
         "Load Amps = Watts / Voltage | Design Amps = Load x Duty Factor. Relay, fuse, and wire size sit above that current.",
@@ -2961,6 +3396,11 @@ TRACKSIDE_NOTES = {
         ("How much timing does a shot want?", "Gasoline starts at about 2 degrees pulled for every 50 HP of nitrous. E85 and race gas want less, and methanol wants less again. The first hit on gasoline can stand another 2 degrees of reserve."),
         ("What is the difference between a wet plate and a dry shot?", "A wet system brings its own fuel through a fuel jet and a fuel solenoid. A dry system sprays only nitrous, and the injectors have to add the fuel. The duty cycle is the check on a dry car."),
     ),
+    "Shock": (
+        ("What does the front extension knob do?", "On the launch the front shock gets longer. That circuit is extension. More extension slows the rise and softens the hit. Less extension lets the nose come up faster and plants the tire harder."),
+        ("Why is rear compression the hit knob?", "The rear shock gets shorter as the car squats. More compression keeps the tire from getting shocked. Rear extension is the recovery and the gear change, not the first hit. A single adjustable cannot move compression."),
+        ("How do prepped, radial prep, and no prep differ?", "A prepped slick can take a faster hit, so front extension and rear compression stay softer. Radial prep is the middle. No prep breaks loose if the hit is sharp, so those two knobs go firmer. The shock cannot invent grip the track does not have."),
+    ),
     "Electrical": (
         ("How is the circuit current found?", "Load amps are watts divided by voltage. Size the wire, fuse, and relay above that, and apply a duty factor for a fan or pump that is not on full time."),
         ("Why size the wire for the run length?", "Voltage drop grows with current and length. A fuel pump at the back of the car needs a larger gauge than the same pump next to the battery."),
@@ -3063,7 +3503,7 @@ def index_page(pages, hubs):
         TITLE=esc("Ultimate Drag Racing Master Suite | Drivetrain & Shift Calculator"),
         DESCRIPTION=esc(
             "Drag racing calculators for gear ratios, turbo sizing, LS engine builds, "
-            "nitrous jetting, fuel injectors, fuel pumps, supercharger pulleys, tire growth, and chassis setup."
+            "nitrous jetting, shock adjustments, fuel injectors, fuel pumps, supercharger pulleys, tire growth, and chassis setup."
         ),
         CANONICAL=esc(f"{ORIGIN}/index.html"),
         VERIFICATION=VERIFICATION,
@@ -3165,6 +3605,9 @@ def main():
     missing_n2o = [page["slug"] for page in pages if page["category"] == "Nitrous" and page["slug"] not in N2O_PRESETS]
     if missing_n2o:
         raise SystemExit("Nitrous pages missing presets: " + ", ".join(missing_n2o))
+    missing_shock = [page["slug"] for page in pages if page["category"] == "Shock" and page["slug"] not in SHOCK_PRESETS]
+    if missing_shock:
+        raise SystemExit("Shock pages missing presets: " + ", ".join(missing_shock))
     hubs = [page for page in pages if page["role"] == "hub"]
     hubs_by_category = {page["category"]: page for page in hubs}
     if not any(page["slug"] == "transmission-shift-recovery-calculator" for page in pages):

@@ -41,6 +41,11 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://dragcalculators.com/drag-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://dragcalculators.com/exhaust-header-sizing-calculator.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
@@ -1882,6 +1887,91 @@
     </url>
     <url>
         <loc>https://dragcalculators.com/fogger-nitrous-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/prepped-slick-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/radial-prep-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/no-prep-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/street-car-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/street-strip-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/single-adjustable-drag-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/double-adjustable-drag-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/qa1-drag-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/strange-drag-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/viking-drag-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/afco-drag-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/four-link-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/ladder-bar-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/torque-arm-shock-calculator.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/wheelstand-shock-adjustment.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/spin-on-hit-shock-adjustment.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://dragcalculators.com/shift-unload-shock-adjustment.html</loc>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
     </url>

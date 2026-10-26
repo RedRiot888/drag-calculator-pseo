@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheelstand Shock Adjustment Calculator | DragCalculators.com</title>
+    <meta name="description" content="Wheelstand Shock Adjustment Calculator. Loaded defaults: wheelstand correction, prepped slick, on the brake.">
+    <link rel="canonical" href="https://dragcalculators.com/wheelstand-shock-adjustment.html">
+    <meta name="impact-site-verification" value="b2bb3042-cfc7-4ed4-b783-57a9b5a6451f">
+    <meta name="google-site-verification" content="google9e7c88791a3f2f72">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dragcalculators.com/wheelstand-shock-adjustment.html">
+    <meta property="og:title" content="Wheelstand Shock Adjustment Calculator | DragCalculators.com">
+    <meta property="og:description" content="Wheelstand Shock Adjustment Calculator. Loaded defaults: wheelstand correction, prepped slick, on the brake.">
+    <meta property="og:image" content="https://dragcalculators.com/social-banner.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Wheelstand Shock Adjustment Calculator | DragCalculators.com">
+    <meta name="twitter:description" content="Wheelstand Shock Adjustment Calculator. Loaded defaults: wheelstand correction, prepped slick, on the brake.">
+    <meta name="twitter:image" content="https://dragcalculators.com/social-banner.jpg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="back-row"><a href="index.html" class="back-link">&larr; Back to Master Hub</a></div>
+    <div class="layout-grid">
+        <aside class="nexus-sidebar"><nav class="nav-list"><a class="nav-item" href="index.html">Popular / Master Hub</a><a class="nav-item" href="transmission-shift-recovery-calculator.html">Transmission &amp; Gearing</a><a class="nav-item" href="turbo-sizing-calculator.html">Forced Induction / Turbo</a><a class="nav-item" href="ls-engine-builder.html">LS Engine Builder</a><a class="nav-item" href="nitrous-shot-calculator.html">Nitrous</a><a class="nav-item" href="four-link-suspension-calculator.html">Suspension &amp; 4-Link</a><a class="nav-item active" href="drag-shock-calculator.html">Shocks</a><a class="nav-item" href="exhaust-header-sizing-calculator.html">Exhaust &amp; Airflow</a><a class="nav-item" href="supercharger-pulley-calculator.html">Supercharger Pulleys</a><a class="nav-item" href="rear-gear-calculator.html">Rear Gear Ratio</a><a class="nav-item" href="tire-growth-calculator.html">Chassis &amp; Tires</a><a class="nav-item" href="wastegate-sizing-calculator.html">Wastegate Sizing</a><a class="nav-item" href="fuel-injector-calculator.html">Fueling &amp; EFI</a><a class="nav-item" href="fuel-pump-calculator.html">Fuel Pump</a><a class="nav-item" href="automotive-relay-calculator.html">Electrical &amp; Wiring</a></nav></aside>
+        <section class="sticky-calculator">
+            <header class="master-header">
+                <h1>Wheelstand Shock Adjustment Calculator</h1>
+                <p class="spec">Loaded defaults: wheelstand correction, prepped slick, on the brake.</p>
+            </header>
+            
+    <div class="field-stack">
+    <div class="grid-2">
+        <div class="field"><label for="sk-use">Car</label><select id="sk-use"><option value="strip">Street-strip</option>
+<option value="drag" selected>Drag car</option>
+<option value="street">Street car</option></select></div>
+        <div class="field"><label for="sk-surface">Surface</label><select id="sk-surface"><option value="radial">Radial prep</option>
+<option value="prepped" selected>Prepped</option>
+<option value="noprep">No prep</option></select></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="sk-tire">Tire</label><select id="sk-tire"><option value="radial">Drag radial</option>
+<option value="slick" selected>Bias slick</option>
+<option value="street">Street tire</option></select></div>
+        <div class="field"><label for="sk-style">Shock</label><select id="sk-style"><option value="double" selected>Double adjustable</option>
+<option value="single">Single adjustable</option></select></div>
+    </div>
+    <div class="field"><label for="sk-brand">Adjuster scale</label><select id="sk-brand"><option value="qa1" selected>QA1 (0-18, higher is firmer)</option>
+<option value="strange">Strange (0-16, higher is firmer)</option>
+<option value="viking">Viking (0-24, higher is firmer)</option>
+<option value="afco">Afco (0-12, higher is firmer)</option>
+<option value="generic">Generic (0-18, higher is firmer)</option></select></div>
+    <p class="field-hint">Prepped can take a fast hit. Radial prep is the middle. No prep spins if the hit is sharp. A single adjustable moves rebound only. A double adjustable adds a compression knob, which is the rear hit and the front return.</p>
+    </div>
+    <details class="accordion">
+        <summary>Advanced / Conditions</summary>
+        <div class="accordion-body field-stack">
+    <div class="grid-2">
+        <div class="field"><label for="sk-hp">Power</label><input type="number" id="sk-hp" value="1100" min="100" max="4000" step="25"></div>
+        <div class="field"><label for="sk-weight">Race weight (lb)</label><input type="number" id="sk-weight" value="3000" min="1400" max="7000" step="50"></div>
+    </div>
+    <div class="grid-2">
+        <div class="field"><label for="sk-hit">How it hits</label><select id="sk-hit"><option value="power">Power adder comes in</option>
+<option value="na">Naturally aspirated</option>
+<option value="brake" selected>On the brake or transbrake</option></select></div>
+        <div class="field"><label for="sk-rear">Rear suspension</label><select id="sk-rear"><option value="fourlink" selected>4-link</option>
+<option value="ladder">Ladder bar</option>
+<option value="torquearm">Torque arm</option>
+<option value="coilover">Coilover</option>
+<option value="stock">Stock arms or leaf</option></select></div>
+    </div>
+    <div class="field"><label for="sk-symptom">What it is doing</label><select id="sk-symptom"><option value="baseline">Baseline</option>
+<option value="spin">Spins on the hit</option>
+<option value="dead">No bite</option>
+<option value="wheelie" selected>Wheelstands</option>
+<option value="unload">Unloads on the shift</option>
+<option value="shake">Shakes the tire</option></select></div>
+    <p class="field-hint">Count clicks from the soft stop toward firm. Set both fronts the same and both rears the same. Change two clicks on one end, make one pass, and write down the 60-foot.</p>
+    
+<p class="field-hint">BHP uses the power entry as flywheel power. WHP treats it as wheel power and converts with this drivetrain loss.</p>
+<div class="grid-2">
+    <div class="field"><label for="dt-loss">Drivetrain loss (%)</label><input type="number" id="dt-loss" value="15" min="0" max="40" step="1"></div>
+</div>
+
+    </div>
+    </details>
+    <div class="readout" id="results">
+        <div class="readout-top">
+            <span class="readout-kicker">Result</span>
+            <div class="pill-row">
+                <div class="pill-group" role="group" aria-label="Power unit">
+                    <button type="button" class="pill" data-unit-group="power" data-unit="whp">WHP</button>
+                    <button type="button" class="pill active" data-unit-group="power" data-unit="bhp">BHP</button>
+                </div>
+                <div class="pill-group" role="group" aria-label="Units">
+                    <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
+                    <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+                </div>
+            </div>
+        </div>
+        <div id="readout-body"></div>
+    </div>
+    
+    <p class="assess" id="sk-assess"></p>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>Knob</th><th>Start</th><th>What it does</th><th>Status</th></tr></thead>
+            <tbody id="sk-matrix"></tbody>
+        </table>
+    </div>
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>If the next pass</th><th>Front extension</th><th>Front compression</th><th>Rear compression</th><th>Rear extension</th></tr></thead>
+            <tbody id="sk-moves"></tbody>
+        </table>
+        <p class="field-hint">The pass table is the next change from the clicks above, not a second setup. Turn one row. A cell that says Valve is built into a single-adjustable shock and does not have its own knob. Leave extension travel in the front shaft at ride height, and compression travel in the rear. A shock that is already at the end of its stroke will not do what the click says.</p>
+    </div>
+    
+    <button type="button" class="action-btn" onclick="window.print()">Print shock sheet</button>
+    
+
+        </section>
+        <div class="content-column">
+            <section class="content-box"><h2>Formula</h2><p class="formula">Front extension slows the rise. Rear compression softens the hit. A single adjustable moves rebound only. A double adjustable adds compression, which is the rear hit and the speed the nose comes back down. Clicks count from full soft toward firm.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Wheelstand Shock Adjustment Calculator. Loaded defaults: wheelstand correction, prepped slick, on the brake.</p><ul class="cheat-list"><li>Density altitude: about 3% naturally aspirated power per 1,000 feet.</li><li>Converter slip at the finish is often kept around 5% to 8%.</li><li>On boost, pull roughly 1 to 2 degrees of timing for every 3 to 4 PSI.</li></ul><div class="faq-item"><h3>What does the front extension knob do?</h3><p>On the launch the front shock gets longer. That circuit is extension. More extension slows the rise and softens the hit. Less extension lets the nose come up faster and plants the tire harder.</p></div><div class="faq-item"><h3>Why is rear compression the hit knob?</h3><p>The rear shock gets shorter as the car squats. More compression keeps the tire from getting shocked. Rear extension is the recovery and the gear change, not the first hit. A single adjustable cannot move compression.</p></div><div class="faq-item"><h3>How do prepped, radial prep, and no prep differ?</h3><p>A prepped slick can take a faster hit, so front extension and rear compression stay softer. Radial prep is the middle. No prep breaks loose if the hit is sharp, so those two knobs go firmer. The shock cannot invent grip the track does not have.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="drag-shock-calculator.html">Drag Racing Shock Adjustment Calculator</a></li><li><a href="afco-drag-shock-calculator.html">Afco Drag Shock Adjustment Calculator</a></li><li><a href="double-adjustable-drag-shock-calculator.html">Double Adjustable Drag Shock Calculator</a></li><li><a href="four-link-shock-calculator.html">Four Link Drag Shock Calculator</a></li><li><a href="ladder-bar-shock-calculator.html">Ladder Bar Drag Shock Calculator</a></li><li><a href="no-prep-shock-calculator.html">No Prep Shock Calculator</a></li><li><a href="prepped-slick-shock-calculator.html">Prepped Surface Drag Shock Calculator</a></li></ul></div></div></details>
+        </div>
+    </div>
+    
+<footer class="site-footer">
+    <p>&copy; 2026 Ultimate Drag Racing Calculator Suite. All rights reserved.</p>
+    <p><a class="accent" href="contact.html">Contact &amp; Sponsorships</a> &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy &amp; Affiliate Disclosure</a></p>
+</footer>
+
+    <script>
+
+const unitState = { power: "bhp", system: "imperial" };
+let lastReadout = [];
+
+function crankHorsepower(raw) {
+    const hp = parseFloat(raw);
+    const entered = Number.isFinite(hp) ? hp : 0;
+    if (unitState.power !== "whp") return entered;
+    const lossInput = document.getElementById("dt-loss");
+    const lossPct = lossInput ? parseFloat(lossInput.value) : 15;
+    const loss = Math.min(0.4, Math.max(0, (Number.isFinite(lossPct) ? lossPct : 15) / 100));
+    return entered / Math.max(0.05, 1 - loss);
+}
+
+function formatUnit(value, unit) {
+    const metric = unitState.system === "metric";
+    const n = Number(value);
+    if (unit === "text") return { text: String(value), suffix: "" };
+    if (!Number.isFinite(n)) return { text: "—", suffix: "" };
+    switch (unit) {
+        case "mph":
+            return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
+        case "in":
+            return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "in3":
+            return metric ? { text: (n * 25.4).toFixed(2), suffix: "mm" } : { text: n.toFixed(3), suffix: "in" };
+        case "psi":
+            return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
+        case "lbmin":
+            return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "cfm":
+            return metric ? { text: (n * 0.0283168).toFixed(2), suffix: "m3/min" } : { text: Math.round(n).toLocaleString("en-US"), suffix: "CFM" };
+        case "tempf":
+            return metric ? { text: ((n - 32) * 5 / 9).toFixed(0), suffix: "C" } : { text: Math.round(n).toString(), suffix: "F" };
+        case "lbhr":
+            return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
+        case "ft":
+            return metric ? { text: (n * 0.3048).toFixed(2), suffix: "m" } : { text: n.toFixed(1), suffix: "ft" };
+        case "rpm":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "RPM" };
+        case "ratio":
+            return { text: n.toFixed(2), suffix: ":1" };
+        case "sec":
+            return { text: n.toFixed(2), suffix: "s" };
+        case "pct":
+            return { text: Math.round(n).toString(), suffix: "%" };
+        case "pct1":
+            return { text: n.toFixed(1), suffix: "%" };
+        case "cc":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "cc/min" };
+        case "ci":
+            return metric ? { text: (n * 0.0163871).toFixed(2), suffix: "L" } : { text: n.toFixed(1), suffix: "ci" };
+        case "gph":
+            return metric ? { text: (n * 3.78541).toFixed(1), suffix: "L/h" } : { text: n.toFixed(1), suffix: "gal/hr" };
+        case "amp":
+            return { text: n.toFixed(1), suffix: "A" };
+        case "mm":
+            return { text: String(Math.round(n)), suffix: "mm" };
+        case "awg":
+            return { text: String(value), suffix: "AWG" };
+        default:
+            return { text: String(value), suffix: unit || "" };
+    }
+}
+
+function joinReading(shown) {
+    if (!shown.suffix) return shown.text;
+    if (shown.suffix.charAt(0) === ":") return shown.text + shown.suffix;
+    return shown.text + " " + shown.suffix;
+}
+
+function reading(value, unit) {
+    return joinReading(formatUnit(value, unit));
+}
+
+function publishReadout(items) {
+    lastReadout = items;
+    const body = document.getElementById("readout-body");
+    if (!body || !items.length) return;
+    const primary = items.find(item => item.primary) || items[0];
+    const rest = items.filter(item => item !== primary);
+    const main = formatUnit(primary.value, primary.unit);
+    const extras = rest.map(item => {
+        return '<div class="readout-extra"><span>' + item.label + '</span><strong>' + reading(item.value, item.unit) + '</strong></div>';
+    }).join("");
+    body.innerHTML = '<div class="readout-label">' + primary.label + '</div>'
+        + '<div class="readout-value">' + main.text + (main.suffix ? '<span class="readout-suffix">' + main.suffix + '</span>' : '') + '</div>'
+        + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
+}
+
+function bindCalc(fn, ids) {
+    window.refreshCalc = fn;
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", fn);
+        el.addEventListener("change", fn);
+    });
+    fn();
+}
+
+document.querySelectorAll(".pill").forEach(button => {
+    button.addEventListener("click", () => {
+        if (!button.dataset.unitGroup) return;
+        unitState[button.dataset.unitGroup] = button.dataset.unit;
+        button.parentElement.querySelectorAll(".pill").forEach(pill => {
+            pill.classList.toggle("active", pill === button);
+        });
+        if (typeof window.refreshCalc === "function") window.refreshCalc();
+        else if (lastReadout.length) publishReadout(lastReadout);
+    });
+});
+
+
+const SK_BRAND = {
+    qa1: { name: "QA1", max: 18 },
+    strange: { name: "Strange", max: 16 },
+    viking: { name: "Viking", max: 24 },
+    afco: { name: "Afco", max: 12 },
+    generic: { name: "Generic", max: 18 }
+};
+const SK_BITE = { prepped: 1, radial: 0.72, noprep: 0.38 };
+const SK_TIRE = { slick: 1, radial: 0.74, street: 0.42 };
+const SK_PLANT = { drag: 1, strip: 0.72, street: 0.35 };
+const SK_SEP = { fourlink: 1, ladder: 0.88, torquearm: 0.55, coilover: 0.48, stock: 0.4 };
+const SK_HIT = { na: 0.85, power: 1, brake: 1.22 };
+const SK_SHIFT = {
+    baseline: [0, 0, 0, 0],
+    spin: [12, 0, 12, 0],
+    dead: [-12, 0, -12, 0],
+    wheelie: [14, -12, 6, 0],
+    unload: [0, -10, 0, -14],
+    shake: [6, 0, 14, 0]
+};
+
+function skClamp(value, lo, hi) {
+    return Math.min(hi, Math.max(lo, value));
+}
+
+function skNum(id, fallback) {
+    const el = document.getElementById(id);
+    const value = el ? parseFloat(el.value) : NaN;
+    return Number.isFinite(value) ? value : fallback;
+}
+
+function skClicks(percent, max) {
+    return Math.round(skClamp(percent, 0, 100) / 100 * max);
+}
+
+function skPlan() {
+    const use = document.getElementById("sk-use").value || "strip";
+    const surface = document.getElementById("sk-surface").value || "radial";
+    const tire = document.getElementById("sk-tire").value || "radial";
+    const style = document.getElementById("sk-style").value || "double";
+    const brandKey = document.getElementById("sk-brand").value || "qa1";
+    const brand = SK_BRAND[brandKey] || SK_BRAND.qa1;
+    const hit = document.getElementById("sk-hit").value || "power";
+    const rear = document.getElementById("sk-rear").value || "fourlink";
+    const symptom = document.getElementById("sk-symptom").value || "baseline";
+    const hp = Math.max(100, crankHorsepower(skNum("sk-hp", 650)));
+    const weight = skClamp(skNum("sk-weight", 3400), 1400, 7000);
+    const ptw = hp / weight * 1000;
+    const bite = (SK_BITE[surface] || 0.7) * (SK_TIRE[tire] || 0.7);
+    const plant = SK_PLANT[use] || 0.7;
+    const demand = skClamp(ptw / 200, 0.35, 1.85) * (SK_HIT[hit] || 1);
+    let smooth = skClamp((demand - bite * 1.15) / 1.1, 0, 1);
+    if (use === "street") smooth = Math.max(smooth, 0.72);
+    else if (use === "strip") smooth = Math.max(smooth, 0.28);
+    let frontExt = 26 + smooth * 48 - Math.max(0, bite - 0.55) * 18;
+    let frontComp = 18 + plant * 22 + bite * 10 - (use === "street" ? 12 : 0);
+    let rearComp = 18 + smooth * 46 - bite * 8 + (rear === "torquearm" ? 8 : 0);
+    let rearExt = 16 + (1 - bite) * 28 + (1 - (SK_SEP[rear] || 0.5)) * 14 - plant * 6;
+    const shift = SK_SHIFT[symptom] || SK_SHIFT.baseline;
+    frontExt += shift[0];
+    frontComp += shift[1];
+    rearComp += shift[2];
+    rearExt += shift[3];
+    return {
+        use: use,
+        surface: surface,
+        tire: tire,
+        style: style,
+        brandKey: brandKey,
+        brand: brand,
+        hit: hit,
+        rear: rear,
+        symptom: symptom,
+        hp: hp,
+        weight: weight,
+        ptw: ptw,
+        bite: bite,
+        smooth: smooth,
+        double: style === "double",
+        frontExt: skClamp(frontExt, 6, 90),
+        frontComp: skClamp(frontComp, 6, 80),
+        rearComp: skClamp(rearComp, 6, 88),
+        rearExt: skClamp(rearExt, 6, 80)
+    };
+}
+
+function skStart(percent, brand, enabled) {
+    const pct = Math.round(percent) + "% from full soft";
+    if (!enabled) return "In the valve · " + pct;
+    return skClicks(percent, brand.max) + " of " + brand.max + " · " + pct;
+}
+
+function skNext(percent, delta, brand, enabled) {
+    if (!enabled) return "Valve";
+    const base = skClicks(percent, brand.max);
+    if (!delta) return "leave";
+    const next = skClamp(base + delta, 0, brand.max);
+    if (next === base) return base + " (at the stop)";
+    return String(next);
+}
+
+function skRow(name, detail, result, status) {
+    const tr = document.createElement("tr");
+    if (status === "No") tr.className = "is-small";
+    const badge = status === "Good" ? "badge-ok" : (status === "Watch" ? "badge-tight" : "badge-no");
+    [name, detail, result].forEach(text => {
+        const td = document.createElement("td");
+        td.textContent = text;
+        tr.appendChild(td);
+    });
+    const statusCell = document.createElement("td");
+    const pill = document.createElement("span");
+    pill.className = "badge " + badge;
+    pill.textContent = status;
+    statusCell.appendChild(pill);
+    tr.appendChild(statusCell);
+    return tr;
+}
+
+function skMoveRow(cells) {
+    const tr = document.createElement("tr");
+    cells.forEach(text => {
+        const td = document.createElement("td");
+        td.textContent = text;
+        tr.appendChild(td);
+    });
+    return tr;
+}
+
+function calcShock() {
+    const plan = skPlan();
+    const brand = plan.brand;
+    const step = Math.max(1, Math.round(brand.max / 9));
+    const frontValve = (plan.use === "street" || plan.tire === "street") ? "50/50" : (plan.surface === "noprep" ? "80/20" : "90/10");
+    const rearWantsDouble = plan.tire !== "street" && plan.use !== "street" && (plan.rearComp >= 40 || plan.ptw >= 160 || plan.smooth >= 0.55);
+    const frontCompOn = plan.double;
+    const rearCompOn = plan.double;
+    const travel = plan.use === "drag" ? 2 : (plan.use === "strip" ? 1.5 : 1);
+    const rearTravel = plan.use === "street" ? 1 : 1.5;
+    const fe = skClicks(plan.frontExt, brand.max);
+    const fc = skClicks(plan.frontComp, brand.max);
+    const rc = skClicks(plan.rearComp, brand.max);
+    const re = skClicks(plan.rearExt, brand.max);
+    const feLabel = fe + " of " + brand.max;
+    const fcLabel = frontCompOn ? fc + " of " + brand.max : frontValve + " valve";
+    const rcLabel = rearCompOn ? rc + " of " + brand.max : "50/50 valve";
+    const reLabel = re + " of " + brand.max;
+    let frontCompStatus = "Good";
+    let frontCompResult = "Holds the nose up. Less of it lets a wheelstand come back down.";
+    if (!frontCompOn && plan.symptom === "wheelie") {
+        frontCompStatus = "Watch";
+        frontCompResult = "A single front is already light on compression. Slow the rise with extension. If it still stands up, the shaft is out of travel or the power is ahead of the shock.";
+    } else if (!frontCompOn) {
+        frontCompResult = "Built into the " + frontValve + " valve. The knob on this shock is extension.";
+    }
+    let rearCompStatus = "Good";
+    let rearCompResult = "Softens the hit. More of it keeps the tire from getting shocked.";
+    if (!rearCompOn && rearWantsDouble) {
+        rearCompStatus = "Watch";
+        rearCompResult = "This hit wants a compression knob. A single rear only moves rebound, so it cannot soften the hit.";
+    } else if (!rearCompOn) {
+        rearCompResult = "The 50/50 valve is the compression. The knob only changes how the rear recovers.";
+    }
+    let frontPartStatus = "Good";
+    let frontPart = frontValve + " front. Use a double if you need the nose to come down on its own knob.";
+    if (plan.use === "street") {
+        frontPart = "50/50 street front. A drag 90/10 will float on the street.";
+    } else if (plan.double) {
+        frontPart = "Double adjustable front, or a " + frontValve + " single if extension is the only knob you need.";
+    }
+    if (!plan.double && plan.symptom === "wheelie") frontPartStatus = "Watch";
+    let rearPartStatus = "Good";
+    let rearPart = "Double adjustable rear. Compression is the hit. Extension is the recovery and the gear change.";
+    if (!plan.double && rearWantsDouble) {
+        rearPartStatus = "Watch";
+        rearPart = "Plan on a double adjustable rear. Leave the single at the rebound click until that shock is on the car.";
+    } else if (!plan.double) {
+        rearPart = "50/50 single is enough here. The knob is rebound, not the hit.";
+    }
+    const directionStatus = plan.brandKey === "afco" ? "Watch" : "Good";
+    const directionResult = plan.brandKey === "afco"
+        ? "This scale counts 0 soft to " + brand.max + " firm. If the arrow on the Afco body points the other way, count back from the firm stop."
+        : "0 is full soft and " + brand.max + " is full firm on this " + brand.name + " scale. Higher slows that circuit.";
+    const rearNote = {
+        fourlink: "Rear extension stays loose so the 4-link can separate.",
+        ladder: "A ladder bar hits quickly, so the rear starts a little tighter than a 4-link.",
+        torquearm: "A torque arm hits harder than a 4-link, so rear compression starts firmer.",
+        coilover: "A coilover shaft moves less than the wheel, so leave extra travel in the shock.",
+        stock: "Stock arms and leaf springs do not separate like a 4-link, so rear rebound starts closer to the middle."
+    }[plan.rear] || "";
+    let surfaceNote = "The surface can take a hit.";
+    if (plan.use === "street") {
+        surfaceNote = "A street tire wants the 50/50 valve and a controlled nose, not a drag 90/10.";
+    } else if (plan.surface === "noprep") {
+        surfaceNote = "The power is ahead of this surface. Firmer front extension and rear compression make the spin smoother. They do not add grip the track does not have.";
+    } else if (plan.smooth >= 0.35) {
+        surfaceNote = "The hit is slowed so the tire is planted instead of shocked.";
+    }
+    const symptomNote = {
+        baseline: "",
+        spin: " The starting clicks are already firmer on front extension and rear compression for a car that spins on the hit.",
+        dead: " The starting clicks are already softer on front extension and rear compression for a car that will not transfer.",
+        wheelie: " The starting clicks already slow the rise and let the nose come back down.",
+        unload: " The starting clicks already let the nose down and loosen rear extension for a car that unloads on the shift.",
+        shake: " The starting clicks already add rear compression for a tire that shakes."
+    }[plan.symptom] || "";
+    publishReadout([
+        { label: "Front extension", value: feLabel, unit: "text", primary: true },
+        { label: "Front compression", value: fcLabel, unit: "text" },
+        { label: "Rear compression", value: rcLabel, unit: "text" },
+        { label: "Rear extension", value: reLabel, unit: "text" },
+        { label: "Front valve", value: frontValve, unit: "text" },
+        { label: "Front travel left", value: travel, unit: "in" },
+        { label: "Power to weight", value: Math.round(plan.ptw) + " HP / 1,000 lb", unit: "text" }
+    ]);
+    const assess = document.getElementById("sk-assess");
+    if (assess) {
+        const rearGap = (!plan.double && rearWantsDouble)
+            ? " The rear hit wants a compression knob, and a single adjustable does not have one."
+            : "";
+        assess.textContent = "Start the " + brand.name + " fronts at " + feLabel + " extension and " + fcLabel + " compression. Start the rears at " + rcLabel + " compression and " + reLabel + " extension. Higher is firmer. Front extension slows the rise. Rear compression softens the hit. " + surfaceNote + " " + rearNote + symptomNote + rearGap + " Leave about " + travel.toFixed(1) + " in of front extension and " + rearTravel.toFixed(1) + " in of rear compression in the shafts at ride height.";
+    }
+    const body = document.getElementById("sk-matrix");
+    if (body) {
+        body.replaceChildren(
+            skRow("Front extension", skStart(plan.frontExt, brand, true), "Slows the rise. More is a softer hit. Less plants the tire harder.", "Good"),
+            skRow("Front compression", skStart(plan.frontComp, brand, frontCompOn), frontCompResult, frontCompStatus),
+            skRow("Rear compression", skStart(plan.rearComp, brand, rearCompOn), rearCompResult, rearCompStatus),
+            skRow("Rear extension", skStart(plan.rearExt, brand, true), "Loose lets the housing separate. Tight keeps the tire loaded when the surface goes away.", "Good"),
+            skRow("Front shock", frontValve, frontPart, frontPartStatus),
+            skRow("Rear shock", plan.double ? "Double" : "Single", rearPart, rearPartStatus),
+            skRow("Scale", brand.name, directionResult, directionStatus)
+        );
+    }
+    const moves = document.getElementById("sk-moves");
+    if (moves) {
+        const rows = [
+            ["Spins on the hit", step, 0, step, 0],
+            ["No bite, nose barely rises", -step, 0, -step, 0],
+            ["Wheelstands", step, -step, 0, 0],
+            ["Unloads on the shift", 0, -step, 0, -step],
+            ["Shakes the tire", 0, 0, step, 0],
+            ["Greasy or cold track", step, 0, step, 0]
+        ];
+        moves.replaceChildren(...rows.map(row => skMoveRow([
+            row[0],
+            skNext(plan.frontExt, row[1], brand, true),
+            skNext(plan.frontComp, row[2], brand, frontCompOn),
+            skNext(plan.rearComp, row[3], brand, rearCompOn),
+            skNext(plan.rearExt, row[4], brand, true)
+        ])));
+    }
+}
+bindCalc(calcShock, ["sk-use", "sk-surface", "sk-tire", "sk-style", "sk-brand", "sk-hp", "sk-weight", "sk-hit", "sk-rear", "sk-symptom", "dt-loss"]);
+
+    </script>
+</body>
+</html>
