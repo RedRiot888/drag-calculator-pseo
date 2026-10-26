@@ -117,14 +117,15 @@ VERIFICATION = (
 )
 
 STYLES = """:root {
-    --bg-dark: #0f1015;
-    --card-bg: #181a20;
-    --accent-red: #ff1e27;
-    --text-main: #f8f9fa;
-    --text-muted: #9ca3af;
-    --border-color: #2d3139;
-    --input-bg: #21242c;
-    --ok: #10b981;
+    --bg-dark: #121212;
+    --card-bg: #1c1c1c;
+    --panel: #181818;
+    --accent-red: #e50914;
+    --text-main: #f5f5f5;
+    --text-muted: #a3a3a3;
+    --border-color: #2e2e2e;
+    --input-bg: #141414;
+    --ok: #d6d6d6;
 }
 * { box-sizing: border-box; }
 body {
@@ -141,7 +142,7 @@ body {
     max-width: 1350px;
     margin: 16px auto 0;
     display: grid;
-    grid-template-columns: 240px minmax(320px, 480px) 1fr;
+    grid-template-columns: 240px minmax(340px, 520px) 1fr;
     gap: 25px;
     align-items: start;
 }
@@ -152,31 +153,32 @@ body {
     overflow: auto;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 15px;
+    border-radius: 10px;
+    padding: 12px;
 }
 .nav-list { display: flex; flex-direction: column; gap: 4px; }
 .nav-item {
     display: block;
-    padding: 8px 10px;
+    padding: 9px 12px;
     color: var(--text-muted);
     text-decoration: none;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 0.78rem;
-    border-left: 3px solid transparent;
+    border: 1px solid transparent;
 }
 .nav-item.active {
-    background: var(--input-bg);
-    border-left-color: var(--accent-red);
-    color: var(--text-main);
-    font-weight: 600;
+    background: var(--accent-red);
+    border-color: var(--accent-red);
+    color: #fff;
+    font-weight: 700;
 }
-.nav-item:hover { background: var(--input-bg); color: var(--text-main); }
+.nav-item:hover { background: #242424; color: var(--text-main); }
+.nav-item.active:hover { background: var(--accent-red); color: #fff; }
 .sticky-calculator, .content-box, .narrow-card {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 25px;
+    border-radius: 10px;
+    padding: 22px;
 }
 .sticky-calculator { display: flex; flex-direction: column; gap: 15px; }
 .content-column { display: flex; flex-direction: column; gap: 20px; }
@@ -190,52 +192,118 @@ body {
 }
 .master-header { text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
 .master-header h1 {
-    color: var(--accent-red);
+    color: var(--text-main);
     font-size: 1.15rem;
     text-transform: uppercase;
+    letter-spacing: 0.04em;
     margin: 0 0 6px;
 }
 .spec, .content-box p, .narrow-card p { color: var(--text-muted); font-size: 0.9rem; }
 .spec { font-size: 0.82rem; margin: 0; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
-label { display: block; margin-bottom: 2px; font-weight: 600; font-size: 0.72rem; color: var(--text-muted); }
+.field-stack { display: flex; flex-direction: column; gap: 14px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field-hint { margin: 0; color: var(--text-muted); font-size: 0.75rem; }
+label { display: block; margin: 0; font-weight: 650; font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
 input, select, textarea {
     width: 100%;
-    padding: 7px 9px;
+    height: 42px;
+    padding: 0 12px;
     background: var(--input-bg);
-    border: 1px solid var(--border-color);
+    border: 1px solid #3a3a3a;
     color: var(--text-main);
-    border-radius: 6px;
-    font-size: 0.82rem;
+    border-radius: 8px;
+    font-size: 0.92rem;
     font-family: inherit;
 }
-textarea { min-height: 120px; resize: vertical; }
-.results-box {
-    margin-top: 10px;
-    background: #121418;
+textarea { height: auto; min-height: 120px; padding: 10px 12px; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-red); }
+input:disabled { opacity: 0.65; }
+.narrow-card form > div { margin-bottom: 14px; }
+.accordion {
     border: 1px solid var(--border-color);
-    border-left: 4px solid var(--accent-red);
-    padding: 10px;
-    border-radius: 6px;
-    font-size: 0.82rem;
+    border-radius: 8px;
+    background: var(--panel);
 }
+.accordion summary {
+    cursor: pointer;
+    padding: 12px 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    list-style: none;
+}
+.accordion summary::-webkit-details-marker { display: none; }
+.accordion summary::after { content: "+"; float: right; color: var(--accent-red); font-size: 1rem; line-height: 1; }
+.accordion[open] summary::after { content: "–"; }
+.accordion[open] summary { color: #fff; }
+.accordion-body { padding: 0 14px 14px; }
+.readout {
+    background: #161616;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 16px;
+}
+.readout-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.readout-kicker, .readout-label {
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.readout-value {
+    margin-top: 4px;
+    font-size: 2.5rem;
+    line-height: 1;
+    font-weight: 750;
+    letter-spacing: -0.03em;
+    color: var(--accent-red);
+}
+.readout-suffix { margin-left: 8px; font-size: 1rem; font-weight: 650; color: var(--text-main); letter-spacing: 0; }
+.readout-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-color);
+}
+.readout-extra span { display: block; color: var(--text-muted); font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.readout-extra strong { display: block; margin-top: 2px; font-size: 0.95rem; font-weight: 650; color: var(--text-main); }
+.pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill-group { display: inline-flex; border: 1px solid #3a3a3a; border-radius: 999px; overflow: hidden; background: #141414; }
+.pill {
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    padding: 6px 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    font-family: inherit;
+}
+.pill.active { background: var(--accent-red); color: #fff; }
 .action-btn {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 0;
     background: var(--accent-red);
     color: white;
     border: none;
-    padding: 8px;
-    border-radius: 6px;
+    padding: 12px;
+    border-radius: 8px;
     font-weight: 700;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
     cursor: pointer;
     text-transform: uppercase;
 }
-.action-btn:hover { background: #e0161f; }
-table { width: 100%; margin-top: 12px; border-collapse: collapse; background: #121418; }
-th, td { padding: 5px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
-th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
+.action-btn:hover { background: #c40812; }
+table { width: 100%; margin-top: 4px; border-collapse: collapse; background: #161616; }
+th, td { padding: 7px 4px; border: 1px solid var(--border-color); text-align: center; font-size: 0.72rem; }
+th { background: #202020; color: var(--accent-red); text-transform: uppercase; font-size: 0.62rem; }
 .formula {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     color: var(--ok);
@@ -267,7 +335,7 @@ th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; f
 .site-footer a { color: var(--text-muted); text-decoration: none; }
 .site-footer a.accent { color: var(--accent-red); font-weight: 700; }
 .narrow { max-width: 720px; margin: 20px auto; }
-.narrow-card h1 { color: var(--accent-red); font-size: 1.3rem; text-transform: uppercase; margin-top: 0; }
+.narrow-card h1 { color: var(--text-main); font-size: 1.3rem; text-transform: uppercase; margin-top: 0; }
 .narrow-card h2 {
     color: var(--text-main);
     font-size: 1.05rem;
@@ -283,8 +351,9 @@ th { background: #1f232b; color: var(--accent-red); text-transform: uppercase; f
 }
 @media (max-width: 700px) {
     body { padding: 12px; }
-    .grid-2 { grid-template-columns: 1fr; }
+    .grid-2, .readout-grid { grid-template-columns: 1fr; }
     .sticky-calculator, .content-box, .narrow-card { padding: 16px; }
+    .readout-value { font-size: 2rem; }
 }
 """
 
@@ -498,36 +567,176 @@ def options(choices, current):
     return "\n".join(parts)
 
 
+UI_SCRIPT = r"""
+const unitState = { power: "bhp", system: "imperial" };
+let lastReadout = [];
+
+function crankHorsepower(raw) {
+    const hp = parseFloat(raw);
+    const entered = Number.isFinite(hp) ? hp : 0;
+    if (unitState.power !== "whp") return entered;
+    const lossInput = document.getElementById("dt-loss");
+    const lossPct = lossInput ? parseFloat(lossInput.value) : 15;
+    const loss = Math.min(0.4, Math.max(0, (Number.isFinite(lossPct) ? lossPct : 15) / 100));
+    return entered / Math.max(0.05, 1 - loss);
+}
+
+function formatUnit(value, unit) {
+    const metric = unitState.system === "metric";
+    const n = Number(value);
+    if (unit === "text") return { text: String(value), suffix: "" };
+    if (!Number.isFinite(n)) return { text: "—", suffix: "" };
+    switch (unit) {
+        case "mph":
+            return metric ? { text: (n * 1.60934).toFixed(1), suffix: "km/h" } : { text: n.toFixed(1), suffix: "MPH" };
+        case "in":
+            return metric ? { text: (n * 25.4).toFixed(1), suffix: "mm" } : { text: n.toFixed(1), suffix: "in" };
+        case "psi":
+            return metric ? { text: (n * 0.0689476).toFixed(2), suffix: "bar" } : { text: n.toFixed(1), suffix: "PSI" };
+        case "lbmin":
+            return metric ? { text: (n * 0.453592).toFixed(2), suffix: "kg/min" } : { text: n.toFixed(1), suffix: "lb/min" };
+        case "lbhr":
+            return metric ? { text: (n * 0.453592).toFixed(1), suffix: "kg/h" } : { text: n.toFixed(1), suffix: "lb/hr" };
+        case "ft":
+            return metric ? { text: (n * 0.3048).toFixed(2), suffix: "m" } : { text: n.toFixed(1), suffix: "ft" };
+        case "rpm":
+            return { text: Math.round(n).toLocaleString("en-US"), suffix: "RPM" };
+        case "ratio":
+            return { text: n.toFixed(2), suffix: ":1" };
+        case "sec":
+            return { text: n.toFixed(2), suffix: "s" };
+        case "pct":
+            return { text: Math.round(n).toString(), suffix: "%" };
+        case "cc":
+            return { text: n.toFixed(1), suffix: "cc/min" };
+        case "amp":
+            return { text: n.toFixed(1), suffix: "A" };
+        case "mm":
+            return { text: String(Math.round(n)), suffix: "mm" };
+        case "awg":
+            return { text: String(value), suffix: "AWG" };
+        default:
+            return { text: String(value), suffix: unit || "" };
+    }
+}
+
+function joinReading(shown) {
+    if (!shown.suffix) return shown.text;
+    if (shown.suffix.charAt(0) === ":") return shown.text + shown.suffix;
+    return shown.text + " " + shown.suffix;
+}
+
+function reading(value, unit) {
+    return joinReading(formatUnit(value, unit));
+}
+
+function publishReadout(items) {
+    lastReadout = items;
+    const body = document.getElementById("readout-body");
+    if (!body || !items.length) return;
+    const primary = items.find(item => item.primary) || items[0];
+    const rest = items.filter(item => item !== primary);
+    const main = formatUnit(primary.value, primary.unit);
+    const extras = rest.map(item => {
+        return '<div class="readout-extra"><span>' + item.label + '</span><strong>' + reading(item.value, item.unit) + '</strong></div>';
+    }).join("");
+    body.innerHTML = '<div class="readout-label">' + primary.label + '</div>'
+        + '<div class="readout-value">' + main.text + (main.suffix ? '<span class="readout-suffix">' + main.suffix + '</span>' : '') + '</div>'
+        + (extras ? '<div class="readout-grid">' + extras + '</div>' : '');
+}
+
+function bindCalc(fn, ids) {
+    window.refreshCalc = fn;
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", fn);
+        el.addEventListener("change", fn);
+    });
+    fn();
+}
+
+document.querySelectorAll(".pill").forEach(button => {
+    button.addEventListener("click", () => {
+        unitState[button.dataset.unitGroup] = button.dataset.unit;
+        button.parentElement.querySelectorAll(".pill").forEach(pill => {
+            pill.classList.toggle("active", pill === button);
+        });
+        if (typeof window.refreshCalc === "function") window.refreshCalc();
+        else if (lastReadout.length) publishReadout(lastReadout);
+    });
+});
+"""
+
+LOSS_FIELDS = """
+<p class="field-hint">BHP uses the power entry as flywheel power. WHP treats it as wheel power and converts with this drivetrain loss.</p>
+<div class="grid-2">
+    <div class="field"><label for="dt-loss">Drivetrain loss (%)</label><input type="number" id="dt-loss" value="15" min="0" max="40" step="1"></div>
+</div>
+"""
+
+
+def calculator_shell(primary, advanced, print_label, extra="", power_toggle=False):
+    power = ""
+    if power_toggle:
+        power = """
+                <div class="pill-group" role="group" aria-label="Power unit">
+                    <button type="button" class="pill" data-unit-group="power" data-unit="whp">WHP</button>
+                    <button type="button" class="pill active" data-unit-group="power" data-unit="bhp">BHP</button>
+                </div>"""
+    return f"""
+    <div class="field-stack">{primary}</div>
+    <details class="accordion">
+        <summary>Advanced / Conditions</summary>
+        <div class="accordion-body field-stack">{advanced}</div>
+    </details>
+    <div class="readout" id="results">
+        <div class="readout-top">
+            <span class="readout-kicker">Result</span>
+            <div class="pill-row">{power}
+                <div class="pill-group" role="group" aria-label="Units">
+                    <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
+                    <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+                </div>
+            </div>
+        </div>
+        <div id="readout-body"></div>
+    </div>
+    <button type="button" class="action-btn" onclick="window.print()">{esc(print_label)}</button>
+    {extra}
+"""
+
+
 def transmission_html(row):
     current = field(row, "transmission", "th400")
     groups = []
     for label, keys in TRANSMISSION_GROUPS:
         opts = options([(key, TRANSMISSIONS[key][0]) for key in keys], current)
         groups.append(f'<optgroup label="{esc(label)}">\n{opts}\n</optgroup>')
-    return f"""
+    primary = f"""
     <div class="grid-2">
-        <div><label for="trans">Transmission Profile</label>
-            <select id="trans">
-                {''.join(groups)}
-            </select>
-        </div>
-        <div><label for="max-rpm">Max Shift RPM</label><input type="number" id="max-rpm" value="{esc(field(row, 'rpm', '7500'))}" step="100"></div>
+        <div class="field"><label for="trans">Transmission</label><select id="trans">{''.join(groups)}</select></div>
+        <div class="field"><label for="rear-gear">Rear gear</label><input type="number" id="rear-gear" value="{esc(field(row, 'rear_gear', '3.42'))}" step="0.01"></div>
     </div>
     <div class="grid-2">
-        <div><label for="tire-dia">Tire Diameter (in)</label><input type="number" id="tire-dia" value="{esc(field(row, 'tire_diameter', '28.0'))}" step="0.1"></div>
-        <div><label for="rear-gear">Rear Gear Ratio</label><input type="number" id="rear-gear" value="{esc(field(row, 'rear_gear', '3.42'))}" step="0.01"></div>
+        <div class="field"><label for="tire-dia">Tire diameter (in)</label><input type="number" id="tire-dia" value="{esc(field(row, 'tire_diameter', '28.0'))}" step="0.1"></div>
+        <div class="field"><label for="max-rpm">Shift RPM</label><input type="number" id="max-rpm" value="{esc(field(row, 'rpm', '7500'))}" step="100"></div>
     </div>
+    """
+    advanced = f"""
     <div class="grid-2">
-        <div><label for="veh-wt">Vehicle Weight (lbs)</label><input type="number" id="veh-wt" value="3200" step="50"></div>
-        <div><label for="veh-hp">Flywheel HP</label><input type="number" id="veh-hp" value="{esc(field(row, 'hp', '1100'))}" step="25"></div>
+        <div class="field"><label for="veh-wt">Vehicle weight (lb)</label><input type="number" id="veh-wt" value="3200" step="50"></div>
+        <div class="field"><label for="veh-hp">Power</label><input type="number" id="veh-hp" value="{esc(field(row, 'hp', '1100'))}" step="25"></div>
     </div>
-    <div class="results-box" id="results">Adjust parameters above.</div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Track Sheet</button>
+    {LOSS_FIELDS}
+    """
+    table = """
     <table>
-        <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift Speed</th><th>RPM Drop</th></tr></thead>
+        <thead><tr><th>Gear</th><th>Ratio</th><th>Overall</th><th>Shift speed</th><th>RPM drop</th></tr></thead>
         <tbody id="gear-body"></tbody>
     </table>
-"""
+    """
+    return calculator_shell(primary, advanced, "Print track sheet", table, power_toggle=True)
 
 
 DRIVETRAIN_SCRIPT = """
@@ -539,28 +748,29 @@ function calcAll() {
     let tire = parseFloat(document.getElementById("tire-dia").value) || 28;
     let gear = parseFloat(document.getElementById("rear-gear").value) || 3.42;
     let wt = parseFloat(document.getElementById("veh-wt").value) || 3200;
-    let hp = parseFloat(document.getElementById("veh-hp").value) || 1100;
-    let rollout = (tire * Math.PI).toFixed(1);
-    let estEt = (5.825 * Math.pow(wt / hp, 0.333)).toFixed(2);
-    let estTrap = (234 * Math.cbrt(hp / wt)).toFixed(1);
-    document.getElementById("results").innerHTML = "Est. 1/4 Mile ET: " + estEt + "s @ " + estTrap + " MPH | Rollout: " + rollout + " in | 1st Gear: " + (rat[0] * gear).toFixed(2) + ":1";
+    let hp = crankHorsepower(document.getElementById("veh-hp").value || 1100);
+    let rollout = tire * Math.PI;
+    let estEt = 5.825 * Math.pow(wt / Math.max(hp, 1), 0.333);
+    let estTrap = 234 * Math.cbrt(hp / Math.max(wt, 1));
+    publishReadout([
+        { label: "Quarter-mile ET", value: estEt, unit: "sec", primary: true },
+        { label: "Trap speed", value: estTrap, unit: "mph" },
+        { label: "Rollout", value: rollout, unit: "in" },
+        { label: "1st gear overall", value: rat[0] * gear, unit: "ratio" }
+    ]);
     let tbody = document.getElementById("gear-body");
     if (tbody) {
         tbody.innerHTML = "";
         for (let i = 0; i < rat.length; i++) {
             let overall = rat[i] * gear;
             let speed = (rpm * tire) / (overall * 336);
-            let trapRpm = Math.round((parseFloat(estTrap) * overall * 336) / tire);
+            let trapRpm = Math.round((estTrap * overall * 336) / tire);
             let drop = i < rat.length - 1 ? "Drop to " + Math.round(rpm * (rat[i + 1] / rat[i])) + " RPM" : "Finish: " + trapRpm + " RPM";
-            tbody.innerHTML += "<tr><td>Gear " + (i + 1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + speed.toFixed(1) + " MPH</td><td>" + drop + "</td></tr>";
+            tbody.innerHTML += "<tr><td>Gear " + (i + 1) + "</td><td>" + rat[i].toFixed(2) + "</td><td>" + overall.toFixed(2) + "</td><td>" + reading(speed, "mph") + "</td><td>" + drop + "</td></tr>";
         }
     }
 }
-["trans", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp"].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) el.addEventListener("input", calcAll);
-});
-calcAll();
+bindCalc(calcAll, ["trans", "max-rpm", "tire-dia", "rear-gear", "veh-wt", "veh-hp", "dt-loss"]);
 """.replace(
     "%%RATIOS%%",
     json.dumps({key: ratios for key, (_label, ratios) in TRANSMISSIONS.items()}),
@@ -572,24 +782,25 @@ def turbo_html(row):
     count = field(row, "turbo_count", "1")
     fuel_options = options([(value, label) for _key, value, label in TURBO_FUELS], dict((key, value) for key, value, _label in TURBO_FUELS)[fuel])
     count_options = options([("1", "Single"), ("2", "Twin")], count)
-    return f"""
-    <p class="tool-note">Turbocharger airflow and pressure-ratio matching</p>
+    primary = f"""
     <div class="grid-2">
-        <div><label for="tu-hp">Target Flywheel HP</label><input type="number" id="tu-hp" value="{esc(field(row, 'hp', '1000'))}" step="50"></div>
-        <div><label for="tu-boost">Target Boost (PSI)</label><input type="number" id="tu-boost" value="{esc(field(row, 'boost', '22'))}" step="1"></div>
+        <div class="field"><label for="tu-hp">Power</label><input type="number" id="tu-hp" value="{esc(field(row, 'hp', '1000'))}" step="50"></div>
+        <div class="field"><label for="tu-boost">Target boost (PSI)</label><input type="number" id="tu-boost" value="{esc(field(row, 'boost', '22'))}" step="1"></div>
     </div>
+    """
+    advanced = f"""
     <div class="grid-2">
-        <div><label for="tu-bsfc">Fuel BSFC</label><select id="tu-bsfc">{fuel_options}</select></div>
-        <div><label for="tu-count">Turbo Count</label><select id="tu-count">{count_options}</select></div>
+        <div class="field"><label for="tu-bsfc">Fuel BSFC</label><select id="tu-bsfc">{fuel_options}</select></div>
+        <div class="field"><label for="tu-count">Turbo count</label><select id="tu-count">{count_options}</select></div>
     </div>
-    <div class="results-box" id="results">Adjust parameters above.</div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Turbo Match Sheet</button>
-"""
+    {LOSS_FIELDS}
+    """
+    return calculator_shell(primary, advanced, "Print turbo match sheet", power_toggle=True)
 
 
 TURBO_SCRIPT = """
 function calcTurbo() {
-    let hp = parseFloat(document.getElementById("tu-hp").value) || 1000;
+    let hp = crankHorsepower(document.getElementById("tu-hp").value || 1000);
     let boost = parseFloat(document.getElementById("tu-boost").value) || 22;
     let bsfc = parseFloat(document.getElementById("tu-bsfc").value) || 0.85;
     let count = parseInt(document.getElementById("tu-count").value, 10) || 1;
@@ -597,46 +808,43 @@ function calcTurbo() {
     let perTurbo = totalAirflow / count;
     let pr = (boost + 14.7) / 14.7;
     let rec = perTurbo < 45 ? "T4 62-67mm class" : (perTurbo < 75 ? "T4 76-83mm class" : "T6 88-94mm+ class");
-    document.getElementById("results").innerHTML = "Total Airflow: <strong>" + totalAirflow.toFixed(1) + " lb/min</strong> (" + perTurbo.toFixed(1) + " per turbo)<br>Pressure Ratio: <strong>" + pr.toFixed(2) + ":1</strong> | Match: <strong>" + rec + "</strong>";
+    publishReadout([
+        { label: "Airflow per turbo", value: perTurbo, unit: "lbmin", primary: true },
+        { label: "Total airflow", value: totalAirflow, unit: "lbmin" },
+        { label: "Pressure ratio", value: pr, unit: "ratio" },
+        { label: "Compressor class", value: rec, unit: "text" }
+    ]);
 }
-["tu-hp", "tu-boost", "tu-bsfc", "tu-count"].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) { el.addEventListener("input", calcTurbo); el.addEventListener("change", calcTurbo); }
-});
-calcTurbo();
+bindCalc(calcTurbo, ["tu-hp", "tu-boost", "tu-bsfc", "tu-count", "dt-loss"]);
 """
 
 
 def suspension_html(_row):
-    return """
-    <p class="tool-note">10-point chassis geometry</p>
+    primary = """
     <div class="grid-2">
-        <div><label for="l1">1. Vehicle Wheelbase (in)</label><input type="number" id="l1" value="110.0" step="0.5"></div>
-        <div><label for="l2">2. Crankshaft Height (in)</label><input type="number" id="l2" value="24.0" step="0.5"></div>
+        <div class="field"><label for="l1">Wheelbase (in)</label><input type="number" id="l1" value="110.0" step="0.5"></div>
+        <div class="field"><label for="l2">Crankshaft height (in)</label><input type="number" id="l2" value="24.0" step="0.5"></div>
     </div>
+    """
+    advanced = """
     <div class="grid-2">
-        <div><label for="l3">3. Axle Centerline to Rear Top Hole (in)</label><input type="number" id="l3" value="4.0" step="0.1"></div>
-        <div><label for="l4">4. Ground to Rear Top Hole Center (in)</label><input type="number" id="l4" value="18.0" step="0.1"></div>
-    </div>
-    <div class="grid-2">
-        <div><label for="l5">5. Axle Centerline to Rear Bottom Hole (in)</label><input type="number" id="l5" value="4.0" step="0.1"></div>
-        <div><label for="l6">6. Ground to Rear Bottom Hole Center (in)</label><input type="number" id="l6" value="10.0" step="0.1"></div>
+        <div class="field"><label for="l3">Axle to rear top hole (in)</label><input type="number" id="l3" value="4.0" step="0.1"></div>
+        <div class="field"><label for="l4">Ground to rear top hole (in)</label><input type="number" id="l4" value="18.0" step="0.1"></div>
     </div>
     <div class="grid-2">
-        <div><label for="l7">7. Axle Centerline to Front Top Hole (in)</label><input type="number" id="l7" value="32.0" step="0.5"></div>
-        <div><label for="l8">8. Ground to Front Top Hole Center (in)</label><input type="number" id="l8" value="20.0" step="0.5"></div>
+        <div class="field"><label for="l5">Axle to rear bottom hole (in)</label><input type="number" id="l5" value="4.0" step="0.1"></div>
+        <div class="field"><label for="l6">Ground to rear bottom hole (in)</label><input type="number" id="l6" value="10.0" step="0.1"></div>
     </div>
     <div class="grid-2">
-        <div><label for="l9">9. Axle Centerline to Front Bottom Hole (in)</label><input type="number" id="l9" value="32.0" step="0.5"></div>
-        <div><label for="l10">10. Ground to Front Bottom Hole Center (in)</label><input type="number" id="l10" value="11.0" step="0.5"></div>
+        <div class="field"><label for="l7">Axle to front top hole (in)</label><input type="number" id="l7" value="32.0" step="0.5"></div>
+        <div class="field"><label for="l8">Ground to front top hole (in)</label><input type="number" id="l8" value="20.0" step="0.5"></div>
     </div>
-    <div class="results-box" id="results">
-        <div>Instant Center Length: <span id="ic-len">0"</span></div>
-        <div>Instant Center Height: <span id="ic-ht">0"</span></div>
-        <div>Anti-Squat: <span id="as-pct">0%</span></div>
+    <div class="grid-2">
+        <div class="field"><label for="l9">Axle to front bottom hole (in)</label><input type="number" id="l9" value="32.0" step="0.5"></div>
+        <div class="field"><label for="l10">Ground to front bottom hole (in)</label><input type="number" id="l10" value="11.0" step="0.5"></div>
     </div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Chassis Setup Sheet</button>
-"""
+    """
+    return calculator_shell(primary, advanced, "Print chassis setup sheet")
 
 
 SUSPENSION_SCRIPT = """
@@ -658,44 +866,40 @@ function calcTool() {
     let icHt = l4 + topSlope * icLen;
     if (isNaN(icHt)) icHt = 15.2;
     let antiSquat = Math.round((icHt / l2) * 100);
-    let icLenEl = document.getElementById("ic-len");
-    let icHtEl = document.getElementById("ic-ht");
-    let asPctEl = document.getElementById("as-pct");
-    if (icLenEl) icLenEl.textContent = icLen.toFixed(1) + '"';
-    if (icHtEl) icHtEl.textContent = icHt.toFixed(1) + '"';
-    if (asPctEl) asPctEl.textContent = antiSquat + "%";
+    publishReadout([
+        { label: "Anti-squat", value: antiSquat, unit: "pct", primary: true },
+        { label: "Instant center length", value: icLen, unit: "in" },
+        { label: "Instant center height", value: icHt, unit: "in" }
+    ]);
 }
-["l1","l2","l3","l4","l5","l6","l7","l8","l9","l10"].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) { el.addEventListener("input", calcTool); el.addEventListener("change", calcTool); }
-});
-calcTool();
+bindCalc(calcTool, ["l1","l2","l3","l4","l5","l6","l7","l8","l9","l10"]);
 """
 
 
 def exhaust_html(row):
-    return f"""
-    <p class="tool-note">Header primary tube and turbo downpipe sizing</p>
+    primary = f"""
     <div class="grid-2">
-        <div><label for="ex-cid">Engine Displacement (CID)</label><input type="number" id="ex-cid" value="400" step="5"></div>
-        <div><label for="ex-cyl">Cylinders</label><input type="number" id="ex-cyl" value="8" step="1"></div>
+        <div class="field"><label for="ex-cid">Displacement (CID)</label><input type="number" id="ex-cid" value="400" step="5"></div>
+        <div class="field"><label for="ex-cyl">Cylinders</label><input type="number" id="ex-cyl" value="8" step="1"></div>
     </div>
     <div class="grid-2">
-        <div><label for="ex-rpm">Peak RPM</label><input type="number" id="ex-rpm" value="{esc(field(row, 'rpm', '6500'))}" step="100"></div>
-        <div><label for="ex-dur">Exhaust Duration (deg)</label><input type="number" id="ex-dur" value="240" step="5"></div>
-    </div>
-    <div class="grid-2">
-        <div><label for="ex-layout">Layout</label>
+        <div class="field"><label for="ex-rpm">Peak RPM</label><input type="number" id="ex-rpm" value="{esc(field(row, 'rpm', '6500'))}" step="100"></div>
+        <div class="field"><label for="ex-layout">Layout</label>
             <select id="ex-layout">
-                <option value="na">Naturally Aspirated Headers</option>
-                <option value="turbo" selected>Turbo Manifold / Downpipe</option>
+                <option value="na">Naturally aspirated headers</option>
+                <option value="turbo" selected>Turbo manifold / downpipe</option>
             </select>
         </div>
-        <div><label for="ex-hp">Target HP (turbo pipe)</label><input type="number" id="ex-hp" value="{esc(field(row, 'hp', '1000'))}" step="50"></div>
     </div>
-    <div class="results-box" id="results">Adjust parameters above.</div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Exhaust Spec Sheet</button>
-"""
+    """
+    advanced = f"""
+    <div class="grid-2">
+        <div class="field"><label for="ex-dur">Exhaust duration (deg)</label><input type="number" id="ex-dur" value="240" step="5"></div>
+        <div class="field"><label for="ex-hp">Power for downpipe</label><input type="number" id="ex-hp" value="{esc(field(row, 'hp', '1000'))}" step="50"></div>
+    </div>
+    {LOSS_FIELDS}
+    """
+    return calculator_shell(primary, advanced, "Print exhaust spec sheet", power_toggle=True)
 
 
 EXHAUST_SCRIPT = """
@@ -705,18 +909,18 @@ function calcExhaust() {
     let rpm = parseFloat(document.getElementById("ex-rpm").value) || 6500;
     let dur = parseFloat(document.getElementById("ex-dur").value) || 240;
     let layout = document.getElementById("ex-layout").value;
-    let hp = parseFloat(document.getElementById("ex-hp").value) || 1000;
+    let hp = crankHorsepower(document.getElementById("ex-hp").value || 1000);
     let primaryId = Math.sqrt((cid / cyl) * rpm / 88200);
     let primaryLen = (dur * 850 / rpm) - 3;
     let collector = layout === "turbo" ? Math.sqrt(hp / 220) : primaryId * 1.75;
-    let label = layout === "turbo" ? "Turbo Downpipe ID" : "Collector ID";
-    document.getElementById("results").innerHTML = "Primary ID: <strong>" + primaryId.toFixed(2) + " in</strong> | Primary Length: <strong>" + primaryLen.toFixed(1) + " in</strong><br>" + label + ": <strong>" + collector.toFixed(2) + " in</strong>";
+    let label = layout === "turbo" ? "Downpipe ID" : "Collector ID";
+    publishReadout([
+        { label: "Primary ID", value: primaryId, unit: "in", primary: true },
+        { label: "Primary length", value: primaryLen, unit: "in" },
+        { label: label, value: collector, unit: "in" }
+    ]);
 }
-["ex-cid", "ex-cyl", "ex-rpm", "ex-dur", "ex-layout", "ex-hp"].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) { el.addEventListener("input", calcExhaust); el.addEventListener("change", calcExhaust); }
-});
-calcExhaust();
+bindCalc(calcExhaust, ["ex-cid", "ex-cyl", "ex-rpm", "ex-dur", "ex-layout", "ex-hp", "dt-loss"]);
 """
 
 
@@ -724,22 +928,22 @@ def supercharger_html(row):
     kind = field(row, "blower_type", "twin-screw")
     factor = {key: value for key, value, _label in BLOWER_OPTIONS}[kind]
     blower_options = options([(value, label) for _key, value, label in BLOWER_OPTIONS], factor)
-    return f"""
-    <p class="tool-note">Pulley ratio and estimated boost</p>
+    primary = f"""
     <div class="grid-2">
-        <div><label for="sc-crank">Crank Pulley Dia (in)</label><input type="number" id="sc-crank" value="{esc(field(row, 'crank_pulley', '8.0'))}" step="0.1"></div>
-        <div><label for="sc-blower">Blower Pulley Dia (in)</label><input type="number" id="sc-blower" value="{esc(field(row, 'blower_pulley', '3.0'))}" step="0.1"></div>
+        <div class="field"><label for="sc-crank">Crank pulley (in)</label><input type="number" id="sc-crank" value="{esc(field(row, 'crank_pulley', '8.0'))}" step="0.1"></div>
+        <div class="field"><label for="sc-blower">Blower pulley (in)</label><input type="number" id="sc-blower" value="{esc(field(row, 'blower_pulley', '3.0'))}" step="0.1"></div>
+    </div>
+    """
+    advanced = f"""
+    <div class="grid-2">
+        <div class="field"><label for="sc-rpm">Max crank RPM</label><input type="number" id="sc-rpm" value="{esc(field(row, 'rpm', '6500'))}" step="100"></div>
+        <div class="field"><label for="sc-fac">Blower type</label><select id="sc-fac">{blower_options}</select></div>
     </div>
     <div class="grid-2">
-        <div><label for="sc-rpm">Max Crank RPM</label><input type="number" id="sc-rpm" value="{esc(field(row, 'rpm', '6500'))}" step="100"></div>
-        <div><label for="sc-fac">Blower Type Factor</label><select id="sc-fac">{blower_options}</select></div>
+        <div class="field"><label for="sc-target">Target boost (PSI)</label><input type="number" id="sc-target" value="{esc(cell(row, 'boost'))}" step="0.5"></div>
     </div>
-    <div class="grid-2">
-        <div><label for="sc-target">Target Boost (PSI, optional)</label><input type="number" id="sc-target" value="{esc(cell(row, 'boost'))}" step="0.5"></div>
-    </div>
-    <div class="results-box" id="results">Adjust parameters above.</div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Pulley Spec Sheet</button>
-"""
+    """
+    return calculator_shell(primary, advanced, "Print pulley spec sheet")
 
 
 SUPERCHARGER_SCRIPT = """
@@ -751,38 +955,36 @@ function calcSupercharger() {
     let ratio = crank / Math.max(blower, 0.1);
     let impellerRpm = Math.round(rpm * ratio);
     let estBoost = ratio * 5.2 * factor;
+    let items = [
+        { label: "Estimated boost", value: estBoost, unit: "psi", primary: true },
+        { label: "Pulley ratio", value: ratio, unit: "ratio" },
+        { label: "Impeller RPM", value: impellerRpm, unit: "rpm" }
+    ];
     let targetRaw = document.getElementById("sc-target").value;
-    let targetLine = "";
     if (targetRaw !== "") {
         let target = parseFloat(targetRaw);
-        if (isFinite(target)) {
-            targetLine = "<br>Target boost: <strong>" + target.toFixed(1) + " PSI</strong> | Difference: <strong>" + (estBoost - target).toFixed(1) + " PSI</strong>";
-        }
+        if (isFinite(target)) items.push({ label: "Boost versus target", value: estBoost - target, unit: "psi" });
     }
-    document.getElementById("results").innerHTML = "Pulley Ratio: <strong>" + ratio.toFixed(2) + ":1</strong> | Impeller RPM: <strong>" + impellerRpm.toLocaleString() + "</strong><br>Est. Boost: <strong>" + estBoost.toFixed(1) + " PSI</strong>" + targetLine;
+    publishReadout(items);
 }
-["sc-crank", "sc-blower", "sc-rpm", "sc-fac", "sc-target"].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) { el.addEventListener("input", calcSupercharger); el.addEventListener("change", calcSupercharger); }
-});
-calcSupercharger();
+bindCalc(calcSupercharger, ["sc-crank", "sc-blower", "sc-rpm", "sc-fac", "sc-target"]);
 """
 
 
 def rear_gear_html(row):
-    return f"""
-    <p class="tool-note">Finish RPM and trap speed from ring and pinion</p>
+    primary = f"""
     <div class="grid-2">
-        <div><label for="rg-trap">Target Trap Speed (MPH)</label><input type="number" id="rg-trap" value="125" step="1"></div>
-        <div><label for="rg-gear">Rear Gear Ratio</label><input type="number" id="rg-gear" value="{esc(field(row, 'rear_gear', '4.11'))}" step="0.01"></div>
+        <div class="field"><label for="rg-gear">Rear gear</label><input type="number" id="rg-gear" value="{esc(field(row, 'rear_gear', '4.11'))}" step="0.01"></div>
+        <div class="field"><label for="rg-tire">Tire diameter (in)</label><input type="number" id="rg-tire" value="{esc(field(row, 'tire_diameter', '32.0'))}" step="0.1"></div>
     </div>
+    """
+    advanced = """
     <div class="grid-2">
-        <div><label for="rg-tire">Tire Diameter (in)</label><input type="number" id="rg-tire" value="{esc(field(row, 'tire_diameter', '32.0'))}" step="0.1"></div>
-        <div><label for="rg-final">Trans Final Ratio</label><input type="number" id="rg-final" value="1.00" step="0.01"></div>
+        <div class="field"><label for="rg-trap">Target trap speed (MPH)</label><input type="number" id="rg-trap" value="125" step="1"></div>
+        <div class="field"><label for="rg-final">Trans final ratio</label><input type="number" id="rg-final" value="1.00" step="0.01"></div>
     </div>
-    <div class="results-box" id="results">Adjust parameters above.</div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Rear Gear Sheet</button>
-"""
+    """
+    return calculator_shell(primary, advanced, "Print rear gear sheet")
 
 
 REAR_GEAR_SCRIPT = """
@@ -793,32 +995,33 @@ function calcRearGear() {
     let transFinal = parseFloat(document.getElementById("rg-final").value) || 1.00;
     let overall = gear * transFinal;
     let finishRpm = (trap * overall * 336) / Math.max(tire, 0.1);
-    let rollout = (tire * Math.PI).toFixed(1);
+    let rollout = tire * Math.PI;
     let mphAt7500 = (7500 * tire) / (overall * 336);
-    document.getElementById("results").innerHTML = "Overall Ratio: <strong>" + overall.toFixed(2) + ":1</strong> | Rollout: <strong>" + rollout + " in</strong><br>Finish RPM: <strong>" + Math.round(finishRpm) + " RPM</strong> | 7500 RPM Trap: <strong>" + mphAt7500.toFixed(1) + " MPH</strong>";
+    publishReadout([
+        { label: "Finish RPM", value: finishRpm, unit: "rpm", primary: true },
+        { label: "Overall ratio", value: overall, unit: "ratio" },
+        { label: "Rollout", value: rollout, unit: "in" },
+        { label: "Speed at 7,500 RPM", value: mphAt7500, unit: "mph" }
+    ]);
 }
-["rg-trap", "rg-gear", "rg-tire", "rg-final"].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) { el.addEventListener("input", calcRearGear); el.addEventListener("change", calcRearGear); }
-});
-calcRearGear();
+bindCalc(calcRearGear, ["rg-trap", "rg-gear", "rg-tire", "rg-final"]);
 """
 
 
 def tire_html(row):
-    return f"""
-    <p class="tool-note">Slick growth, dynamic diameter, and finish RPM</p>
+    primary = f"""
     <div class="grid-2">
-        <div><label for="tg-dia">Static Tire Dia (in)</label><input type="number" id="tg-dia" value="{esc(field(row, 'tire_diameter', '28.0'))}" step="0.1"></div>
-        <div><label for="tg-trap">Trap Speed (MPH)</label><input type="number" id="tg-trap" value="150" step="1"></div>
+        <div class="field"><label for="tg-dia">Static tire diameter (in)</label><input type="number" id="tg-dia" value="{esc(field(row, 'tire_diameter', '28.0'))}" step="0.1"></div>
+        <div class="field"><label for="tg-growth">Growth factor (%)</label><input type="number" id="tg-growth" value="{esc(field(row, 'growth', '4.5'))}" step="0.1"></div>
     </div>
+    """
+    advanced = f"""
     <div class="grid-2">
-        <div><label for="tg-growth">Growth Factor (%)</label><input type="number" id="tg-growth" value="{esc(field(row, 'growth', '4.5'))}" step="0.1"></div>
-        <div><label for="tg-gear">Rear Gear Ratio</label><input type="number" id="tg-gear" value="{esc(field(row, 'rear_gear', '3.42'))}" step="0.01"></div>
+        <div class="field"><label for="tg-trap">Trap speed (MPH)</label><input type="number" id="tg-trap" value="150" step="1"></div>
+        <div class="field"><label for="tg-gear">Rear gear</label><input type="number" id="tg-gear" value="{esc(field(row, 'rear_gear', '3.42'))}" step="0.01"></div>
     </div>
-    <div class="results-box" id="results">Adjust parameters above.</div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Tire Growth Sheet</button>
-"""
+    """
+    return calculator_shell(primary, advanced, "Print tire growth sheet")
 
 
 TIRE_SCRIPT = """
@@ -828,48 +1031,50 @@ function calcTireGrowth() {
     let growth = parseFloat(document.getElementById("tg-growth").value) || 4.5;
     let gear = parseFloat(document.getElementById("tg-gear").value) || 3.42;
     let dynamicDia = staticDia * (1 + (growth / 100));
-    let staticRollout = (staticDia * Math.PI).toFixed(1);
-    let dynamicRollout = (dynamicDia * Math.PI).toFixed(1);
-    let estFinishRpm = Math.round((trap * gear * 336) / dynamicDia);
-    document.getElementById("results").innerHTML = "Static Rollout: <strong>" + staticRollout + " in</strong> | Dynamic Dia: <strong>" + dynamicDia.toFixed(2) + " in</strong><br>Dynamic Rollout: <strong>" + dynamicRollout + " in</strong> | Est. Finish RPM: <strong>" + estFinishRpm + " RPM</strong>";
+    let staticRollout = staticDia * Math.PI;
+    let dynamicRollout = dynamicDia * Math.PI;
+    let estFinishRpm = (trap * gear * 336) / dynamicDia;
+    publishReadout([
+        { label: "Dynamic diameter", value: dynamicDia, unit: "in", primary: true },
+        { label: "Static rollout", value: staticRollout, unit: "in" },
+        { label: "Dynamic rollout", value: dynamicRollout, unit: "in" },
+        { label: "Finish RPM", value: estFinishRpm, unit: "rpm" }
+    ]);
 }
-["tg-dia", "tg-trap", "tg-growth", "tg-gear"].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) { el.addEventListener("input", calcTireGrowth); el.addEventListener("change", calcTireGrowth); }
-});
-calcTireGrowth();
+bindCalc(calcTireGrowth, ["tg-dia", "tg-trap", "tg-growth", "tg-gear"]);
 """
 
 
 def wastegate_html(row):
-    return f"""
-    <p class="tool-note">External wastegate diameter and bypass flow</p>
+    primary = f"""
     <div class="grid-2">
-        <div><label for="wg-hp">Target Flywheel HP</label><input type="number" id="wg-hp" value="{esc(field(row, 'hp', '1000'))}" step="50"></div>
-        <div><label for="wg-boost">Target Boost (PSI)</label><input type="number" id="wg-boost" value="{esc(field(row, 'boost', '22'))}" step="1"></div>
+        <div class="field"><label for="wg-hp">Power</label><input type="number" id="wg-hp" value="{esc(field(row, 'hp', '1000'))}" step="50"></div>
+        <div class="field"><label for="wg-boost">Target boost (PSI)</label><input type="number" id="wg-boost" value="{esc(field(row, 'boost', '22'))}" step="1"></div>
     </div>
+    """
+    advanced = f"""
     <div class="grid-2">
-        <div><label for="wg-count">Number of Gates</label>
+        <div class="field"><label for="wg-count">Number of gates</label>
             <select id="wg-count">
-                <option value="1" selected>Single Gate</option>
-                <option value="2">Twin Gates</option>
+                <option value="1" selected>Single gate</option>
+                <option value="2">Twin gates</option>
             </select>
         </div>
-        <div><label for="wg-style">Gate Style</label>
+        <div class="field"><label for="wg-style">Gate style</label>
             <select id="wg-style">
-                <option value="1.00">Internal WG (restricted)</option>
-                <option value="1.25" selected>External WG</option>
+                <option value="1.00">Internal wastegate</option>
+                <option value="1.25" selected>External wastegate</option>
             </select>
         </div>
     </div>
-    <div class="results-box" id="results">Adjust parameters above.</div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Wastegate Spec Sheet</button>
-"""
+    {LOSS_FIELDS}
+    """
+    return calculator_shell(primary, advanced, "Print wastegate spec sheet", power_toggle=True)
 
 
 WASTEGATE_SCRIPT = """
 function calcWastegate() {
-    let hp = parseFloat(document.getElementById("wg-hp").value) || 1000;
+    let hp = crankHorsepower(document.getElementById("wg-hp").value || 1000);
     let boost = parseFloat(document.getElementById("wg-boost").value) || 22;
     let count = parseInt(document.getElementById("wg-count").value, 10) || 1;
     let style = parseFloat(document.getElementById("wg-style").value) || 1.25;
@@ -881,13 +1086,14 @@ function calcWastegate() {
     if (diaMm > 42) rec = 44;
     if (diaMm > 48) rec = 50;
     if (diaMm > 56) rec = 60;
-    document.getElementById("results").innerHTML = "Bypass Fraction: <strong>" + (bypassFrac * 100).toFixed(0) + "%</strong> | Flow per Gate: <strong>" + wgFlow.toFixed(1) + " lb/min</strong><br>Recommended Gate: <strong>" + rec + " mm</strong> (" + count + " x " + rec + " mm)";
+    publishReadout([
+        { label: "Recommended gate", value: rec, unit: "mm", primary: true },
+        { label: "Bypass fraction", value: bypassFrac * 100, unit: "pct" },
+        { label: "Flow per gate", value: wgFlow, unit: "lbmin" },
+        { label: "Gate count", value: count + " x " + rec + " mm", unit: "text" }
+    ]);
 }
-["wg-hp", "wg-boost", "wg-count", "wg-style"].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) { el.addEventListener("input", calcWastegate); el.addEventListener("change", calcWastegate); }
-});
-calcWastegate();
+bindCalc(calcWastegate, ["wg-hp", "wg-boost", "wg-count", "wg-style", "dt-loss"]);
 """
 
 
@@ -895,37 +1101,34 @@ def fuel_html(row):
     fuel = field(row, "fuel", "gasoline")
     fuel_value = {key: value for key, value, _label in INJECTOR_FUELS}[fuel]
     fuel_options = options([(value, label) for _key, value, label in INJECTOR_FUELS], fuel_value)
-    return f"""
-    <p class="tool-note">Injector flow rate at the target horsepower</p>
+    primary = f"""
     <div class="grid-2">
-        <div><label for="fi-hp">Target Crank HP</label><input type="number" id="fi-hp" value="{esc(field(row, 'hp', '1000'))}" step="50"></div>
-        <div><label for="fi-inj">Number of Injectors</label><input type="number" id="fi-inj" value="8" step="1"></div>
+        <div class="field"><label for="fi-hp">Power</label><input type="number" id="fi-hp" value="{esc(field(row, 'hp', '1000'))}" step="50"></div>
+        <div class="field"><label for="fi-inj">Injector count</label><input type="number" id="fi-inj" value="8" step="1"></div>
     </div>
+    """
+    advanced = f"""
     <div class="grid-2">
-        <div><label for="fi-ind">Induction Type</label>
+        <div class="field"><label for="fi-ind">Induction</label>
             <select id="fi-ind">
-                <option value="0.50">Naturally Aspirated</option>
-                <option value="0.65" selected>Turbocharged / Supercharged</option>
+                <option value="0.50">Naturally aspirated</option>
+                <option value="0.65" selected>Turbocharged / supercharged</option>
             </select>
         </div>
-        <div><label for="fi-fuel">Fuel Type</label><select id="fi-fuel">{fuel_options}</select></div>
+        <div class="field"><label for="fi-fuel">Fuel</label><select id="fi-fuel">{fuel_options}</select></div>
     </div>
     <div class="grid-2">
-        <div><label for="fi-dc">Max Duty Cycle (%)</label><input type="number" id="fi-dc" value="80" step="5"></div>
-        <div><label for="fi-pressure">Pressure Offset</label><input id="fi-pressure" type="text" value="Standard (43.5 PSI)" disabled></div>
+        <div class="field"><label for="fi-dc">Max duty cycle (%)</label><input type="number" id="fi-dc" value="80" step="5"></div>
+        <div class="field"><label for="fi-pressure">Pressure offset</label><input id="fi-pressure" type="text" value="Standard (43.5 PSI)" disabled></div>
     </div>
-    <div class="results-box" id="results">
-        <div>Required flow rate per injector</div>
-        <div><span id="fi-cc">0.0</span> cc/min</div>
-        <div><span id="fi-lbs">0.0 lb/hr</span></div>
-    </div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Injector Spec Sheet</button>
-"""
+    {LOSS_FIELDS}
+    """
+    return calculator_shell(primary, advanced, "Print injector spec sheet", power_toggle=True)
 
 
 FUEL_SCRIPT = """
 function calcInjector() {
-    let hp = parseFloat(document.getElementById("fi-hp").value) || 1000;
+    let hp = crankHorsepower(document.getElementById("fi-hp").value || 1000);
     let count = parseFloat(document.getElementById("fi-inj").value) || 8;
     let ind = parseFloat(document.getElementById("fi-ind").value) || 0.65;
     let fuel = parseFloat(document.getElementById("fi-fuel").value) || 0.65;
@@ -934,44 +1137,41 @@ function calcInjector() {
     let totalLbHr = (hp * bsfc) / dc;
     let perInjectorLbHr = totalLbHr / count;
     let perInjectorCcMin = perInjectorLbHr * 10.5;
-    let ccEl = document.getElementById("fi-cc");
-    let lbsEl = document.getElementById("fi-lbs");
-    if (ccEl) ccEl.textContent = perInjectorCcMin.toFixed(1);
-    if (lbsEl) lbsEl.textContent = perInjectorLbHr.toFixed(1) + " lb/hr";
+    publishReadout([
+        { label: "Flow per injector", value: perInjectorCcMin, unit: "cc", primary: true },
+        { label: "Mass flow", value: perInjectorLbHr, unit: "lbhr" },
+        { label: "Total flow", value: totalLbHr, unit: "lbhr" }
+    ]);
 }
-["fi-hp", "fi-inj", "fi-ind", "fi-fuel", "fi-dc"].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) { el.addEventListener("input", calcInjector); el.addEventListener("change", calcInjector); }
-});
-calcInjector();
+bindCalc(calcInjector, ["fi-hp", "fi-inj", "fi-ind", "fi-fuel", "fi-dc", "dt-loss"]);
 """
 
 
 def electrical_html(_row):
-    return """
-    <p class="tool-note">Relay, fuse, and chassis wire gauge</p>
+    primary = """
     <div class="grid-2">
-        <div><label for="rl-watts">Load Power (Watts)</label><input type="number" id="rl-watts" value="240" step="10"></div>
-        <div><label for="rl-volts">System Voltage</label>
+        <div class="field"><label for="rl-watts">Load power (watts)</label><input type="number" id="rl-watts" value="240" step="10"></div>
+        <div class="field"><label for="rl-volts">System voltage</label>
             <select id="rl-volts">
-                <option value="12" selected>12V Chassis</option>
-                <option value="13.8">13.8V Running</option>
-                <option value="16">16V Race</option>
+                <option value="12" selected>12V chassis</option>
+                <option value="13.8">13.8V running</option>
+                <option value="16">16V race</option>
             </select>
         </div>
     </div>
+    """
+    advanced = """
     <div class="grid-2">
-        <div><label for="rl-duty">Duty</label>
+        <div class="field"><label for="rl-duty">Duty</label>
             <select id="rl-duty">
                 <option value="1.25" selected>Continuous (1.25x)</option>
                 <option value="1.10">Intermittent (1.10x)</option>
             </select>
         </div>
-        <div><label for="rl-len">One-Way Wire Length (ft)</label><input type="number" id="rl-len" value="12" step="1"></div>
+        <div class="field"><label for="rl-len">One-way wire length (ft)</label><input type="number" id="rl-len" value="12" step="1"></div>
     </div>
-    <div class="results-box" id="results">Adjust parameters above.</div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Wiring Spec Sheet</button>
-"""
+    """
+    return calculator_shell(primary, advanced, "Print wiring spec sheet")
 
 
 ELECTRICAL_SCRIPT = """
@@ -996,41 +1196,48 @@ function calcRelay() {
         let n = parseInt(awg, 10);
         if (n >= 8) awg = String(n - 2);
     }
-    document.getElementById("results").innerHTML = "Load Current: <strong>" + amps.toFixed(1) + " A</strong> | Design Current: <strong>" + designAmps.toFixed(1) + " A</strong><br>Relay: <strong>" + relay + " A</strong> | Fuse: <strong>" + fuse + " A</strong> | Wire: <strong>" + awg + " AWG</strong>";
+    publishReadout([
+        { label: "Design current", value: designAmps, unit: "amp", primary: true },
+        { label: "Load current", value: amps, unit: "amp" },
+        { label: "Relay", value: relay + " A", unit: "text" },
+        { label: "Fuse", value: fuse + " A", unit: "text" },
+        { label: "Wire", value: awg, unit: "awg" },
+        { label: "One-way length", value: len, unit: "ft" }
+    ]);
 }
-["rl-watts", "rl-volts", "rl-duty", "rl-len"].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) { el.addEventListener("input", calcRelay); el.addEventListener("change", calcRelay); }
-});
-calcRelay();
+bindCalc(calcRelay, ["rl-watts", "rl-volts", "rl-duty", "rl-len"]);
 """
 
 
 def cas_html(row):
-    return f"""
-    <p class="tool-note">Gauge boost, absolute pressure, and pressure ratio</p>
+    primary = f"""
     <div class="grid-2">
-        <div><label for="cas-boost">Target Boost (PSI)</label><input type="number" id="cas-boost" value="{esc(field(row, 'boost', '20'))}" step="1"></div>
+        <div class="field"><label for="cas-boost">Target boost (PSI)</label><input type="number" id="cas-boost" value="{esc(field(row, 'boost', '20'))}" step="1"></div>
     </div>
-    <div class="results-box" id="results">Adjust parameters above.</div>
-    <button type="button" class="action-btn" onclick="window.print()">Print Boost Sheet</button>
-"""
+    """
+    advanced = """
+    <div class="grid-2">
+        <div class="field"><label for="cas-baro">Barometric pressure (PSI)</label><input type="number" id="cas-baro" value="14.7" step="0.1"></div>
+    </div>
+    """
+    return calculator_shell(primary, advanced, "Print boost sheet")
 
 
 CAS_SCRIPT = """
 function calcCas() {
     let boost = parseFloat(document.getElementById("cas-boost").value);
     if (!isFinite(boost) || boost < 0) boost = 0;
-    let absolute = boost + 14.7;
-    let pr = absolute / 14.7;
-    document.getElementById("results").innerHTML = "Gauge boost: <strong>" + boost.toFixed(1) + " PSI</strong><br>Absolute pressure: <strong>" + absolute.toFixed(1) + " PSI</strong> | Pressure ratio: <strong>" + pr.toFixed(2) + ":1</strong>";
+    let baro = parseFloat(document.getElementById("cas-baro").value);
+    if (!isFinite(baro) || baro <= 0) baro = 14.7;
+    let absolute = boost + baro;
+    let pr = absolute / baro;
+    publishReadout([
+        { label: "Gauge boost", value: boost, unit: "psi", primary: true },
+        { label: "Absolute pressure", value: absolute, unit: "psi" },
+        { label: "Pressure ratio", value: pr, unit: "ratio" }
+    ]);
 }
-let casBoost = document.getElementById("cas-boost");
-if (casBoost) {
-    casBoost.addEventListener("input", calcCas);
-    casBoost.addEventListener("change", calcCas);
-}
-calcCas();
+bindCalc(calcCas, ["cas-boost", "cas-baro"]);
 """
 
 WIDGETS = {
@@ -1085,7 +1292,7 @@ WIDGETS = {
         ELECTRICAL_SCRIPT,
     ),
     "CAS": (
-        "Pressure Ratio = (Boost PSI + 14.7) / 14.7",
+        "Pressure Ratio = (Boost PSI + Barometric PSI) / Barometric PSI",
         cas_html,
         CAS_SCRIPT,
     ),
@@ -1189,7 +1396,7 @@ def page_tokens(page, pages, hubs, hubs_by_category):
         "TOOL": html_fn(page),
         "CONTENT": formula_box(formula) + related_box(page, pages, hubs_by_category),
         "FOOTER": footer(),
-        "SCRIPT": script,
+        "SCRIPT": UI_SCRIPT + "\n" + script,
     }
 
 
@@ -1229,7 +1436,7 @@ def index_page(pages, hubs):
         TOOL=html_fn(transmission),
         CONTENT=content,
         FOOTER=footer(),
-        SCRIPT=script,
+        SCRIPT=UI_SCRIPT + "\n" + script,
     )
 
 
