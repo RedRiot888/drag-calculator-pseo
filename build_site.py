@@ -684,14 +684,16 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     <meta property="og:url" content="{{CANONICAL}}">
     <meta property="og:title" content="{{TITLE}}">
     <meta property="og:description" content="{{DESCRIPTION}}">
-    <meta property="og:image" content="{{ORIGIN}}/social-banner.jpg?v=2">
+    <meta property="og:image" content="{{ORIGIN}}/share-card.jpg">
+    <meta property="og:image:secure_url" content="{{ORIGIN}}/share-card.jpg">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="DragCalculators">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{TITLE}}">
     <meta name="twitter:description" content="{{DESCRIPTION}}">
-    <meta name="twitter:image" content="{{ORIGIN}}/social-banner.jpg?v=2">
+    <meta name="twitter:image" content="{{ORIGIN}}/share-card.jpg">
     <link rel="stylesheet" href="styles.css">
 {{ANALYTICS}}</head>
 <body>
@@ -731,12 +733,14 @@ NARROW_TEMPLATE = """<!DOCTYPE html>
     <meta property="og:url" content="{{CANONICAL}}">
     <meta property="og:title" content="{{TITLE}}">
     <meta property="og:description" content="{{DESCRIPTION}}">
-    <meta property="og:image" content="{{ORIGIN}}/social-banner.jpg?v=2">
+    <meta property="og:image" content="{{ORIGIN}}/share-card.jpg">
+    <meta property="og:image:secure_url" content="{{ORIGIN}}/share-card.jpg">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="DragCalculators">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="{{ORIGIN}}/social-banner.jpg?v=2">
+    <meta name="twitter:image" content="{{ORIGIN}}/share-card.jpg">
     <link rel="stylesheet" href="styles.css">
 {{ANALYTICS}}</head>
 <body>
@@ -5391,7 +5395,7 @@ def index_page(pages, hubs):
             "Drag racing calculators for gear ratios, turbo sizing, LS engine builds, "
             "nitrous jetting, shock selection, torque converter stall, fuel injectors, fuel pumps, supercharger pulleys, tire growth, and chassis setup."
         ),
-        CANONICAL=esc(f"{ORIGIN}/index.html"),
+        CANONICAL=esc(f"{ORIGIN}/"),
         VERIFICATION=VERIFICATION,
         ORIGIN=ORIGIN,
         ANALYTICS=analytics_tag(),
@@ -5523,7 +5527,8 @@ def sitemap(pages):
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     ]
     for filename, priority in entries:
-        loc = esc(f"{ORIGIN}/{filename}")
+        path = "/" if filename == "index.html" else f"/{filename}"
+        loc = esc(f"{ORIGIN}{path}")
         lines.append("    <url>")
         lines.append(f"        <loc>{loc}</loc>")
         lines.append("        <changefreq>weekly</changefreq>")
