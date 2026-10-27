@@ -1785,6 +1785,7 @@ def suspension_html(_row):
     <div class="field"><label for="sus-mode">Suspension</label>
         <select id="sus-mode">
             <option value="door" selected>Door car control arms</option>
+            <option value="leaf">Leaf spring</option>
             <option value="race">Race 4-link</option>
         </select>
     </div>
@@ -1811,6 +1812,17 @@ def suspension_html(_row):
         </div>
         <p class="field-hint">Length is the horizontal projection, not the tube length. Bolt height is from the ground to the center of the bolt, at ride height. Measure within 1/8 inch.</p>
     </div>
+    <div id="sus-leaf" style="display:none">
+        <div class="grid-2">
+            <div class="field"><label for="lf-len">Axle to front spring eye (in)</label><input type="number" id="lf-len" value="24" step="0.1"></div>
+            <div class="field"><label for="lf-ht">Front spring eye height (in)</label><input type="number" id="lf-ht" value="11" step="0.1"></div>
+        </div>
+        <div class="grid-2">
+            <div class="field"><label for="lf-cg">Center of gravity height (in)</label><input type="number" id="lf-cg" value="18" step="0.5"></div>
+            <div class="field"><label for="lf-wb">Wheelbase (in)</label><input type="number" id="lf-wb" value="108" step="0.5"></div>
+        </div>
+        <p class="field-hint">On a leaf spring the instant center is the front eye. Measure straight forward from the axle center to that eye, and from the ground up to the center of the eye, at ride height. The rear eye does not change this number. It is what lets the axle wrap. The driveshaft page sets that wrap at about 2 degrees nose down.</p>
+    </div>
     <div id="sus-race" style="display:none">
         <div class="grid-2">
             <div class="field"><label for="l1">Wheelbase (in)</label><input type="number" id="l1" value="110.0" step="0.5"></div>
@@ -1835,7 +1847,7 @@ def suspension_html(_row):
     </div>
     """
     advanced = """
-    <p class="field-hint">Door-car anti-squat uses the center-of-gravity height and the wheelbase. Front and rear weight show the balance. They do not change the instant center. A kit with its own upper-arm holes needs those hole heights typed in. This page does not guess a kit's holes.</p>
+    <p class="field-hint">Door-car anti-squat uses the center-of-gravity height and the wheelbase. Front and rear weight show the balance. They do not change the instant center. A kit with its own upper-arm holes needs those hole heights typed in. This page does not guess a kit's holes. A leaf spring uses the front eye as the instant center, so the percentage is often higher than a 4-link tuned to 100 to 140.</p>
     """
     return calculator_shell(FOUR_LINK_DIAGRAM + primary, advanced, "Print chassis setup sheet")
 
@@ -1878,6 +1890,24 @@ function doorInstantCenter() {
     ]);
 }
 
+function leafInstantCenter() {
+    const len = parseFloat(document.getElementById("lf-len").value);
+    const ht = parseFloat(document.getElementById("lf-ht").value);
+    const cg = parseFloat(document.getElementById("lf-cg").value);
+    const wb = parseFloat(document.getElementById("lf-wb").value);
+    if (!(len > 0) || !(cg > 0) || !(wb > 0) || !Number.isFinite(ht)) {
+        publishReadout([{ label: "Anti-squat", value: "Check the eye and the wheelbase", unit: "text", primary: true }]);
+        return;
+    }
+    const anti = (ht / len) * (wb / cg) * 100;
+    publishReadout([
+        { label: "Anti-squat", value: anti.toFixed(2) + "%", unit: "text", primary: true },
+        { label: "Instant center length", value: len.toFixed(2) + " in", unit: "text" },
+        { label: "Instant center height", value: ht.toFixed(2) + " in", unit: "text" },
+        { label: "Instant center", value: "Front spring eye", unit: "text" }
+    ]);
+}
+
 function raceInstantCenter() {
     let l1 = parseFloat(document.getElementById("l1").value) || 110;
     let l2 = parseFloat(document.getElementById("l2").value) || 24;
@@ -1906,13 +1936,16 @@ function raceInstantCenter() {
 function calcTool() {
     const mode = document.getElementById("sus-mode").value;
     const door = document.getElementById("sus-door");
+    const leaf = document.getElementById("sus-leaf");
     const race = document.getElementById("sus-race");
     if (door) door.style.display = mode === "door" ? "" : "none";
+    if (leaf) leaf.style.display = mode === "leaf" ? "" : "none";
     if (race) race.style.display = mode === "race" ? "" : "none";
     if (mode === "race") raceInstantCenter();
+    else if (mode === "leaf") leafInstantCenter();
     else doorInstantCenter();
 }
-bindCalc(calcTool, ["sus-mode","d-ucal","d-lcal","d-rup","d-fup","d-rlp","d-flp","d-rear","d-front","d-cg","d-wb","l1","l2","l3","l4","l5","l6","l7","l8","l9","l10"]);
+bindCalc(calcTool, ["sus-mode","d-ucal","d-lcal","d-rup","d-fup","d-rlp","d-flp","d-rear","d-front","d-cg","d-wb","lf-len","lf-ht","lf-cg","lf-wb","l1","l2","l3","l4","l5","l6","l7","l8","l9","l10"]);
 """
 
 
@@ -5397,7 +5430,7 @@ WIDGETS = {
         TURBO_SCRIPT,
     ),
     "Suspension": (
-        "Door-car anti-squat = (instant center height / instant center length) x (wheelbase / center of gravity height) x 100. Arm length is the horizontal projection. Bolt height is from the ground. The race 4-link still uses anti-squat = (instant center height / crank height) x 100 from the ten chassis coordinates.",
+        "Door-car anti-squat = (instant center height / instant center length) x (wheelbase / center of gravity height) x 100. Arm length is the horizontal projection. Bolt height is from the ground. On a leaf spring the instant center is the front spring eye, and that same formula uses the eye's height and how far it sits forward of the axle. The race 4-link still uses anti-squat = (instant center height / crank height) x 100 from the ten chassis coordinates.",
         suspension_html,
         SUSPENSION_SCRIPT,
     ),
@@ -5798,7 +5831,8 @@ TRACKSIDE_NOTES = {
         ("What does compressor outlet temperature tell you?", "Outlet temperature rises with pressure ratio and falls as compressor efficiency improves. The intercooler has to pull that heat out before the intake valve."),
     ),
     "Suspension": (
-        ("What is instant center?", "Instant center is where the upper and lower link lines meet. Its height versus the center of gravity sets anti-squat."),
+        ("What is instant center?", "On a 4-link, instant center is where the upper and lower link lines meet. On a leaf spring it is the front spring eye. Its height versus the center of gravity sets anti-squat."),
+        ("Why is leaf-spring anti-squat so high?", "The front eye is the only link, and it usually sits high for how far it is from the axle. That hits the tire harder than a 4-link tuned to 100 to 140 percent. Raising the eye hits harder. The rear eye is the wrap, not this number."),
         ("What anti-squat range do drag cars use?", "Many door cars land around 100% to 140% anti-squat so the rear plants without unloading the front too early."),
         ("Why do small hole moves matter?", "Moving a front or rear mount an inch changes the intersection a lot. On a door car the length is the horizontal projection, not the tube, and the bolt height is from the ground. On a race 4-link each hole is forward of the axle center. Change one hole at a time."),
         ("What about a kit with its own holes?", "Type the hole heights that kit actually uses. A published upper-arm kit has its own front bolt height, and that height is not something to guess from the brand name."),
@@ -5911,7 +5945,7 @@ TRACKSIDE_NOTES = {
 NOTE_LEADS = {
     "Transmission": "Recovery RPM has to land above the stall, and the tire in the chart is the one at the stripe.",
     "Turbo": "Match the compressor to the pounds per minute you will run, then see if the intercooler can pull the outlet temperature down.",
-    "Suspension": "On a door car, arm length is the horizontal projection and bolt height is from the ground. Move one hole at a time.",
+    "Suspension": "On a door car, arm length is the horizontal projection and bolt height is from the ground. On a leaf spring the instant center is the front eye. Move one mount at a time.",
     "Exhaust": "Primary size follows horsepower per cylinder and where you want the torque.",
     "Supercharger": "Pulley ratio is crank diameter divided by blower diameter. The gauge is the real boost.",
     "RearGear": "Buy the gear for the housing you have, and size it with the tire at speed.",
@@ -5946,7 +5980,7 @@ CHEAT_ITEMS = {
     ),
     "Suspension": (
         "Door cars that hook usually land around 100 to 140 percent anti-squat.",
-        "An inch at a front or rear mount moves the instant center a lot. Door-car length is the horizontal projection, not the tube.",
+        "An inch at a front or rear mount moves the instant center a lot. On a leaf spring that mount is the front eye.",
         "Anti-squat that unloads the front too early picks the tires up and then spins.",
     ),
     "Exhaust": (
