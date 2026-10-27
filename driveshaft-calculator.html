@@ -185,11 +185,20 @@
         <div class="field"><label for="ds-sus">Rear suspension</label>
             <select id="ds-sus">
                 <option value="fourlink" selected>4-link or ladder bar</option>
+                <option value="arms">Door car control arms</option>
                 <option value="leaf">Leaf spring</option>
             </select>
         </div>
     </div>
-    <p class="field-hint">Use one angle finder, pointing the same way, on the tailhousing, the tube, and the pinion yoke. A slope down toward the rear of the car is a negative number.</p>
+    <div class="field" id="ds-bush-wrap" style="display:none">
+        <label for="ds-bush">Control arm bushings</label>
+        <select id="ds-bush">
+            <option value="factory" selected>Factory rubber</option>
+            <option value="poly">Polyurethane</option>
+            <option value="solid">Solid</option>
+        </select>
+    </div>
+    <p class="field-hint">Use one angle finder, pointing the same way, on the tailhousing, the tube, and the pinion yoke. A slope down toward the rear of the car is a negative number. Nose down from the tube is the pinion reading minus the tube reading.</p>
     </div>
     <details class="accordion">
         <summary>Advanced / Conditions</summary>
@@ -244,7 +253,7 @@
 <div class="next-steps"><p class="field-hint">Next in the build</p><a href="transmission-shift-recovery-calculator.html">The top gear here is the shaft speed</a></div>
         </section>
         <div class="content-column">
-            <section class="content-box"><h2>Formula</h2><p class="formula">Critical RPM = 4,770,000 x material x square root(OD^2 + ID^2) / length^2, for a steel tube. Aluminum uses 0.981 of that, from the modulus and the density. The planning limit is 75% of critical. Shaft RPM = engine RPM / top gear. Working angle is the difference between the tube and the transmission, and between the tube and the pinion.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Measure the shaft at ride height, and stay under 75 percent of critical speed.</p><ul class="cheat-list"><li>Measure center to center at ride. The slip yoke wants about 3/4 inch before it bottoms, and about an inch still engaged at full droop.</li><li>A longer tube lowers critical speed by the length squared. A bigger diameter raises it.</li><li>A 4-link pinion points along the tube at rest. A leaf spring wants about 2 degrees nose down so it is straight after it wraps.</li></ul><div class="faq-item"><h3>Where is the driveshaft measured?</h3><p>At ride height, center of the front U-joint to center of the rear U-joint. The slip yoke wants about 3/4 in before it bottoms at ride, and about 1 in still engaged at full droop.</p></div><div class="faq-item"><h3>What is critical speed?</h3><p>It is the RPM where the tube&#x27;s first bending mode lines up with the shaft speed. The constant 4,770,000 is the steel modulus and density in that formula. Stay under 75% of it. A bigger diameter raises it. A longer tube lowers it by the length squared.</p></div><div class="faq-item"><h3>Why can the pinion angle look wrong at rest?</h3><p>A 4-link barely wraps, so the pinion should already point along the tube. A leaf spring wraps on the launch, so it wants about 2 degrees nose down at rest and straight once the axle winds up.</p></div></section>
+            <section class="content-box"><h2>Formula</h2><p class="formula">Critical RPM = 4,770,000 x material x square root(OD^2 + ID^2) / length^2, for a steel tube. Aluminum uses 0.981 of that, from the modulus and the density. The planning limit is 75% of critical. Shaft RPM = engine RPM / top gear. Working angle is the difference between the tube and the transmission, and between the tube and the pinion. Door-car control arms want the pinion nose down from the tube by the bushing: factory rubber 3 to 4 degrees, polyurethane 2.5 to 3, solid 1 to 1.5.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Measure the shaft at ride height, and stay under 75 percent of critical speed.</p><ul class="cheat-list"><li>Measure center to center at ride. The slip yoke wants about 3/4 inch before it bottoms, and about an inch still engaged at full droop.</li><li>A longer tube lowers critical speed by the length squared. A bigger diameter raises it.</li><li>A race 4-link pinion points along the tube. Control-arm bushings still wrap: factory rubber 3 to 4 degrees down, polyurethane 2.5 to 3, solid 1 to 1.5. A leaf spring wants about 2 degrees nose down.</li></ul><div class="faq-item"><h3>Where is the driveshaft measured?</h3><p>At ride height, center of the front U-joint to center of the rear U-joint. The slip yoke wants about 3/4 in before it bottoms at ride, and about 1 in still engaged at full droop.</p></div><div class="faq-item"><h3>What is critical speed?</h3><p>It is the RPM where the tube&#x27;s first bending mode lines up with the shaft speed. The constant 4,770,000 is the steel modulus and density in that formula. Stay under 75% of it. A bigger diameter raises it. A longer tube lowers it by the length squared.</p></div><div class="faq-item"><h3>Why can the pinion angle look wrong at rest?</h3><p>A race 4-link barely wraps, so the pinion should already point along the tube. Control arms still wrap with the bushing: factory rubber wants 3 to 4 degrees nose down, polyurethane 2.5 to 3, and solid bushings 1 to 1.5. A leaf spring wants about 2 degrees nose down at rest and straight once the axle winds up.</p></div></section>
         </div>
     </div>
     
@@ -532,19 +541,31 @@ function calcDriveline() {
     const front = Math.abs(trans - shaft);
     const rear = Math.abs(pinion - shaft);
     const noseDown = pinion - shaft;
-    const leaf = document.getElementById("ds-sus").value === "leaf";
+    const sus = document.getElementById("ds-sus").value;
+    const leaf = sus === "leaf";
+    const arms = sus === "arms";
+    const bushWrap = document.getElementById("ds-bush-wrap");
+    if (bushWrap) bushWrap.style.display = arms ? "" : "none";
+    const bushings = {
+        factory: { lo: 3, hi: 4, name: "Factory rubber", band: "3\u00b0 to 4\u00b0", one: "wants", many: "wraps" },
+        poly: { lo: 2.5, hi: 3, name: "Polyurethane", band: "2.5\u00b0 to 3\u00b0", one: "wants", many: "wraps" },
+        solid: { lo: 1, hi: 1.5, name: "Solid bushings", band: "1\u00b0 to 1.5\u00b0", one: "want", many: "wrap" }
+    };
+    const bush = bushings[document.getElementById("ds-bush").value] || bushings.factory;
     const street = document.getElementById("ds-street").value === "yes";
     let speedLabel = "Under the 75% line";
     if (shaftRpm > speed.critical) speedLabel = "Over critical speed";
     else if (shaftRpm > safe) speedLabel = "Over the 75% line";
-    publishReadout([
+    const rows = [
         { label: "Shaft speed", value: Math.round(shaftRpm), unit: "rpm", primary: true },
         { label: "Critical speed", value: Math.round(speed.critical), unit: "rpm" },
         { label: "75% of critical", value: Math.round(safe), unit: "rpm" },
         { label: "Tube at this RPM", value: speedLabel, unit: "text" },
         { label: "Front working angle", value: front, unit: "deg" },
         { label: "Rear working angle", value: rear, unit: "deg" }
-    ]);
+    ];
+    if (arms) rows.push({ label: "Nose down from the tube", value: noseDown, unit: "deg" });
+    publishReadout(rows);
     let speedLine;
     if (shaftRpm > speed.critical) {
         speedLine = "This tube is past the first bending speed at " + Math.round(shaftRpm) + " RPM. It is safe out to about " + safeLen.toFixed(1) + " in, or it needs a larger diameter.";
@@ -562,6 +583,17 @@ function calcDriveline() {
         } else {
             angleLine = " The pinion is nose up from the tube. A leaf spring wants it about 2\u00b0 nose down at rest.";
         }
+    } else if (arms) {
+        const down = noseDown.toFixed(1) + "\u00b0";
+        if (noseDown >= bush.lo && noseDown <= bush.hi) {
+            angleLine = " The pinion is " + down + " nose down from the tube. " + bush.name + " " + bush.many + " enough to want " + bush.band + " at rest, and straight once the axle winds up.";
+        } else if (noseDown > bush.hi) {
+            angleLine = " The pinion is " + down + " nose down. " + bush.name + " " + bush.one + " " + bush.band + ". More than that is still nose down after the bushings wrap.";
+        } else if (noseDown > 0) {
+            angleLine = " The pinion is " + down + " nose down. " + bush.name + " " + bush.one + " " + bush.band + " so the joint straightens when the bushings wrap.";
+        } else {
+            angleLine = " The pinion is nose up from the tube. " + bush.name + " " + bush.one + " it " + bush.band + " nose down at rest.";
+        }
     } else {
         const cancel = Math.abs(front - rear);
         if (front <= 1.5 && rear <= 1.5 && cancel <= 0.5) {
@@ -577,7 +609,7 @@ function calcDriveline() {
     }
     document.getElementById("ds-assess").textContent = speedLine + angleLine;
 }
-bindCalc(calcDriveline, ["ds-len", "ds-tube", "ds-rpm", "ds-gear", "ds-trans", "ds-shaft", "ds-pinion", "ds-sus", "ds-od", "ds-wall", "ds-mat", "ds-street"]);
+bindCalc(calcDriveline, ["ds-len", "ds-tube", "ds-rpm", "ds-gear", "ds-trans", "ds-shaft", "ds-pinion", "ds-sus", "ds-bush", "ds-od", "ds-wall", "ds-mat", "ds-street"]);
 
     </script>
 </body>

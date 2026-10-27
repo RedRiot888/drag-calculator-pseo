@@ -1782,34 +1782,103 @@ RELAY_DIAGRAM = """
 
 def suspension_html(_row):
     primary = """
-    <div class="grid-2">
-        <div class="field"><label for="l1">Wheelbase (in)</label><input type="number" id="l1" value="110.0" step="0.5"></div>
-        <div class="field"><label for="l2">Crankshaft height (in)</label><input type="number" id="l2" value="24.0" step="0.5"></div>
+    <div class="field"><label for="sus-mode">Suspension</label>
+        <select id="sus-mode">
+            <option value="door" selected>Door car control arms</option>
+            <option value="race">Race 4-link</option>
+        </select>
+    </div>
+    <div id="sus-door">
+        <div class="grid-2">
+            <div class="field"><label for="d-ucal">Horizontal upper length (in)</label><input type="number" id="d-ucal" value="7.5" step="0.1"></div>
+            <div class="field"><label for="d-lcal">Horizontal lower length (in)</label><input type="number" id="d-lcal" value="18" step="0.1"></div>
+        </div>
+        <div class="grid-2">
+            <div class="field"><label for="d-rup">Rear upper bolt height (in)</label><input type="number" id="d-rup" value="17.5" step="0.1"></div>
+            <div class="field"><label for="d-fup">Front upper bolt height (in)</label><input type="number" id="d-fup" value="16.5" step="0.1"></div>
+        </div>
+        <div class="grid-2">
+            <div class="field"><label for="d-rlp">Rear lower bolt height (in)</label><input type="number" id="d-rlp" value="9" step="0.1"></div>
+            <div class="field"><label for="d-flp">Front lower bolt height (in)</label><input type="number" id="d-flp" value="9.5" step="0.1"></div>
+        </div>
+        <div class="grid-2">
+            <div class="field"><label for="d-rear">Rear weight (lb)</label><input type="number" id="d-rear" value="1200" step="10"></div>
+            <div class="field"><label for="d-front">Front weight (lb)</label><input type="number" id="d-front" value="1800" step="10"></div>
+        </div>
+        <div class="grid-2">
+            <div class="field"><label for="d-cg">Center of gravity height (in)</label><input type="number" id="d-cg" value="18" step="0.5"></div>
+            <div class="field"><label for="d-wb">Wheelbase (in)</label><input type="number" id="d-wb" value="101" step="0.5"></div>
+        </div>
+        <p class="field-hint">Length is the horizontal projection, not the tube length. Bolt height is from the ground to the center of the bolt, at ride height. Measure within 1/8 inch.</p>
+    </div>
+    <div id="sus-race" style="display:none">
+        <div class="grid-2">
+            <div class="field"><label for="l1">Wheelbase (in)</label><input type="number" id="l1" value="110.0" step="0.5"></div>
+            <div class="field"><label for="l2">Crankshaft height (in)</label><input type="number" id="l2" value="24.0" step="0.5"></div>
+        </div>
+        <div class="grid-2">
+            <div class="field"><label for="l3">Axle to rear top hole (in)</label><input type="number" id="l3" value="4.0" step="0.1"></div>
+            <div class="field"><label for="l4">Ground to rear top hole (in)</label><input type="number" id="l4" value="18.0" step="0.1"></div>
+        </div>
+        <div class="grid-2">
+            <div class="field"><label for="l5">Axle to rear bottom hole (in)</label><input type="number" id="l5" value="4.0" step="0.1"></div>
+            <div class="field"><label for="l6">Ground to rear bottom hole (in)</label><input type="number" id="l6" value="10.0" step="0.1"></div>
+        </div>
+        <div class="grid-2">
+            <div class="field"><label for="l7">Axle to front top hole (in)</label><input type="number" id="l7" value="32.0" step="0.5"></div>
+            <div class="field"><label for="l8">Ground to front top hole (in)</label><input type="number" id="l8" value="20.0" step="0.5"></div>
+        </div>
+        <div class="grid-2">
+            <div class="field"><label for="l9">Axle to front bottom hole (in)</label><input type="number" id="l9" value="32.0" step="0.5"></div>
+            <div class="field"><label for="l10">Ground to front bottom hole (in)</label><input type="number" id="l10" value="11.0" step="0.5"></div>
+        </div>
     </div>
     """
     advanced = """
-    <div class="grid-2">
-        <div class="field"><label for="l3">Axle to rear top hole (in)</label><input type="number" id="l3" value="4.0" step="0.1"></div>
-        <div class="field"><label for="l4">Ground to rear top hole (in)</label><input type="number" id="l4" value="18.0" step="0.1"></div>
-    </div>
-    <div class="grid-2">
-        <div class="field"><label for="l5">Axle to rear bottom hole (in)</label><input type="number" id="l5" value="4.0" step="0.1"></div>
-        <div class="field"><label for="l6">Ground to rear bottom hole (in)</label><input type="number" id="l6" value="10.0" step="0.1"></div>
-    </div>
-    <div class="grid-2">
-        <div class="field"><label for="l7">Axle to front top hole (in)</label><input type="number" id="l7" value="32.0" step="0.5"></div>
-        <div class="field"><label for="l8">Ground to front top hole (in)</label><input type="number" id="l8" value="20.0" step="0.5"></div>
-    </div>
-    <div class="grid-2">
-        <div class="field"><label for="l9">Axle to front bottom hole (in)</label><input type="number" id="l9" value="32.0" step="0.5"></div>
-        <div class="field"><label for="l10">Ground to front bottom hole (in)</label><input type="number" id="l10" value="11.0" step="0.5"></div>
-    </div>
+    <p class="field-hint">Door-car anti-squat uses the center-of-gravity height and the wheelbase. Front and rear weight show the balance. They do not change the instant center. A kit with its own upper-arm holes needs those hole heights typed in. This page does not guess a kit's holes.</p>
     """
     return calculator_shell(FOUR_LINK_DIAGRAM + primary, advanced, "Print chassis setup sheet")
 
 
 SUSPENSION_SCRIPT = """
-function calcTool() {
+function doorInstantCenter() {
+    const lenU = parseFloat(document.getElementById("d-ucal").value);
+    const lenL = parseFloat(document.getElementById("d-lcal").value);
+    const rearU = parseFloat(document.getElementById("d-rup").value);
+    const frontU = parseFloat(document.getElementById("d-fup").value);
+    const rearL = parseFloat(document.getElementById("d-rlp").value);
+    const frontL = parseFloat(document.getElementById("d-flp").value);
+    const rearWt = parseFloat(document.getElementById("d-rear").value);
+    const frontWt = parseFloat(document.getElementById("d-front").value);
+    const cg = parseFloat(document.getElementById("d-cg").value);
+    const wb = parseFloat(document.getElementById("d-wb").value);
+    if (!(lenU > 0) || !(lenL > 0) || !(cg > 0) || !(wb > 0)) {
+        publishReadout([{ label: "Anti-squat", value: "Check the lengths", unit: "text", primary: true }]);
+        return;
+    }
+    const slopeU = (frontU - rearU) / lenU;
+    const slopeL = (frontL - rearL) / lenL;
+    const denom = slopeL - slopeU;
+    if (Math.abs(denom) < 0.000001) {
+        publishReadout([{ label: "Anti-squat", value: "Arms are parallel", unit: "text", primary: true }]);
+        return;
+    }
+    const icLen = (rearU - rearL) / denom;
+    const icHt = rearU + slopeU * icLen;
+    const anti = (icHt / icLen) * (wb / cg) * 100;
+    const total = rearWt + frontWt;
+    const rearPct = total > 0 ? (rearWt / total) * 100 : 0;
+    const where = icLen < 0 ? "Behind the axle" : "Ahead of the axle";
+    publishReadout([
+        { label: "Anti-squat", value: anti.toFixed(2) + "%", unit: "text", primary: true },
+        { label: "Instant center length", value: Math.abs(icLen).toFixed(2) + " in", unit: "text" },
+        { label: "Instant center height", value: icHt.toFixed(2) + " in", unit: "text" },
+        { label: "Instant center", value: where, unit: "text" },
+        { label: "Rear weight", value: rearPct.toFixed(1) + "%", unit: "text" }
+    ]);
+}
+
+function raceInstantCenter() {
     let l1 = parseFloat(document.getElementById("l1").value) || 110;
     let l2 = parseFloat(document.getElementById("l2").value) || 24;
     let l3 = parseFloat(document.getElementById("l3").value) || 4;
@@ -1833,7 +1902,17 @@ function calcTool() {
         { label: "Instant center height", value: icHt, unit: "in" }
     ]);
 }
-bindCalc(calcTool, ["l1","l2","l3","l4","l5","l6","l7","l8","l9","l10"]);
+
+function calcTool() {
+    const mode = document.getElementById("sus-mode").value;
+    const door = document.getElementById("sus-door");
+    const race = document.getElementById("sus-race");
+    if (door) door.style.display = mode === "door" ? "" : "none";
+    if (race) race.style.display = mode === "race" ? "" : "none";
+    if (mode === "race") raceInstantCenter();
+    else doorInstantCenter();
+}
+bindCalc(calcTool, ["sus-mode","d-ucal","d-lcal","d-rup","d-fup","d-rlp","d-flp","d-rear","d-front","d-cg","d-wb","l1","l2","l3","l4","l5","l6","l7","l8","l9","l10"]);
 """
 
 
@@ -2605,11 +2684,20 @@ def driveline_html(_row):
         <div class="field"><label for="ds-sus">Rear suspension</label>
             <select id="ds-sus">
                 <option value="fourlink" selected>4-link or ladder bar</option>
+                <option value="arms">Door car control arms</option>
                 <option value="leaf">Leaf spring</option>
             </select>
         </div>
     </div>
-    <p class="field-hint">Use one angle finder, pointing the same way, on the tailhousing, the tube, and the pinion yoke. A slope down toward the rear of the car is a negative number.</p>
+    <div class="field" id="ds-bush-wrap" style="display:none">
+        <label for="ds-bush">Control arm bushings</label>
+        <select id="ds-bush">
+            <option value="factory" selected>Factory rubber</option>
+            <option value="poly">Polyurethane</option>
+            <option value="solid">Solid</option>
+        </select>
+    </div>
+    <p class="field-hint">Use one angle finder, pointing the same way, on the tailhousing, the tube, and the pinion yoke. A slope down toward the rear of the car is a negative number. Nose down from the tube is the pinion reading minus the tube reading.</p>
     """
     advanced = """
     <div class="grid-2">
@@ -2676,19 +2764,31 @@ function calcDriveline() {
     const front = Math.abs(trans - shaft);
     const rear = Math.abs(pinion - shaft);
     const noseDown = pinion - shaft;
-    const leaf = document.getElementById("ds-sus").value === "leaf";
+    const sus = document.getElementById("ds-sus").value;
+    const leaf = sus === "leaf";
+    const arms = sus === "arms";
+    const bushWrap = document.getElementById("ds-bush-wrap");
+    if (bushWrap) bushWrap.style.display = arms ? "" : "none";
+    const bushings = {
+        factory: { lo: 3, hi: 4, name: "Factory rubber", band: "3\u00b0 to 4\u00b0", one: "wants", many: "wraps" },
+        poly: { lo: 2.5, hi: 3, name: "Polyurethane", band: "2.5\u00b0 to 3\u00b0", one: "wants", many: "wraps" },
+        solid: { lo: 1, hi: 1.5, name: "Solid bushings", band: "1\u00b0 to 1.5\u00b0", one: "want", many: "wrap" }
+    };
+    const bush = bushings[document.getElementById("ds-bush").value] || bushings.factory;
     const street = document.getElementById("ds-street").value === "yes";
     let speedLabel = "Under the 75% line";
     if (shaftRpm > speed.critical) speedLabel = "Over critical speed";
     else if (shaftRpm > safe) speedLabel = "Over the 75% line";
-    publishReadout([
+    const rows = [
         { label: "Shaft speed", value: Math.round(shaftRpm), unit: "rpm", primary: true },
         { label: "Critical speed", value: Math.round(speed.critical), unit: "rpm" },
         { label: "75% of critical", value: Math.round(safe), unit: "rpm" },
         { label: "Tube at this RPM", value: speedLabel, unit: "text" },
         { label: "Front working angle", value: front, unit: "deg" },
         { label: "Rear working angle", value: rear, unit: "deg" }
-    ]);
+    ];
+    if (arms) rows.push({ label: "Nose down from the tube", value: noseDown, unit: "deg" });
+    publishReadout(rows);
     let speedLine;
     if (shaftRpm > speed.critical) {
         speedLine = "This tube is past the first bending speed at " + Math.round(shaftRpm) + " RPM. It is safe out to about " + safeLen.toFixed(1) + " in, or it needs a larger diameter.";
@@ -2706,6 +2806,17 @@ function calcDriveline() {
         } else {
             angleLine = " The pinion is nose up from the tube. A leaf spring wants it about 2\u00b0 nose down at rest.";
         }
+    } else if (arms) {
+        const down = noseDown.toFixed(1) + "\u00b0";
+        if (noseDown >= bush.lo && noseDown <= bush.hi) {
+            angleLine = " The pinion is " + down + " nose down from the tube. " + bush.name + " " + bush.many + " enough to want " + bush.band + " at rest, and straight once the axle winds up.";
+        } else if (noseDown > bush.hi) {
+            angleLine = " The pinion is " + down + " nose down. " + bush.name + " " + bush.one + " " + bush.band + ". More than that is still nose down after the bushings wrap.";
+        } else if (noseDown > 0) {
+            angleLine = " The pinion is " + down + " nose down. " + bush.name + " " + bush.one + " " + bush.band + " so the joint straightens when the bushings wrap.";
+        } else {
+            angleLine = " The pinion is nose up from the tube. " + bush.name + " " + bush.one + " it " + bush.band + " nose down at rest.";
+        }
     } else {
         const cancel = Math.abs(front - rear);
         if (front <= 1.5 && rear <= 1.5 && cancel <= 0.5) {
@@ -2721,7 +2832,7 @@ function calcDriveline() {
     }
     document.getElementById("ds-assess").textContent = speedLine + angleLine;
 }
-bindCalc(calcDriveline, ["ds-len", "ds-tube", "ds-rpm", "ds-gear", "ds-trans", "ds-shaft", "ds-pinion", "ds-sus", "ds-od", "ds-wall", "ds-mat", "ds-street"]);
+bindCalc(calcDriveline, ["ds-len", "ds-tube", "ds-rpm", "ds-gear", "ds-trans", "ds-shaft", "ds-pinion", "ds-sus", "ds-bush", "ds-od", "ds-wall", "ds-mat", "ds-street"]);
 """
 
 
@@ -5286,7 +5397,7 @@ WIDGETS = {
         TURBO_SCRIPT,
     ),
     "Suspension": (
-        "Anti-Squat % = (Instant Center Height / Crank Height) x 100, from the 10 chassis coordinates.",
+        "Door-car anti-squat = (instant center height / instant center length) x (wheelbase / center of gravity height) x 100. Arm length is the horizontal projection. Bolt height is from the ground. The race 4-link still uses anti-squat = (instant center height / crank height) x 100 from the ten chassis coordinates.",
         suspension_html,
         SUSPENSION_SCRIPT,
     ),
@@ -5356,7 +5467,7 @@ WIDGETS = {
         COOLING_SCRIPT,
     ),
     "Driveline": (
-        "Critical RPM = 4,770,000 x material x square root(OD^2 + ID^2) / length^2, for a steel tube. Aluminum uses 0.981 of that, from the modulus and the density. The planning limit is 75% of critical. Shaft RPM = engine RPM / top gear. Working angle is the difference between the tube and the transmission, and between the tube and the pinion.",
+        "Critical RPM = 4,770,000 x material x square root(OD^2 + ID^2) / length^2, for a steel tube. Aluminum uses 0.981 of that, from the modulus and the density. The planning limit is 75% of critical. Shaft RPM = engine RPM / top gear. Working angle is the difference between the tube and the transmission, and between the tube and the pinion. Door-car control arms want the pinion nose down from the tube by the bushing: factory rubber 3 to 4 degrees, polyurethane 2.5 to 3, solid 1 to 1.5.",
         driveline_html,
         DRIVELINE_SCRIPT,
     ),
@@ -5689,7 +5800,8 @@ TRACKSIDE_NOTES = {
     "Suspension": (
         ("What is instant center?", "Instant center is where the upper and lower link lines meet. Its height versus the center of gravity sets anti-squat."),
         ("What anti-squat range do drag cars use?", "Many door cars land around 100% to 140% anti-squat so the rear plants without unloading the front too early."),
-        ("Why do small hole moves matter?", "Moving a front or rear mount an inch changes the intersection a lot. Measure from the axle center and the ground, then change one hole at a time."),
+        ("Why do small hole moves matter?", "Moving a front or rear mount an inch changes the intersection a lot. On a door car the length is the horizontal projection, not the tube, and the bolt height is from the ground. On a race 4-link each hole is forward of the axle center. Change one hole at a time."),
+        ("What about a kit with its own holes?", "Type the hole heights that kit actually uses. A published upper-arm kit has its own front bolt height, and that height is not something to guess from the brand name."),
     ),
     "Exhaust": (
         ("How are primary tubes sized?", "Primary diameter follows horsepower per cylinder and the RPM where you want the torque. Bigger primaries move the peak up and can hurt the bottom."),
@@ -5759,7 +5871,7 @@ TRACKSIDE_NOTES = {
     "Driveline": (
         ("Where is the driveshaft measured?", "At ride height, center of the front U-joint to center of the rear U-joint. The slip yoke wants about 3/4 in before it bottoms at ride, and about 1 in still engaged at full droop."),
         ("What is critical speed?", "It is the RPM where the tube's first bending mode lines up with the shaft speed. The constant 4,770,000 is the steel modulus and density in that formula. Stay under 75% of it. A bigger diameter raises it. A longer tube lowers it by the length squared."),
-        ("Why can the pinion angle look wrong at rest?", "A 4-link barely wraps, so the pinion should already point along the tube. A leaf spring wraps on the launch, so it wants about 2 degrees nose down at rest and straight once the axle winds up."),
+        ("Why can the pinion angle look wrong at rest?", "A race 4-link barely wraps, so the pinion should already point along the tube. Control arms still wrap with the bushing: factory rubber wants 3 to 4 degrees nose down, polyurethane 2.5 to 3, and solid bushings 1 to 1.5. A leaf spring wants about 2 degrees nose down at rest and straight once the axle winds up."),
     ),
     "Power": (
         ("Which amps does the alternator have to cover?", "The loads that stay on while the engine idles in the lanes: pump, fan, water pump, ignition, ECU. The trans brake and the nitrous are a few seconds, and the battery covers that hit."),
@@ -5799,7 +5911,7 @@ TRACKSIDE_NOTES = {
 NOTE_LEADS = {
     "Transmission": "Recovery RPM has to land above the stall, and the tire in the chart is the one at the stripe.",
     "Turbo": "Match the compressor to the pounds per minute you will run, then see if the intercooler can pull the outlet temperature down.",
-    "Suspension": "Measure from the axle center and the ground, then move one hole.",
+    "Suspension": "On a door car, arm length is the horizontal projection and bolt height is from the ground. Move one hole at a time.",
     "Exhaust": "Primary size follows horsepower per cylinder and where you want the torque.",
     "Supercharger": "Pulley ratio is crank diameter divided by blower diameter. The gauge is the real boost.",
     "RearGear": "Buy the gear for the housing you have, and size it with the tire at speed.",
@@ -5834,7 +5946,7 @@ CHEAT_ITEMS = {
     ),
     "Suspension": (
         "Door cars that hook usually land around 100 to 140 percent anti-squat.",
-        "An inch at a front or rear mount moves the instant center a lot.",
+        "An inch at a front or rear mount moves the instant center a lot. Door-car length is the horizontal projection, not the tube.",
         "Anti-squat that unloads the front too early picks the tires up and then spins.",
     ),
     "Exhaust": (
@@ -5900,7 +6012,7 @@ CHEAT_ITEMS = {
     "Driveline": (
         "Measure center to center at ride. The slip yoke wants about 3/4 inch before it bottoms, and about an inch still engaged at full droop.",
         "A longer tube lowers critical speed by the length squared. A bigger diameter raises it.",
-        "A 4-link pinion points along the tube at rest. A leaf spring wants about 2 degrees nose down so it is straight after it wraps.",
+        "A race 4-link pinion points along the tube. Control-arm bushings still wrap: factory rubber 3 to 4 degrees down, polyurethane 2.5 to 3, solid 1 to 1.5. A leaf spring wants about 2 degrees nose down.",
     ),
     "Power": (
         "Pump, fan, water pump, ignition, and the ECU are the idle load. The trans brake and the nitrous are seconds.",
