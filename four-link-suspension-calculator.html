@@ -268,6 +268,11 @@
     <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
 <div class="next-steps"><p class="field-hint">Next in the build</p><a href="drag-shock-calculator.html">Choose the shock for this rear suspension</a></div>
+            <aside class="tune-advisor" id="tune-advisor" hidden>
+                <p class="tune-advisor-kicker">AI tuning advisor</p>
+                <p id="tune-advisor-copy"></p>
+                <a class="action-btn" id="tune-advisor-quote" href="contact.html?inquiry=tuning-quote#quote">Request a tuning quote</a>
+            </aside>
         </section>
         <div class="content-column">
             <section class="content-box"><h2>Formula</h2><p class="formula">Door-car anti-squat = (instant center height / instant center length) x (wheelbase / center of gravity height) x 100. Arm length is the horizontal projection. Bolt height is from the ground. On a leaf spring the instant center is the front spring eye, and that same formula uses the eye&#x27;s height and how far it sits forward of the axle. The race 4-link still uses anti-squat = (instant center height / crank height) x 100 from the ten chassis coordinates.</p></section><section class="content-box"><h2>Trackside notes</h2><p>On a door car, arm length is the horizontal projection and bolt height is from the ground. On a leaf spring the instant center is the front eye. Move one mount at a time.</p><ul class="cheat-list"><li>Door cars that hook usually land around 100 to 140 percent anti-squat.</li><li>An inch at a front or rear mount moves the instant center a lot. On a leaf spring that mount is the front eye.</li><li>Anti-squat that unloads the front too early picks the tires up and then spins.</li></ul><div class="faq-item"><h3>What is instant center?</h3><p>On a 4-link, instant center is where the upper and lower link lines meet. On a leaf spring it is the front spring eye. Its height versus the center of gravity sets anti-squat.</p></div><div class="faq-item"><h3>Why is leaf-spring anti-squat so high?</h3><p>The front eye is the only link, and it usually sits high for how far it is from the axle. That hits the tire harder than a 4-link tuned to 100 to 140 percent. Raising the eye hits harder. The rear eye is the wrap, not this number.</p></div><div class="faq-item"><h3>What anti-squat range do drag cars use?</h3><p>Many door cars land around 100% to 140% anti-squat so the rear plants without unloading the front too early.</p></div><div class="faq-item"><h3>Why do small hole moves matter?</h3><p>Moving a front or rear mount an inch changes the intersection a lot. On a door car the length is the horizontal projection, not the tube, and the bolt height is from the ground. On a race 4-link each hole is forward of the axle center. Change one hole at a time.</p></div><div class="faq-item"><h3>What about a kit with its own holes?</h3><p>Type the hole heights that kit actually uses. A published upper-arm kit has its own front bolt height, and that height is not something to guess from the brand name.</p></div></section>
@@ -409,7 +414,10 @@ function setupSearch() {
 function bindCalc(fn, ids) {
     window.shareIds = ids;
     applySharedState(ids);
-    const run = () => fn();
+    const run = () => {
+        fn();
+        adviseTuning();
+    };
     window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -515,6 +523,57 @@ if (setupMail) {
             button.disabled = false;
         });
     });
+}
+
+const TUNE_DUTY_LIMIT = 85;
+const TUNE_BOOST_LIMIT = 20;
+const TUNE_BOOST_IDS = ["tu-boost", "sc-target", "wg-boost", "cas-boost", "ls-boost", "fp-boost", "cb-boost"];
+
+function tuneBoost() {
+    let best = null;
+    TUNE_BOOST_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.disabled) return;
+        const n = parseFloat(el.value);
+        if (!Number.isFinite(n)) return;
+        if (best === null || n > best) best = n;
+    });
+    return best;
+}
+
+function tuneDuty() {
+    const row = lastReadout.find(item => item.label.indexOf("Duty on ") === 0);
+    if (!row) return null;
+    const n = Number(row.value);
+    return Number.isFinite(n) ? n : null;
+}
+
+function adviseTuning() {
+    const box = document.getElementById("tune-advisor");
+    const copy = document.getElementById("tune-advisor-copy");
+    const link = document.getElementById("tune-advisor-quote");
+    if (!box || !copy || !link) return;
+    const notes = [];
+    const duty = tuneDuty();
+    if (duty !== null && duty > TUNE_DUTY_LIMIT) {
+        notes.push("Injector duty is " + duty.toFixed(1) + "%, past the 85% line on this page. The injector, the pump, or the base pressure has to move before a tune can hold it.");
+    }
+    const boost = tuneBoost();
+    if (boost !== null && boost > TUNE_BOOST_LIMIT) {
+        notes.push("Boost is " + boost.toFixed(1) + " PSI, past 20. The MAP sensor, the fuel, and the timing are a different setup than a mild street turbo.");
+    }
+    if (!notes.length) {
+        box.hidden = true;
+        copy.textContent = "";
+        return;
+    }
+    copy.textContent = notes.join(" ");
+    const title = document.querySelector(".master-header h1");
+    const params = new URLSearchParams();
+    params.set("inquiry", "tuning-quote");
+    params.set("note", (title ? title.textContent.trim() + ". " : "") + notes.join(" "));
+    link.href = "contact.html?" + params.toString() + "#quote";
+    box.hidden = false;
 }
 
 

@@ -217,6 +217,11 @@
     <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
 <div class="next-steps"><p class="field-hint">Next in the build</p><a href="race-car-wiring-calculator.html">Add the whole car up before sizing one relay</a></div>
+            <aside class="tune-advisor" id="tune-advisor" hidden>
+                <p class="tune-advisor-kicker">AI tuning advisor</p>
+                <p id="tune-advisor-copy"></p>
+                <a class="action-btn" id="tune-advisor-quote" href="contact.html?inquiry=tuning-quote#quote">Request a tuning quote</a>
+            </aside>
         </section>
         <div class="content-column">
             <section class="content-box"><h2>Formula</h2><p class="formula">Load Amps = Watts / Voltage | Design Amps = Load x Duty Factor. Relay, fuse, and wire size sit above that current. Pin 30 is the fused battery feed, pin 87 feeds the load, pin 86 is the switch, and pin 85 is ground.</p></section><section class="content-box"><h2>Trackside notes</h2><p>The fuse sits at the battery. The wire is sized for the amps and the length of the run.</p><ul class="cheat-list"><li>Amps are watts divided by voltage.</li><li>A pump at the back of the car needs a heavier gauge than the same pump beside the battery.</li><li>Pin 30 is battery through the fuse. Pin 87 is the load. Pin 86 is the switch. Pin 85 is ground.</li></ul><div class="faq-item"><h3>How is the circuit current found?</h3><p>Load amps are watts divided by voltage. Size the wire, fuse, and relay above that, and apply a duty factor for a fan or pump that is not on full time.</p></div><div class="faq-item"><h3>Why size the wire for the run length?</h3><p>Voltage drop grows with current and length. A fuel pump at the back of the car needs a larger gauge than the same pump next to the battery.</p></div><div class="faq-item"><h3>What does the relay protect?</h3><p>The relay lets a small switch current close a high-current path. The fuse protects the wire, and it belongs at the power source.</p></div><div class="faq-item"><h3>Which pin is which?</h3><p>Pin 30 is battery power through the fuse. Pin 87 goes to the pump or fan on the same gauge. Pin 86 is the switch, on 18 AWG. Pin 85 is ground. A diode inside the relay wants 86 on power and 85 on ground.</p></div></section>
@@ -358,7 +363,10 @@ function setupSearch() {
 function bindCalc(fn, ids) {
     window.shareIds = ids;
     applySharedState(ids);
-    const run = () => fn();
+    const run = () => {
+        fn();
+        adviseTuning();
+    };
     window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -464,6 +472,57 @@ if (setupMail) {
             button.disabled = false;
         });
     });
+}
+
+const TUNE_DUTY_LIMIT = 85;
+const TUNE_BOOST_LIMIT = 20;
+const TUNE_BOOST_IDS = ["tu-boost", "sc-target", "wg-boost", "cas-boost", "ls-boost", "fp-boost", "cb-boost"];
+
+function tuneBoost() {
+    let best = null;
+    TUNE_BOOST_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.disabled) return;
+        const n = parseFloat(el.value);
+        if (!Number.isFinite(n)) return;
+        if (best === null || n > best) best = n;
+    });
+    return best;
+}
+
+function tuneDuty() {
+    const row = lastReadout.find(item => item.label.indexOf("Duty on ") === 0);
+    if (!row) return null;
+    const n = Number(row.value);
+    return Number.isFinite(n) ? n : null;
+}
+
+function adviseTuning() {
+    const box = document.getElementById("tune-advisor");
+    const copy = document.getElementById("tune-advisor-copy");
+    const link = document.getElementById("tune-advisor-quote");
+    if (!box || !copy || !link) return;
+    const notes = [];
+    const duty = tuneDuty();
+    if (duty !== null && duty > TUNE_DUTY_LIMIT) {
+        notes.push("Injector duty is " + duty.toFixed(1) + "%, past the 85% line on this page. The injector, the pump, or the base pressure has to move before a tune can hold it.");
+    }
+    const boost = tuneBoost();
+    if (boost !== null && boost > TUNE_BOOST_LIMIT) {
+        notes.push("Boost is " + boost.toFixed(1) + " PSI, past 20. The MAP sensor, the fuel, and the timing are a different setup than a mild street turbo.");
+    }
+    if (!notes.length) {
+        box.hidden = true;
+        copy.textContent = "";
+        return;
+    }
+    copy.textContent = notes.join(" ");
+    const title = document.querySelector(".master-header h1");
+    const params = new URLSearchParams();
+    params.set("inquiry", "tuning-quote");
+    params.set("note", (title ? title.textContent.trim() + ". " : "") + notes.join(" "));
+    link.href = "contact.html?" + params.toString() + "#quote";
+    box.hidden = false;
 }
 
 

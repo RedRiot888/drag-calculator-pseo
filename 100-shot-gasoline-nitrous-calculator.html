@@ -239,6 +239,11 @@
     <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
 <div class="next-steps"><p class="field-hint">Next in the build</p><a href="fuel-injector-calculator.html">Check the injectors when the shot is dry</a><a href="fuel-pump-calculator.html">Size the pump for the engine plus the shot</a></div>
+            <aside class="tune-advisor" id="tune-advisor" hidden>
+                <p class="tune-advisor-kicker">AI tuning advisor</p>
+                <p id="tune-advisor-copy"></p>
+                <a class="action-btn" id="tune-advisor-quote" href="contact.html?inquiry=tuning-quote#quote">Request a tuning quote</a>
+            </aside>
         </section>
         <div class="content-column">
             <section class="content-box"><h2>Formula</h2><p class="formula">Nitrous lb/hr = Shot HP x 3.6 once the jet is sized for that shot. Jet diameter follows the shot per nozzle and the square root of bottle pressure over 900 PSI. The fuel jet feeds that nitrous at the fuel&#x27;s nitrous-to-fuel ratio. Gasoline timing pull is 2 degrees per 50 HP.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Hold the bottle, pull the timing, then jet it.</p><ul class="cheat-list"><li>A nitrous jet flows more as bottle pressure rises. Hold it near 900 to 950 PSI or the fuel jet is suddenly small.</li><li>Gasoline wants about 2 degrees out for every 50 horsepower of shot. E85 and methanol want less.</li><li>A wet plate brings its own fuel. A dry shot only sprays nitrous, and the injectors have to cover it.</li></ul><div class="faq-item"><h3>Why does bottle pressure change the jet?</h3><p>A nitrous jet is a liquid orifice. More bottle pressure pushes more nitrous through the same hole, so the hit gets richer on nitrous and the fuel jet is suddenly small. Hold the bottle near 900 to 950 PSI.</p></div><div class="faq-item"><h3>How much timing does a shot want?</h3><p>Gasoline starts at about 2 degrees pulled for every 50 HP of nitrous. E85 and race gas want less, and methanol wants less again. The first hit on gasoline can stand another 2 degrees of reserve.</p></div><div class="faq-item"><h3>What is the difference between a wet plate and a dry shot?</h3><p>A wet system brings its own fuel through a fuel jet and a fuel solenoid. A dry system sprays only nitrous, and the injectors have to add the fuel. The duty cycle is the check on a dry car.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="nitrous-shot-calculator.html">Nitrous Shot Jet &amp; Timing Calculator</a></li><li><a href="150-shot-gasoline-nitrous-calculator.html">150 HP Nitrous Shot Jet Calculator</a></li><li><a href="200-shot-gasoline-nitrous-calculator.html">200 HP Nitrous Shot Jet Calculator</a></li><li><a href="250-shot-gasoline-nitrous-calculator.html">250 HP Nitrous Shot Jet Calculator</a></li><li><a href="direct-port-nitrous-calculator.html">Direct Port Nitrous Jet Calculator</a></li><li><a href="dry-nitrous-efi-calculator.html">Dry Nitrous EFI Calculator</a></li><li><a href="e85-nitrous-jet-calculator.html">E85 Nitrous Jet Calculator</a></li></ul></div></div></details>
@@ -380,7 +385,10 @@ function setupSearch() {
 function bindCalc(fn, ids) {
     window.shareIds = ids;
     applySharedState(ids);
-    const run = () => fn();
+    const run = () => {
+        fn();
+        adviseTuning();
+    };
     window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -486,6 +494,57 @@ if (setupMail) {
             button.disabled = false;
         });
     });
+}
+
+const TUNE_DUTY_LIMIT = 85;
+const TUNE_BOOST_LIMIT = 20;
+const TUNE_BOOST_IDS = ["tu-boost", "sc-target", "wg-boost", "cas-boost", "ls-boost", "fp-boost", "cb-boost"];
+
+function tuneBoost() {
+    let best = null;
+    TUNE_BOOST_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.disabled) return;
+        const n = parseFloat(el.value);
+        if (!Number.isFinite(n)) return;
+        if (best === null || n > best) best = n;
+    });
+    return best;
+}
+
+function tuneDuty() {
+    const row = lastReadout.find(item => item.label.indexOf("Duty on ") === 0);
+    if (!row) return null;
+    const n = Number(row.value);
+    return Number.isFinite(n) ? n : null;
+}
+
+function adviseTuning() {
+    const box = document.getElementById("tune-advisor");
+    const copy = document.getElementById("tune-advisor-copy");
+    const link = document.getElementById("tune-advisor-quote");
+    if (!box || !copy || !link) return;
+    const notes = [];
+    const duty = tuneDuty();
+    if (duty !== null && duty > TUNE_DUTY_LIMIT) {
+        notes.push("Injector duty is " + duty.toFixed(1) + "%, past the 85% line on this page. The injector, the pump, or the base pressure has to move before a tune can hold it.");
+    }
+    const boost = tuneBoost();
+    if (boost !== null && boost > TUNE_BOOST_LIMIT) {
+        notes.push("Boost is " + boost.toFixed(1) + " PSI, past 20. The MAP sensor, the fuel, and the timing are a different setup than a mild street turbo.");
+    }
+    if (!notes.length) {
+        box.hidden = true;
+        copy.textContent = "";
+        return;
+    }
+    copy.textContent = notes.join(" ");
+    const title = document.querySelector(".master-header h1");
+    const params = new URLSearchParams();
+    params.set("inquiry", "tuning-quote");
+    params.set("note", (title ? title.textContent.trim() + ". " : "") + notes.join(" "));
+    link.href = "contact.html?" + params.toString() + "#quote";
+    box.hidden = false;
 }
 
 

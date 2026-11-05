@@ -263,6 +263,11 @@
     <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
 <div class="next-steps"><p class="field-hint">Next in the build</p><a href="fuel-pump-calculator.html">Size the pump for this boost</a><a href="wastegate-sizing-calculator.html">Size the wastegate for this power</a></div>
+            <aside class="tune-advisor" id="tune-advisor" hidden>
+                <p class="tune-advisor-kicker">AI tuning advisor</p>
+                <p id="tune-advisor-copy"></p>
+                <a class="action-btn" id="tune-advisor-quote" href="contact.html?inquiry=tuning-quote#quote">Request a tuning quote</a>
+            </aside>
         </section>
         <div class="content-column">
             <section class="content-box"><h2>Formula</h2><p class="formula">Air lb/min = (Flywheel HP x BSFC x Power AFR) / 60. Required boost comes from that airflow divided by the engine&#x27;s naturally aspirated flow at your RPM and volumetric efficiency.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Match the compressor to the pounds per minute you will run, then see if the intercooler can pull the outlet temperature down.</p><ul class="cheat-list"><li>Read the compressor map at the boost you race, not at the choke line.</li><li>A boost number that is short of the horsepower target means the engine runs out of air first.</li><li>Outlet temperature is what the intercooler has to pull out. Pressure ratio and efficiency set it.</li></ul><div class="faq-item"><h3>How do you match a turbo?</h3><p>Match airflow in pounds per minute and the pressure ratio to a compressor map, then check the island at the boost you will actually run.</p></div><div class="faq-item"><h3>Why can the typed boost miss the power number?</h3><p>Naturally aspirated flow at that RPM and volumetric efficiency sets how much boost the horsepower target needs. A short boost number runs out of air first.</p></div><div class="faq-item"><h3>What does compressor outlet temperature tell you?</h3><p>Outlet temperature rises with pressure ratio and falls as compressor efficiency improves. The intercooler has to pull that heat out before the intake valve.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="turbo-sizing-calculator.html">Turbo Sizing &amp; Turbocharger Matching Calculator</a></li><li><a href="turbo-sizing-single-1500hp-calculator.html">Single Turbo 1500 HP Sizing Calculator</a></li><li><a href="turbo-sizing-single-2000hp-calculator.html">Single Turbo 2000 HP Sizing Calculator</a></li><li><a href="turbo-sizing-single-500hp-calculator.html">Single Turbo 500 HP Sizing Calculator</a></li><li><a href="turbo-sizing-single-600hp-calculator.html">Single Turbo 600 HP Sizing Calculator</a></li><li><a href="turbo-sizing-single-750hp-calculator.html">Single Turbo 750 HP Sizing Calculator</a></li><li><a href="turbo-sizing-single-900hp-calculator.html">Single Turbo 900 HP Sizing Calculator</a></li></ul></div></div></details>
@@ -404,7 +409,10 @@ function setupSearch() {
 function bindCalc(fn, ids) {
     window.shareIds = ids;
     applySharedState(ids);
-    const run = () => fn();
+    const run = () => {
+        fn();
+        adviseTuning();
+    };
     window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -510,6 +518,57 @@ if (setupMail) {
             button.disabled = false;
         });
     });
+}
+
+const TUNE_DUTY_LIMIT = 85;
+const TUNE_BOOST_LIMIT = 20;
+const TUNE_BOOST_IDS = ["tu-boost", "sc-target", "wg-boost", "cas-boost", "ls-boost", "fp-boost", "cb-boost"];
+
+function tuneBoost() {
+    let best = null;
+    TUNE_BOOST_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.disabled) return;
+        const n = parseFloat(el.value);
+        if (!Number.isFinite(n)) return;
+        if (best === null || n > best) best = n;
+    });
+    return best;
+}
+
+function tuneDuty() {
+    const row = lastReadout.find(item => item.label.indexOf("Duty on ") === 0);
+    if (!row) return null;
+    const n = Number(row.value);
+    return Number.isFinite(n) ? n : null;
+}
+
+function adviseTuning() {
+    const box = document.getElementById("tune-advisor");
+    const copy = document.getElementById("tune-advisor-copy");
+    const link = document.getElementById("tune-advisor-quote");
+    if (!box || !copy || !link) return;
+    const notes = [];
+    const duty = tuneDuty();
+    if (duty !== null && duty > TUNE_DUTY_LIMIT) {
+        notes.push("Injector duty is " + duty.toFixed(1) + "%, past the 85% line on this page. The injector, the pump, or the base pressure has to move before a tune can hold it.");
+    }
+    const boost = tuneBoost();
+    if (boost !== null && boost > TUNE_BOOST_LIMIT) {
+        notes.push("Boost is " + boost.toFixed(1) + " PSI, past 20. The MAP sensor, the fuel, and the timing are a different setup than a mild street turbo.");
+    }
+    if (!notes.length) {
+        box.hidden = true;
+        copy.textContent = "";
+        return;
+    }
+    copy.textContent = notes.join(" ");
+    const title = document.querySelector(".master-header h1");
+    const params = new URLSearchParams();
+    params.set("inquiry", "tuning-quote");
+    params.set("note", (title ? title.textContent.trim() + ". " : "") + notes.join(" "));
+    link.href = "contact.html?" + params.toString() + "#quote";
+    box.hidden = false;
 }
 
 

@@ -184,6 +184,11 @@
     <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
 
+            <aside class="tune-advisor" id="tune-advisor" hidden>
+                <p class="tune-advisor-kicker">AI tuning advisor</p>
+                <p id="tune-advisor-copy"></p>
+                <a class="action-btn" id="tune-advisor-quote" href="contact.html?inquiry=tuning-quote#quote">Request a tuning quote</a>
+            </aside>
         </section>
         <div class="content-column">
             <section class="content-box"><h2>Formula</h2><p class="formula">Gear = (Target RPM x Tire Diameter) / (Trap MPH x Trans Final x 336). The set to order is the closest catalog ratio for that rear end. Finish RPM = (Trap MPH x Overall Ratio x 336) / Tire Diameter.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Buy the gear for the housing you have, and size it with the tire at speed.</p><ul class="cheat-list"><li>A higher number raises RPM at the same trap speed.</li><li>The stripe wants the engine near peak power without an extra shift. A street gear gives that RPM away for cruise.</li><li>A Ford 9-inch 4.10 is the 4.11 set. A Dana 60 4.56 needs the 4.56-and-up carrier.</li></ul><div class="faq-item"><h3>How does gear ratio change finish-line RPM?</h3><p>A higher numeric gear raises engine RPM at the same trap speed and tire diameter.</p></div><div class="faq-item"><h3>What is a useful drag gear window?</h3><p>The gear should put the engine near peak power at the stripe without forcing an extra shift. A street gear trades that RPM for cruise.</p></div><div class="faq-item"><h3>Why measure the tire at speed?</h3><p>Growth makes the tire taller, which drops RPM. Size the gear with the grown diameter.</p></div><div class="faq-item"><h3>Why does the same ratio need a different gear?</h3><p>Each housing has its own ring diameter and its own catalog ratios. A Ford 9-inch 4.10 is the 4.11 set. A Dana 60 4.56 also needs the 4.56-and-up carrier.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (3)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="rear-gear-calculator.html">Ring and Pinion Rear Gear Quarter-Mile Calculator</a></li><li><a href="rear-gear-ratio-4.56-drag-racing.html">4.56 Rear Gear Drag Racing Calculator</a></li><li><a href="rear-gear-ratio-calculator.html">Rear Gear Ratio Calculator</a></li></ul></div></div></details>
@@ -325,7 +330,10 @@ function setupSearch() {
 function bindCalc(fn, ids) {
     window.shareIds = ids;
     applySharedState(ids);
-    const run = () => fn();
+    const run = () => {
+        fn();
+        adviseTuning();
+    };
     window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -431,6 +439,57 @@ if (setupMail) {
             button.disabled = false;
         });
     });
+}
+
+const TUNE_DUTY_LIMIT = 85;
+const TUNE_BOOST_LIMIT = 20;
+const TUNE_BOOST_IDS = ["tu-boost", "sc-target", "wg-boost", "cas-boost", "ls-boost", "fp-boost", "cb-boost"];
+
+function tuneBoost() {
+    let best = null;
+    TUNE_BOOST_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.disabled) return;
+        const n = parseFloat(el.value);
+        if (!Number.isFinite(n)) return;
+        if (best === null || n > best) best = n;
+    });
+    return best;
+}
+
+function tuneDuty() {
+    const row = lastReadout.find(item => item.label.indexOf("Duty on ") === 0);
+    if (!row) return null;
+    const n = Number(row.value);
+    return Number.isFinite(n) ? n : null;
+}
+
+function adviseTuning() {
+    const box = document.getElementById("tune-advisor");
+    const copy = document.getElementById("tune-advisor-copy");
+    const link = document.getElementById("tune-advisor-quote");
+    if (!box || !copy || !link) return;
+    const notes = [];
+    const duty = tuneDuty();
+    if (duty !== null && duty > TUNE_DUTY_LIMIT) {
+        notes.push("Injector duty is " + duty.toFixed(1) + "%, past the 85% line on this page. The injector, the pump, or the base pressure has to move before a tune can hold it.");
+    }
+    const boost = tuneBoost();
+    if (boost !== null && boost > TUNE_BOOST_LIMIT) {
+        notes.push("Boost is " + boost.toFixed(1) + " PSI, past 20. The MAP sensor, the fuel, and the timing are a different setup than a mild street turbo.");
+    }
+    if (!notes.length) {
+        box.hidden = true;
+        copy.textContent = "";
+        return;
+    }
+    copy.textContent = notes.join(" ");
+    const title = document.querySelector(".master-header h1");
+    const params = new URLSearchParams();
+    params.set("inquiry", "tuning-quote");
+    params.set("note", (title ? title.textContent.trim() + ". " : "") + notes.join(" "));
+    link.href = "contact.html?" + params.toString() + "#quote";
+    box.hidden = false;
 }
 
 

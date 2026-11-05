@@ -179,6 +179,11 @@
     <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
 
+            <aside class="tune-advisor" id="tune-advisor" hidden>
+                <p class="tune-advisor-kicker">AI tuning advisor</p>
+                <p id="tune-advisor-copy"></p>
+                <a class="action-btn" id="tune-advisor-quote" href="contact.html?inquiry=tuning-quote#quote">Request a tuning quote</a>
+            </aside>
         </section>
         <div class="content-column">
             <section class="content-box"><h2>Formula</h2><p class="formula">Pressure Ratio = (Boost PSI + Barometric PSI) / Barometric PSI</p></section><section class="content-box"><h2>Trackside notes</h2><p>The bottle, the regulator, and the nozzles have to pass the shot for the whole gear.</p><ul class="cheat-list"><li>Pressure ratio is boost plus barometer, divided by barometer.</li><li>A bigger shot or a longer gear empties the bottle sooner.</li><li>A restriction after the regulator is boost you paid for and did not get.</li></ul><div class="faq-item"><h3>What is a compressed-air supercharger doing?</h3><p>A stored-air system raises manifold pressure from a bottle. Pressure ratio is boost plus barometer, divided by barometer.</p></div><div class="faq-item"><h3>How long does the bottle last?</h3><p>Flow rate and bottle volume set the pass. A bigger shot or a longer gear uses the supply faster.</p></div><div class="faq-item"><h3>What should the plumbing handle?</h3><p>The solenoid, lines, and nozzles have to pass the mass flow at the pressure you dial in. A restriction downstream of the regulator is lost boost.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (5)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="cas-compressed-air-supercharger-30psi-boost.html">Compressed Air Supercharger Calculator at 30 PSI</a></li><li><a href="cas-compressed-air-supercharger-35psi-boost.html">Compressed Air Supercharger Calculator at 35 PSI</a></li><li><a href="cas-compressed-air-supercharger-40psi-boost.html">Compressed Air Supercharger Calculator at 40 PSI</a></li><li><a href="cas-compressed-air-supercharger-15psi-boost.html">Compressed Air Supercharger Calculator at 15 PSI</a></li><li><a href="cas-compressed-air-supercharger-20psi-boost.html">Compressed Air Supercharger Calculator at 20 PSI</a></li></ul></div></div></details>
@@ -320,7 +325,10 @@ function setupSearch() {
 function bindCalc(fn, ids) {
     window.shareIds = ids;
     applySharedState(ids);
-    const run = () => fn();
+    const run = () => {
+        fn();
+        adviseTuning();
+    };
     window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -426,6 +434,57 @@ if (setupMail) {
             button.disabled = false;
         });
     });
+}
+
+const TUNE_DUTY_LIMIT = 85;
+const TUNE_BOOST_LIMIT = 20;
+const TUNE_BOOST_IDS = ["tu-boost", "sc-target", "wg-boost", "cas-boost", "ls-boost", "fp-boost", "cb-boost"];
+
+function tuneBoost() {
+    let best = null;
+    TUNE_BOOST_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.disabled) return;
+        const n = parseFloat(el.value);
+        if (!Number.isFinite(n)) return;
+        if (best === null || n > best) best = n;
+    });
+    return best;
+}
+
+function tuneDuty() {
+    const row = lastReadout.find(item => item.label.indexOf("Duty on ") === 0);
+    if (!row) return null;
+    const n = Number(row.value);
+    return Number.isFinite(n) ? n : null;
+}
+
+function adviseTuning() {
+    const box = document.getElementById("tune-advisor");
+    const copy = document.getElementById("tune-advisor-copy");
+    const link = document.getElementById("tune-advisor-quote");
+    if (!box || !copy || !link) return;
+    const notes = [];
+    const duty = tuneDuty();
+    if (duty !== null && duty > TUNE_DUTY_LIMIT) {
+        notes.push("Injector duty is " + duty.toFixed(1) + "%, past the 85% line on this page. The injector, the pump, or the base pressure has to move before a tune can hold it.");
+    }
+    const boost = tuneBoost();
+    if (boost !== null && boost > TUNE_BOOST_LIMIT) {
+        notes.push("Boost is " + boost.toFixed(1) + " PSI, past 20. The MAP sensor, the fuel, and the timing are a different setup than a mild street turbo.");
+    }
+    if (!notes.length) {
+        box.hidden = true;
+        copy.textContent = "";
+        return;
+    }
+    copy.textContent = notes.join(" ");
+    const title = document.querySelector(".master-header h1");
+    const params = new URLSearchParams();
+    params.set("inquiry", "tuning-quote");
+    params.set("note", (title ? title.textContent.trim() + ". " : "") + notes.join(" "));
+    link.href = "contact.html?" + params.toString() + "#quote";
+    box.hidden = false;
 }
 
 

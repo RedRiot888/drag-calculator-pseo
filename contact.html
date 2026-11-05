@@ -133,13 +133,14 @@
             
 <h1>Contact &amp; Track Sponsorships</h1>
 <p>A shop can buy the banner across the top, the line on every printed setup sheet, or the part links under one calculator: converter, shocks, fuel system, or rear gear. Rates follow the visits on that page.</p>
-<p>Calculator feedback and other partnership inquiries use the same form.</p>
-<form action="https://formspree.io/f/xqppzgab" method="POST">
+<p>Calculator feedback, a tuning quote, and other partnership inquiries use the same form.</p>
+<form id="quote" action="https://formspree.io/f/xqppzgab" method="POST">
     <div><label for="name">Your Name / Shop Name</label><input id="name" type="text" name="name" required placeholder="e.g. Pro Line Racing"></div>
     <div><label for="email">Your Email Address</label><input id="email" type="email" name="email" required placeholder="e.g. yourname@domain.com"></div>
     <div><label for="inquiry_type">Inquiry Type</label>
         <select id="inquiry_type" name="inquiry_type">
             <option value="Sponsorship">Track Sponsor Rates &amp; Advertising</option>
+            <option value="Tuning quote">Tuning quote</option>
             <option value="Bug / Feedback">Calculator Feedback / Bug Report</option>
             <option value="Other">General Partnership</option>
         </select>
@@ -147,6 +148,17 @@
     <div><label for="message">Message</label><textarea id="message" name="message" required placeholder="Describe your inquiry or sponsorship request here..."></textarea></div>
     <button type="submit" class="action-btn">Send Message</button>
 </form>
+<script>
+(function () {
+    const params = new URLSearchParams(location.search);
+    if (params.get("inquiry") !== "tuning-quote") return;
+    const select = document.getElementById("inquiry_type");
+    const message = document.getElementById("message");
+    if (select) select.value = "Tuning quote";
+    const note = params.get("note");
+    if (message && note) message.value = note;
+})();
+</script>
 
         </article>
     </div>

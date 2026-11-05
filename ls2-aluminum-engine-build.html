@@ -282,6 +282,11 @@
     <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
 <div class="next-steps"><p class="field-hint">Next in the build</p><a href="ls-camshaft-calculator.html">Order the cam for this head, RPM, and power adder</a></div>
+            <aside class="tune-advisor" id="tune-advisor" hidden>
+                <p class="tune-advisor-kicker">AI tuning advisor</p>
+                <p id="tune-advisor-copy"></p>
+                <a class="action-btn" id="tune-advisor-quote" href="contact.html?inquiry=tuning-quote#quote">Request a tuning quote</a>
+            </aside>
         </section>
         <div class="content-column">
             <section class="content-box"><h2>Formula</h2><p class="formula">CID = Bore x Bore x Stroke x 0.7854 x 8. SCR = (Swept volume + clearance volume) / clearance volume. Clearance volume is the chamber, the gasket, the deck, and the piston dish. DCR uses the piston position at intake-valve closing instead of the full stroke.</p></section><section class="content-box"><h2>Trackside notes</h2><p>The bore, the stroke, and the piston height have to clear. The cam is a separate card.</p><ul class="cheat-list"><li>A 4.000 inch crank in an iron 5.3 or 6.0 is the budget stroker, if the compression height still clears the rings.</li><li>Dynamic compression uses the piston position when the intake valve closes. Blank stays at 40 degrees so the ratio has a number.</li><li>An LS7 crank shares the mains, and an LS3 head bolts to a 6.0. The chamber versus the bore still has to match.</li></ul><div class="faq-item"><h3>How does a stroker change the inches?</h3><p>Displacement is bore times bore times stroke times 0.7854 times 8. A 4.000 inch crank in an iron 5.3 or 6.0 adds cubes without changing the bore, as long as the piston compression height still clears the rings.</p></div><div class="faq-item"><h3>What is the difference between static and dynamic compression?</h3><p>Static compression uses the full stroke. Dynamic compression uses the piston position when the intake valve closes, so a later-closing cam bleeds some of that compression off.</p></div><div class="faq-item"><h3>Why can a part fit the block and still be the wrong part?</h3><p>An LS7 crank shares the main journal, and an LS3 head bolts to a 6.0, but the piston height, the chamber versus the bore, and the power limit still have to match the combination.</p></div><div class="faq-item"><h3>Where is the cam?</h3><p>This build does not pick a lobe. Dynamic compression uses 40 degrees after bottom dead center until you type the intake close from the cam card. The cam calculator orders the card for the head, the cubic inches, and the power adder.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="ls-engine-builder.html">LS Engine Builder &amp; Factory/Aftermarket Interchange Matrix</a></li><li><a href="ls3-376-engine-build.html">LS3 376 Engine Build Calculator</a></li><li><a href="ls7-427-engine-build.html">LS7 427 Engine Build Calculator</a></li><li><a href="supercharged-ls3-build.html">Supercharged LS3 Build Calculator</a></li><li><a href="turbo-5-3-iron-build.html">Turbo 5.3 Iron LS Build Calculator</a></li><li><a href="aftermarket-lsx-engine-build.html">Aftermarket Iron LSX Engine Build Calculator</a></li><li><a href="iron-5-3-4-inch-stroker.html">5.3 LS 4.000 Stroke Stroker Calculator</a></li></ul></div></div></details>
@@ -423,7 +428,10 @@ function setupSearch() {
 function bindCalc(fn, ids) {
     window.shareIds = ids;
     applySharedState(ids);
-    const run = () => fn();
+    const run = () => {
+        fn();
+        adviseTuning();
+    };
     window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -529,6 +537,57 @@ if (setupMail) {
             button.disabled = false;
         });
     });
+}
+
+const TUNE_DUTY_LIMIT = 85;
+const TUNE_BOOST_LIMIT = 20;
+const TUNE_BOOST_IDS = ["tu-boost", "sc-target", "wg-boost", "cas-boost", "ls-boost", "fp-boost", "cb-boost"];
+
+function tuneBoost() {
+    let best = null;
+    TUNE_BOOST_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.disabled) return;
+        const n = parseFloat(el.value);
+        if (!Number.isFinite(n)) return;
+        if (best === null || n > best) best = n;
+    });
+    return best;
+}
+
+function tuneDuty() {
+    const row = lastReadout.find(item => item.label.indexOf("Duty on ") === 0);
+    if (!row) return null;
+    const n = Number(row.value);
+    return Number.isFinite(n) ? n : null;
+}
+
+function adviseTuning() {
+    const box = document.getElementById("tune-advisor");
+    const copy = document.getElementById("tune-advisor-copy");
+    const link = document.getElementById("tune-advisor-quote");
+    if (!box || !copy || !link) return;
+    const notes = [];
+    const duty = tuneDuty();
+    if (duty !== null && duty > TUNE_DUTY_LIMIT) {
+        notes.push("Injector duty is " + duty.toFixed(1) + "%, past the 85% line on this page. The injector, the pump, or the base pressure has to move before a tune can hold it.");
+    }
+    const boost = tuneBoost();
+    if (boost !== null && boost > TUNE_BOOST_LIMIT) {
+        notes.push("Boost is " + boost.toFixed(1) + " PSI, past 20. The MAP sensor, the fuel, and the timing are a different setup than a mild street turbo.");
+    }
+    if (!notes.length) {
+        box.hidden = true;
+        copy.textContent = "";
+        return;
+    }
+    copy.textContent = notes.join(" ");
+    const title = document.querySelector(".master-header h1");
+    const params = new URLSearchParams();
+    params.set("inquiry", "tuning-quote");
+    params.set("note", (title ? title.textContent.trim() + ". " : "") + notes.join(" "));
+    link.href = "contact.html?" + params.toString() + "#quote";
+    box.hidden = false;
 }
 
 

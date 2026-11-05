@@ -287,6 +287,11 @@
     <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
 <div class="next-steps"><p class="field-hint">Next in the build</p><a href="four-link-suspension-calculator.html">Set the 4-link this shock has to control</a></div>
+            <aside class="tune-advisor" id="tune-advisor" hidden>
+                <p class="tune-advisor-kicker">AI tuning advisor</p>
+                <p id="tune-advisor-copy"></p>
+                <a class="action-btn" id="tune-advisor-quote" href="contact.html?inquiry=tuning-quote#quote">Request a tuning quote</a>
+            </aside>
         </section>
         <div class="content-column">
             <section class="content-box"><h2>Formula</h2><p class="formula">Front extension slows the rise. Rear compression softens the hit. A single adjustable moves rebound only. A double adjustable adds compression, which is the rear hit and the speed the nose comes back down. Clicks count from full soft toward firm. Order the shock 1/2 in short of the bump measurement and 1/2 in longer than full droop.</p></section><section class="content-box"><h2>Trackside notes</h2><p>Front extension is the hit. Rear compression keeps the tire from getting shocked.</p><ul class="cheat-list"><li>More front extension slows the rise. Less lets the nose come up and plants the tire harder.</li><li>More rear compression softens the hit on the tire. Rear extension is the gear change.</li><li>Prepped can take a faster hit. No prep spins if that hit is sharp. The shock cannot invent grip.</li></ul><div class="faq-item"><h3>What does the front extension knob do?</h3><p>On the launch the front shock gets longer. That circuit is extension. More extension slows the rise and softens the hit. Less extension lets the nose come up faster and plants the tire harder.</p></div><div class="faq-item"><h3>Why is rear compression the hit knob?</h3><p>The rear shock gets shorter as the car squats. More compression keeps the tire from getting shocked. Rear extension is the recovery and the gear change, not the first hit. A single adjustable cannot move compression.</p></div><div class="faq-item"><h3>How do prepped, radial prep, and no prep differ?</h3><p>A prepped slick can take a faster hit, so front extension and rear compression stay softer. Radial prep is the middle. No prep breaks loose if the hit is sharp, so those two knobs go firmer. The shock cannot invent grip the track does not have.</p></div><div class="faq-item"><h3>Which shock do I order?</h3><p>Measure center to center at ride, at full bump, and at full droop. Order a collapsed length at least 1/2 in shorter than the bump measurement and an extended length at least 1/2 in longer than droop. The front wants more of that stroke in extension. The rear wants more of it in compression.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (7)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="drag-shock-calculator.html">Drag Racing Shock Adjustment Calculator</a></li><li><a href="street-car-shock-calculator.html">Street Car Shock Calculator</a></li><li><a href="street-strip-shock-calculator.html">Street Strip Shock Calculator</a></li><li><a href="torque-arm-shock-calculator.html">Torque Arm Drag Shock Calculator</a></li><li><a href="viking-drag-shock-calculator.html">Viking Drag Shock Adjustment Calculator</a></li><li><a href="wheelstand-shock-adjustment.html">Wheelstand Shock Adjustment Calculator</a></li><li><a href="afco-drag-shock-calculator.html">Afco Drag Shock Adjustment Calculator</a></li></ul></div></div></details>
@@ -428,7 +433,10 @@ function setupSearch() {
 function bindCalc(fn, ids) {
     window.shareIds = ids;
     applySharedState(ids);
-    const run = () => fn();
+    const run = () => {
+        fn();
+        adviseTuning();
+    };
     window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -534,6 +542,57 @@ if (setupMail) {
             button.disabled = false;
         });
     });
+}
+
+const TUNE_DUTY_LIMIT = 85;
+const TUNE_BOOST_LIMIT = 20;
+const TUNE_BOOST_IDS = ["tu-boost", "sc-target", "wg-boost", "cas-boost", "ls-boost", "fp-boost", "cb-boost"];
+
+function tuneBoost() {
+    let best = null;
+    TUNE_BOOST_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.disabled) return;
+        const n = parseFloat(el.value);
+        if (!Number.isFinite(n)) return;
+        if (best === null || n > best) best = n;
+    });
+    return best;
+}
+
+function tuneDuty() {
+    const row = lastReadout.find(item => item.label.indexOf("Duty on ") === 0);
+    if (!row) return null;
+    const n = Number(row.value);
+    return Number.isFinite(n) ? n : null;
+}
+
+function adviseTuning() {
+    const box = document.getElementById("tune-advisor");
+    const copy = document.getElementById("tune-advisor-copy");
+    const link = document.getElementById("tune-advisor-quote");
+    if (!box || !copy || !link) return;
+    const notes = [];
+    const duty = tuneDuty();
+    if (duty !== null && duty > TUNE_DUTY_LIMIT) {
+        notes.push("Injector duty is " + duty.toFixed(1) + "%, past the 85% line on this page. The injector, the pump, or the base pressure has to move before a tune can hold it.");
+    }
+    const boost = tuneBoost();
+    if (boost !== null && boost > TUNE_BOOST_LIMIT) {
+        notes.push("Boost is " + boost.toFixed(1) + " PSI, past 20. The MAP sensor, the fuel, and the timing are a different setup than a mild street turbo.");
+    }
+    if (!notes.length) {
+        box.hidden = true;
+        copy.textContent = "";
+        return;
+    }
+    copy.textContent = notes.join(" ");
+    const title = document.querySelector(".master-header h1");
+    const params = new URLSearchParams();
+    params.set("inquiry", "tuning-quote");
+    params.set("note", (title ? title.textContent.trim() + ". " : "") + notes.join(" "));
+    link.href = "contact.html?" + params.toString() + "#quote";
+    box.hidden = false;
 }
 
 

@@ -231,6 +231,11 @@
     </table>
     
 <div class="next-steps"><p class="field-hint">Next in the build</p><a href="torque-converter-calculator.html">Pick the converter stall, then come back to the slip</a></div>
+            <aside class="tune-advisor" id="tune-advisor" hidden>
+                <p class="tune-advisor-kicker">AI tuning advisor</p>
+                <p id="tune-advisor-copy"></p>
+                <a class="action-btn" id="tune-advisor-quote" href="contact.html?inquiry=tuning-quote#quote">Request a tuning quote</a>
+            </aside>
         </section>
         <div class="content-column">
             <section class="content-box"><h2>Formula</h2><p class="formula">Overall Ratio = Trans Ratio x Rear Gear. Shift Speed (MPH) = (RPM x (1 - Slip) x Tire) / (Overall x 336). Recovery RPM = Shift RPM x (1 - Slip) x (Next Ratio / Current Ratio).</p></section><section class="content-box"><h2>Trackside notes</h2><p>Recovery RPM has to land above the stall, and the tire in the chart is the one at the stripe.</p><ul class="cheat-list"><li>Recovery under the stall is a dead gear. The engine falls out of the converter instead of pulling.</li><li>Use the grown tire. A 28 on the sidewall that is 29 at the stripe is a different gear.</li><li>Finish-line slip on a tight converter is usually 5 to 8 percent. A loose converter is more. Zero slip is a manual or a locked gear.</li></ul><div class="faq-item"><h3>How is shift recovery RPM calculated?</h3><p>Recovery RPM is the shift RPM times (1 minus converter slip) times the next gear divided by the gear you are leaving. At 0% slip that is the straight gear drop, and it still needs to land above converter stall.</p></div><div class="faq-item"><h3>What does the 336 constant represent?</h3><p>Miles per hour equals RPM times (1 minus converter slip) times tire diameter, divided by overall ratio times 336. Overall ratio is the transmission ratio times the rear gear.</p></div><div class="faq-item"><h3>Why does a taller tire change the chart?</h3><p>A taller tire lowers engine RPM at the same trap speed. Use the grown diameter, not the sidewall number, once the tire is at speed.</p></div><div class="faq-item"><h3>Why pick the rear end to buy a gear?</h3><p>The ratio alone is not a part. A 3.73 Ford 9-inch set does not fit an 8.8, a 12-bolt, or a Dana 60. The housing sets the ring, the pinion, and the carrier.</p></div></section><details class="accordion config-drawer"><summary>Related calculators (5)</summary><div class="accordion-body"><div class="config-scroll"><ul class="variant-list"><li><a href="transmission-shift-recovery-calculator.html">Transmission Shift Recovery &amp; Gear Drop Calculator</a></li><li><a href="zf8hp-3.23-gear-28.0-tire.html">ZF8HP 3.23 Gear 28.0 Inch Tire Drag Calculator</a></li><li><a href="powerglide-4.1-gear-28.0-tire.html">Powerglide (2-Speed) 4.1 Gear 28.0 Inch Tire Drag Calculator</a></li><li><a href="t56-3.73-gear-28.0-tire.html">T56 Manual (6-Speed) 3.73 Gear 28.0 Inch Tire Drag Calculator</a></li><li><a href="th400-3.73-gear-28.0-tire.html">TH400 3.73 Gear 28.0 Inch Tire Drag Calculator</a></li></ul></div></div></details>
@@ -372,7 +377,10 @@ function setupSearch() {
 function bindCalc(fn, ids) {
     window.shareIds = ids;
     applySharedState(ids);
-    const run = () => fn();
+    const run = () => {
+        fn();
+        adviseTuning();
+    };
     window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -478,6 +486,57 @@ if (setupMail) {
             button.disabled = false;
         });
     });
+}
+
+const TUNE_DUTY_LIMIT = 85;
+const TUNE_BOOST_LIMIT = 20;
+const TUNE_BOOST_IDS = ["tu-boost", "sc-target", "wg-boost", "cas-boost", "ls-boost", "fp-boost", "cb-boost"];
+
+function tuneBoost() {
+    let best = null;
+    TUNE_BOOST_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.disabled) return;
+        const n = parseFloat(el.value);
+        if (!Number.isFinite(n)) return;
+        if (best === null || n > best) best = n;
+    });
+    return best;
+}
+
+function tuneDuty() {
+    const row = lastReadout.find(item => item.label.indexOf("Duty on ") === 0);
+    if (!row) return null;
+    const n = Number(row.value);
+    return Number.isFinite(n) ? n : null;
+}
+
+function adviseTuning() {
+    const box = document.getElementById("tune-advisor");
+    const copy = document.getElementById("tune-advisor-copy");
+    const link = document.getElementById("tune-advisor-quote");
+    if (!box || !copy || !link) return;
+    const notes = [];
+    const duty = tuneDuty();
+    if (duty !== null && duty > TUNE_DUTY_LIMIT) {
+        notes.push("Injector duty is " + duty.toFixed(1) + "%, past the 85% line on this page. The injector, the pump, or the base pressure has to move before a tune can hold it.");
+    }
+    const boost = tuneBoost();
+    if (boost !== null && boost > TUNE_BOOST_LIMIT) {
+        notes.push("Boost is " + boost.toFixed(1) + " PSI, past 20. The MAP sensor, the fuel, and the timing are a different setup than a mild street turbo.");
+    }
+    if (!notes.length) {
+        box.hidden = true;
+        copy.textContent = "";
+        return;
+    }
+    copy.textContent = notes.join(" ");
+    const title = document.querySelector(".master-header h1");
+    const params = new URLSearchParams();
+    params.set("inquiry", "tuning-quote");
+    params.set("note", (title ? title.textContent.trim() + ". " : "") + notes.join(" "));
+    link.href = "contact.html?" + params.toString() + "#quote";
+    box.hidden = false;
 }
 
 

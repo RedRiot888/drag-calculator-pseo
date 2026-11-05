@@ -237,6 +237,11 @@
     <p class="print-sheet">Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order.</p>
     
 <div class="next-steps"><p class="field-hint">Next in the build</p><a href="fuel-injector-calculator.html">Size the injectors this pump has to feed</a><a href="carburetor-cfm-calculator.html">Size the carburetor when the pump is mechanical</a><a href="automotive-relay-calculator.html">Size the relay and the wire for the pump</a></div>
+            <aside class="tune-advisor" id="tune-advisor" hidden>
+                <p class="tune-advisor-kicker">AI tuning advisor</p>
+                <p id="tune-advisor-copy"></p>
+                <a class="action-btn" id="tune-advisor-quote" href="contact.html?inquiry=tuning-quote#quote">Request a tuning quote</a>
+            </aside>
         </section>
         <div class="content-column">
             <section class="content-box"><h2>Formula</h2><p class="formula">Engine gal/hr = (Flywheel HP x BSFC) / Fuel density. A 1:1 return regulator makes the pump hold base pressure plus boost. Shop the flow that remains at that pressure after the margin.</p></section><section class="content-box"><h2>Trackside notes</h2><p>The pump has to make the flow at base pressure plus boost, not at the 40 PSI catalog number.</p><ul class="cheat-list"><li>A 1:1 regulator raises rail pressure with boost. Injector size uses the base. The pump uses the higher number.</li><li>Leave about 25 percent for voltage drop, a dirty filter, and hot fuel.</li><li>A cam-driven diaphragm pump is a carb pump, about 7 to 17 PSI. EFI pressure wants an in-tank pump or a belt-driven gear pump.</li></ul><div class="faq-item"><h3>Why does boost change the pump and not just the injector?</h3><p>A 1:1 regulator raises rail pressure with manifold pressure, so the pump outlet is base pressure plus boost. The injector differential stays near the base, which is why injector size uses base pressure and the pump uses the higher number.</p></div><div class="faq-item"><h3>Why is the shopping flow bigger than engine demand?</h3><p>Voltage drop, a dirty filter, and hot fuel all steal flow. The margin, 25% unless you change it, is the flow the pump still needs to make at the working pressure.</p></div><div class="faq-item"><h3>Why does a 40 PSI catalog number shrink?</h3><p>Most in-tank pumps are rated near 40 PSI and fall off toward their deadhead. The table draws a straight line between those two points. Raise the deadhead if the pump&#x27;s own curve holds pressure longer.</p></div><div class="faq-item"><h3>When does a mechanical pump belong on the car?</h3><p>A cam-driven diaphragm pump feeds a carburetor and shuts off around 7 to 17 PSI. A belt-driven gear or gerotor pump is the mechanical pump that holds EFI pressure. Its flow follows pump rpm, so the pulley ratio is part of the setup.</p></div></section>
@@ -378,7 +383,10 @@ function setupSearch() {
 function bindCalc(fn, ids) {
     window.shareIds = ids;
     applySharedState(ids);
-    const run = () => fn();
+    const run = () => {
+        fn();
+        adviseTuning();
+    };
     window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -484,6 +492,57 @@ if (setupMail) {
             button.disabled = false;
         });
     });
+}
+
+const TUNE_DUTY_LIMIT = 85;
+const TUNE_BOOST_LIMIT = 20;
+const TUNE_BOOST_IDS = ["tu-boost", "sc-target", "wg-boost", "cas-boost", "ls-boost", "fp-boost", "cb-boost"];
+
+function tuneBoost() {
+    let best = null;
+    TUNE_BOOST_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.disabled) return;
+        const n = parseFloat(el.value);
+        if (!Number.isFinite(n)) return;
+        if (best === null || n > best) best = n;
+    });
+    return best;
+}
+
+function tuneDuty() {
+    const row = lastReadout.find(item => item.label.indexOf("Duty on ") === 0);
+    if (!row) return null;
+    const n = Number(row.value);
+    return Number.isFinite(n) ? n : null;
+}
+
+function adviseTuning() {
+    const box = document.getElementById("tune-advisor");
+    const copy = document.getElementById("tune-advisor-copy");
+    const link = document.getElementById("tune-advisor-quote");
+    if (!box || !copy || !link) return;
+    const notes = [];
+    const duty = tuneDuty();
+    if (duty !== null && duty > TUNE_DUTY_LIMIT) {
+        notes.push("Injector duty is " + duty.toFixed(1) + "%, past the 85% line on this page. The injector, the pump, or the base pressure has to move before a tune can hold it.");
+    }
+    const boost = tuneBoost();
+    if (boost !== null && boost > TUNE_BOOST_LIMIT) {
+        notes.push("Boost is " + boost.toFixed(1) + " PSI, past 20. The MAP sensor, the fuel, and the timing are a different setup than a mild street turbo.");
+    }
+    if (!notes.length) {
+        box.hidden = true;
+        copy.textContent = "";
+        return;
+    }
+    copy.textContent = notes.join(" ");
+    const title = document.querySelector(".master-header h1");
+    const params = new URLSearchParams();
+    params.set("inquiry", "tuning-quote");
+    params.set("note", (title ? title.textContent.trim() + ". " : "") + notes.join(" "));
+    link.href = "contact.html?" + params.toString() + "#quote";
+    box.hidden = false;
 }
 
 

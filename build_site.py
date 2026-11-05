@@ -605,6 +605,24 @@ tr.is-small td { color: #8d8d8d; }
     text-transform: uppercase;
 }
 .action-btn:hover { background: #c40812; }
+.tune-advisor {
+    margin-top: 14px;
+    padding: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: #1a1a1a;
+}
+.tune-advisor[hidden] { display: none !important; }
+.tune-advisor-kicker {
+    margin: 0 0 6px;
+    color: var(--accent-red);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.tune-advisor p { margin: 0 0 12px; color: var(--text-main); font-size: 0.9rem; }
+.tune-advisor .action-btn { display: block; text-align: center; text-decoration: none; color: #fff; }
 .action-row { display: flex; flex-direction: column; gap: 8px; }
 .setup-mail { display: flex; flex-direction: column; gap: 8px; }
 .setup-mail-row { display: flex; gap: 8px; align-items: center; }
@@ -622,7 +640,7 @@ tr.is-small td { color: #8d8d8d; }
 .shop-note { color: var(--text-muted); font-size: 0.78rem; }
 .print-sheet { display: none; }
 @media print {
-    .site-banner, .nexus-sidebar, .content-column, .back-row, .site-footer, .action-row, .setup-mail, .pill-row, .next-steps, .accordion { display: none !important; }
+    .site-banner, .nexus-sidebar, .content-column, .back-row, .site-footer, .action-row, .setup-mail, .pill-row, .next-steps, .accordion, .tune-advisor { display: none !important; }
     .gear-shop, .gear-shop a, .gear-shop .shop-note { color: #111 !important; }
     .print-sheet { display: block; margin-top: 18px; color: #111; font-size: 0.85rem; }
     body, .sticky-calculator, .readout, .table-scroll, .assess, th, td { background: #fff !important; color: #111 !important; }
@@ -734,6 +752,11 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
                 {{SPEC}}
             </header>
             {{TOOL}}
+            <aside class="tune-advisor" id="tune-advisor" hidden>
+                <p class="tune-advisor-kicker">AI tuning advisor</p>
+                <p id="tune-advisor-copy"></p>
+                <a class="action-btn" id="tune-advisor-quote" href="contact.html?inquiry=tuning-quote#quote">Request a tuning quote</a>
+            </aside>
         </section>
         <div class="content-column">
             {{CONTENT}}
@@ -1074,7 +1097,10 @@ function setupSearch() {
 function bindCalc(fn, ids) {
     window.shareIds = ids;
     applySharedState(ids);
-    const run = () => fn();
+    const run = () => {
+        fn();
+        adviseTuning();
+    };
     window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -1180,6 +1206,57 @@ if (setupMail) {
             button.disabled = false;
         });
     });
+}
+
+const TUNE_DUTY_LIMIT = 85;
+const TUNE_BOOST_LIMIT = 20;
+const TUNE_BOOST_IDS = ["tu-boost", "sc-target", "wg-boost", "cas-boost", "ls-boost", "fp-boost", "cb-boost"];
+
+function tuneBoost() {
+    let best = null;
+    TUNE_BOOST_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.disabled) return;
+        const n = parseFloat(el.value);
+        if (!Number.isFinite(n)) return;
+        if (best === null || n > best) best = n;
+    });
+    return best;
+}
+
+function tuneDuty() {
+    const row = lastReadout.find(item => item.label.indexOf("Duty on ") === 0);
+    if (!row) return null;
+    const n = Number(row.value);
+    return Number.isFinite(n) ? n : null;
+}
+
+function adviseTuning() {
+    const box = document.getElementById("tune-advisor");
+    const copy = document.getElementById("tune-advisor-copy");
+    const link = document.getElementById("tune-advisor-quote");
+    if (!box || !copy || !link) return;
+    const notes = [];
+    const duty = tuneDuty();
+    if (duty !== null && duty > TUNE_DUTY_LIMIT) {
+        notes.push("Injector duty is " + duty.toFixed(1) + "%, past the 85% line on this page. The injector, the pump, or the base pressure has to move before a tune can hold it.");
+    }
+    const boost = tuneBoost();
+    if (boost !== null && boost > TUNE_BOOST_LIMIT) {
+        notes.push("Boost is " + boost.toFixed(1) + " PSI, past 20. The MAP sensor, the fuel, and the timing are a different setup than a mild street turbo.");
+    }
+    if (!notes.length) {
+        box.hidden = true;
+        copy.textContent = "";
+        return;
+    }
+    copy.textContent = notes.join(" ");
+    const title = document.querySelector(".master-header h1");
+    const params = new URLSearchParams();
+    params.set("inquiry", "tuning-quote");
+    params.set("note", (title ? title.textContent.trim() + ". " : "") + notes.join(" "));
+    link.href = "contact.html?" + params.toString() + "#quote";
+    box.hidden = false;
 }
 """
 
@@ -6332,13 +6409,14 @@ def contact_page():
     content = """
 <h1>Contact &amp; Track Sponsorships</h1>
 <p>A shop can buy the banner across the top, the line on every printed setup sheet, or the part links under one calculator: converter, shocks, fuel system, or rear gear. Rates follow the visits on that page.</p>
-<p>Calculator feedback and other partnership inquiries use the same form.</p>
-<form action="https://formspree.io/f/xqppzgab" method="POST">
+<p>Calculator feedback, a tuning quote, and other partnership inquiries use the same form.</p>
+<form id="quote" action="https://formspree.io/f/xqppzgab" method="POST">
     <div><label for="name">Your Name / Shop Name</label><input id="name" type="text" name="name" required placeholder="e.g. Pro Line Racing"></div>
     <div><label for="email">Your Email Address</label><input id="email" type="email" name="email" required placeholder="e.g. yourname@domain.com"></div>
     <div><label for="inquiry_type">Inquiry Type</label>
         <select id="inquiry_type" name="inquiry_type">
             <option value="Sponsorship">Track Sponsor Rates &amp; Advertising</option>
+            <option value="Tuning quote">Tuning quote</option>
             <option value="Bug / Feedback">Calculator Feedback / Bug Report</option>
             <option value="Other">General Partnership</option>
         </select>
@@ -6346,6 +6424,17 @@ def contact_page():
     <div><label for="message">Message</label><textarea id="message" name="message" required placeholder="Describe your inquiry or sponsorship request here..."></textarea></div>
     <button type="submit" class="action-btn">Send Message</button>
 </form>
+<script>
+(function () {
+    const params = new URLSearchParams(location.search);
+    if (params.get("inquiry") !== "tuning-quote") return;
+    const select = document.getElementById("inquiry_type");
+    const message = document.getElementById("message");
+    if (select) select.value = "Tuning quote";
+    const note = params.get("note");
+    if (message && note) message.value = note;
+})();
+</script>
 """
     return fill(
         NARROW_TEMPLATE,
