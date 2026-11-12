@@ -50,14 +50,6 @@ NEXT_STEPS = {
     "Compression": (("ls-engine-builder", "Put this compression on the LS build"),),
     "Cam": (("ls-engine-builder", "Match the head and the RPM on the LS build"),),
     "LS": (("ls-camshaft-calculator", "Order the cam for this head, RPM, and power adder"),),
-    "ECU": (
-        ("fuel-injector-calculator", "Size the injectors before the base map"),
-        ("fuel-pump-calculator", "Size the pump for the pressure the ECU expects"),
-        ("ls-engine-builder", "Match the displacement and compression the wizard asks for"),
-        ("ls-camshaft-calculator", "Match the cam the idle and the fuel table have to cover"),
-        ("turbo-sizing-calculator", "Match the boost the MAP sensor has to read"),
-        ("nitrous-shot-calculator", "Jet and time the shot before that stage is turned on"),
-    ),
 }
 # Catalog ring-and-pinion sets. The ratio list is what that housing is actually sold in.
 # bands are (max ratio, carrier note). deep is an extra note at and above that ratio.
@@ -189,7 +181,6 @@ CATEGORY_FIELDS = {
     "Carb": [],
     "Compression": [],
     "Cam": [],
-    "ECU": [],
 }
 FUELS = {"gasoline", "e85", "methanol"}
 BLOWER_TYPES = {"roots", "twin-screw", "centrifugal"}
@@ -605,24 +596,6 @@ tr.is-small td { color: #8d8d8d; }
     text-transform: uppercase;
 }
 .action-btn:hover { background: #c40812; }
-.tune-advisor {
-    margin-top: 14px;
-    padding: 14px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: #1a1a1a;
-}
-.tune-advisor[hidden] { display: none !important; }
-.tune-advisor-kicker {
-    margin: 0 0 6px;
-    color: var(--accent-red);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-.tune-advisor p { margin: 0 0 12px; color: var(--text-main); font-size: 0.9rem; }
-.tune-advisor .action-btn { display: block; text-align: center; text-decoration: none; color: #fff; }
 .action-row { display: flex; flex-direction: column; gap: 8px; }
 .setup-mail { display: flex; flex-direction: column; gap: 8px; }
 .setup-mail-row { display: flex; gap: 8px; align-items: center; }
@@ -640,7 +613,7 @@ tr.is-small td { color: #8d8d8d; }
 .shop-note { color: var(--text-muted); font-size: 0.78rem; }
 .print-sheet { display: none; }
 @media print {
-    .site-banner, .nexus-sidebar, .content-column, .back-row, .site-footer, .action-row, .setup-mail, .pill-row, .next-steps, .accordion, .tune-advisor { display: none !important; }
+    .site-banner, .nexus-sidebar, .content-column, .back-row, .site-footer, .action-row, .setup-mail, .pill-row, .next-steps, .accordion { display: none !important; }
     .gear-shop, .gear-shop a, .gear-shop .shop-note { color: #111 !important; }
     .print-sheet { display: block; margin-top: 18px; color: #111; font-size: 0.85rem; }
     body, .sticky-calculator, .readout, .table-scroll, .assess, th, td { background: #fff !important; color: #111 !important; }
@@ -752,11 +725,6 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
                 {{SPEC}}
             </header>
             {{TOOL}}
-            <aside class="tune-advisor" id="tune-advisor" hidden>
-                <p class="tune-advisor-kicker">AI tuning advisor</p>
-                <p id="tune-advisor-copy"></p>
-                <a class="action-btn" id="tune-advisor-quote" href="contact.html?inquiry=tuning-quote#quote">Request a tuning quote</a>
-            </aside>
         </section>
         <div class="content-column">
             {{CONTENT}}
@@ -916,8 +884,6 @@ def spec_text(row):
         return "Loaded defaults: 4.030 bore, 3.750 stroke, 64 cc chamber."
     if row["category"] == "Cam":
         return "Loaded defaults: 364 cubic inches, 243 cathedral head, naturally aspirated, street/strip, 6,200 RPM."
-    if row["category"] == "ECU":
-        return ECU_GUIDES[row["slug"]]["spec"]
     parts = []
     for key in CATEGORY_FIELDS[row["category"]]:
         value = cell(row, key)
@@ -1097,10 +1063,7 @@ function setupSearch() {
 function bindCalc(fn, ids) {
     window.shareIds = ids;
     applySharedState(ids);
-    const run = () => {
-        fn();
-        adviseTuning();
-    };
+    const run = () => fn();
     window.refreshCalc = run;
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -1206,57 +1169,6 @@ if (setupMail) {
             button.disabled = false;
         });
     });
-}
-
-const TUNE_DUTY_LIMIT = 85;
-const TUNE_BOOST_LIMIT = 20;
-const TUNE_BOOST_IDS = ["tu-boost", "sc-target", "wg-boost", "cas-boost", "ls-boost", "fp-boost", "cb-boost"];
-
-function tuneBoost() {
-    let best = null;
-    TUNE_BOOST_IDS.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el || el.disabled) return;
-        const n = parseFloat(el.value);
-        if (!Number.isFinite(n)) return;
-        if (best === null || n > best) best = n;
-    });
-    return best;
-}
-
-function tuneDuty() {
-    const row = lastReadout.find(item => item.label.indexOf("Duty on ") === 0);
-    if (!row) return null;
-    const n = Number(row.value);
-    return Number.isFinite(n) ? n : null;
-}
-
-function adviseTuning() {
-    const box = document.getElementById("tune-advisor");
-    const copy = document.getElementById("tune-advisor-copy");
-    const link = document.getElementById("tune-advisor-quote");
-    if (!box || !copy || !link) return;
-    const notes = [];
-    const duty = tuneDuty();
-    if (duty !== null && duty > TUNE_DUTY_LIMIT) {
-        notes.push("Injector duty is " + duty.toFixed(1) + "%, past the 85% line on this page. The injector, the pump, or the base pressure has to move before a tune can hold it.");
-    }
-    const boost = tuneBoost();
-    if (boost !== null && boost > TUNE_BOOST_LIMIT) {
-        notes.push("Boost is " + boost.toFixed(1) + " PSI, past 20. The MAP sensor, the fuel, and the timing are a different setup than a mild street turbo.");
-    }
-    if (!notes.length) {
-        box.hidden = true;
-        copy.textContent = "";
-        return;
-    }
-    copy.textContent = notes.join(" ");
-    const title = document.querySelector(".master-header h1");
-    const params = new URLSearchParams();
-    params.set("inquiry", "tuning-quote");
-    params.set("note", (title ? title.textContent.trim() + ". " : "") + notes.join(" "));
-    link.href = "contact.html?" + params.toString() + "#quote";
-    box.hidden = false;
 }
 """
 
@@ -5506,95 +5418,6 @@ bindCalc(calcCam, ["cm-head", "cm-cid", "cm-rpm", "cm-adder", "cm-job"]);
 """
 
 
-ECU_GUIDES = {
-    "ecu-tuning-setup-guides": {
-        "spec": "Covers the Haltech Nexus R5, the Haltech Rebel LS, and the Holley Terminator X.",
-        "intro": "Pick the ECU that matches the harness in the car. These pages are the setup order and the questions that come up before a base map. They are not a finished tune.",
-        "steps": (
-            "A Rebel LS harness does not plug into a Nexus R5. A Terminator X Max harness is the one with the drive-by-wire plug and the transmission plug.",
-            "Size the injectors and the pump for the fuel and the boost before learning is turned on.",
-            "The wizard wants the displacement, the compression, and the cam from the engine in the car.",
-            "Match the MAP sensor range to the boost. A 1-bar sensor cannot read boost.",
-            "Confirm the crank trigger before the first start. On an LS that is 24x or 58x, and the ECU has to be the one for that wheel.",
-        ),
-        "faqs": (
-            ("Does self-learning replace a tune?", "It trims fuel toward the target. A wrong injector size, a wrong base pressure, or a wrong MAP sensor sends that trim the wrong way."),
-            ("What gets done before the first start?", "Build the map while the outputs are off, when the ECU allows it. Haltech USB low-power mode does that. On a Terminator X, finish the handheld wizard and land the main power on the battery before you crank."),
-            ("Which calculator feeds the wizard?", "Injector flow, pump flow at base pressure plus boost, LS displacement and compression, the cam card, the boost the MAP has to read, and the nitrous jet."),
-        ),
-    },
-    "haltech-nexus-r5-setup": {
-        "spec": "Nexus R5 VCU. NSP software over USB-C. Two onboard widebands. External MAP.",
-        "intro": "The Nexus R5 is Haltech's vehicle control unit, part HT-195000. NSP is the software. USB-C wakes it in low power, with the inputs and outputs off, so the map is built before a coil or an injector can fire.",
-        "steps": (
-            "Install NSP from Haltech and connect the USB-C cable. Low power mode is for the map and for pulling a log. It is not a running engine.",
-            "Eighteen injector drivers are peak-and-hold, and there are twelve ignition outputs. Set the injector and the coil in the map before the outputs are powered.",
-            "Two onboard wideband controllers take an NTK or a Bosch LSU 4.9. Select the sensor that is in the pipe. An LSU 4.2 is not that sensor.",
-            "MAP is external. The calibration in NSP has to be the sensor on the manifold, and the range has to cover the boost.",
-            "Four half-bridge outputs cover two drive-by-wire throttles. Calibrate the throttle before the first start.",
-            "Four 25A outputs can feed a pump, a fan, or a transbrake. Twelve 8A outputs cover the smaller loads. NSP sets the electronic fuse. Size the wire for the amps, then set the fuse above the running load and under the wire.",
-            "The log is onboard, 512MB, up to 300 channels. Wi-Fi can pull it off, so the laptop does not have to ride in the car.",
-        ),
-        "faqs": (
-            ("What is the R5, besides an ECU?", "Haltech calls it a VCU. Engine control, a power distribution module, two wideband controllers, and the logger are in the same box."),
-            ("Can the map be built with the battery disconnected?", "Yes. USB-C low power keeps the inputs and outputs disabled. Power the car after the map matches the engine."),
-            ("Does it have an internal MAP?", "No. The MAP sensor is external, and NSP has to be told which one it is."),
-            ("What software opens it?", "NSP, Nexus Software Programmer. It is a free download from Haltech if the USB key that shipped with the unit is gone."),
-        ),
-    },
-    "haltech-rebel-ls-setup": {
-        "spec": "Rebel LS terminated harness for a Gen III or Gen IV LS. NSP wizard. Onboard 4-bar MAP. High-impedance injectors.",
-        "intro": "The Rebel LS is a terminated-harness ECU for a Gen III or Gen IV LS swap. It does not plug into the factory body harness, so the stock dash, ABS, and body module do not come along with it. NSP runs a seven-step wizard and fills a base map.",
-        "steps": (
-            "HT-220201 is the Gen III kit: cable throttle, EV1 injectors, manual transmission. HT-220204 is the Gen IV kit: 6-pin drive-by-wire, EV6 injectors, manual transmission. Multec 2 injectors are a separate sub-harness.",
-            "Install NSP and connect USB-C before the battery cables power the car. Low power mode keeps the inputs and outputs off while the wizard runs.",
-            "The seven steps are the vehicle name, the base LS, the cam, the intake, the MAP, the fuel, and the coils. Read the summary before you power the outputs.",
-            "The base-engine step fills displacement and compression. Use the engine in the car, then check those numbers on the LS builder.",
-            "The cam step changes the fuel, spark, idle, and O2 defaults. The cam calculator is the card those defaults have to cover.",
-            "The onboard MAP is 4-bar, good to about 43 psi. Pick an external sensor in that step only if that is the sensor on the manifold.",
-            "The fuel step wants the fuel, the injector, manifold-referenced or constant pressure, and the base pressure. Rebel LS drives high-impedance injectors only.",
-            "The coil step wants coils with built-in igniters. A coil that needs an external igniter will damage the ECU.",
-            "Battery positive and negative both land on the ECU. Haltech calls for a 100A fuse on the positive and 4 AWG cable. The pink ignition wire has to stay hot in the start position, so it cannot be an accessory circuit. The harness does not ground the engine. Add a ground strap.",
-        ),
-        "faqs": (
-            ("What does the wizard actually make?", "A base map. Displacement and compression come from the LS you pick. Fuel, spark, idle, and O2 defaults move with the cam and the intake. It will start. It is not a finished tune."),
-            ("Why does fuel pressure go in the wizard?", "Pulse width is calculated from injector size and base pressure. A manifold-referenced regulator and a constant regulator are not the same number at the same boost."),
-            ("Which wideband does the kit use?", "A Bosch LSU 4.9, with the bung. Put it where it sees the average exhaust, ahead of a catalytic converter, on the upper half of the pipe so condensation does not sit on the sensor."),
-            ("Will it run the factory gauges?", "No. Haltech is plain that this ECU does not join the factory CAN network. The dash, ABS, and body control module stay dark unless something else runs them."),
-        ),
-    },
-    "holley-terminator-x-setup": {
-        "spec": "Terminator X, handheld wizard, Bosch LSU 4.9, internal 1-bar MAP. Terminator X Max adds drive-by-wire and transmission control.",
-        "intro": "Terminator X is Holley's handheld EFI for a cable throttle. Terminator X Max is the same ECU family with drive-by-wire and electronic transmission control added. Both use the free Holley EFI software once the setup is past the handheld.",
-        "steps": (
-            "The Max harness is the one with the J3 drive-by-wire plug and the J4 transmission plug. An X harness does not have those.",
-            "Run the 3.5 inch handheld wizard, or Holley EFI on a laptop, and load the base map for the engine you have. An LS kit is 24x or 58x. The wrong crank wheel will not sync.",
-            "The wideband is a Bosch LSU 4.9. An LSU 4.2 will not work on this ECU.",
-            "The internal MAP is 1-bar, for a naturally aspirated engine. On boost, turn that sensor off and use the external MAP. The harness already has the plug. The range has to cover the boost.",
-            "Terminator X injector drivers are high-impedance. Do not put low-impedance race injectors on an X. Confirm the driver on a Max kit before you do it there.",
-            "The two main power wires go to the battery terminals, not to a switched fuse block. The LEDs are power, engine run, wideband, TPS calibration, crank, and cam. A dark crank or cam LED is a trigger problem.",
-            "Learning trims the fuel table toward the target. Set the injector size and the base pressure first, or it learns the wrong injector.",
-            "One nitrous channel, wet or dry, progressive or not. Jet it and pull the timing on the nitrous calculator before that output is armed. Four outputs cover a fan, a boost solenoid, that nitrous stage, or an IAC.",
-        ),
-        "faqs": (
-            ("What does Terminator X Max add?", "Drive-by-wire, and transmission control. On the LS kits that control is a 4L60E, a 4L80E, or a 6L80/6L90. The plain X does not run an electronic transmission. That car needs a manual, a non-electronic automatic, or a separate controller."),
-            ("Can the internal MAP read boost?", "No. It is 1-bar. Boost uses the external sensor, and the internal one is turned off."),
-            ("What are the four inputs for?", "One 12V, one ground, one 5V, and one frequency. Fuel pressure and oil pressure are already terminated on the harness. The spare inputs are a sensor or a switch, such as a nitrous enable or a transbrake."),
-            ("Does the handheld log?", "Yes, to the SD card in the 3.5 inch handheld. The same unit is the wizard and the gauge display."),
-        ),
-    },
-}
-
-
-def ecu_html(row):
-    guide = ECU_GUIDES[row["slug"]]
-    steps = "".join(f"<li>{esc(step)}</li>" for step in guide["steps"])
-    return f'<p class="field-hint">{esc(guide["intro"])}</p><ol class="cheat-list">{steps}</ol>'
-
-
-ECU_SCRIPT = ""
-
-
 WIDGETS = {
     "Transmission": (
         "Overall Ratio = Trans Ratio x Rear Gear. Shift Speed (MPH) = (RPM x (1 - Slip) x Tire) / (Overall x 336). Recovery RPM = Shift RPM x (1 - Slip) x (Next Ratio / Current Ratio).",
@@ -5705,11 +5528,6 @@ WIDGETS = {
         "Pressure Ratio = (Boost PSI + Barometric PSI) / Barometric PSI",
         cas_html,
         CAS_SCRIPT,
-    ),
-    "ECU": (
-        "A base map needs the engine size, the injector flow at the pressure you run, the MAP sensor range, and the cam the idle has to live with. Self-learning trims fuel. It does not fix a wrong injector size or a wrong crank trigger.",
-        ecu_html,
-        ECU_SCRIPT,
     ),
 }
 
@@ -5884,7 +5702,6 @@ NAV_SECTIONS = (
         "nitrous-shot-calculator",
     )),
     ("Engine", ("ls-engine-builder", "compression-ratio-calculator", "ls-camshaft-calculator", "exhaust-header-sizing-calculator")),
-    ("ECU tuning", ("ecu-tuning-setup-guides",)),
     ("Drivetrain", (
         "transmission-shift-recovery-calculator",
         "torque-converter-calculator",
@@ -6148,7 +5965,6 @@ NOTE_LEADS = {
     "Cam": "Degree it, check piston-to-valve, and match the spring and the converter to the card before you order.",
     "Converter": "Give the shop the torque at stall, not a stall number with no engine on it.",
     "CAS": "The bottle, the regulator, and the nozzles have to pass the shot for the whole gear.",
-    "ECU": "Match the wizard to the engine, the injectors, and the MAP sensor before you let it learn.",
 }
 
 CHEAT_ITEMS = {
@@ -6262,11 +6078,6 @@ CHEAT_ITEMS = {
         "A bigger shot or a longer gear empties the bottle sooner.",
         "A restriction after the regulator is boost you paid for and did not get.",
     ),
-    "ECU": (
-        "Self-learning trims fuel. It does not correct a wrong injector, a wrong MAP, or the wrong crank trigger.",
-        "Haltech USB low-power mode builds the map with the outputs off. Power the outputs after the wizard matches the engine.",
-        "A 1-bar MAP cannot read boost. Terminator X needs the external sensor once there is boost. The Rebel LS onboard sensor is 4-bar.",
-    ),
 }
 
 
@@ -6279,7 +6090,7 @@ def notes_box(page):
     bullets = CHEAT_ITEMS.get(page["category"], ())
     cheat = '<ul class="cheat-list">' + "".join(f"<li>{esc(item)}</li>" for item in bullets) + "</ul>"
     items = []
-    faqs = ECU_GUIDES[page["slug"]]["faqs"] if page["category"] == "ECU" else TRACKSIDE_NOTES[page["category"]]
+    faqs = TRACKSIDE_NOTES[page["category"]]
     for question, answer in faqs:
         items.append(f'<div class="faq-item"><h3>{esc(question)}</h3><p>{esc(answer)}</p></div>')
     return content_box("Trackside notes", f"<p>{esc(lead)}</p>{cheat}{''.join(items)}")
@@ -6290,17 +6101,13 @@ def related_box(page, pages, hubs_by_category):
     hub = hubs_by_category.get(page["category"])
     if page["role"] == "hub":
         links.extend(variants_for(page["category"], pages))
-        if page["category"] == "ECU":
-            title = "Platforms"
-            intro = '<p class="field-hint">One setup page per ECU.</p>' if links else ""
-        else:
-            title = "Configurations"
-            intro = f'<p class="field-hint">{len(links)} saved combinations for this calculator.</p>' if links else ""
+        title = "Configurations"
+        intro = f'<p class="field-hint">{len(links)} saved combinations for this calculator.</p>' if links else ""
     else:
         if hub:
             links.append(hub)
         links.extend(neighbor_pages(page, pages))
-        title = "Other ECUs" if page["category"] == "ECU" else "Related calculators"
+        title = "Related calculators"
         intro = ""
     listing = link_items(links)
     if not listing:
@@ -6333,11 +6140,7 @@ def page_tokens(page, pages, hubs, hubs_by_category):
         "H1": esc(page["target_keyword"]),
         "SPEC": f'<p class="spec">{esc(spec)}</p>' if spec else "",
         "TOOL": html_fn(page) + follow_on(page["category"]),
-        "CONTENT": (
-            content_box("Before the first start", f'<p class="formula">{esc(formula)}</p>')
-            if page["category"] == "ECU"
-            else formula_box(formula)
-        ) + notes_box(page) + related_box(page, pages, hubs_by_category),
+        "CONTENT": formula_box(formula) + notes_box(page) + related_box(page, pages, hubs_by_category),
         "FOOTER": footer(),
         "SCRIPT": UI_SCRIPT + "\n" + script,
     }
@@ -6353,7 +6156,6 @@ def index_page(pages, hubs):
         {"slug": "carburetor-cfm-calculator", "target_keyword": "Carburetor"},
         {"slug": "compression-ratio-calculator", "target_keyword": "Compression ratio"},
         {"slug": "ls-camshaft-calculator", "target_keyword": "LS camshaft"},
-        {"slug": "ecu-tuning-setup-guides", "target_keyword": "ECU tuning and setup"},
         {"slug": "nitrous-shot-calculator", "target_keyword": "Nitrous jet and timing"},
         {"slug": "drag-shock-calculator", "target_keyword": "Shock to order"},
         {"slug": "torque-converter-calculator", "target_keyword": "Torque converter stall"},
@@ -6364,7 +6166,7 @@ def index_page(pages, hubs):
     content = (
         content_box(
             "Start a build",
-            "<p>These end in a part, and the ECU pages are the setup order for the box that has to run it. The menu is grouped the way a car is built: fuel together, power together, then the gear, the chassis, the wiring, and the ECU.</p>"
+            "<p>These end in a part. The menu is grouped the way a car is built: fuel together, power together, then the gear, the chassis, and the wiring.</p>"
             + start,
         )
         + content_box("Calculators", directory)
@@ -6387,7 +6189,7 @@ def index_page(pages, hubs):
         TITLE=esc("Ultimate Drag Racing Master Suite | Drivetrain & Shift Calculator"),
         DESCRIPTION=esc(
             "Drag racing calculators for gear ratios, turbo sizing, LS engine builds, "
-            "nitrous jetting, shock selection, torque converter stall, fuel injectors, fuel pumps, supercharger pulleys, tire growth, chassis setup, and ECU setup guides."
+            "nitrous jetting, shock selection, torque converter stall, fuel injectors, fuel pumps, supercharger pulleys, tire growth, and chassis setup."
         ),
         CANONICAL=esc(f"{ORIGIN}/"),
         VERIFICATION=VERIFICATION,
@@ -6409,14 +6211,13 @@ def contact_page():
     content = """
 <h1>Contact &amp; Track Sponsorships</h1>
 <p>A shop can buy the banner across the top, the line on every printed setup sheet, or the part links under one calculator: converter, shocks, fuel system, or rear gear. Rates follow the visits on that page.</p>
-<p>Calculator feedback, a tuning quote, and other partnership inquiries use the same form.</p>
+<p>Calculator feedback and other partnership inquiries use the same form.</p>
 <form id="quote" action="https://formspree.io/f/xqppzgab" method="POST">
     <div><label for="name">Your Name / Shop Name</label><input id="name" type="text" name="name" required placeholder="e.g. Pro Line Racing"></div>
     <div><label for="email">Your Email Address</label><input id="email" type="email" name="email" required placeholder="e.g. yourname@domain.com"></div>
     <div><label for="inquiry_type">Inquiry Type</label>
         <select id="inquiry_type" name="inquiry_type">
             <option value="Sponsorship">Track Sponsor Rates &amp; Advertising</option>
-            <option value="Tuning quote">Tuning quote</option>
             <option value="Bug / Feedback">Calculator Feedback / Bug Report</option>
             <option value="Other">General Partnership</option>
         </select>
@@ -6424,17 +6225,6 @@ def contact_page():
     <div><label for="message">Message</label><textarea id="message" name="message" required placeholder="Describe your inquiry or sponsorship request here..."></textarea></div>
     <button type="submit" class="action-btn">Send Message</button>
 </form>
-<script>
-(function () {
-    const params = new URLSearchParams(location.search);
-    if (params.get("inquiry") !== "tuning-quote") return;
-    const select = document.getElementById("inquiry_type");
-    const message = document.getElementById("message");
-    if (select) select.value = "Tuning quote";
-    const note = params.get("note");
-    if (message && note) message.value = note;
-})();
-</script>
 """
     return fill(
         NARROW_TEMPLATE,
@@ -6559,9 +6349,6 @@ def main():
     missing_cv = [page["slug"] for page in pages if page["category"] == "Converter" and page["slug"] not in CV_PRESETS]
     if missing_cv:
         raise SystemExit("Converter pages missing presets: " + ", ".join(missing_cv))
-    missing_ecu = [page["slug"] for page in pages if page["category"] == "ECU" and page["slug"] not in ECU_GUIDES]
-    if missing_ecu:
-        raise SystemExit("ECU pages missing guides: " + ", ".join(missing_ecu))
     hubs = [page for page in pages if page["role"] == "hub"]
     hubs_by_category = {page["category"]: page for page in hubs}
     global SITE_BANNER

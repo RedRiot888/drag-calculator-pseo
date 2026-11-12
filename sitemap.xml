@@ -705,24 +705,4 @@
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
     </url>
-    <url>
-        <loc>https://dragcalculators.com/ecu-tuning-setup-guides.html</loc>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://dragcalculators.com/haltech-nexus-r5-setup.html</loc>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-    </url>
-    <url>
-        <loc>https://dragcalculators.com/haltech-rebel-ls-setup.html</loc>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-    </url>
-    <url>
-        <loc>https://dragcalculators.com/holley-terminator-x-setup.html</loc>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-    </url>
 </urlset>
