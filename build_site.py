@@ -565,8 +565,15 @@ input[type="range"] {
     letter-spacing: 0.06em;
     text-transform: uppercase;
 }
-.parts-rec a { color: var(--text-main); font-weight: 700; text-decoration: none; }
-.parts-rec a:hover { color: var(--accent-red); }
+.parts-rec .action-btn {
+    display: block;
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+}
+.parts-rec .action-btn:hover { color: #fff; background: #c40812; }
 .parts-rec .shop-note { margin: 0; }
 .duty-card, .assess, .table-scroll {
     background: #161616;
@@ -1275,7 +1282,7 @@ def parts_rec():
     return (
         '<aside class="parts-rec">'
         '<p class="parts-rec-kicker">Recommended parts &amp; upgrades</p>'
-        f'<a href="{esc(SUMMIT_PARTS_URL)}" target="_blank" rel="sponsored noopener">Summit Racing</a>'
+        f'<a class="action-btn" href="{esc(SUMMIT_PARTS_URL)}" target="_blank" rel="sponsored noopener">Shop Summit Racing</a>'
         '<p class="shop-note">Affiliate link. A purchase may earn DragCalculators a commission, at no extra cost to you.</p>'
         "</aside>"
     )
