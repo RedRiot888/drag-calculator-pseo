@@ -18,6 +18,8 @@ SPONSOR_LINE = ""
 # Merchant URLs by category, filled in after an affiliate program approves the site.
 # Example: "FuelPump": (("Dual 450 class", "https://example.com/pump"),)
 AFFILIATE_LINKS = {}
+# Summit Racing affiliate link shown beside every calculator result.
+SUMMIT_PARTS_URL = "https://summitracing.pxf.io/1GNg1m"
 PRINT_LINE = SPONSOR_LINE or "Setup sheet from dragcalculators.com. These are planning numbers. Confirm the part before you order."
 SITE_BANNER = ""
 NEXT_STEPS = {
@@ -539,6 +541,33 @@ input[type="range"] {
 }
 .readout-extra span { display: block; color: var(--text-muted); font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; }
 .readout-extra strong { display: block; margin-top: 2px; font-size: 0.95rem; font-weight: 650; color: var(--text-main); }
+.results-pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(148px, 0.85fr);
+    gap: 12px;
+    align-items: stretch;
+}
+.parts-rec {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    background: #161616;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+}
+.parts-rec-kicker {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.parts-rec a { color: var(--text-main); font-weight: 700; text-decoration: none; }
+.parts-rec a:hover { color: var(--accent-red); }
+.parts-rec .shop-note { margin: 0; }
 .duty-card, .assess, .table-scroll {
     background: #161616;
     border: 1px solid var(--border-color);
@@ -613,7 +642,7 @@ tr.is-small td { color: #8d8d8d; }
 .shop-note { color: var(--text-muted); font-size: 0.78rem; }
 .print-sheet { display: none; }
 @media print {
-    .site-banner, .nexus-sidebar, .content-column, .back-row, .site-footer, .action-row, .setup-mail, .pill-row, .next-steps, .accordion { display: none !important; }
+    .site-banner, .nexus-sidebar, .content-column, .back-row, .site-footer, .action-row, .setup-mail, .pill-row, .next-steps, .accordion, .parts-rec { display: none !important; }
     .gear-shop, .gear-shop a, .gear-shop .shop-note { color: #111 !important; }
     .print-sheet { display: block; margin-top: 18px; color: #111; font-size: 0.85rem; }
     body, .sticky-calculator, .readout, .table-scroll, .assess, th, td { background: #fff !important; color: #111 !important; }
@@ -681,7 +710,7 @@ th { background: #202020; color: var(--accent-red); text-transform: uppercase; f
     body { --page-pad: 12px; padding: 0 var(--page-pad) 12px; }
     .site-banner { flex-wrap: wrap; }
     .site-search { order: 3; flex-basis: 100%; max-width: none; margin-left: 0; }
-    .grid-2, .readout-grid, .setup-mail-row { grid-template-columns: 1fr; }
+    .grid-2, .readout-grid, .setup-mail-row, .results-pair { grid-template-columns: 1fr; }
     .setup-mail-row { display: grid; }
     .setup-mail-row .action-btn { width: 100%; }
     .sticky-calculator, .content-box, .narrow-card { padding: 16px; }
@@ -1194,17 +1223,20 @@ def calculator_shell(primary, advanced, print_label, extra="", power_toggle=Fals
         <summary>Advanced / Conditions</summary>
         <div class="accordion-body field-stack">{advanced}</div>
     </details>
-    <div class="readout" id="results">
-        <div class="readout-top">
-            <span class="readout-kicker">Result</span>
-            <div class="pill-row">{power}
-                <div class="pill-group" role="group" aria-label="Units">
-                    <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
-                    <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+    <div class="results-pair">
+        <div class="readout" id="results">
+            <div class="readout-top">
+                <span class="readout-kicker">Result</span>
+                <div class="pill-row">{power}
+                    <div class="pill-group" role="group" aria-label="Units">
+                        <button type="button" class="pill active" data-unit-group="system" data-unit="imperial">Imperial</button>
+                        <button type="button" class="pill" data-unit-group="system" data-unit="metric">Metric</button>
+                    </div>
                 </div>
             </div>
+            <div id="readout-body"></div>
         </div>
-        <div id="readout-body"></div>
+        {parts_rec()}
     </div>
     {results_extra}
     <div class="action-row">
@@ -1237,6 +1269,16 @@ def gear_housing_field(select_id):
 
 def gear_shop_mount(mount_id):
     return f'<div id="{esc(mount_id)}" class="gear-shop"></div>'
+
+
+def parts_rec():
+    return (
+        '<aside class="parts-rec">'
+        '<p class="parts-rec-kicker">Recommended parts &amp; upgrades</p>'
+        f'<a href="{esc(SUMMIT_PARTS_URL)}" target="_blank" rel="sponsored noopener">Summit Racing</a>'
+        '<p class="shop-note">Affiliate link. A purchase may earn DragCalculators a commission, at no extra cost to you.</p>'
+        "</aside>"
+    )
 
 
 GEAR_SHOP_FN = """
